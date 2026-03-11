@@ -1,0 +1,610 @@
+DEBUG - 2026-02-18 04:09:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:09:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:09:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:09:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:11:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:11:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:11:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:11:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:11:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:11:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:11:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:11:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:43:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:43:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:44:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:49:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 04:58:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 05:15:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 05:15:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 05:27:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 05:28:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-18 05:35:49 --> ParseError: syntax error, unexpected token "/"
+[Method: GET, Route: admin/cetak-rapor]
+in APPPATH\Controllers\admin\CetakRaporController.php on line 208.
+ 1 VENDORPATH\composer\ClassLoader.php(427): Composer\Autoload\{closure}('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\composer/../../app\\Controllers\\Admin\\CetakRaporController.php')
+ 2 [internal function]: Composer\Autoload\ClassLoader->loadClass('App\\Controllers\\Admin\\CetakRaporController')
+ 3 SYSTEMPATH\CodeIgniter.php(885): class_exists('\\App\\Controllers\\Admin\\CetakRaporController', true)
+ 4 SYSTEMPATH\CodeIgniter.php(494): CodeIgniter\CodeIgniter->startController()
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-18 05:36:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 05:36:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 05:49:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 05:49:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-18 05:49:58 --> ErrorException: iconv(): Wrong encoding, conversion from &quot;UTF-8,%3CSVG&quot; to &quot;UTF-8//TRANSLIT&quot; is not allowed
+[Method: GET, Route: admin/cetak-rapor/printPDF/46/preview]
+in VENDORPATH\mpdf\mpdf\src\Mpdf.php on line 13295.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'iconv(): Wrong encoding, conversion from &quot;UTF-8,%3CSVG&quot; to &quot;UTF-8//TRANSLIT&quot; is not allowed', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\mpdf\\mpdf\\src\\Mpdf.php', 13295)
+ 2 VENDORPATH\mpdf\mpdf\src\Mpdf.php(13295): iconv('UTF-8,%3CSVG', 'UTF-8//TRANSLIT', '<!-- DEBUG-VIEW START 1 APPPATH\\Views\\Admin\\print\\rapor_pdf_template.php -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Cetak Rapor Lengkap</title>
+    <style>
+        .page-break {
+            page-break-before: always;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'100\'%3E%3Ctext x=\'50%25\' y=\'50%25\' font-family=\'Arial\' font-size=\'12\' fill=\'rgba(218, 165, 32, 0.2)\' transform=\'rotate(-20 100 50)\' text-anchor=\'middle\'%3ESMP IT AD DURRAH%3C/text%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-position: center;
+        }
+
+        table, th, td {
+            background-color: transparent !important;
+        }
+
+        .tbl-border thead th { 
+            background-color: rgba(255, 255, 255, 0.8) !important; 
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .font-bold { font-weight: bold; }
+        .uppercase { text-transform: uppercase; }
+        
+        .tbl-border, .tbl-border th, .tbl-border td {
+            border: 1px solid #000;
+        }
+        .tbl-border th { padding: 8px; font-weight: bold; text-align: center; }
+        .tbl-border td { padding: 5px; vertical-align: top; }
+
+        .tbl-bio td { padding: 5px; vertical-align: top; }
+        
+        .ttd-wrapper { width: 100%; margin-top: 30px; }
+        .ttd-col { width: 33%; text-align: center; vertical-align: top; }
+        .ttd-space { height: 70px; }
+    </style>
+</head>
+<body>
+
+    <div style="text-align: center; padding-top: 50px;">
+        <img src="D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\public\\assets/img/logo-garuda.png" width="120" style="margin-bottom: 20px;">
+        
+        <div style="font-size: 14pt; font-weight: bold; margin-bottom: 30px;">
+            LAPORAN<br>
+            HASIL PENCAPAIAN KOMPETENSI PESERTA DIDIK<br>
+            SMPS IT AD DURRAH
+        </div>
+
+        <div style="font-size: 16pt; font-weight: bold; margin-bottom: 50px;">
+            SMP SWASTA ISLAM TERPADU<br>
+            <span style="font-size: 24pt; color: #DAA520;">AD DURRAH</span> </div>
+
+        <img src="D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\public\\assets/img/logo-sekolah.png" width="180" style="margin-bottom: 50px;">
+
+        <div style="margin-bottom: 20px;">Nama Peserta Didik:</div>
+        <div style="border: 1px solid #000; padding: 10px; width: 60%; margin: 0 auto; font-weight: bold; font-size: 14pt;">
+            KANAYA SHAQUILA PARINDURI        </div>
+
+        <div style="margin-top: 20px; margin-bottom: 20px;">NIS / NISN:</div>
+        <div style="border: 1px solid #000; padding: 10px; width: 60%; margin: 0 auto; font-weight: bold; font-size: 14pt;">
+            07.23.0062 / 0118175665        </div>
+
+        <div style="margin-top: 100px; font-weight: bold; font-size: 12pt;">
+            DINAS PENDIDIKAN<br>
+            KOTA MEDAN
+        </div>
+    </div>
+
+    <div class="page-break">
+        <h3 class="text-center font-bold">KETERANGAN TENTANG DIRI PESERTA DIDIK</h3>
+        
+        <table class="tbl-bio" style="margin-top: 20px;">
+            <tr>
+                <td width="5%">1.</td>
+                <td width="30%">Nama Peserta Didik (Lengkap)</td>
+                <td width="2%">:</td>
+                <td class="font-bold uppercase">KANAYA SHAQUILA PARINDURI</td>
+            </tr>
+            <tr>
+                <td>2.</td><td>Nomor Induk / NISN</td><td>:</td>
+                <td>07.23.0062 / 0118175665</td>
+            </tr>
+            <tr>
+                <td>3.</td><td>Tempat, Tanggal Lahir</td><td>:</td>
+                <td>Medan, 2011-08-25</td>
+            </tr>
+            <tr>
+                <td>4.</td><td>Jenis Kelamin</td><td>:</td>
+                <td>Perempuan</td>
+            </tr>
+            <tr>
+                <td>5.</td><td>Agama</td><td>:</td>
+                <td>Islam</td>
+            </tr>
+            <tr>
+                <td>6.</td><td>Alamat Peserta Didik</td><td>:</td>
+                <td>Jl. Pancing Lor. Rukun No. 110</td>
+            </tr>
+            <tr>
+                <td></td><td>Nomor Telepon</td><td>:</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>7.</td><td>Diterima di sekolah ini</td><td></td><td></td>
+            </tr>
+            <tr>
+                <td></td><td>a. Di kelas</td><td>:</td>
+                <td>VII (Tujuh)</td>
+            </tr>
+            <tr>
+                <td></td><td>b. Pada tanggal</td><td>:</td>
+                <td>15 Juli 2023</td>
+            </tr>
+            <tr>
+                <td>8.</td><td>Nama Orang Tua</td><td></td><td></td>
+            </tr>
+            <tr>
+                <td></td><td>a. Ayah</td><td>:</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td></td><td>b. Ibu</td><td>:</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>9.</td><td>Pekerjaan Orang Tua</td><td></td><td></td>
+            </tr>
+            <tr>
+                <td></td><td>a. Ayah</td><td>:</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td></td><td>b. Ibu</td><td>:</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>10.</td><td>Alamat Orang Tua</td><td>:</td>
+                <td>Jl. Pancing Lor. Rukun No. 110</td>
+            </tr>
+            <tr>
+                <td>11.</td><td>Nama Wali Peserta Didik</td><td>:</td>
+                <td>-</td>
+            </tr>
+        </table>
+
+        <table style="margin-top: 40px;">
+            <tr>
+                <td width="40%" class="text-center">
+                    <div style="width: 113px; height: 151px; border: 1px solid #000; margin: 0 auto;">
+                                                     <br><br>FOTO<br>3 x 4
+                                            </div>
+                </td>
+                <td width="20%"></td>
+                <td width="40%" class="text-left">
+                    Medan, 18 February 2026<br>
+                    Kepala SMPS IT Ad Durrah,<br>
+                    <div style="height: 70px;">
+                        </div>
+                    <span class="font-bold text-underline">Muhammad Taufiq, S.Pd, Gr</span><br>
+                    NIP. -
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="page-break">
+        <div class="text-center font-bold" style="font-size: 12pt; margin-bottom: 20px;">
+            HASIL PENCAPAIAN KOMPETENSI PESERTA DIDIK
+        </div>
+
+        <table style="margin-bottom: 10px;">
+            <tr>
+                <td width="15%">Nama Siswa</td><td width="2%">:</td><td width="35%" class="font-bold">KANAYA SHAQUILA PARINDURI</td>
+                <td width="15%">Kelas</td><td width="2%">:</td><td width="31%">Carnelian</td>
+            </tr>
+            <tr>
+                <td>NIS/NISN</td><td>:</td><td>07.23.0062 / 0118175665</td>
+                <td>Fase</td><td>:</td><td>D</td>
+            </tr>
+            <tr>
+                <td>Nama Sekolah</td><td>:</td><td>SMPS IT Ad Durrah</td>
+                <td>Semester</td><td>:</td><td>Genap</td>
+            </tr>
+            <tr>
+                <td>Alamat</td><td>:</td><td>Jl. Selamat II No.7, Medan</td>
+                <td>Thn Pelajaran</td><td>:</td><td>2024/2025</td>
+            </tr>
+        </table>
+
+        <table class="tbl-border">
+            <thead>
+                <tr>
+                    <th width="5%">No</th>
+                    <th width="25%">Mata Pelajaran</th>
+                    <th width="8%">Nilai<br>Akhir</th>
+                    <th width="62%">Deskripsi</th>
+                </tr>
+            </thead>
+            <tbody>
+                                    <tr><td colspan="4" class="text-center">Data nilai belum tersedia.</td></tr>
+                            </tbody>
+        </table>
+
+        
+        <div style="margin-top: 10px; font-weight: bold;">Ketidakhadiran</div>
+        <table class="tbl-border" style="width: 50%;">
+            <tr>
+                <td width="60%">Sakit</td>
+                <td width="40%" class="text-center">0 hari</td>
+            </tr>
+            <tr>
+                <td>Izin</td>
+                <td class="text-center">0 hari</td>
+            </tr>
+            <tr>
+                <td>Tanpa Keterangan</td>
+                <td class="text-center">0 hari</td>
+            </tr>
+        </table>
+        
+        
+                <div style="margin-top: 10px; border: 1px solid #000; padding: 10px; text-align: center;">
+            <p style="margin:0;">Keputusan:</p>
+            <h3 style="margin:5px;">NAIK KE KELAS : VIII (DELAPAN)</h3>
+        </div>
+        
+        <table class="ttd-wrapper">
+            <tr>
+                <td class="ttd-col">
+                    <br>Mengetahui,<br>Orang Tua/Wali,
+                    <div class="ttd-space"></div>
+                    <p class="font-bold text-underline">( ........................... )</p>
+                </td>
+                <td class="ttd-col"></td>
+                <td class="ttd-col">
+                    Medan, 18 February 2026<br>Wali Kelas,
+                    <div class="ttd-space"></div>
+                    <p class="font-bold text-underline"></p>
+                    <p class="ttd-nip">NIP. -</p>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" class="text-center" style="padding-top: 10px;">
+                    Mengetahui,<br>Kepala SMPS IT Ad Durrah
+                    <div class="ttd-space"></div>
+                    <p class="font-bold text-underline">Muhammad Taufiq, S.Pd, Gr</p>
+                    <p class="ttd-nip">NIP. -</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>
+<!-- DEBUG-VIEW ENDED 1 APPPATH\\Views\\Admin\\print\\rapor_pdf_template.php -->
+')
+ 3 APPPATH\Controllers\admin\CetakRaporController.php(188): Mpdf\Mpdf->WriteHTML('<!-- DEBUG-VIEW START 1 APPPATH\\Views\\Admin\\print\\rapor_pdf_template.php -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Cetak Rapor Lengkap</title>
+    <style>
+        .page-break {
+            page-break-before: always;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'100\'%3E%3Ctext x=\'50%25\' y=\'50%25\' font-family=\'Arial\' font-size=\'12\' fill=\'rgba(218, 165, 32, 0.2)\' transform=\'rotate(-20 100 50)\' text-anchor=\'middle\'%3ESMP IT AD DURRAH%3C/text%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-position: center;
+        }
+
+        table, th, td {
+            background-color: transparent !important;
+        }
+
+        .tbl-border thead th { 
+            background-color: rgba(255, 255, 255, 0.8) !important; 
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .font-bold { font-weight: bold; }
+        .uppercase { text-transform: uppercase; }
+        
+        .tbl-border, .tbl-border th, .tbl-border td {
+            border: 1px solid #000;
+        }
+        .tbl-border th { padding: 8px; font-weight: bold; text-align: center; }
+        .tbl-border td { padding: 5px; vertical-align: top; }
+
+        .tbl-bio td { padding: 5px; vertical-align: top; }
+        
+        .ttd-wrapper { width: 100%; margin-top: 30px; }
+        .ttd-col { width: 33%; text-align: center; vertical-align: top; }
+        .ttd-space { height: 70px; }
+    </style>
+</head>
+<body>
+
+    <div style="text-align: center; padding-top: 50px;">
+        <img src="D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\public\\assets/img/logo-garuda.png" width="120" style="margin-bottom: 20px;">
+        
+        <div style="font-size: 14pt; font-weight: bold; margin-bottom: 30px;">
+            LAPORAN<br>
+            HASIL PENCAPAIAN KOMPETENSI PESERTA DIDIK<br>
+            SMPS IT AD DURRAH
+        </div>
+
+        <div style="font-size: 16pt; font-weight: bold; margin-bottom: 50px;">
+            SMP SWASTA ISLAM TERPADU<br>
+            <span style="font-size: 24pt; color: #DAA520;">AD DURRAH</span> </div>
+
+        <img src="D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\public\\assets/img/logo-sekolah.png" width="180" style="margin-bottom: 50px;">
+
+        <div style="margin-bottom: 20px;">Nama Peserta Didik:</div>
+        <div style="border: 1px solid #000; padding: 10px; width: 60%; margin: 0 auto; font-weight: bold; font-size: 14pt;">
+            KANAYA SHAQUILA PARINDURI        </div>
+
+        <div style="margin-top: 20px; margin-bottom: 20px;">NIS / NISN:</div>
+        <div style="border: 1px solid #000; padding: 10px; width: 60%; margin: 0 auto; font-weight: bold; font-size: 14pt;">
+            07.23.0062 / 0118175665        </div>
+
+        <div style="margin-top: 100px; font-weight: bold; font-size: 12pt;">
+            DINAS PENDIDIKAN<br>
+            KOTA MEDAN
+        </div>
+    </div>
+
+    <div class="page-break">
+        <h3 class="text-center font-bold">KETERANGAN TENTANG DIRI PESERTA DIDIK</h3>
+        
+        <table class="tbl-bio" style="margin-top: 20px;">
+            <tr>
+                <td width="5%">1.</td>
+                <td width="30%">Nama Peserta Didik (Lengkap)</td>
+                <td width="2%">:</td>
+                <td class="font-bold uppercase">KANAYA SHAQUILA PARINDURI</td>
+            </tr>
+            <tr>
+                <td>2.</td><td>Nomor Induk / NISN</td><td>:</td>
+                <td>07.23.0062 / 0118175665</td>
+            </tr>
+            <tr>
+                <td>3.</td><td>Tempat, Tanggal Lahir</td><td>:</td>
+                <td>Medan, 2011-08-25</td>
+            </tr>
+            <tr>
+                <td>4.</td><td>Jenis Kelamin</td><td>:</td>
+                <td>Perempuan</td>
+            </tr>
+            <tr>
+                <td>5.</td><td>Agama</td><td>:</td>
+                <td>Islam</td>
+            </tr>
+            <tr>
+                <td>6.</td><td>Alamat Peserta Didik</td><td>:</td>
+                <td>Jl. Pancing Lor. Rukun No. 110</td>
+            </tr>
+            <tr>
+                <td></td><td>Nomor Telepon</td><td>:</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>7.</td><td>Diterima di sekolah ini</td><td></td><td></td>
+            </tr>
+            <tr>
+                <td></td><td>a. Di kelas</td><td>:</td>
+                <td>VII (Tujuh)</td>
+            </tr>
+            <tr>
+                <td></td><td>b. Pada tanggal</td><td>:</td>
+                <td>15 Juli 2023</td>
+            </tr>
+            <tr>
+                <td>8.</td><td>Nama Orang Tua</td><td></td><td></td>
+            </tr>
+            <tr>
+                <td></td><td>a. Ayah</td><td>:</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td></td><td>b. Ibu</td><td>:</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>9.</td><td>Pekerjaan Orang Tua</td><td></td><td></td>
+            </tr>
+            <tr>
+                <td></td><td>a. Ayah</td><td>:</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td></td><td>b. Ibu</td><td>:</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>10.</td><td>Alamat Orang Tua</td><td>:</td>
+                <td>Jl. Pancing Lor. Rukun No. 110</td>
+            </tr>
+            <tr>
+                <td>11.</td><td>Nama Wali Peserta Didik</td><td>:</td>
+                <td>-</td>
+            </tr>
+        </table>
+
+        <table style="margin-top: 40px;">
+            <tr>
+                <td width="40%" class="text-center">
+                    <div style="width: 113px; height: 151px; border: 1px solid #000; margin: 0 auto;">
+                                                     <br><br>FOTO<br>3 x 4
+                                            </div>
+                </td>
+                <td width="20%"></td>
+                <td width="40%" class="text-left">
+                    Medan, 18 February 2026<br>
+                    Kepala SMPS IT Ad Durrah,<br>
+                    <div style="height: 70px;">
+                        </div>
+                    <span class="font-bold text-underline">Muhammad Taufiq, S.Pd, Gr</span><br>
+                    NIP. -
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="page-break">
+        <div class="text-center font-bold" style="font-size: 12pt; margin-bottom: 20px;">
+            HASIL PENCAPAIAN KOMPETENSI PESERTA DIDIK
+        </div>
+
+        <table style="margin-bottom: 10px;">
+            <tr>
+                <td width="15%">Nama Siswa</td><td width="2%">:</td><td width="35%" class="font-bold">KANAYA SHAQUILA PARINDURI</td>
+                <td width="15%">Kelas</td><td width="2%">:</td><td width="31%">Carnelian</td>
+            </tr>
+            <tr>
+                <td>NIS/NISN</td><td>:</td><td>07.23.0062 / 0118175665</td>
+                <td>Fase</td><td>:</td><td>D</td>
+            </tr>
+            <tr>
+                <td>Nama Sekolah</td><td>:</td><td>SMPS IT Ad Durrah</td>
+                <td>Semester</td><td>:</td><td>Genap</td>
+            </tr>
+            <tr>
+                <td>Alamat</td><td>:</td><td>Jl. Selamat II No.7, Medan</td>
+                <td>Thn Pelajaran</td><td>:</td><td>2024/2025</td>
+            </tr>
+        </table>
+
+        <table class="tbl-border">
+            <thead>
+                <tr>
+                    <th width="5%">No</th>
+                    <th width="25%">Mata Pelajaran</th>
+                    <th width="8%">Nilai<br>Akhir</th>
+                    <th width="62%">Deskripsi</th>
+                </tr>
+            </thead>
+            <tbody>
+                                    <tr><td colspan="4" class="text-center">Data nilai belum tersedia.</td></tr>
+                            </tbody>
+        </table>
+
+        
+        <div style="margin-top: 10px; font-weight: bold;">Ketidakhadiran</div>
+        <table class="tbl-border" style="width: 50%;">
+            <tr>
+                <td width="60%">Sakit</td>
+                <td width="40%" class="text-center">0 hari</td>
+            </tr>
+            <tr>
+                <td>Izin</td>
+                <td class="text-center">0 hari</td>
+            </tr>
+            <tr>
+                <td>Tanpa Keterangan</td>
+                <td class="text-center">0 hari</td>
+            </tr>
+        </table>
+        
+        
+                <div style="margin-top: 10px; border: 1px solid #000; padding: 10px; text-align: center;">
+            <p style="margin:0;">Keputusan:</p>
+            <h3 style="margin:5px;">NAIK KE KELAS : VIII (DELAPAN)</h3>
+        </div>
+        
+        <table class="ttd-wrapper">
+            <tr>
+                <td class="ttd-col">
+                    <br>Mengetahui,<br>Orang Tua/Wali,
+                    <div class="ttd-space"></div>
+                    <p class="font-bold text-underline">( ........................... )</p>
+                </td>
+                <td class="ttd-col"></td>
+                <td class="ttd-col">
+                    Medan, 18 February 2026<br>Wali Kelas,
+                    <div class="ttd-space"></div>
+                    <p class="font-bold text-underline"></p>
+                    <p class="ttd-nip">NIP. -</p>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" class="text-center" style="padding-top: 10px;">
+                    Mengetahui,<br>Kepala SMPS IT Ad Durrah
+                    <div class="ttd-space"></div>
+                    <p class="font-bold text-underline">Muhammad Taufiq, S.Pd, Gr</p>
+                    <p class="ttd-nip">NIP. -</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>
+<!-- DEBUG-VIEW ENDED 1 APPPATH\\Views\\Admin\\print\\rapor_pdf_template.php -->
+')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\CetakRaporController->printPDF('46', 'preview')
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\CetakRaporController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-18 05:57:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:02:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:03:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:04:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:06:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:11:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:19:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:26:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:26:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:26:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:30:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:30:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:31:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:31:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:32:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:55:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:55:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 06:56:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 07:01:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 07:06:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 07:34:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 07:37:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 07:41:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 07:44:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 07:46:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 07:58:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 08:12:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 08:13:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 08:16:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 08:18:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 08:23:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 08:25:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 08:28:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 08:31:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 08:32:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-18 08:33:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

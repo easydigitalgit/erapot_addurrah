@@ -1,0 +1,30 @@
+/* Animasi Angka Statistik */
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.stat-value { 
+    animation: popIn 0.3s ease-out; 
+}
+
+/* Input Nilai Custom Style */
+.input-nilai {
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #374151; /* Gray-700 */
+}
+
+.input-nilai:focus {
+    background-color: #ecfdf5; /* Emerald-50 */
+    /* Menggunakan variabel CSS yang didefinisikan di View */
+    border-color: var(--warna-primary); 
+    box-shadow: 0 0 0 3px rgba(var(--warna-primary-rgb), 0.2); 
+    transform: scale(1.02);
+}
+
+/* Helper untuk badge */
+.badge-predikat {
+    transition: all 0.3s;
+}

@@ -1,0 +1,1367 @@
+DEBUG - 2026-02-12 02:17:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:17:11 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:17:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:17:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:17:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:20:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:21:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:21:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:22:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:24:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:24:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:43:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:44:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:47:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:47:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:47:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:48:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:48:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:48:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:48:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:48:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:49:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:49:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:49:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:49:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:50:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-12 02:51:37 --> mysqli_sql_exception: Unknown column 'active' in 'field list' in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `us...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `us...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `us...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `us...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(73): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2026-02-12 02:51:37 --> mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`raporsmpit`.`orangtua_wali`, CONSTRAINT `orangtua_wali_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE) in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `or...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `or...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `or...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `or...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\BaseModel.php(838): CodeIgniter\Model->doInsert(Array)
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(797): CodeIgniter\BaseModel->insert(Array, true)
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(110): CodeIgniter\Model->insert(Array)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 {main}
+ERROR - 2026-02-12 02:51:57 --> mysqli_sql_exception: Unknown column 'active' in 'field list' in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `us...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `us...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `us...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `us...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(73): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2026-02-12 02:51:57 --> mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`raporsmpit`.`orangtua_wali`, CONSTRAINT `orangtua_wali_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE) in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `or...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `or...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `or...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `or...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\BaseModel.php(838): CodeIgniter\Model->doInsert(Array)
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(797): CodeIgniter\BaseModel->insert(Array, true)
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(110): CodeIgniter\Model->insert(Array)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 {main}
+ERROR - 2026-02-12 02:52:39 --> mysqli_sql_exception: Unknown column 'active' in 'field list' in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `us...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `us...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `us...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `us...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(73): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2026-02-12 02:52:39 --> mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`raporsmpit`.`orangtua_wali`, CONSTRAINT `orangtua_wali_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE) in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `or...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `or...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `or...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `or...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\BaseModel.php(838): CodeIgniter\Model->doInsert(Array)
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(797): CodeIgniter\BaseModel->insert(Array, true)
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(110): CodeIgniter\Model->insert(Array)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 {main}
+DEBUG - 2026-02-12 02:52:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:53:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:53:11 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:54:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:55:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-12 02:56:15 --> mysqli_sql_exception: Unknown column 'active' in 'field list' in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `us...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `us...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `us...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `us...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(72): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2026-02-12 02:56:15 --> mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`raporsmpit`.`orangtua_wali`, CONSTRAINT `orangtua_wali_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE) in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `or...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `or...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `or...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `or...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\BaseModel.php(838): CodeIgniter\Model->doInsert(Array)
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(797): CodeIgniter\BaseModel->insert(Array, true)
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(121): CodeIgniter\Model->insert(Array)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 {main}
+ERROR - 2026-02-12 02:57:57 --> mysqli_sql_exception: Unknown column 'active' in 'field list' in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `us...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `us...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `us...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `us...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(72): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2026-02-12 02:57:57 --> mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`raporsmpit`.`orangtua_wali`, CONSTRAINT `orangtua_wali_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE) in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `or...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `or...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `or...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `or...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\BaseModel.php(838): CodeIgniter\Model->doInsert(Array)
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(797): CodeIgniter\BaseModel->insert(Array, true)
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(121): CodeIgniter\Model->insert(Array)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 {main}
+DEBUG - 2026-02-12 02:58:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:58:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:58:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:59:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:59:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:59:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:59:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:59:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:59:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:59:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 02:59:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:00:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:01:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:01:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:01:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:01:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:01:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:01:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:02:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:02:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:02:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:02:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:02:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:02:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:02:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:02:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:02:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:03:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:03:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:04:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:04:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-12 03:05:00 --> mysqli_sql_exception: Unknown column 'active' in 'field list' in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `us...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `us...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `us...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `us...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(72): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2026-02-12 03:05:00 --> mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`raporsmpit`.`orangtua_wali`, CONSTRAINT `orangtua_wali_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE) in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `or...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `or...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `or...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `or...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\BaseModel.php(838): CodeIgniter\Model->doInsert(Array)
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(797): CodeIgniter\BaseModel->insert(Array, true)
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(133): CodeIgniter\Model->insert(Array)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 {main}
+DEBUG - 2026-02-12 03:05:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:05:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-12 03:05:46 --> mysqli_sql_exception: Unknown column 'active' in 'field list' in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `us...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `us...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `us...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `us...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(72): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2026-02-12 03:05:46 --> mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`raporsmpit`.`orangtua_wali`, CONSTRAINT `orangtua_wali_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE) in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `or...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `or...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `or...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `or...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\BaseModel.php(838): CodeIgniter\Model->doInsert(Array)
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(797): CodeIgniter\BaseModel->insert(Array, true)
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(133): CodeIgniter\Model->insert(Array)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 {main}
+DEBUG - 2026-02-12 03:05:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:09:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:09:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:09:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:09:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:12:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-12 03:13:01 --> mysqli_sql_exception: Unknown column 'active' in 'field list' in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `us...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `us...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `us...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `us...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(80): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+DEBUG - 2026-02-12 03:14:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:15:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:16:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-12 03:16:13 --> ErrorException: Undefined array key "nama_lengkap"
+[Method: GET, Route: admin/orangtua]
+in APPPATH\Views\Admin\orangtua.php on line 188.
+ 1 APPPATH\Views\Admin\orangtua.php(188): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_lengkap"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\orangtua.php', 188)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\orangtua.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/orangtua', [], true)
+ 5 APPPATH\Controllers\admin\OrangTuaController.php(26): view('admin/orangtua', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 03:17:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:17:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:19:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:21:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:21:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-12 03:22:53 --> mysqli_sql_exception: Duplicate entry '31' for key 'orangtua_wali.user_id' in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `or...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `or...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `or...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `or...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\BaseModel.php(838): CodeIgniter\Model->doInsert(Array)
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(797): CodeIgniter\BaseModel->insert(Array, true)
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(132): CodeIgniter\Model->insert(Array)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->store()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 {main}
+DEBUG - 2026-02-12 03:23:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:23:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-12 03:23:53 --> ErrorException: Undefined variable $ref_juz
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 378.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(378): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $ref_juz', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 378)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(17): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 03:30:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:30:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:31:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:31:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:31:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:31:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:31:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:32:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:33:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:34:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:34:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:36:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:36:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:39:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:39:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:39:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:40:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:40:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:42:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:42:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:43:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:43:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:45:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:48:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:48:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:48:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:50:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:50:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:50:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:52:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:52:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:56:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:56:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:56:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:57:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:57:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:57:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:57:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:58:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 03:59:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:01:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:01:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:01:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:01:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:01:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:02:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:06:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-12 04:06:12 --> mysqli_sql_exception: Column 'user_id' in where clause is ambiguous in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `orangtu...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `orangtu...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `orangtu...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `orangtu...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Models\Admin\OrangTuaModel.php(81): CodeIgniter\BaseModel->findAll()
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\OrangTuaController.php(48): App\Models\Admin\OrangTuaModel->getParentsComplete('', 'Ayah', '', 'Belum Aktivasi')
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->fetchData()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 {main}
+CRITICAL - 2026-02-12 04:06:12 --> CodeIgniter\Database\Exceptions\DatabaseException: Column 'user_id' in where clause is ambiguous
+[Method: GET, Route: admin/orangtua/fetchData]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `orangtua_wali`.*, `siswa`.`nama_lengkap` as `nama_siswa`, `rombel`.`nama_rombel`, `rombel`.`tingkat`, `users`.`is_active`
+FROM `orangtua_wali`
+LEFT JOIN `siswa` ON `siswa`.`id` = `orangtua_wali`.`siswa_id`
+LEFT JOIN `rombel` ON `rombel`.`id` = `siswa`.`rombel_id`
+LEFT JOIN `users` ON `users`.`id` = `orangtua_wali`.`user_id`
+WHERE   (
+`nama_ayah` != :nama_ayah:
+AND `nama_ayah` != :nama_ayah.1:
+ )
+AND   (
+`users`.`is_active` = :users.is_active:
+OR `user_id` = :user_id:
+OR `user_id` IS NULL
+ )
+ORDER BY `orangtua_wali`.`id` DESC', [...], false)
+ 2 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 4 APPPATH\Models\Admin\OrangTuaModel.php(81): CodeIgniter\BaseModel->findAll()
+ 5 APPPATH\Controllers\admin\OrangTuaController.php(48): App\Models\Admin\OrangTuaModel->getParentsComplete('', 'Ayah', '', 'Belum Aktivasi')
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->fetchData()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 04:06:12 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Column 'user_id' in where clause is ambiguous
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `orangtua_wali`.*, `siswa`.`nama_lengkap` as `nama_siswa`, `rombel`.`nama_rombel`, `rombel`.`tingkat`, `users`.`is_active`
+FROM `orangtua_wali`
+LEFT JOIN `siswa` ON `siswa`.`id` = `orangtua_wali`.`siswa_id`
+LEFT JOIN `rombel` ON `rombel`.`id` = `siswa`.`rombel_id`
+LEFT JOIN `users` ON `users`.`id` = `orangtua_wali`.`user_id`
+WHERE   (
+`nama_ayah` != \'-\'
+AND `nama_ayah` != \'\'
+ )
+AND   (
+`users`.`is_active` = 0
+OR `user_id` = 0
+OR `user_id` IS NULL
+ )
+ORDER BY `orangtua_wali`.`id` DESC')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `orangtua_wali`.*, `siswa`.`nama_lengkap` as `nama_siswa`, `rombel`.`nama_rombel`, `rombel`.`tingkat`, `users`.`is_active`
+FROM `orangtua_wali`
+LEFT JOIN `siswa` ON `siswa`.`id` = `orangtua_wali`.`siswa_id`
+LEFT JOIN `rombel` ON `rombel`.`id` = `siswa`.`rombel_id`
+LEFT JOIN `users` ON `users`.`id` = `orangtua_wali`.`user_id`
+WHERE   (
+`nama_ayah` != \'-\'
+AND `nama_ayah` != \'\'
+ )
+AND   (
+`users`.`is_active` = 0
+OR `user_id` = 0
+OR `user_id` IS NULL
+ )
+ORDER BY `orangtua_wali`.`id` DESC')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `orangtua_wali`.*, `siswa`.`nama_lengkap` as `nama_siswa`, `rombel`.`nama_rombel`, `rombel`.`tingkat`, `users`.`is_active`
+FROM `orangtua_wali`
+LEFT JOIN `siswa` ON `siswa`.`id` = `orangtua_wali`.`siswa_id`
+LEFT JOIN `rombel` ON `rombel`.`id` = `siswa`.`rombel_id`
+LEFT JOIN `users` ON `users`.`id` = `orangtua_wali`.`user_id`
+WHERE   (
+`nama_ayah` != :nama_ayah:
+AND `nama_ayah` != :nama_ayah.1:
+ )
+AND   (
+`users`.`is_active` = :users.is_active:
+OR `user_id` = :user_id:
+OR `user_id` IS NULL
+ )
+ORDER BY `orangtua_wali`.`id` DESC', [...], false)
+ 4 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 6 APPPATH\Models\Admin\OrangTuaModel.php(81): CodeIgniter\BaseModel->findAll()
+ 7 APPPATH\Controllers\admin\OrangTuaController.php(48): App\Models\Admin\OrangTuaModel->getParentsComplete('', 'Ayah', '', 'Belum Aktivasi')
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->fetchData()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 04:06:12 --> [Caused by] mysqli_sql_exception: Column 'user_id' in where clause is ambiguous
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `orangtua_wali`.*, `siswa`.`nama_lengkap` as `nama_siswa`, `rombel`.`nama_rombel`, `rombel`.`tingkat`, `users`.`is_active`
+FROM `orangtua_wali`
+LEFT JOIN `siswa` ON `siswa`.`id` = `orangtua_wali`.`siswa_id`
+LEFT JOIN `rombel` ON `rombel`.`id` = `siswa`.`rombel_id`
+LEFT JOIN `users` ON `users`.`id` = `orangtua_wali`.`user_id`
+WHERE   (
+`nama_ayah` != \'-\'
+AND `nama_ayah` != \'\'
+ )
+AND   (
+`users`.`is_active` = 0
+OR `user_id` = 0
+OR `user_id` IS NULL
+ )
+ORDER BY `orangtua_wali`.`id` DESC', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `orangtua_wali`.*, `siswa`.`nama_lengkap` as `nama_siswa`, `rombel`.`nama_rombel`, `rombel`.`tingkat`, `users`.`is_active`
+FROM `orangtua_wali`
+LEFT JOIN `siswa` ON `siswa`.`id` = `orangtua_wali`.`siswa_id`
+LEFT JOIN `rombel` ON `rombel`.`id` = `siswa`.`rombel_id`
+LEFT JOIN `users` ON `users`.`id` = `orangtua_wali`.`user_id`
+WHERE   (
+`nama_ayah` != \'-\'
+AND `nama_ayah` != \'\'
+ )
+AND   (
+`users`.`is_active` = 0
+OR `user_id` = 0
+OR `user_id` IS NULL
+ )
+ORDER BY `orangtua_wali`.`id` DESC')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `orangtua_wali`.*, `siswa`.`nama_lengkap` as `nama_siswa`, `rombel`.`nama_rombel`, `rombel`.`tingkat`, `users`.`is_active`
+FROM `orangtua_wali`
+LEFT JOIN `siswa` ON `siswa`.`id` = `orangtua_wali`.`siswa_id`
+LEFT JOIN `rombel` ON `rombel`.`id` = `siswa`.`rombel_id`
+LEFT JOIN `users` ON `users`.`id` = `orangtua_wali`.`user_id`
+WHERE   (
+`nama_ayah` != \'-\'
+AND `nama_ayah` != \'\'
+ )
+AND   (
+`users`.`is_active` = 0
+OR `user_id` = 0
+OR `user_id` IS NULL
+ )
+ORDER BY `orangtua_wali`.`id` DESC')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `orangtua_wali`.*, `siswa`.`nama_lengkap` as `nama_siswa`, `rombel`.`nama_rombel`, `rombel`.`tingkat`, `users`.`is_active`
+FROM `orangtua_wali`
+LEFT JOIN `siswa` ON `siswa`.`id` = `orangtua_wali`.`siswa_id`
+LEFT JOIN `rombel` ON `rombel`.`id` = `siswa`.`rombel_id`
+LEFT JOIN `users` ON `users`.`id` = `orangtua_wali`.`user_id`
+WHERE   (
+`nama_ayah` != :nama_ayah:
+AND `nama_ayah` != :nama_ayah.1:
+ )
+AND   (
+`users`.`is_active` = :users.is_active:
+OR `user_id` = :user_id:
+OR `user_id` IS NULL
+ )
+ORDER BY `orangtua_wali`.`id` DESC', [...], false)
+ 5 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 7 APPPATH\Models\Admin\OrangTuaModel.php(81): CodeIgniter\BaseModel->findAll()
+ 8 APPPATH\Controllers\admin\OrangTuaController.php(48): App\Models\Admin\OrangTuaModel->getParentsComplete('', 'Ayah', '', 'Belum Aktivasi')
+ 9 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\OrangTuaController->fetchData()
+10 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\OrangTuaController))
+11 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+12 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+14 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 04:07:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:10:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:10:47 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:11:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:11:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:11:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:11:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:11:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:11:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:12:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:12:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:13:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:14:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:14:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:15:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:15:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:15:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:15:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:15:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:15:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:16:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:16:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:16:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:16:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:16:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:16:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:17:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:18:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:19:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:19:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:19:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:19:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:20:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:20:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:20:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:20:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:20:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:20:47 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:22:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:23:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:24:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:26:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:26:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:26:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:27:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:27:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:28:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:28:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:28:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:29:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:29:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:29:47 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:30:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:30:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:33:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:33:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:33:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:33:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:33:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:33:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:35:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:35:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:36:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:36:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:36:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:36:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:37:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:37:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:37:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:38:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:40:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:45:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:45:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:45:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:45:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-12 04:46:01 --> mysqli_sql_exception: Column 'predikat' cannot be null in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `se...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `se...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `se...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `se...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2026-02-12 04:46:01 --> CodeIgniter\Database\Exceptions\DatabaseException: Column 'predikat' cannot be null
+[Method: POST, Route: admin/aturan-nilai/store-aturan]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (:predikat:, :deskripsi_predikat:, :nilai_min:, :nilai_max:, :deskripsi_kompetensi:, :warna_badge:, :is_active:)', [...], false)
+ 2 APPPATH\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert([...])
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 04:46:01 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Column 'predikat' cannot be null
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (:predikat:, :deskripsi_predikat:, :nilai_min:, :nilai_max:, :deskripsi_kompetensi:, :warna_badge:, :is_active:)', [...], false)
+ 4 APPPATH\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert([...])
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 04:46:01 --> [Caused by] mysqli_sql_exception: Column 'predikat' cannot be null
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (:predikat:, :deskripsi_predikat:, :nilai_min:, :nilai_max:, :deskripsi_kompetensi:, :warna_badge:, :is_active:)', [...], false)
+ 5 APPPATH\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2026-02-12 04:46:11 --> mysqli_sql_exception: Column 'predikat' cannot be null in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `se...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `se...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `se...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `se...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2026-02-12 04:46:11 --> CodeIgniter\Database\Exceptions\DatabaseException: Column 'predikat' cannot be null
+[Method: POST, Route: admin/aturan-nilai/store-aturan]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (:predikat:, :deskripsi_predikat:, :nilai_min:, :nilai_max:, :deskripsi_kompetensi:, :warna_badge:, :is_active:)', [...], false)
+ 2 APPPATH\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert([...])
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 04:46:11 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Column 'predikat' cannot be null
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (:predikat:, :deskripsi_predikat:, :nilai_min:, :nilai_max:, :deskripsi_kompetensi:, :warna_badge:, :is_active:)', [...], false)
+ 4 APPPATH\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert([...])
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 04:46:11 --> [Caused by] mysqli_sql_exception: Column 'predikat' cannot be null
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (:predikat:, :deskripsi_predikat:, :nilai_min:, :nilai_max:, :deskripsi_kompetensi:, :warna_badge:, :is_active:)', [...], false)
+ 5 APPPATH\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 04:46:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-12 04:46:19 --> mysqli_sql_exception: Column 'predikat' cannot be null in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `se...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `se...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `se...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `se...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2026-02-12 04:46:19 --> CodeIgniter\Database\Exceptions\DatabaseException: Column 'predikat' cannot be null
+[Method: POST, Route: admin/aturan-nilai/store-aturan]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (:predikat:, :deskripsi_predikat:, :nilai_min:, :nilai_max:, :deskripsi_kompetensi:, :warna_badge:, :is_active:)', [...], false)
+ 2 APPPATH\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert([...])
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 04:46:19 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Column 'predikat' cannot be null
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (:predikat:, :deskripsi_predikat:, :nilai_min:, :nilai_max:, :deskripsi_kompetensi:, :warna_badge:, :is_active:)', [...], false)
+ 4 APPPATH\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert([...])
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 04:46:19 --> [Caused by] mysqli_sql_exception: Column 'predikat' cannot be null
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (:predikat:, :deskripsi_predikat:, :nilai_min:, :nilai_max:, :deskripsi_kompetensi:, :warna_badge:, :is_active:)', [...], false)
+ 5 APPPATH\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 04:46:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-12 04:46:41 --> mysqli_sql_exception: Column 'predikat' cannot be null in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `se...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `se...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `se...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `se...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2026-02-12 04:46:41 --> CodeIgniter\Database\Exceptions\DatabaseException: Column 'predikat' cannot be null
+[Method: POST, Route: admin/aturan-nilai/store-aturan]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (:predikat:, :deskripsi_predikat:, :nilai_min:, :nilai_max:, :deskripsi_kompetensi:, :warna_badge:, :is_active:)', [...], false)
+ 2 APPPATH\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert([...])
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 04:46:41 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Column 'predikat' cannot be null
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (:predikat:, :deskripsi_predikat:, :nilai_min:, :nilai_max:, :deskripsi_kompetensi:, :warna_badge:, :is_active:)', [...], false)
+ 4 APPPATH\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert([...])
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 04:46:41 --> [Caused by] mysqli_sql_exception: Column 'predikat' cannot be null
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (NULL, NULL, NULL, NULL, NULL, \'red\', 1)')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `setting_aturan_nilai` (`predikat`, `deskripsi_predikat`, `nilai_min`, `nilai_max`, `deskripsi_kompetensi`, `warna_badge`, `is_active`) VALUES (:predikat:, :deskripsi_predikat:, :nilai_min:, :nilai_max:, :deskripsi_kompetensi:, :warna_badge:, :is_active:)', [...], false)
+ 5 APPPATH\Controllers\admin\AturanNilaiController.php(58): CodeIgniter\Database\BaseBuilder->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\AturanNilaiController->storeAturan()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\AturanNilaiController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 04:48:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:48:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:49:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:49:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:49:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:50:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:50:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:50:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:50:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:51:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:52:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:52:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:52:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:55:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:55:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:55:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:55:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:55:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:56:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:57:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:57:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:57:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:57:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:57:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:57:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:47 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:47 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:58:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:59:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:59:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:59:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:59:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:59:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:59:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:59:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:59:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:59:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:59:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:59:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 04:59:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 05:02:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:32:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:40:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:43:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:44:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:44:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:45:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:46:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:46:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:47:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:47:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:47:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:47:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:47:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:47:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:47:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:48:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:48:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:48:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:48:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:48:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:49:11 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:49:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:49:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:49:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:49:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:49:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:51:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:52:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:52:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:52:47 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:52:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:52:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:53:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-12 06:53:29 --> Error: Class "App\Models\GuruTendikModel" not found
+[Method: GET, Route: guru/dashboard]
+in APPPATH\Controllers\GuruMapel\DashboardController.php on line 14.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\GuruMapel\DashboardController->index()
+ 2 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\GuruMapel\DashboardController))
+ 3 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 06:54:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:54:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-12 06:54:52 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Models\Admin\TargetTahfidzModel.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2026-02-12 06:54:56 --> ErrorException: Namespace declaration statement has to be the very first statement or after any declare call in the script
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Models\Admin\TargetTahfidzModel.php on line 3.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+DEBUG - 2026-02-12 06:55:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-12 06:55:17 --> ErrorException: Undefined array key "nama_surah_mulai"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 164.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(164): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_surah_mulai"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 164)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(29): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 06:55:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-12 06:55:18 --> ErrorException: Undefined array key "nama_surah_mulai"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 164.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(164): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_surah_mulai"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 164)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(29): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 06:55:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:55:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:56:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:56:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:56:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:57:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:57:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:57:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:57:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:58:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:58:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:58:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:58:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:58:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:59:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:59:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:59:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:59:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 06:59:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:00:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:00:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:01:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:01:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:01:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:01:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:02:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-12 07:02:08 --> TypeError: Unsupported operand types: string / int
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 199.
+ 1 SYSTEMPATH\View\View.php(226): include()
+ 2 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 3 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 4 APPPATH\Controllers\admin\TargetTahfidzController.php(29): view('admin/target-tahfidz', [...])
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 07:02:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:02:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:06:47 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:06:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:07:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:07:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-12 07:07:37 --> Error: Class "App\Models\GuruTendikModel" not found
+[Method: GET, Route: guru/dashboard]
+in APPPATH\Controllers\GuruMapel\DashboardController.php on line 14.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\GuruMapel\DashboardController->index()
+ 2 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\GuruMapel\DashboardController))
+ 3 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 07:17:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-12 07:17:35 --> mysqli_sql_exception: Table 'raporsmpit.mapel' doesn't exist in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `jadwal_...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `jadwal_...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `jadwal_...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `jadwal_...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Models\Admin\JadwalModel.php(59): CodeIgniter\BaseModel->findAll()
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\GuruMapel\DashboardController.php(52): App\Models\Admin\JadwalModel->getJadwalHariIni('1')
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\GuruMapel\DashboardController->index()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\GuruMapel\DashboardController))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 {main}
+CRITICAL - 2026-02-12 07:17:35 --> CodeIgniter\Database\Exceptions\DatabaseException: Table 'raporsmpit.mapel' doesn't exist
+[Method: GET, Route: guru/dashboard]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `jadwal_pelajaran`.*, `rombel`.`nama_rombel` as `nama_kelas`, `mapel`.`nama_mapel`
+FROM `jadwal_pelajaran`
+JOIN `rombel` ON `rombel`.`id` = `jadwal_pelajaran`.`rombel_id`
+JOIN `mapel` ON `mapel`.`id` = `jadwal_pelajaran`.`mapel_id`
+WHERE `jadwal_pelajaran`.`guru_id` = :jadwal_pelajaran.guru_id:
+AND `jadwal_pelajaran`.`hari` = :jadwal_pelajaran.hari:
+ORDER BY `jadwal_pelajaran`.`jam_mulai` ASC', [...], false)
+ 2 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 4 APPPATH\Models\Admin\JadwalModel.php(59): CodeIgniter\BaseModel->findAll()
+ 5 APPPATH\Controllers\GuruMapel\DashboardController.php(52): App\Models\Admin\JadwalModel->getJadwalHariIni('1')
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\GuruMapel\DashboardController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\GuruMapel\DashboardController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 07:17:35 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Table 'raporsmpit.mapel' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `jadwal_pelajaran`.*, `rombel`.`nama_rombel` as `nama_kelas`, `mapel`.`nama_mapel`
+FROM `jadwal_pelajaran`
+JOIN `rombel` ON `rombel`.`id` = `jadwal_pelajaran`.`rombel_id`
+JOIN `mapel` ON `mapel`.`id` = `jadwal_pelajaran`.`mapel_id`
+WHERE `jadwal_pelajaran`.`guru_id` = \'1\'
+AND `jadwal_pelajaran`.`hari` = \'Kamis\'
+ORDER BY `jadwal_pelajaran`.`jam_mulai` ASC')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `jadwal_pelajaran`.*, `rombel`.`nama_rombel` as `nama_kelas`, `mapel`.`nama_mapel`
+FROM `jadwal_pelajaran`
+JOIN `rombel` ON `rombel`.`id` = `jadwal_pelajaran`.`rombel_id`
+JOIN `mapel` ON `mapel`.`id` = `jadwal_pelajaran`.`mapel_id`
+WHERE `jadwal_pelajaran`.`guru_id` = \'1\'
+AND `jadwal_pelajaran`.`hari` = \'Kamis\'
+ORDER BY `jadwal_pelajaran`.`jam_mulai` ASC')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `jadwal_pelajaran`.*, `rombel`.`nama_rombel` as `nama_kelas`, `mapel`.`nama_mapel`
+FROM `jadwal_pelajaran`
+JOIN `rombel` ON `rombel`.`id` = `jadwal_pelajaran`.`rombel_id`
+JOIN `mapel` ON `mapel`.`id` = `jadwal_pelajaran`.`mapel_id`
+WHERE `jadwal_pelajaran`.`guru_id` = :jadwal_pelajaran.guru_id:
+AND `jadwal_pelajaran`.`hari` = :jadwal_pelajaran.hari:
+ORDER BY `jadwal_pelajaran`.`jam_mulai` ASC', [...], false)
+ 4 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 6 APPPATH\Models\Admin\JadwalModel.php(59): CodeIgniter\BaseModel->findAll()
+ 7 APPPATH\Controllers\GuruMapel\DashboardController.php(52): App\Models\Admin\JadwalModel->getJadwalHariIni('1')
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\GuruMapel\DashboardController->index()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\GuruMapel\DashboardController))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 07:17:35 --> [Caused by] mysqli_sql_exception: Table 'raporsmpit.mapel' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `jadwal_pelajaran`.*, `rombel`.`nama_rombel` as `nama_kelas`, `mapel`.`nama_mapel`
+FROM `jadwal_pelajaran`
+JOIN `rombel` ON `rombel`.`id` = `jadwal_pelajaran`.`rombel_id`
+JOIN `mapel` ON `mapel`.`id` = `jadwal_pelajaran`.`mapel_id`
+WHERE `jadwal_pelajaran`.`guru_id` = \'1\'
+AND `jadwal_pelajaran`.`hari` = \'Kamis\'
+ORDER BY `jadwal_pelajaran`.`jam_mulai` ASC', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `jadwal_pelajaran`.*, `rombel`.`nama_rombel` as `nama_kelas`, `mapel`.`nama_mapel`
+FROM `jadwal_pelajaran`
+JOIN `rombel` ON `rombel`.`id` = `jadwal_pelajaran`.`rombel_id`
+JOIN `mapel` ON `mapel`.`id` = `jadwal_pelajaran`.`mapel_id`
+WHERE `jadwal_pelajaran`.`guru_id` = \'1\'
+AND `jadwal_pelajaran`.`hari` = \'Kamis\'
+ORDER BY `jadwal_pelajaran`.`jam_mulai` ASC')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `jadwal_pelajaran`.*, `rombel`.`nama_rombel` as `nama_kelas`, `mapel`.`nama_mapel`
+FROM `jadwal_pelajaran`
+JOIN `rombel` ON `rombel`.`id` = `jadwal_pelajaran`.`rombel_id`
+JOIN `mapel` ON `mapel`.`id` = `jadwal_pelajaran`.`mapel_id`
+WHERE `jadwal_pelajaran`.`guru_id` = \'1\'
+AND `jadwal_pelajaran`.`hari` = \'Kamis\'
+ORDER BY `jadwal_pelajaran`.`jam_mulai` ASC')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `jadwal_pelajaran`.*, `rombel`.`nama_rombel` as `nama_kelas`, `mapel`.`nama_mapel`
+FROM `jadwal_pelajaran`
+JOIN `rombel` ON `rombel`.`id` = `jadwal_pelajaran`.`rombel_id`
+JOIN `mapel` ON `mapel`.`id` = `jadwal_pelajaran`.`mapel_id`
+WHERE `jadwal_pelajaran`.`guru_id` = :jadwal_pelajaran.guru_id:
+AND `jadwal_pelajaran`.`hari` = :jadwal_pelajaran.hari:
+ORDER BY `jadwal_pelajaran`.`jam_mulai` ASC', [...], false)
+ 5 SYSTEMPATH\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\BaseModel.php(677): CodeIgniter\Model->doFindAll(0, 0)
+ 7 APPPATH\Models\Admin\JadwalModel.php(59): CodeIgniter\BaseModel->findAll()
+ 8 APPPATH\Controllers\GuruMapel\DashboardController.php(52): App\Models\Admin\JadwalModel->getJadwalHariIni('1')
+ 9 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\GuruMapel\DashboardController->index()
+10 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\GuruMapel\DashboardController))
+11 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+12 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+14 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 07:18:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:18:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:26:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:29:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-12 07:29:19 --> ErrorException: Undefined variable $color
+[Method: GET, Route: guru/dashboard]
+in APPPATH\Views\layout\navbar.php on line 35.
+ 1 APPPATH\Views\layout\navbar.php(35): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $color', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\layout\\navbar.php', 35)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\layout\\navbar.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\View\View.php(475): CodeIgniter\View\View->render('layout/navbar', null, true)
+ 5 APPPATH\Views\layout\main.php(38): CodeIgniter\View\View->include('layout/navbar')
+ 6 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\layout\\main.php')
+ 7 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 8 SYSTEMPATH\View\View.php(242): CodeIgniter\View\View->render('layout/main', [], true)
+ 9 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('GuruMapel/dashboard', [], true)
+10 APPPATH\Controllers\GuruMapel\DashboardController.php(65): view('GuruMapel/dashboard', [...])
+11 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\GuruMapel\DashboardController->index()
+12 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\GuruMapel\DashboardController))
+13 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+14 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+15 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+16 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 07:32:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:32:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:34:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:35:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:36:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:36:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:36:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:37:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:39:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:39:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:40:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:42:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:42:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:44:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:44:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:45:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:46:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:54:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:54:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:54:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:55:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:55:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:55:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:55:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:55:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:56:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:56:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:59:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:59:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 07:59:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:02:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:03:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:03:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:03:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:07:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:08:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:10:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:11:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:11:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:11:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:11:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:11:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:12:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:12:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:12:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:12:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:15:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:16:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:29:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:29:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:30:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 08:40:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 09:32:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 09:34:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 09:34:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 09:37:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 09:37:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-12 09:58:26 --> mysqli_sql_exception: Table 'raporsmpit.guru' doesn't exist in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `rombel`...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `rombel`...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `rombel`...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `rombel`...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Models\Admin\ValidasiNilaiModel.php(36): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\ValidasiNilaiController.php(19): App\Models\Admin\ValidasiNilaiModel->getRekapValidasi()
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\ValidasiNilaiController->index()
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\ValidasiNilaiController))
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#11 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#12 {main}
+CRITICAL - 2026-02-12 09:58:26 --> CodeIgniter\Database\Exceptions\DatabaseException: Table 'raporsmpit.guru' doesn't exist
+[Method: GET, Route: admin/validasi-nilai]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `rombel`.`id` as `rombel_id`, `rombel`.`tingkat`, `rombel`.`nama_rombel`, `guru`.`nama_guru`, `guru`.`nip`, `validasi_nilai`.`progress_akademik`, `validasi_nilai`.`is_locked`
+FROM `rombel`
+LEFT JOIN `guru` ON `guru`.`id` = `rombel`.`wali_kelas_id`
+LEFT JOIN `validasi_nilai` ON `validasi_nilai`.`rombel_id` = `rombel`.`id`
+ORDER BY `rombel`.`tingkat` ASC, `rombel`.`nama_rombel` ASC', [], false)
+ 2 APPPATH\Models\Admin\ValidasiNilaiModel.php(36): CodeIgniter\Database\BaseBuilder->get()
+ 3 APPPATH\Controllers\admin\ValidasiNilaiController.php(19): App\Models\Admin\ValidasiNilaiModel->getRekapValidasi()
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\ValidasiNilaiController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\ValidasiNilaiController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 09:58:26 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Table 'raporsmpit.guru' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `rombel`.`id` as `rombel_id`, `rombel`.`tingkat`, `rombel`.`nama_rombel`, `guru`.`nama_guru`, `guru`.`nip`, `validasi_nilai`.`progress_akademik`, `validasi_nilai`.`is_locked`
+FROM `rombel`
+LEFT JOIN `guru` ON `guru`.`id` = `rombel`.`wali_kelas_id`
+LEFT JOIN `validasi_nilai` ON `validasi_nilai`.`rombel_id` = `rombel`.`id`
+ORDER BY `rombel`.`tingkat` ASC, `rombel`.`nama_rombel` ASC')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `rombel`.`id` as `rombel_id`, `rombel`.`tingkat`, `rombel`.`nama_rombel`, `guru`.`nama_guru`, `guru`.`nip`, `validasi_nilai`.`progress_akademik`, `validasi_nilai`.`is_locked`
+FROM `rombel`
+LEFT JOIN `guru` ON `guru`.`id` = `rombel`.`wali_kelas_id`
+LEFT JOIN `validasi_nilai` ON `validasi_nilai`.`rombel_id` = `rombel`.`id`
+ORDER BY `rombel`.`tingkat` ASC, `rombel`.`nama_rombel` ASC')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `rombel`.`id` as `rombel_id`, `rombel`.`tingkat`, `rombel`.`nama_rombel`, `guru`.`nama_guru`, `guru`.`nip`, `validasi_nilai`.`progress_akademik`, `validasi_nilai`.`is_locked`
+FROM `rombel`
+LEFT JOIN `guru` ON `guru`.`id` = `rombel`.`wali_kelas_id`
+LEFT JOIN `validasi_nilai` ON `validasi_nilai`.`rombel_id` = `rombel`.`id`
+ORDER BY `rombel`.`tingkat` ASC, `rombel`.`nama_rombel` ASC', [], false)
+ 4 APPPATH\Models\Admin\ValidasiNilaiModel.php(36): CodeIgniter\Database\BaseBuilder->get()
+ 5 APPPATH\Controllers\admin\ValidasiNilaiController.php(19): App\Models\Admin\ValidasiNilaiModel->getRekapValidasi()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\ValidasiNilaiController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\ValidasiNilaiController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-12 09:58:26 --> [Caused by] mysqli_sql_exception: Table 'raporsmpit.guru' doesn't exist
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `rombel`.`id` as `rombel_id`, `rombel`.`tingkat`, `rombel`.`nama_rombel`, `guru`.`nama_guru`, `guru`.`nip`, `validasi_nilai`.`progress_akademik`, `validasi_nilai`.`is_locked`
+FROM `rombel`
+LEFT JOIN `guru` ON `guru`.`id` = `rombel`.`wali_kelas_id`
+LEFT JOIN `validasi_nilai` ON `validasi_nilai`.`rombel_id` = `rombel`.`id`
+ORDER BY `rombel`.`tingkat` ASC, `rombel`.`nama_rombel` ASC', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `rombel`.`id` as `rombel_id`, `rombel`.`tingkat`, `rombel`.`nama_rombel`, `guru`.`nama_guru`, `guru`.`nip`, `validasi_nilai`.`progress_akademik`, `validasi_nilai`.`is_locked`
+FROM `rombel`
+LEFT JOIN `guru` ON `guru`.`id` = `rombel`.`wali_kelas_id`
+LEFT JOIN `validasi_nilai` ON `validasi_nilai`.`rombel_id` = `rombel`.`id`
+ORDER BY `rombel`.`tingkat` ASC, `rombel`.`nama_rombel` ASC')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `rombel`.`id` as `rombel_id`, `rombel`.`tingkat`, `rombel`.`nama_rombel`, `guru`.`nama_guru`, `guru`.`nip`, `validasi_nilai`.`progress_akademik`, `validasi_nilai`.`is_locked`
+FROM `rombel`
+LEFT JOIN `guru` ON `guru`.`id` = `rombel`.`wali_kelas_id`
+LEFT JOIN `validasi_nilai` ON `validasi_nilai`.`rombel_id` = `rombel`.`id`
+ORDER BY `rombel`.`tingkat` ASC, `rombel`.`nama_rombel` ASC')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `rombel`.`id` as `rombel_id`, `rombel`.`tingkat`, `rombel`.`nama_rombel`, `guru`.`nama_guru`, `guru`.`nip`, `validasi_nilai`.`progress_akademik`, `validasi_nilai`.`is_locked`
+FROM `rombel`
+LEFT JOIN `guru` ON `guru`.`id` = `rombel`.`wali_kelas_id`
+LEFT JOIN `validasi_nilai` ON `validasi_nilai`.`rombel_id` = `rombel`.`id`
+ORDER BY `rombel`.`tingkat` ASC, `rombel`.`nama_rombel` ASC', [], false)
+ 5 APPPATH\Models\Admin\ValidasiNilaiModel.php(36): CodeIgniter\Database\BaseBuilder->get()
+ 6 APPPATH\Controllers\admin\ValidasiNilaiController.php(19): App\Models\Admin\ValidasiNilaiModel->getRekapValidasi()
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\ValidasiNilaiController->index()
+ 8 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\ValidasiNilaiController))
+ 9 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-12 09:58:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 12:20:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-12 12:20:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

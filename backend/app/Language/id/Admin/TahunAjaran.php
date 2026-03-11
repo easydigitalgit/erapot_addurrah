@@ -1,0 +1,136 @@
+<?php
+
+return [
+    'page_title_browser' => 'Tahun Ajaran Aktif - Rapor Digital',
+    'academic_config' => 'Konfigurasi Akademik',
+    'page_title' => 'Tahun Ajaran Aktif',
+    'badge_active' => 'AKTIF',
+    'page_subtitle' => 'Kelola dan tentukan tahun ajaran yang sedang berjalan',
+    'btn_create_new' => 'Buat Tahun Ajaran Baru',
+    
+    // Main Card
+    'current_active_year' => 'Tahun Ajaran Aktif Saat Ini',
+    'none' => 'Belum Ada',
+    'active_semester' => 'Semester Aktif',
+    'system_status' => 'Status Sistem',
+    'active_running' => 'Aktif & Berjalan',
+    'start_date' => 'Tanggal Mulai',
+    'end_date' => 'Tanggal Akhir',
+    'not_set' => 'Belum Diatur',
+    'semester_progress' => 'Progress Semester',
+    'estimated_time' => 'Estimasi: 3 bulan lagi hingga semester berakhir',
+    'important_note' => 'Catatan Penting',
+    'important_note_desc' => 'Perubahan tahun ajaran aktif akan memengaruhi seluruh data akademik, penilaian, mapping guru, jadwal, dan rapor siswa di sistem.',
+    
+    // Action Buttons
+    'btn_change_semester' => 'Ganti Semester',
+    'btn_impact_system' => 'Lihat Dampak Sistem',
+    'btn_deactivate' => 'Nonaktifkan',
+    
+    // Impact Card
+    'impact_title' => 'Aktivasi Tahun Ajaran Baru Akan Mempengaruhi:',
+    'impact_1_title' => 'Data Tahun Sebelumnya',
+    'impact_1_desc' => 'Semua data akan dikunci & diarsipkan',
+    'impact_2_title' => 'Input Nilai',
+    'impact_2_desc' => 'Sistem nilai direset untuk tahun baru',
+    'impact_3_title' => 'Mapping Guru',
+    'impact_3_desc' => 'Mapping guru harus diatur ulang',
+    'impact_4_title' => 'Rapor Semester',
+    'impact_4_desc' => 'Rapor baru siap untuk semester baru',
+    
+    // Table
+    'history_title' => 'Riwayat Tahun Ajaran',
+    'history_subtitle' => 'Daftar semua tahun ajaran yang pernah digunakan',
+    'th_academic_year' => 'Tahun Ajaran',
+    'th_semester' => 'Semester',
+    'th_status' => 'Status',
+    'th_student_count' => 'Jumlah Siswa',
+    'th_teacher_count' => 'Jumlah Guru',
+    'th_locked_data' => 'Data Terkunci',
+    'th_action' => 'Aksi',
+    
+    // Modals (Add/Edit)
+    'modal_add_title' => 'Buat Tahun Ajaran Baru',
+    'modal_add_desc' => 'Tambahkan tahun ajaran baru ke dalam sistem',
+    'modal_edit_title' => 'Edit Tahun Ajaran',
+    'modal_edit_desc' => 'Perbarui data tahun ajaran',
+    'form_year' => 'Tahun Ajaran',
+    'form_year_placeholder' => 'Contoh: 2025 / 2026',
+    'form_year_format' => 'Format: YYYY / YYYY (contoh: 2025 / 2026)',
+    'form_start_date' => 'Tanggal Mulai',
+    'form_end_date' => 'Tanggal Akhir',
+    'form_start_semester' => 'Semester Awal',
+    'form_semester' => 'Semester',
+    'select_semester' => 'Pilih semester...',
+    'odd_semester' => 'Semester Ganjil (1)',
+    'even_semester' => 'Semester Genap (2)',
+    'attention' => 'Perhatian',
+    'attention_add_desc' => 'Tahun ajaran baru akan dibuat dalam status <strong class="text-red-600 dark:text-red-400">NONAKTIF</strong>. Anda perlu mengaktifkannya secara manual.',
+    'btn_cancel' => 'Batal',
+    'btn_save_year' => 'Buat Tahun Ajaran',
+    'btn_save_changes' => 'Simpan Perubahan',
+    
+    // Modal Delete
+    'modal_delete_title' => 'Hapus Tahun Ajaran?',
+    'modal_delete_desc' => 'Data tahun ajaran <strong id="deleteYearText" class="text-gray-800 dark:text-white"></strong> akan dihapus permanen dan tidak dapat dikembalikan.',
+    'btn_yes_delete' => 'Ya, Hapus!',
+    
+    // Modal Change Semester
+    'modal_change_sem_title' => 'Ganti Semester Aktif',
+    'modal_change_sem_desc' => 'Konfirmasi pergantian semester',
+    'info_change_sem' => 'Informasi Pergantian Semester',
+    'impact_change_sem' => 'Dampak pergantian semester:',
+    'impact_sem_1' => 'Data nilai semester sebelumnya akan dikunci',
+    'impact_sem_2' => 'Sistem input nilai direset untuk penilaian baru',
+    'impact_sem_3' => 'Mapping guru & rombel tetap aman dan aktif',
+    'confirm_change_sem' => '<strong>Saya telah memahami dampak pergantian semester</strong> dan siap untuk melanjutkan proses ini.',
+    'btn_yes_change_sem' => 'Ya, Ganti Semester',
+    
+    // Modal Impact Detail
+    'modal_impact_title' => 'Dampak Sistem - Aktivasi Tahun Ajaran',
+    'modal_impact_desc' => 'Detail lengkap pengaruh terhadap seluruh sistem saat berganti tahun',
+    'impact_det_1' => 'Semua data nilai, mapping, jadwal, dan rapor dari tahun ajaran sebelumnya akan secara otomatis <strong>DIKUNCI dan DIARSIPKAN</strong>.',
+    'impact_det_2' => 'Seluruh form penginputan nilai harian, formatif, sumatif, dan absen untuk siswa akan <strong>DIRESET</strong> menjadi kosong.',
+    'warning_before_activation' => 'PERINGATAN PENTING SEBELUM AKTIVASI',
+    'warning_activation_desc' => 'Sistem menyarankan Anda untuk <strong>mendownload backup data (Excel/PDF)</strong> sebelum pergantian ini dilakukan. Ingat, proses pergantian tahun ajaran ini <strong>SANGAT SULIT DIBATALKAN</strong> secara otomatis.',
+    'btn_understand_careful' => 'Saya Mengerti dan Akan Berhati-hati',
+    
+    // Modal Detail
+    'modal_detail_title' => 'Detail Tahun Ajaran',
+    'modal_detail_desc' => 'Informasi lengkap tahun ajaran',
+    'detail_period_info' => 'Informasi Periode',
+    'btn_close_window' => 'Tutup Jendela',
+    
+    // Modal Deactivate
+    'modal_deactivate_title' => 'Nonaktifkan Tahun Ajaran',
+    'modal_deactivate_desc' => 'Konfirmasi penonaktifan secara manual',
+    'danger_action' => 'TINDAKAN BERBAHAYA',
+    'danger_action_desc' => 'Menonaktifkan tahun ajaran berjalan akan mengakibatkan seluruh data akademik tahun ini <strong>DIKUNCI</strong> dan Guru tidak bisa lagi merubah nilai.',
+    'chk_backup' => 'Saya telah <strong>membackup semua data</strong>',
+    'chk_print' => 'Saya telah <strong>mencetak rapor final</strong>',
+    'chk_understand' => '<strong>Saya memahami dampaknya</strong> dan siap menonaktifkan sistem ini',
+    'btn_force_deactivate' => 'Ya, Nonaktifkan Paksa',
+    
+    // JS Strings
+    'js_no_data_year' => 'Belum ada data tahun ajaran. Silakan buat baru.',
+    'js_status_active' => 'AKTIF',
+    'js_status_archived' => 'ARSIP',
+    'js_locked' => '🔒 Terkunci',
+    'js_unlocked' => '🔓 Terbuka',
+    'js_btn_activate' => 'Aktifkan',
+    'js_btn_detail' => 'Lihat Detail',
+    'js_btn_edit' => 'Edit Data',
+    'js_btn_delete' => 'Hapus Data',
+    'js_tooltip_cannot_delete' => 'Tahun aktif tidak bisa dihapus',
+    'js_notification' => 'Notifikasi',
+    'js_saving' => 'Menyimpan...',
+    'js_fail_server' => 'Gagal menghubungi server',
+    'js_fail_fetch' => 'Gagal menarik data dari server',
+    'js_change_from' => 'Anda akan mengganti dari',
+    'js_change_to' => 'ke',
+    'js_warn_checkbox' => 'Harap centang konfirmasi terlebih dahulu',
+    'js_warn_all_checkbox' => 'Harap centang semua konfirmasi terlebih dahulu',
+    'js_deactivate_success' => 'Tahun ajaran berhasil dinonaktifkan dan diarsipkan!',
+    'js_confirm_activate' => 'Aktifkan Tahun Ajaran {year}? \n\nPERINGATAN: Tahun ajaran yang sedang aktif saat ini akan otomatis dinonaktifkan.',
+    'js_data_not_found' => 'Data tidak ditemukan!',
+];

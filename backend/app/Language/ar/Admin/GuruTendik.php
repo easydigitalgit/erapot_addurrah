@@ -1,0 +1,130 @@
+<?php
+
+return [
+    // --- HTML VIEW ---
+    'page_title'         => 'إدارة المعلمين والموظفين',
+    'breadcrumb'         => 'إدارة المستخدمين',
+    'page_desc'          => 'إدارة بيانات المعلمين والموظفين الإداريين',
+    'btn_add'            => 'إضافة معلم / موظف',
+    'btn_add_sm'         => 'إضافة',
+    'btn_import'         => 'استيراد إكسل',
+    'btn_export'         => 'تصدير إكسل',
+    
+    // Cards
+    'total_guru'         => 'إجمالي معلمي المواد',
+    'total_tahfiz'       => 'معلمي التحفيظ',
+    'total_tendik'       => 'الموظفين / الإداريين',
+    'total_wali'         => 'مربي الفصول',
+    
+    // Filters
+    'search_lbl'         => 'بحث',
+    'search_ph'          => 'ابحث بالاسم، أو رقم NUPTK، أو رقم الهوية...',
+    'role_lbl'           => 'الدور / المنصب',
+    'all_roles'          => 'جميع الأدوار',
+    'mapel_lbl'          => 'المادة الدراسية',
+    'all_mapels'         => 'جميع المواد',
+    'status_lbl'         => 'الحالة',
+    'all_statuses'       => 'جميع الحالات',
+    'status_active'      => 'نشط',
+    'status_inactive'    => 'غير نشط',
+    
+    // Table
+    'select_all'         => 'تحديد الكل',
+    'selected_count'     => 'تم تحديده',
+    'btn_bulk_export'    => 'تصدير المحدد',
+    'btn_bulk_delete'    => 'حذف المحدد',
+    'th_name_role'       => 'الاسم والمنصب',
+    'th_nuptk'           => 'الرقم التعليمي (NUPTK)',
+    'th_nik'             => 'رقم الهوية (NIK)',
+    'th_email'           => 'البريد الإلكتروني',
+    'th_subject'         => 'المادة الدراسية',
+    'th_class'           => 'الفصل',
+    'th_status'          => 'الحالة',
+    'th_action'          => 'إجراء',
+    'loading_data'       => 'جاري تحميل البيانات...',
+    'showing_data'       => 'عرض',
+    'from_data'          => 'من أصل',
+    'data'               => 'بيانات',
+    
+    // Import Modal
+    'import_title'       => 'استيراد بيانات إكسل',
+    'import_step_1'      => '1. تحميل قالب إكسل الفارغ:',
+    'import_dl_temp'     => 'تحميل القالب (Template.xlsx)',
+    'import_step_2'      => '2. رفع الملف المعبأ:',
+    'btn_cancel'         => 'إلغاء',
+    'btn_upload_import'  => 'رفع واستيراد',
+    
+    // Add/Edit Modal
+    'add_modal_title'    => 'إضافة موظف جديد',
+    'add_modal_desc'     => 'يرجى إكمال البيانات الشخصية للموظف بشكل صحيح',
+    'personal_data'      => 'البيانات الشخصية للموظف',
+    'lbl_fullname'       => 'الاسم الكامل (مع الألقاب)',
+    'ph_fullname'        => 'أدخل الاسم الكامل مع الألقاب',
+    'lbl_nuptk'          => 'الرقم التعليمي (NUPTK)',
+    'ph_nuptk'           => 'الرقم الموحد للمعلمين والموظفين',
+    'lbl_nik'            => 'رقم الهوية الوطنية (NIK)',
+    'ph_nik'             => 'رقم هوية مكون من 16 رقمًا',
+    'lbl_email'          => 'البريد الإلكتروني للموظف',
+    'ph_email'           => 'مثال: teacher@school.edu',
+    'lbl_phone'          => 'رقم الهاتف / الواتساب',
+    'ph_phone'           => '0812xxxx',
+    'lbl_gender'         => 'الجنس',
+    'ph_gender'          => 'اختر الجنس',
+    'gender_m'           => 'ذكر',
+    'gender_f'           => 'أنثى',
+    
+    'job_data'           => 'المنصب والمهام',
+    'lbl_main_role'      => 'المنصب الأساسي',
+    'ph_role'            => 'اختر المنصب',
+    'lbl_emp_status'     => 'الحالة الوظيفية',
+    'ph_emp_status'      => 'اختر الحالة',
+    'lbl_guidance_subj'  => 'مادة التوجيه',
+    'ph_no_subj'         => '- لا يوجه أي مادة -',
+    'desc_subj'          => 'يمكن تعبئته من قبل معلمي المواد، مربي الفصول، أو مشرفي التحفيظ.',
+    'lbl_photo'          => 'الصورة الشخصية',
+    'no_image'           => 'لا توجد صورة',
+    'photo_format_desc'  => 'الصيغ المدعومة: JPG, PNG. الحد الأقصى 2 ميجابايت. يُفضل نسبة 1:1.',
+    
+    'btn_reset_form'     => 'إعادة ضبط النموذج',
+    'btn_save_emp'       => 'حفظ بيانات الموظف',
+    'btn_save_changes'   => 'حفظ التغييرات',
+    
+    // Drawer
+    'drawer_title'       => 'تفاصيل المعلم / الموظف',
+    'drawer_personal'    => 'البيانات الشخصية',
+    'drawer_dob'         => 'تاريخ ومكان الميلاد',
+    'drawer_emp'         => 'البيانات الوظيفية',
+    'drawer_teach_data'  => 'بيانات التدريس',
+    'btn_edit_data'      => 'تعديل البيانات',
+    
+    // --- JAVASCRIPT ---
+    'js_loading'         => 'جاري تحميل البيانات...',
+    'js_load_fail'       => 'فشل تحميل البيانات.',
+    'js_no_data'         => 'لم يتم العثور على بيانات',
+    'js_status_active'   => 'نشط',
+    'js_status_inactive' => 'غير نشط',
+    'js_role_employee'   => 'موظف',
+    'js_btn_view'        => 'عرض',
+    'js_btn_edit'        => 'تعديل',
+    
+    'js_title_add'       => 'إضافة موظف جديد',
+    'js_title_edit'      => 'تعديل بيانات الموظف',
+    'js_btn_save_add'    => 'حفظ بيانات الموظف',
+    'js_btn_save_edit'   => 'حفظ التغييرات',
+    'js_saving'          => 'جاري الحفظ...',
+    'js_uploading'       => 'جاري الرفع...',
+    'js_err_server'      => 'حدث خطأ في الخادم.',
+    'js_err_upload'      => 'فشل الرفع.',
+    
+    'js_confirm_del'     => 'هل تريد حذف البيانات؟',
+    'js_confirm_del_desc'=> 'سيتم حذف البيانات بشكل نهائي!',
+    'js_btn_yes_del'     => 'نعم، احذف',
+    'js_del_success'     => 'تم الحذف',
+    'js_del_fail'        => 'فشل: ',
+    
+    'js_bulk_no_select'  => 'يرجى تحديد البيانات أولاً',
+    'js_bulk_del_conf'   => 'هل تريد حذف البيانات المحددة؟',
+    'js_bulk_del_desc'   => 'لا يمكن استعادة البيانات!',
+    'js_success'         => 'نجاح',
+    'js_fail'            => 'فشل'
+];

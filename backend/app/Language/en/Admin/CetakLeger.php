@@ -1,0 +1,61 @@
+<?php
+
+return [
+    // HTML View
+    'page_title'        => 'Grade Ledger',
+    'page_subtitle'     => 'Recapitulation of all student grades per class and subject',
+    'breadcrumb_report' => 'Reports & Records',
+    'btn_print'         => 'Print Ledger',
+    'btn_pdf'           => 'PDF',
+    'btn_excel'         => 'Excel',
+    'info_title'        => 'Ledger Information',
+    'info_desc'         => 'The grade ledger displays a complete recapitulation of all students in one class. Data is taken from locked and validated grades.',
+    'filter_title'      => 'Ledger Data Filter',
+    'academic_year'     => 'Academic Year',
+    'semester'          => 'Semester',
+    'class'             => 'Class / Room',
+    'table_view'        => 'Table View',
+    'sort_by'           => 'Sort By:',
+    'sort_az'           => 'Alphabetical Name (A - Z)',
+    'sort_rank'         => 'Rank (Highest - Lowest)',
+    'numeric_grade'     => 'Numeric Grade',
+    'predicate_grade'   => 'Letter Grade / Predicate',
+    'class_info'        => 'Class Information',
+    'homeroom_teacher'  => 'Homeroom Teacher',
+    'student_count'     => 'Student Count',
+    'curriculum'        => 'Curriculum',
+    'status'            => 'Status',
+    'locked'            => 'Locked',
+    'lock_date'         => 'Lock Date',
+    'students'          => 'Students',
+    
+    'avg_class'         => 'Class Average',
+    'highest_grade'     => 'Highest Grade',
+    'lowest_grade'      => 'Lowest Grade',
+    'completeness'      => 'Passing %',
+    
+    'table_hint'        => 'Scroll the table horizontally to see all subjects',
+    'th_no'             => 'No',
+    'th_nis'            => 'Student ID',
+    'th_name'           => 'Student Name',
+    'th_avg'            => 'Avg',
+    'th_rank'           => 'Rank',
+    'th_grade'          => 'Grade',
+    'th_pred'           => 'Pred',
+    
+    'print_signature_1' => 'Vice Principal of Curriculum',
+    'print_signature_2' => 'Principal',
+    'print_official'    => 'Official Document',
+    
+    // Javascript
+    'js_loading'        => 'Loading data from database...',
+    'js_err_load'       => 'Failed to load data',
+    'js_err_net'        => 'Network error occurred',
+    'js_empty_data'     => 'No locked grade data for this class yet.',
+    'js_show_num'       => 'Numeric grades shown',
+    'js_hide_num'       => 'Numeric grades hidden',
+    'js_show_pred'      => 'Predicates shown',
+    'js_hide_pred'      => 'Predicates hidden',
+    'js_preparing'      => 'Preparing...',
+    'js_preparing_print'=> 'Preparing document for printing...'
+];

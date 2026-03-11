@@ -1,0 +1,61 @@
+<?php
+
+return [
+    // HTML View
+    'page_title'        => 'Leger Nilai',
+    'page_subtitle'     => 'Rekapitulasi nilai seluruh siswa per kelas dan mata pelajaran',
+    'breadcrumb_report' => 'Rapor & Laporan',
+    'btn_print'         => 'Cetak Leger',
+    'btn_pdf'           => 'PDF',
+    'btn_excel'         => 'Excel',
+    'info_title'        => 'Informasi Leger',
+    'info_desc'         => 'Leger nilai menampilkan rekapitulasi lengkap semua siswa dalam satu kelas. Data diambil dari nilai yang telah terkunci dan tervalidasi.',
+    'filter_title'      => 'Filter Data Leger',
+    'academic_year'     => 'Tahun Ajaran',
+    'semester'          => 'Semester',
+    'class'             => 'Rombel / Kelas',
+    'table_view'        => 'Tampilan Tabel',
+    'sort_by'           => 'Urutkan Berdasarkan:',
+    'sort_az'           => 'Abjad Nama (A - Z)',
+    'sort_rank'         => 'Peringkat (Tertinggi - Terendah)',
+    'numeric_grade'     => 'Nilai Angka',
+    'predicate_grade'   => 'Predikat Huruf',
+    'class_info'        => 'Informasi Kelas',
+    'homeroom_teacher'  => 'Wali Kelas',
+    'student_count'     => 'Jumlah Siswa',
+    'curriculum'        => 'Kurikulum',
+    'status'            => 'Status',
+    'locked'            => 'Terkunci',
+    'lock_date'         => 'Tanggal Kunci',
+    'students'          => 'Siswa',
+    
+    'avg_class'         => 'Rata-rata Kelas',
+    'highest_grade'     => 'Nilai Tertinggi',
+    'lowest_grade'      => 'Nilai Terendah',
+    'completeness'      => '% Ketuntasan',
+    
+    'table_hint'        => 'Geser tabel ke samping untuk melihat semua mata pelajaran',
+    'th_no'             => 'No',
+    'th_nis'            => 'NIS',
+    'th_name'           => 'Nama Siswa',
+    'th_avg'            => 'Rata²',
+    'th_rank'           => 'Rank',
+    'th_grade'          => 'Nilai',
+    'th_pred'           => 'Pred',
+    
+    'print_signature_1' => 'Wakil Kurikulum',
+    'print_signature_2' => 'Kepala Sekolah',
+    'print_official'    => 'Dokumen Resmi',
+    
+    // Javascript
+    'js_loading'        => 'Memuat data dari database...',
+    'js_err_load'       => 'Gagal memuat data',
+    'js_err_net'        => 'Terjadi kesalahan jaringan',
+    'js_empty_data'     => 'Belum ada data nilai terkunci untuk kelas ini.',
+    'js_show_num'       => 'Nilai angka ditampilkan',
+    'js_hide_num'       => 'Nilai angka disembunyikan',
+    'js_show_pred'      => 'Predikat ditampilkan',
+    'js_hide_pred'      => 'Predikat disembunyikan',
+    'js_preparing'      => 'Sedang disiapkan...',
+    'js_preparing_print'=> 'Menyiapkan dokumen untuk dicetak...'
+];

@@ -1,0 +1,72 @@
+<?php
+
+return [
+    'page_title_browser' => 'Preview Rapor - Rapor Digital',
+    'page_title' => 'Preview Rapor Siswa',
+    'page_subtitle' => 'Tinjau dan validasi rapor siswa sebelum diterbitkan.',
+    
+    // Filter Section
+    'filter_title' => 'Filter Data Rapor',
+    'level_label' => 'Tingkat',
+    'all_levels' => 'Semua Tingkat',
+    'class_level' => 'Kelas',
+    'rombel_label' => 'Rombel',
+    'all_rombels' => 'Semua Rombel',
+    'search_student_label' => 'Cari Siswa',
+    'search_student_placeholder' => 'Nama siswa atau NIS...',
+    'apply_filter' => 'Terapkan Filter',
+    
+    // Table Section
+    'student_list_title' => 'Daftar Siswa',
+    'student_count' => 'siswa',
+    
+    // Empty State
+    'no_data_title' => 'Tidak Ada Data',
+    'no_data_desc' => 'Silakan gunakan filter tingkat dan rombel di atas untuk menampilkan daftar siswa yang akan dievaluasi rapornya.',
+    
+    // Modal Preview
+    'modal_print_preview' => 'Mode Pratinjau Cetak',
+    'modal_close' => 'Tutup',
+    'modal_return_revise' => 'Kembalikan (Revisi)',
+    'modal_validate_lock' => 'Validasi & Kunci Rapor',
+    // --- Tambahkan ke dalam array file PreviewRapor.php (ID) ---
+    'js_filter_warning_title' => 'Filter Belum Dipilih',
+    'js_filter_warning_desc' => 'Mohon pilih minimal Tingkat, Rombel, atau ketik Nama Siswa untuk menampilkan data.',
+    'js_understand' => 'Siap, Mengerti',
+    'js_searching_student' => 'Sedang mencari data siswa...',
+    'js_no_data_title' => 'Data Tidak Ditemukan',
+    'js_no_data_desc' => 'Tidak ada siswa yang cocok dengan filter yang Anda pilih.',
+    'js_load_failed' => 'Gagal Memuat',
+    'js_load_failed_desc' => 'Terjadi kesalahan saat mengambil data.',
+    'js_table_identity' => 'Identitas Siswa',
+    'js_table_class' => 'Kelas',
+    'js_table_status' => 'Status Data',
+    'js_table_detail' => 'Detail',
+    'js_ready_print' => 'Siap Cetak',
+    'js_process' => 'Proses',
+    'js_subject' => 'Mapel',
+    'js_showing' => 'Menampilkan',
+    'js_to' => 'hingga',
+    'js_prev' => 'Sebelumnya',
+    'js_next' => 'Selanjutnya',
+    'js_preparing_report' => 'Sedang menyiapkan rapor...',
+    'js_no_grades' => 'Belum ada data nilai yang diinput guru mata pelajaran.',
+    'js_ack' => 'Mengetahui,',
+    'js_report_title' => 'Laporan Hasil Belajar',
+    'js_semester' => 'Semester Genap • Tahun Ajaran 2024/2025',
+    'js_return_title' => 'Kembalikan Rapor?',
+    'js_return_desc' => 'Berikan catatan perbaikan untuk Wali Kelas/Guru Mapel.',
+    'js_return_placeholder' => 'Contoh: Nilai Matematika ada yang kosong, tolong dicek...',
+    'js_yes_return' => 'Ya, Kembalikan!',
+    'js_note_required' => 'Catatan perbaikan wajib diisi!',
+    'js_returned' => 'Dikembalikan!',
+    'js_returned_desc' => 'Rapor telah ditandai perlu perbaikan. Notifikasi dikirim ke Wali Kelas.',
+    'js_lock_title' => 'Validasi & Kunci Rapor?',
+    'js_lock_desc1' => 'Anda akan memvalidasi rapor siswa ini. Harap perhatikan:',
+    'js_lock_desc2' => 'Data nilai tidak dapat diubah lagi oleh Guru.',
+    'js_lock_desc3' => 'Rapor siap untuk dicetak/didownload.',
+    'js_lock_desc4' => 'QR Code verifikasi akan digenerate.',
+    'js_yes_lock' => 'Ya, Validasi & Kunci',
+    'js_locked' => 'Berhasil Divalidasi!',
+    'js_locked_desc' => 'Rapor siswa telah dikunci dan siap dicetak.',
+];

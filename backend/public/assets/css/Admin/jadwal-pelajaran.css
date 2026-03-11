@@ -1,0 +1,371 @@
+    body {
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    
+    .sidebar-menu {
+      transition: all 0.3s ease;
+    }
+    
+    .submenu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    
+    .submenu.open {
+      max-height: 500px;
+    }
+    
+    .menu-arrow {
+      transition: transform 0.3s ease;
+    }
+    
+    .menu-arrow.rotated {
+      transform: rotate(180deg);
+    }
+    
+    .islamic-pattern {
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231F7A4D' fill-opacity='0.03'%3E%3Cpath d='M30 30l15-15v30L30 30zm0 0L15 15v30l15-15z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--warna-scroll);
+      border-radius: 3px;
+    }
+    
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 40;
+      transition: opacity 0.3s ease;
+    }
+    
+    .sidebar-overlay.active {
+      display: block;
+    }
+    /* --- ADD THIS AT THE BOTTOM --- */
+/* Pastikan Modal berada di paling depan (Z-Index Tertinggi) */
+.modal {
+    z-index: 9999; /* Lebih tinggi dari sidebar (biasanya 50-100) */
+}
+
+/* Overlay Sidebar hanya untuk Mobile */
+.sidebar-overlay {
+    z-index: 40; /* Di bawah sidebar tapi di atas konten utama */
+}
+
+/* Sidebar sendiri */
+#sidebar {
+    z-index: 50;
+}
+
+/* Jika Anda TIDAK ingin efek blur di background saat modal buka */
+.modal {
+    backdrop-filter: none; /* Hapus efek blur */
+    background: rgba(0, 0, 0, 0.5); /* Cukup gelapkan saja */
+}
+/* Force elements with 'hidden' class to appear when modal is active */
+.modal.active .hidden {
+    display: block !important;
+}
+
+/* Ensure modal content is visible */
+.modal.active .modal-content {
+    display: block !important; /* Just in case */
+}
+    @media (max-width: 1024px) {
+      #sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 50;
+      }
+      
+      #sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      
+      #main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+      }
+    }
+
+    html, body {
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+    
+    .hamburger-menu {
+      display: none;
+    }
+    
+    @media (max-width: 1024px) {
+      .hamburger-menu {
+        display: flex;
+      }
+    }
+
+    .schedule-cell {
+      min-height: 80px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .schedule-cell:hover {
+      border-color: #1F7A4D;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(31, 122, 77, 0.15);
+    }
+
+    .schedule-cell.occupied {
+      background: linear-gradient(135deg, #E6F4EC 0%, #ffffff 100%);
+      border: 1px solid #34A853;
+    }
+
+    .schedule-cell.empty {
+      background: white;
+      border: 2px dashed #E5E7EB;
+    }
+
+    .schedule-cell.conflict {
+      background: linear-gradient(135deg, #FEF3C7 0%, #ffffff 100%);
+      border: 2px solid #F59E0B;
+    }
+
+    .day-header {
+      background: linear-gradient(135deg, #1F7A4D 0%, #34A853 100%);
+      color: white;
+      font-weight: 700;
+      text-align: center;
+      padding: 1rem;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .time-cell {
+      background: #F9FAFB;
+      font-weight: 600;
+      color: #6B7280;
+      text-align: center;
+      padding: 1rem 0.5rem;
+      border-right: 2px solid #E5E7EB;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 70;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 90%;
+      overflow-y: auto;
+      animation: modalSlideIn 0.3s ease;
+      margin: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        transform: translateY(-30px) scale(0.95);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .toast {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: white;
+      border-radius: 16px;
+      padding: 1.25rem 1.75rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      z-index: 100;
+      animation: slideInRight 0.4s ease;
+      max-width: 400px;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(450px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 2px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-success {
+      background: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #6EE7B7;
+    }
+
+    .badge-warning {
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FCD34D;
+    }
+
+    .badge-locked {
+      background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: white;
+      border-radius: 24px;
+      border: 2px dashed #D1D5DB;
+    }
+
+    .conflict-alert {
+      background: linear-gradient(135deg, #FEF3C7 0%, #ffffff 100%);
+      border: 2px solid #F59E0B;
+      border-radius: 16px;
+      padding: 1.25rem;
+      display: flex;
+      align-items: start;
+      gap: 1rem;
+      animation: pulseAlert 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseAlert {
+      0%, 100% {
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+      }
+      50% {
+        box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4);
+      }
+    }
+
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: 80px repeat(5, 1fr);
+      gap: 0;
+      border: 2px solid #E5E7EB;
+      border-radius: 16px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .pulse-ring {
+      animation: pulseRing 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+    }
+
+    @keyframes pulseRing {
+      0% {
+        transform: scale(0.9);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+      }
+      100% {
+        transform: scale(0.9);
+        opacity: 1;
+      }
+    }
+
+    .filter-chip {
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      border: 2px solid;
+      background: white;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .filter-chip.active {
+      color: white;
+    }
+
+    .drawer {
+      position: fixed;
+      right: -500px;
+      top: 0;
+      height: 100%;
+      width: 480px;
+      max-width: 100%;
+      background: white;
+      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+      transition: right 0.3s ease;
+      z-index: 80;
+      overflow-y: auto;
+    }
+
+    .drawer.active {
+      right: 0;
+    }
+
+    .drawer-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 75;
+    }
+
+    .drawer-overlay.active {
+      display: block;
+    }
+
+    @view-transition { navigation: auto; }

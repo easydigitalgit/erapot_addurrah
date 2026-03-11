@@ -1,0 +1,369 @@
+    body {
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    
+    .arabic-text {
+      font-family: 'Amiri', serif;
+      direction: rtl;
+    }
+    
+    .sidebar-menu {
+      transition: all 0.3s ease;
+    }
+    
+    .submenu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    
+    .submenu.open {
+      max-height: 500px;
+    }
+    
+    .menu-arrow {
+      transition: transform 0.3s ease;
+    }
+    
+    .menu-arrow.rotated {
+      transform: rotate(180deg);
+    }
+    
+    .islamic-pattern {
+      background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231F7A4D' fill-opacity='0.03'%3E%3Cpath d='M40 40c9.941 0 18-8.059 18-18S49.941 4 40 4 22 12.059 22 22s8.059 18 18 18zm0-2c8.837 0 16-7.163 16-16S48.837 6 40 6s-16 7.163-16 16 7.163 16 16 16z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--warna-scroll);
+      border-radius: 3px;
+    }
+    
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 40;
+      transition: opacity 0.3s ease;
+    }
+    
+    .sidebar-overlay.active {
+      display: block;
+    }
+    
+    @media (max-width: 1024px) {
+      #sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 50;
+      }
+      
+      #sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      
+      #main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+      }
+    }
+
+    html, body {
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+    
+    .hamburger-menu {
+      display: none;
+    }
+    
+    @media (max-width: 1024px) {
+      .hamburger-menu {
+        display: flex;
+      }
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      border: 2px solid #E5E7EB;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(31, 122, 77, 0.05) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(30%, -30%);
+    }
+
+    .stat-card:hover {
+      border-color: #1F7A4D;
+      box-shadow: 0 12px 32px rgba(31, 122, 77, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 70;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 24px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90%;
+      overflow-y: auto;
+      animation: modalSlideIn 0.3s ease;
+      margin: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        transform: translateY(-30px) scale(0.95);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .toast {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: white;
+      border-radius: 16px;
+      padding: 1.25rem 1.75rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      z-index: 100;
+      animation: slideInRight 0.4s ease;
+      max-width: 400px;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(450px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-success {
+      background: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #6EE7B7;
+    }
+
+    .badge-warning {
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FCD34D;
+    }
+
+    .badge-archive {
+      background: #F3F4F6;
+      color: #4B5563;
+      border: 1px solid #D1D5DB;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: white;
+      border-radius: 24px;
+      border: 2px dashed #D1D5DB;
+    }
+
+    .table-wrapper {
+      background: white;
+      border-radius: 20px;
+      border: 2px solid #E5E7EB;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      color: white;
+      font-weight: 700;
+      text-align: left;
+      padding: 1.25rem 1.5rem;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #F3F4F6;
+      transition: all 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: #F9FAFB;
+    }
+
+    tbody td {
+      padding: 1.25rem 1.5rem;
+      color: #374151;
+      font-size: 0.9375rem;
+    }
+
+    .action-button {
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .action-button-primary {
+      background: #E6F4EC;
+      color: #1F7A4D;
+    }
+
+    .action-button-primary:hover {
+      background: #1F7A4D;
+      color: white;
+    }
+
+    .action-button-secondary {
+      background: #F3F4F6;
+      color: #6B7280;
+    }
+
+    .action-button-secondary:hover {
+      background: #E5E7EB;
+      color: #374151;
+    }
+
+    .drawer {
+      position: fixed;
+      right: -550px;
+      top: 0;
+      height: 100%;
+      width: 520px;
+      max-width: 100%;
+      background: white;
+      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+      transition: right 0.3s ease;
+      z-index: 80;
+      overflow-y: auto;
+    }
+
+    .drawer.active {
+      right: 0;
+    }
+
+    .drawer-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 75;
+    }
+
+    .drawer-overlay.active {
+      display: block;
+    }
+
+    .quran-icon {
+      background: linear-gradient(135deg, #1F7A4D 0%, #34A853 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .info-panel {
+      border: 2px solid ;
+      border-radius: 20px;
+      padding: 2rem;
+    }
+
+    .pulse-soft {
+      animation: pulseSoft 3s ease-in-out infinite;
+    }
+
+    @keyframes pulseSoft {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.03);
+        opacity: 0.9;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .stat-card {
+        padding: 1.5rem;
+      }
+      
+      .table-wrapper {
+        overflow-x: auto;
+      }
+      
+      table {
+        min-width: 800px;
+      }
+    }
+
+    @view-transition { navigation: auto; }

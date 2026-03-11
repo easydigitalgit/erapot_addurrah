@@ -1,0 +1,968 @@
+DEBUG - 2026-02-14 02:28:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:28:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:28:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:28:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:28:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:30:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:31:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:31:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:31:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:32:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:34:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:34:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:34:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:34:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:34:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:34:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:34:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:34:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:34:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:35:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:35:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:36:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:37:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-14 02:38:14 --> mysqli_sql_exception: Duplicate entry 'zidankun2020@gmail.com' for key 'users.email' in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `us...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `us...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `us...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `us...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\BaseModel.php(838): CodeIgniter\Model->doInsert(Array)
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(797): CodeIgniter\BaseModel->insert(Array, true)
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\GuruTendikController.php(110): CodeIgniter\Model->insert(Array)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\GuruTendikController->store()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\GuruTendikController))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 {main}
+DEBUG - 2026-02-14 02:38:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:38:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:38:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:39:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:45:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:45:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:45:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:45:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:45:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:45:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:45:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:45:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:46:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:46:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:46:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:46:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:46:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:46:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:47:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:47:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:47:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:47:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:47:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:47:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:53:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:53:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:54:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:54:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:54:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:54:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:54:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:54:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:54:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:54:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:56:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:56:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:56:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 02:57:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:02:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:02:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:05:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:05:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:06:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:12:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:12:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:16:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:18:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:19:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:19:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:19:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:19:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:19:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:19:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:20:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:20:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:20:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:20:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:20:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:20:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:20:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:20:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:22:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:22:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:22:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:22:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:22:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:23:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:23:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:24:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:24:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:25:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 03:25:18 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 03:33:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 03:33:27 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 03:33:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 03:33:28 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 03:34:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:34:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:35:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:35:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:35:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:36:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:36:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:36:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:36:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:36:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:36:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:36:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:36:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:36:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:36:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:36:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:36:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:36:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:37:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:37:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:37:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:37:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:37:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:37:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:11 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:38:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 03:39:46 --> ErrorException: Undefined property: App\Controllers\Admin\TargetTahfidzController::$db
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Controllers\admin\TargetTahfidzController.php on line 25.
+ 1 APPPATH\Controllers\admin\TargetTahfidzController.php(25): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined property: App\\Controllers\\Admin\\TargetTahfidzController::$db', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Controllers\\admin\\TargetTahfidzController.php', 25)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 03:40:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:41:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:41:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:41:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:43:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:47:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:48:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:48:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 03:48:51 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(29): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 03:48:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 03:48:52 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(29): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 03:48:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 03:48:53 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(29): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 03:49:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 03:49:52 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(29): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 03:57:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 03:57:05 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(29): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 03:57:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 03:57:21 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 03:57:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:58:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:58:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 03:58:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 03:58:37 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 03:58:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 03:58:38 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 03:58:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 03:58:38 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 03:58:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-14 03:59:05 --> mysqli_sql_exception: Unknown column 'mata_pelajaran.kkm' in 'field list' in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `nilai_a...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `nilai_a...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `nilai_a...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `nilai_a...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\CetakRaporController.php(100): CodeIgniter\Database\BaseBuilder->get()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\CetakRaporController->printPDF('155', 'download')
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\CetakRaporController))
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2026-02-14 03:59:05 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'mata_pelajaran.kkm' in 'field list'
+[Method: GET, Route: admin/cetak-rapor/printPDF/155/download]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `nilai_akademik`.*, `mata_pelajaran`.`nama_mapel`, `mata_pelajaran`.`kkm`
+FROM `nilai_akademik`
+JOIN `mata_pelajaran` ON `mata_pelajaran`.`id` = `nilai_akademik`.`mapel_id`
+WHERE `siswa_id` = :siswa_id:', [...], false)
+ 2 APPPATH\Controllers\admin\CetakRaporController.php(100): CodeIgniter\Database\BaseBuilder->get()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\CetakRaporController->printPDF('155', 'download')
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\CetakRaporController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-14 03:59:05 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'mata_pelajaran.kkm' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `nilai_akademik`.*, `mata_pelajaran`.`nama_mapel`, `mata_pelajaran`.`kkm`
+FROM `nilai_akademik`
+JOIN `mata_pelajaran` ON `mata_pelajaran`.`id` = `nilai_akademik`.`mapel_id`
+WHERE `siswa_id` = \'155\'')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `nilai_akademik`.*, `mata_pelajaran`.`nama_mapel`, `mata_pelajaran`.`kkm`
+FROM `nilai_akademik`
+JOIN `mata_pelajaran` ON `mata_pelajaran`.`id` = `nilai_akademik`.`mapel_id`
+WHERE `siswa_id` = \'155\'')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `nilai_akademik`.*, `mata_pelajaran`.`nama_mapel`, `mata_pelajaran`.`kkm`
+FROM `nilai_akademik`
+JOIN `mata_pelajaran` ON `mata_pelajaran`.`id` = `nilai_akademik`.`mapel_id`
+WHERE `siswa_id` = :siswa_id:', [...], false)
+ 4 APPPATH\Controllers\admin\CetakRaporController.php(100): CodeIgniter\Database\BaseBuilder->get()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\CetakRaporController->printPDF('155', 'download')
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\CetakRaporController))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-14 03:59:05 --> [Caused by] mysqli_sql_exception: Unknown column 'mata_pelajaran.kkm' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `nilai_akademik`.*, `mata_pelajaran`.`nama_mapel`, `mata_pelajaran`.`kkm`
+FROM `nilai_akademik`
+JOIN `mata_pelajaran` ON `mata_pelajaran`.`id` = `nilai_akademik`.`mapel_id`
+WHERE `siswa_id` = \'155\'', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `nilai_akademik`.*, `mata_pelajaran`.`nama_mapel`, `mata_pelajaran`.`kkm`
+FROM `nilai_akademik`
+JOIN `mata_pelajaran` ON `mata_pelajaran`.`id` = `nilai_akademik`.`mapel_id`
+WHERE `siswa_id` = \'155\'')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `nilai_akademik`.*, `mata_pelajaran`.`nama_mapel`, `mata_pelajaran`.`kkm`
+FROM `nilai_akademik`
+JOIN `mata_pelajaran` ON `mata_pelajaran`.`id` = `nilai_akademik`.`mapel_id`
+WHERE `siswa_id` = \'155\'')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `nilai_akademik`.*, `mata_pelajaran`.`nama_mapel`, `mata_pelajaran`.`kkm`
+FROM `nilai_akademik`
+JOIN `mata_pelajaran` ON `mata_pelajaran`.`id` = `nilai_akademik`.`mapel_id`
+WHERE `siswa_id` = :siswa_id:', [...], false)
+ 5 APPPATH\Controllers\admin\CetakRaporController.php(100): CodeIgniter\Database\BaseBuilder->get()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\CetakRaporController->printPDF('155', 'download')
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\CetakRaporController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:00:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:00:14 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:00:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:00:19 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:00:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:00:20 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:00:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:00:21 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:00:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:00:22 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:00:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:00:23 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:00:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:00:23 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:00:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:00:27 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:00:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:00:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:00:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:00:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:00:40 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:00:47 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:01:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:04 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:01:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:04 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:01:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:04 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:01:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:07 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:01:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:07 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:01:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:08 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:01:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:08 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:01:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:01:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:23 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:01:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:27 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:01:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:29 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:01:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:29 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:01:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:01:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:56 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "Admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('Admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('Admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('Admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:01:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:56 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "Admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('Admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('Admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('Admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:01:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:01:57 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "Admin/target-tahfidz.php"
+[Method: GET, Route: admin/target-tahfidz]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 39.
+ 1 SYSTEMPATH\View\View.php(214): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('Admin/target-tahfidz.php')
+ 2 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('Admin/target-tahfidz', [], true)
+ 3 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('Admin/target-tahfidz', [...])
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:02:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:02:25 --> ErrorException: Undefined array key 2
+[Method: GET, Route: admin/cetak-rapor/printPDF/155/download]
+in VENDORPATH\mpdf\mpdf\src\Mpdf.php on line 12988.
+ 1 VENDORPATH\mpdf\mpdf\src\Mpdf.php(12988): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key 2', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\mpdf\\mpdf\\src\\Mpdf.php', 12988)
+ 2 APPPATH\Controllers\admin\CetakRaporController.php(125): Mpdf\Mpdf->SetFooter('Rapor Digital SMPIT Ad Durrah | {PAGENO}')
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\CetakRaporController->printPDF('155', 'download')
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\CetakRaporController))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:02:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:02:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:02:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:02:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:02:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:02:56 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:02:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 04:02:56 --> ErrorException: Undefined array key "nama_juz"
+[Method: GET, Route: admin/target-tahfidz]
+in APPPATH\Views\Admin\target-tahfidz.php on line 187.
+ 1 APPPATH\Views\Admin\target-tahfidz.php(187): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "nama_juz"', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php', 187)
+ 2 SYSTEMPATH\View\View.php(226): include('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\app\\Views\\Admin\\target-tahfidz.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('admin/target-tahfidz', [], true)
+ 5 APPPATH\Controllers\admin\TargetTahfidzController.php(28): view('admin/target-tahfidz', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Admin\TargetTahfidzController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\TargetTahfidzController))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-02-14 04:03:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:03:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:03:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:04:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:04:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:04:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:06:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:06:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:06:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:06:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:06:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:06:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:07:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:07:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:09:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:10:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:10:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:11:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:11:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:12:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:12:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:12:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:15:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:15:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:15:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:17:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:17:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:21:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:21:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:22:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:22:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:22:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:23:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:23:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:23:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:25:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:25:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:25:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:25:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:26:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:27:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:29:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:29:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:30:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:30:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:31:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:31:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:33:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:37:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:38:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:38:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:39:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:39:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:41:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:41:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:45:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:46:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:46:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:46:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:46:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:47:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:47:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:47:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:48:11 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:49:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:49:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:51:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:51:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:51:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:52:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:57:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:57:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:57:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:58:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 04:58:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:00:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:00:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:01:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:01:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:01:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:01:11 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:01:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:01:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:01:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:03:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:03:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:03:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:03:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:04:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:04:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:04:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:05:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-02-14 05:05:51 --> mysqli_sql_exception: Unknown column 'desa_id' in 'field list' in D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(327): mysqli->query('UPDATE `sekolah...', 0)
+#1 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('UPDATE `sekolah...')
+#2 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('UPDATE `sekolah...')
+#3 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(2521): CodeIgniter\Database\BaseConnection->query('UPDATE `sekolah...', Array, false)
+#4 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(461): CodeIgniter\Database\BaseBuilder->update()
+#5 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\BaseModel.php(1010): CodeIgniter\Model->doUpdate(Array, Array)
+#6 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Model.php(860): CodeIgniter\BaseModel->update(Array, Array)
+#7 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\BaseModel.php(749): CodeIgniter\Model->update('1', Array)
+#8 D:\Development\Servers\laragon\www\raporsmpit\backend\app\Controllers\admin\ProfileSekolahController.php(142): CodeIgniter\BaseModel->save(Array)
+#9 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(933): App\Controllers\Admin\ProfileSekolahController->update()
+#10 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\ProfileSekolahController))
+#11 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#12 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#13 D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#14 D:\Development\Servers\laragon\www\raporsmpit\backend\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#15 {main}
+DEBUG - 2026-02-14 05:06:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:06:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:06:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:07:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:08:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:09:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:10:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:12:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:12:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:12:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:12:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:12:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:12:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:13:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:13:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:13:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:13:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:13:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:13:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:13:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:13:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:14:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:14:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:15:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:17:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:17:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-02-14 05:17:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-02-14 05:27:37 --> ErrorException: include(D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\composer/../../app/Filters/Cors.php): Failed to open stream: No such file or directory
+[Method: GET, Route: /]
+in VENDORPATH\composer\ClassLoader.php on line 576.
+ 1 VENDORPATH\composer\ClassLoader.php(576): CodeIgniter\Debug\Exceptions->errorHandler(2, 'include(D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\composer/../../app/Filters/Cors.php): Failed to open stream: No such file or directory', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\composer\\ClassLoader.php', 576)
+ 2 VENDORPATH\composer\ClassLoader.php(576): include()
+ 3 VENDORPATH\composer\ClassLoader.php(427): Composer\Autoload\{closure}('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\composer/../../app/Filters/Cors.php')
+ 4 SYSTEMPATH\Filters\Filters.php(299): Composer\Autoload\ClassLoader->loadClass('App\\Filters\\Cors')
+ 5 SYSTEMPATH\Filters\Filters.php(239): CodeIgniter\Filters\Filters->createFilter('App\\Filters\\Cors')
+ 6 SYSTEMPATH\Filters\Filters.php(221): CodeIgniter\Filters\Filters->runBefore([...])
+ 7 SYSTEMPATH\CodeIgniter.php(479): CodeIgniter\Filters\Filters->run('', 'before')
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-14 05:27:50 --> ErrorException: include(D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\composer/../../app/Filters/Cors.php): Failed to open stream: No such file or directory
+[Method: GET, Route: /]
+in VENDORPATH\composer\ClassLoader.php on line 576.
+ 1 VENDORPATH\composer\ClassLoader.php(576): CodeIgniter\Debug\Exceptions->errorHandler(2, 'include(D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\composer/../../app/Filters/Cors.php): Failed to open stream: No such file or directory', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\composer\\ClassLoader.php', 576)
+ 2 VENDORPATH\composer\ClassLoader.php(576): include()
+ 3 VENDORPATH\composer\ClassLoader.php(427): Composer\Autoload\{closure}('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\composer/../../app/Filters/Cors.php')
+ 4 SYSTEMPATH\Filters\Filters.php(299): Composer\Autoload\ClassLoader->loadClass('App\\Filters\\Cors')
+ 5 SYSTEMPATH\Filters\Filters.php(239): CodeIgniter\Filters\Filters->createFilter('App\\Filters\\Cors')
+ 6 SYSTEMPATH\Filters\Filters.php(221): CodeIgniter\Filters\Filters->runBefore([...])
+ 7 SYSTEMPATH\CodeIgniter.php(479): CodeIgniter\Filters\Filters->run('', 'before')
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-14 05:28:07 --> ErrorException: include(D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\composer/../../app/Filters/Cors.php): Failed to open stream: No such file or directory
+[Method: GET, Route: /]
+in VENDORPATH\composer\ClassLoader.php on line 576.
+ 1 VENDORPATH\composer\ClassLoader.php(576): CodeIgniter\Debug\Exceptions->errorHandler(2, 'include(D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\composer/../../app/Filters/Cors.php): Failed to open stream: No such file or directory', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\composer\\ClassLoader.php', 576)
+ 2 VENDORPATH\composer\ClassLoader.php(576): include()
+ 3 VENDORPATH\composer\ClassLoader.php(427): Composer\Autoload\{closure}('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\composer/../../app/Filters/Cors.php')
+ 4 SYSTEMPATH\Filters\Filters.php(299): Composer\Autoload\ClassLoader->loadClass('App\\Filters\\Cors')
+ 5 SYSTEMPATH\Filters\Filters.php(239): CodeIgniter\Filters\Filters->createFilter('App\\Filters\\Cors')
+ 6 SYSTEMPATH\Filters\Filters.php(221): CodeIgniter\Filters\Filters->runBefore([...])
+ 7 SYSTEMPATH\CodeIgniter.php(479): CodeIgniter\Filters\Filters->run('', 'before')
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-02-14 05:28:13 --> ErrorException: include(D:\Development\Servers\laragon\www\raporsmpit\backend\vendor\composer/../../app/Filters/Cors.php): Failed to open stream: No such file or directory
+[Method: GET, Route: /]
+in VENDORPATH\composer\ClassLoader.php on line 576.
+ 1 VENDORPATH\composer\ClassLoader.php(576): CodeIgniter\Debug\Exceptions->errorHandler(2, 'include(D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\composer/../../app/Filters/Cors.php): Failed to open stream: No such file or directory', 'D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\composer\\ClassLoader.php', 576)
+ 2 VENDORPATH\composer\ClassLoader.php(576): include()
+ 3 VENDORPATH\composer\ClassLoader.php(427): Composer\Autoload\{closure}('D:\\Development\\Servers\\laragon\\www\\raporsmpit\\backend\\vendor\\composer/../../app/Filters/Cors.php')
+ 4 SYSTEMPATH\Filters\Filters.php(299): Composer\Autoload\ClassLoader->loadClass('App\\Filters\\Cors')
+ 5 SYSTEMPATH\Filters\Filters.php(239): CodeIgniter\Filters\Filters->createFilter('App\\Filters\\Cors')
+ 6 SYSTEMPATH\Filters\Filters.php(221): CodeIgniter\Filters\Filters->runBefore([...])
+ 7 SYSTEMPATH\CodeIgniter.php(479): CodeIgniter\Filters\Filters->run('', 'before')
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))

@@ -1,0 +1,130 @@
+<?php
+
+return [
+    // --- HTML VIEW ---
+    'page_title'         => 'Manajemen Guru & Tendik',
+    'breadcrumb'         => 'Manajemen Pengguna',
+    'page_desc'          => 'Kelola data pendidik dan tenaga kependidikan',
+    'btn_add'            => 'Tambah Guru / Tendik',
+    'btn_add_sm'         => 'Tambah',
+    'btn_import'         => 'Import Excel',
+    'btn_export'         => 'Export Excel',
+    
+    // Cards
+    'total_guru'         => 'Total Guru Mapel',
+    'total_tahfiz'       => 'Guru Tahfiz',
+    'total_tendik'       => 'Staff / Tendik',
+    'total_wali'         => 'Wali Kelas',
+    
+    // Filters
+    'search_lbl'         => 'Pencarian',
+    'search_ph'          => 'Cari nama, NUPTK, atau NIK...',
+    'role_lbl'           => 'Role / Jabatan',
+    'all_roles'          => 'Semua Role',
+    'mapel_lbl'          => 'Mata Pelajaran',
+    'all_mapels'         => 'Semua Mapel',
+    'status_lbl'         => 'Status',
+    'all_statuses'       => 'Semua Status',
+    'status_active'      => 'Aktif',
+    'status_inactive'    => 'Nonaktif',
+    
+    // Table
+    'select_all'         => 'Pilih Semua',
+    'selected_count'     => 'dipilih',
+    'btn_bulk_export'    => 'Export Terpilih',
+    'btn_bulk_delete'    => 'Hapus Terpilih',
+    'th_name_role'       => 'Nama & Jabatan',
+    'th_nuptk'           => 'NUPTK',
+    'th_nik'             => 'NIK',
+    'th_email'           => 'Email',
+    'th_subject'         => 'Mata Pelajaran',
+    'th_class'           => 'Kelas',
+    'th_status'          => 'Status',
+    'th_action'          => 'Aksi',
+    'loading_data'       => 'Memuat data...',
+    'showing_data'       => 'Menampilkan',
+    'from_data'          => 'dari',
+    'data'               => 'data',
+    
+    // Import Modal
+    'import_title'       => 'Import Data Excel',
+    'import_step_1'      => '1. Download template format excel:',
+    'import_dl_temp'     => 'Download Template.xlsx',
+    'import_step_2'      => '2. Upload file yang sudah diisi:',
+    'btn_cancel'         => 'Batal',
+    'btn_upload_import'  => 'Upload & Import',
+    
+    // Add/Edit Modal
+    'add_modal_title'    => 'Tambah Pegawai Baru',
+    'add_modal_desc'     => 'Lengkapi biodata pegawai dengan benar',
+    'personal_data'      => 'Data Pribadi Pegawai',
+    'lbl_fullname'       => 'Nama Lengkap (dengan Gelar)',
+    'ph_fullname'        => 'Masukkan nama lengkap beserta gelar',
+    'lbl_nuptk'          => 'NUPTK',
+    'ph_nuptk'           => 'Nomor Unik Pendidik dan Tenaga Kependidikan',
+    'lbl_nik'            => 'NIK (KTP)',
+    'ph_nik'             => '16 digit NIK KTP',
+    'lbl_email'          => 'Email Pegawai',
+    'ph_email'           => 'Contoh: guru@sekolah.sch.id',
+    'lbl_phone'          => 'No. HP / WhatsApp',
+    'ph_phone'           => '0812xxxx',
+    'lbl_gender'         => 'Jenis Kelamin',
+    'ph_gender'          => 'Pilih Jenis Kelamin',
+    'gender_m'           => 'Laki-laki',
+    'gender_f'           => 'Perempuan',
+    
+    'job_data'           => 'Jabatan & Tugas',
+    'lbl_main_role'      => 'Jabatan Utama',
+    'ph_role'            => 'Pilih Jabatan',
+    'lbl_emp_status'     => 'Status Kepegawaian',
+    'ph_emp_status'      => 'Pilih Status',
+    'lbl_guidance_subj'  => 'Mata Pelajaran Bimbingan',
+    'ph_no_subj'         => '- Tidak Membimbing Mapel -',
+    'desc_subj'          => 'Dapat diisi oleh Guru Mapel, Wali Kelas, maupun Pembina Tahfiz.',
+    'lbl_photo'          => 'Foto Profil',
+    'no_image'           => 'No Image',
+    'photo_format_desc'  => 'Format: JPG, PNG. Maksimal 2MB. Disarankan rasio 1:1.',
+    
+    'btn_reset_form'     => 'Reset Form',
+    'btn_save_emp'       => 'Simpan Data Pegawai',
+    'btn_save_changes'   => 'Simpan Perubahan',
+    
+    // Drawer
+    'drawer_title'       => 'Detail Guru / Tendik',
+    'drawer_personal'    => 'Data Pribadi',
+    'drawer_dob'         => 'TTL',
+    'drawer_emp'         => 'Kepegawaian',
+    'drawer_teach_data'  => 'Data Mengajar',
+    'btn_edit_data'      => 'Edit Data',
+    
+    // --- JAVASCRIPT ---
+    'js_loading'         => 'Memuat data...',
+    'js_load_fail'       => 'Gagal memuat data.',
+    'js_no_data'         => 'Data tidak ditemukan',
+    'js_status_active'   => 'Aktif',
+    'js_status_inactive' => 'Nonaktif',
+    'js_role_employee'   => 'Pegawai',
+    'js_btn_view'        => 'Lihat',
+    'js_btn_edit'        => 'Edit',
+    
+    'js_title_add'       => 'Tambah Pegawai Baru',
+    'js_title_edit'      => 'Edit Data Pegawai',
+    'js_btn_save_add'    => 'Simpan Data Pegawai',
+    'js_btn_save_edit'   => 'Simpan Perubahan',
+    'js_saving'          => 'Menyimpan...',
+    'js_uploading'       => 'Mengupload...',
+    'js_err_server'      => 'Terjadi kesalahan server.',
+    'js_err_upload'      => 'Gagal upload.',
+    
+    'js_confirm_del'     => 'Hapus data?',
+    'js_confirm_del_desc'=> 'Data akan dihapus permanen!',
+    'js_btn_yes_del'     => 'Ya, Hapus',
+    'js_del_success'     => 'Terhapus',
+    'js_del_fail'        => 'Gagal: ',
+    
+    'js_bulk_no_select'  => 'Pilih data dulu',
+    'js_bulk_del_conf'   => 'Hapus data terpilih?',
+    'js_bulk_del_desc'   => 'Data tidak bisa dikembalikan!',
+    'js_success'         => 'Berhasil',
+    'js_fail'            => 'Gagal'
+];

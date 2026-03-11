@@ -1,0 +1,130 @@
+<?php
+
+return [
+    // --- HTML VIEW ---
+    'page_title'         => 'Teacher & Staff Management',
+    'breadcrumb'         => 'User Management',
+    'page_desc'          => 'Manage data for educators and education personnel',
+    'btn_add'            => 'Add Teacher / Staff',
+    'btn_add_sm'         => 'Add',
+    'btn_import'         => 'Import Excel',
+    'btn_export'         => 'Export Excel',
+    
+    // Cards
+    'total_guru'         => 'Total Subject Teachers',
+    'total_tahfiz'       => 'Tahfiz Teachers',
+    'total_tendik'       => 'Staff / Personnel',
+    'total_wali'         => 'Homeroom Teachers',
+    
+    // Filters
+    'search_lbl'         => 'Search',
+    'search_ph'          => 'Search name, NUPTK, or NIK...',
+    'role_lbl'           => 'Role / Position',
+    'all_roles'          => 'All Roles',
+    'mapel_lbl'          => 'Subject',
+    'all_mapels'         => 'All Subjects',
+    'status_lbl'         => 'Status',
+    'all_statuses'       => 'All Statuses',
+    'status_active'      => 'Active',
+    'status_inactive'    => 'Inactive',
+    
+    // Table
+    'select_all'         => 'Select All',
+    'selected_count'     => 'selected',
+    'btn_bulk_export'    => 'Export Selected',
+    'btn_bulk_delete'    => 'Delete Selected',
+    'th_name_role'       => 'Name & Position',
+    'th_nuptk'           => 'NUPTK',
+    'th_nik'             => 'NIK',
+    'th_email'           => 'Email',
+    'th_subject'         => 'Subject',
+    'th_class'           => 'Class',
+    'th_status'          => 'Status',
+    'th_action'          => 'Action',
+    'loading_data'       => 'Loading data...',
+    'showing_data'       => 'Showing',
+    'from_data'          => 'out of',
+    'data'               => 'data',
+    
+    // Import Modal
+    'import_title'       => 'Import Excel Data',
+    'import_step_1'      => '1. Download excel template format:',
+    'import_dl_temp'     => 'Download Template.xlsx',
+    'import_step_2'      => '2. Upload the filled file:',
+    'btn_cancel'         => 'Cancel',
+    'btn_upload_import'  => 'Upload & Import',
+    
+    // Add/Edit Modal
+    'add_modal_title'    => 'Add New Employee',
+    'add_modal_desc'     => 'Complete the employee\'s personal data correctly',
+    'personal_data'      => 'Employee Personal Data',
+    'lbl_fullname'       => 'Full Name (with Titles)',
+    'ph_fullname'        => 'Enter full name along with titles',
+    'lbl_nuptk'          => 'NUPTK',
+    'ph_nuptk'           => 'Unique Number for Educators and Education Personnel',
+    'lbl_nik'            => 'NIK (National ID Card)',
+    'ph_nik'             => '16-digit National ID Number',
+    'lbl_email'          => 'Employee Email',
+    'ph_email'           => 'Example: teacher@school.edu',
+    'lbl_phone'          => 'Phone / WhatsApp No.',
+    'ph_phone'           => '0812xxxx',
+    'lbl_gender'         => 'Gender',
+    'ph_gender'          => 'Select Gender',
+    'gender_m'           => 'Male',
+    'gender_f'           => 'Female',
+    
+    'job_data'           => 'Position & Duties',
+    'lbl_main_role'      => 'Main Position',
+    'ph_role'            => 'Select Position',
+    'lbl_emp_status'     => 'Employment Status',
+    'ph_emp_status'      => 'Select Status',
+    'lbl_guidance_subj'  => 'Guidance Subject',
+    'ph_no_subj'         => '- Does Not Guide Subject -',
+    'desc_subj'          => 'Can be filled by Subject Teachers, Homeroom Teachers, or Tahfiz Advisors.',
+    'lbl_photo'          => 'Profile Photo',
+    'no_image'           => 'No Image',
+    'photo_format_desc'  => 'Format: JPG, PNG. Max 2MB. Recommended ratio 1:1.',
+    
+    'btn_reset_form'     => 'Reset Form',
+    'btn_save_emp'       => 'Save Employee Data',
+    'btn_save_changes'   => 'Save Changes',
+    
+    // Drawer
+    'drawer_title'       => 'Teacher / Staff Details',
+    'drawer_personal'    => 'Personal Data',
+    'drawer_dob'         => 'Place & Date of Birth',
+    'drawer_emp'         => 'Employment',
+    'drawer_teach_data'  => 'Teaching Data',
+    'btn_edit_data'      => 'Edit Data',
+    
+    // --- JAVASCRIPT ---
+    'js_loading'         => 'Loading data...',
+    'js_load_fail'       => 'Failed to load data.',
+    'js_no_data'         => 'Data not found',
+    'js_status_active'   => 'Active',
+    'js_status_inactive' => 'Inactive',
+    'js_role_employee'   => 'Employee',
+    'js_btn_view'        => 'View',
+    'js_btn_edit'        => 'Edit',
+    
+    'js_title_add'       => 'Add New Employee',
+    'js_title_edit'      => 'Edit Employee Data',
+    'js_btn_save_add'    => 'Save Employee Data',
+    'js_btn_save_edit'   => 'Save Changes',
+    'js_saving'          => 'Saving...',
+    'js_uploading'       => 'Uploading...',
+    'js_err_server'      => 'A server error occurred.',
+    'js_err_upload'      => 'Upload failed.',
+    
+    'js_confirm_del'     => 'Delete data?',
+    'js_confirm_del_desc'=> 'Data will be permanently deleted!',
+    'js_btn_yes_del'     => 'Yes, Delete',
+    'js_del_success'     => 'Deleted',
+    'js_del_fail'        => 'Failed: ',
+    
+    'js_bulk_no_select'  => 'Select data first',
+    'js_bulk_del_conf'   => 'Delete selected data?',
+    'js_bulk_del_desc'   => 'Data cannot be restored!',
+    'js_success'         => 'Success',
+    'js_fail'            => 'Failed'
+];
