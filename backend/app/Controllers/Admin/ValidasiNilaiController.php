@@ -30,6 +30,12 @@ class ValidasiNilaiController extends AdminBaseController
         $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
         $tahun_ajaran = $ta_aktif ? $ta_aktif['tahun'] : '2025/2026';
         $semester     = $ta_aktif ? $ta_aktif['semester'] : 'Genap';
+        $ta_id        = $ta_aktif ? $ta_aktif['id'] : null;
+
+        $tabelAcuan = $this->db->tableExists('nilai_akademik') ? 'nilai_akademik' : ($this->db->tableExists('nilai_formatif') ? 'nilai_formatif' : 'nilai_sumatif');
+        $fieldSemester = $this->db->fieldExists('semester', $tabelAcuan);
+        $fieldTahunAjaran = $this->db->fieldExists('tahun_ajaran_id', 'guru_mapel') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+        $nilaiTaField = $fieldTahunAjaran == 'tahun_ajaran_id' ? $ta_id : $tahun_ajaran;
 
         $list_tingkat = $this->db->table('rombel')->select('tingkat')->distinct()->orderBy('tingkat', 'ASC')->get()->getResultArray();
         $list_rombel  = $this->rombelModel->orderBy('nama_rombel', 'ASC')->findAll();
@@ -41,8 +47,9 @@ class ValidasiNilaiController extends AdminBaseController
         $f_status  = $this->request->getGet('status');
 
         $builder = $this->db->table('rombel r')
-            ->select('r.id, r.nama_rombel, r.tingkat, g.nama_lengkap as wali_kelas, v.is_locked, v.locked_at')
+            ->select('r.id, r.nama_rombel, r.tingkat, g.nama_lengkap as wali_kelas, u.foto_profil, v.is_locked, v.locked_at')
             ->join('guru_tendik g', 'g.id = r.wali_kelas_id', 'left')
+            ->join('users u', 'u.id = g.user_id', 'left') // JOIN KE TABEL USERS UNTUK FOTO
             ->join('validasi_nilai v', 'v.rombel_id = r.id', 'left')
             ->orderBy('r.tingkat', 'ASC')
             ->orderBy('r.nama_rombel', 'ASC');
@@ -57,13 +64,23 @@ class ValidasiNilaiController extends AdminBaseController
         $stats = ['total' => count($rombels), 'siap' => 0, 'belum' => 0, 'locked' => 0];
 
         foreach ($rombels as $r) {
+            // 🚀 MENGGUNAKAN MESIN WAKTU: Dapatkan array ID siswa aktif di kelas ini pada masa itu
+            $siswaData = $this->db->table('anggota_rombel ar')
+                ->join('siswa s', 's.id = ar.siswa_id')
+                ->where('ar.rombel_id', $r['id'])
+                ->where('ar.tahun_ajaran_id', $ta_id)
+                ->where('ar.semester', $semester)
+                ->where('s.status_siswa', 'Aktif')
+                ->select('s.id')
+                ->get()->getResultArray();
+                
             // Dapatkan array ID siswa aktif di kelas ini
-            $siswaIds = $this->siswaModel->where('rombel_id', $r['id'])->where('status_siswa', 'Aktif')->findColumn('id');
+            $siswaIds = array_column($siswaData, 'id');
             $jumlahSiswa = !empty($siswaIds) ? count($siswaIds) : 0;
             
             $jumlahMapel = $this->db->table('guru_mapel')
                 ->where('rombel_id', $r['id'])
-                ->where('tahun_ajaran', $tahun_ajaran)
+                ->where($fieldTahunAjaran, $nilaiTaField)
                 ->where('status', 'active')
                 ->countAllResults(); 
             
@@ -72,12 +89,19 @@ class ValidasiNilaiController extends AdminBaseController
             // LOGIKA BARU: Hitung berdasarkan siswa_id agar 100% akurat menembus tabel relasi
             $nilaiMasuk = 0;
             if ($jumlahSiswa > 0) {
-                $nilaiMasuk = $this->db->table('nilai_akademik')
-                    ->whereIn('siswa_id', $siswaIds)
-                    ->where('semester', $semester)
-                    ->where('nilai_angka IS NOT NULL')
-                    ->where('nilai_angka !=', '')
-                    ->countAllResults();
+                $qNilai = $this->db->table($tabelAcuan)->whereIn('siswa_id', $siswaIds);
+                if ($fieldSemester) {
+                    $qNilai->where('semester', $semester);
+                }
+                
+                // Cek kolom yang menampung nilai (nilai_angka di 42, nilai di 43_sumatif)
+                if ($this->db->fieldExists('nilai_angka', $tabelAcuan)) {
+                    $qNilai->where('nilai_angka IS NOT NULL')->where('nilai_angka !=', '');
+                } else if ($this->db->fieldExists('nilai', $tabelAcuan)) {
+                    $qNilai->where('nilai IS NOT NULL')->where('nilai !=', '');
+                }
+
+                $nilaiMasuk = $qNilai->countAllResults();
             }
 
             if ($jumlahSiswa == 0 || $jumlahMapel == 0) {
@@ -114,6 +138,7 @@ class ValidasiNilaiController extends AdminBaseController
                 'tingkat'    => $r['tingkat'],
                 'rombel'     => $r['nama_rombel'],
                 'wali_kelas' => $r['wali_kelas'] ?: 'Belum Diatur',
+                'foto_profil'=> $r['foto_profil'] ?? null, // TAMBAHKAN BARIS INI
                 'progress'   => $persen,
                 'status'     => $status,
                 'badge'      => $badge,
@@ -151,9 +176,24 @@ class ValidasiNilaiController extends AdminBaseController
         $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
         $tahun_ajaran = $ta_aktif ? $ta_aktif['tahun'] : '2025/2026';
         $semester     = $ta_aktif ? $ta_aktif['semester'] : 'Genap';
+        $ta_id        = $ta_aktif ? $ta_aktif['id'] : null;
 
-        // Cari ID siswa aktif di kelas ini
-        $siswaIds = $this->siswaModel->where('rombel_id', $rombel_id)->where('status_siswa', 'Aktif')->findColumn('id');
+        $tabelAcuan = $this->db->tableExists('nilai_akademik') ? 'nilai_akademik' : ($this->db->tableExists('nilai_formatif') ? 'nilai_formatif' : 'nilai_sumatif');
+        $fieldSemester = $this->db->fieldExists('semester', $tabelAcuan);
+        $fieldTahunAjaran = $this->db->fieldExists('tahun_ajaran_id', 'guru_mapel') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+        $nilaiTaField = $fieldTahunAjaran == 'tahun_ajaran_id' ? $ta_id : $tahun_ajaran;
+
+        // 🚀 MENGGUNAKAN MESIN WAKTU: Cari ID siswa aktif di kelas ini pada masa itu
+        $siswaData = $this->db->table('anggota_rombel ar')
+            ->join('siswa s', 's.id = ar.siswa_id')
+            ->where('ar.rombel_id', $rombel_id)
+            ->where('ar.tahun_ajaran_id', $ta_id)
+            ->where('ar.semester', $semester)
+            ->where('s.status_siswa', 'Aktif')
+            ->select('s.id')
+            ->get()->getResultArray();
+            
+        $siswaIds = array_column($siswaData, 'id');
         $jumlahSiswa = !empty($siswaIds) ? count($siswaIds) : 0;
 
         // PERBAIKAN: Menambahkan select gm.mapel_id untuk referensi query selanjutnya
@@ -162,7 +202,7 @@ class ValidasiNilaiController extends AdminBaseController
             ->join('mata_pelajaran m', 'm.id = gm.mapel_id')
             ->join('guru_tendik g', 'g.id = gm.guru_id')
             ->where('gm.rombel_id', $rombel_id)
-            ->where('gm.tahun_ajaran', $tahun_ajaran)
+            ->where('gm.' . $fieldTahunAjaran, $nilaiTaField)
             ->where('gm.status', 'active')
             ->get()->getResultArray();
 
@@ -174,13 +214,18 @@ class ValidasiNilaiController extends AdminBaseController
 
             // LOGIKA BARU: Filter nilai_akademik berdasarkan mapel_id dan siswa yang ada di kelas ini
             if ($jumlahSiswa > 0) {
-                $nilaiMasuk = $this->db->table('nilai_akademik')
+                $qNilai = $this->db->table($tabelAcuan)
                     ->whereIn('siswa_id', $siswaIds)
-                    ->where('mapel_id', $mq['mapel_id']) // Akurat mendeteksi mapel
-                    ->where('semester', $semester)
-                    ->where('nilai_angka IS NOT NULL')
-                    ->where('nilai_angka !=', '')
-                    ->countAllResults();
+                    ->where('mapel_id', $mq['mapel_id']); // Akurat mendeteksi mapel
+                if ($fieldSemester) {
+                    $qNilai->where('semester', $semester);
+                }
+                if ($this->db->fieldExists('nilai_angka', $tabelAcuan)) {
+                    $qNilai->where('nilai_angka IS NOT NULL')->where('nilai_angka !=', '');
+                } else if ($this->db->fieldExists('nilai', $tabelAcuan)) {
+                    $qNilai->where('nilai IS NOT NULL')->where('nilai !=', '');
+                }
+                $nilaiMasuk = $qNilai->countAllResults();
             }
 
             $persen = ($jumlahSiswa > 0) ? min(round(($nilaiMasuk / $jumlahSiswa) * 100), 100) : 0;
@@ -215,23 +260,44 @@ class ValidasiNilaiController extends AdminBaseController
             $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
             $tahun_ajaran = $ta_aktif ? $ta_aktif['tahun'] : '2025/2026';
             $semester     = $ta_aktif ? $ta_aktif['semester'] : 'Genap';
+            $ta_id        = $ta_aktif ? $ta_aktif['id'] : null;
 
-            $siswaIds = $this->siswaModel->where('rombel_id', $rombel_id)->where('status_siswa', 'Aktif')->findColumn('id');
+            $tabelAcuan = $this->db->tableExists('nilai_akademik') ? 'nilai_akademik' : ($this->db->tableExists('nilai_formatif') ? 'nilai_formatif' : 'nilai_sumatif');
+            $fieldSemester = $this->db->fieldExists('semester', $tabelAcuan);
+            $fieldTahunAjaran = $this->db->fieldExists('tahun_ajaran_id', 'guru_mapel') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+            $nilaiTaField = $fieldTahunAjaran == 'tahun_ajaran_id' ? $ta_id : $tahun_ajaran;
+
+            // 🚀 MENGGUNAKAN MESIN WAKTU
+            $siswaData = $this->db->table('anggota_rombel ar')
+                ->join('siswa s', 's.id = ar.siswa_id')
+                ->where('ar.rombel_id', $rombel_id)
+                ->where('ar.tahun_ajaran_id', $ta_id)
+                ->where('ar.semester', $semester)
+                ->where('s.status_siswa', 'Aktif')
+                ->select('s.id')
+                ->get()->getResultArray();
+                
+            $siswaIds = array_column($siswaData, 'id');
             $jumlahSiswa = !empty($siswaIds) ? count($siswaIds) : 0;
 
-            $jumlahMapel = $this->db->table('guru_mapel')->where('rombel_id', $rombel_id)->where('tahun_ajaran', $tahun_ajaran)->where('status', 'active')->countAllResults();
+            $jumlahMapel = $this->db->table('guru_mapel')->where('rombel_id', $rombel_id)->where($fieldTahunAjaran, $nilaiTaField)->where('status', 'active')->countAllResults();
             
             if ($jumlahSiswa == 0 || $jumlahMapel == 0) {
                 return $this->response->setJSON(['status' => 'error', 'message' => 'Kelas ini kosong atau belum ada mapping guru.']);
             }
 
             $targetNilai = $jumlahSiswa * $jumlahMapel;
-            $nilaiMasuk = $this->db->table('nilai_akademik')
-                ->whereIn('siswa_id', $siswaIds)
-                ->where('semester', $semester)
-                ->where('nilai_angka IS NOT NULL')
-                ->where('nilai_angka !=', '')
-                ->countAllResults();
+            
+            $qNilai = $this->db->table($tabelAcuan)->whereIn('siswa_id', $siswaIds);
+            if ($fieldSemester) {
+                $qNilai->where('semester', $semester);
+            }
+            if ($this->db->fieldExists('nilai_angka', $tabelAcuan)) {
+                $qNilai->where('nilai_angka IS NOT NULL')->where('nilai_angka !=', '');
+            } else if ($this->db->fieldExists('nilai', $tabelAcuan)) {
+                $qNilai->where('nilai IS NOT NULL')->where('nilai !=', '');
+            }
+            $nilaiMasuk = $qNilai->countAllResults();
 
             if ($nilaiMasuk < $targetNilai) {
                 $kurang = $targetNilai - $nilaiMasuk;
@@ -286,6 +352,12 @@ class ValidasiNilaiController extends AdminBaseController
         $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
         $tahun_ajaran = $ta_aktif ? $ta_aktif['tahun'] : '2025/2026';
         $semester     = $ta_aktif ? $ta_aktif['semester'] : 'Genap';
+        $ta_id        = $ta_aktif ? $ta_aktif['id'] : null;
+
+        $tabelAcuan = $this->db->tableExists('nilai_akademik') ? 'nilai_akademik' : ($this->db->tableExists('nilai_formatif') ? 'nilai_formatif' : 'nilai_sumatif');
+        $fieldSemester = $this->db->fieldExists('semester', $tabelAcuan);
+        $fieldTahunAjaran = $this->db->fieldExists('tahun_ajaran_id', 'guru_mapel') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+        $nilaiTaField = $fieldTahunAjaran == 'tahun_ajaran_id' ? $ta_id : $tahun_ajaran;
 
         $rombels = $this->db->table('rombel')->get()->getResultArray();
         $lockedCount = 0;
@@ -295,22 +367,37 @@ class ValidasiNilaiController extends AdminBaseController
             $cekLock = $this->validasiModel->where('rombel_id', $r['id'])->where('is_locked', 1)->first();
             if ($cekLock) continue; 
 
-            $siswaIds = $this->siswaModel->where('rombel_id', $r['id'])->where('status_siswa', 'Aktif')->findColumn('id');
+            // 🚀 MENGGUNAKAN MESIN WAKTU
+            $siswaData = $this->db->table('anggota_rombel ar')
+                ->join('siswa s', 's.id = ar.siswa_id')
+                ->where('ar.rombel_id', $r['id'])
+                ->where('ar.tahun_ajaran_id', $ta_id)
+                ->where('ar.semester', $semester)
+                ->where('s.status_siswa', 'Aktif')
+                ->select('s.id')
+                ->get()->getResultArray();
+                
+            $siswaIds = array_column($siswaData, 'id');
             $jumlahSiswa = !empty($siswaIds) ? count($siswaIds) : 0;
 
-            $jumlahMapel = $this->db->table('guru_mapel')->where('rombel_id', $r['id'])->where('tahun_ajaran', $tahun_ajaran)->where('status', 'active')->countAllResults();
+            $jumlahMapel = $this->db->table('guru_mapel')->where('rombel_id', $r['id'])->where($fieldTahunAjaran, $nilaiTaField)->where('status', 'active')->countAllResults();
             
             if ($jumlahSiswa == 0 || $jumlahMapel == 0) {
                 $skippedCount++; continue;
             }
 
             $targetNilai = $jumlahSiswa * $jumlahMapel;
-            $nilaiMasuk = $this->db->table('nilai_akademik')
-                ->whereIn('siswa_id', $siswaIds)
-                ->where('semester', $semester)
-                ->where('nilai_angka IS NOT NULL')
-                ->where('nilai_angka !=', '')
-                ->countAllResults();
+            
+            $qNilai = $this->db->table($tabelAcuan)->whereIn('siswa_id', $siswaIds);
+            if ($fieldSemester) {
+                $qNilai->where('semester', $semester);
+            }
+            if ($this->db->fieldExists('nilai_angka', $tabelAcuan)) {
+                $qNilai->where('nilai_angka IS NOT NULL')->where('nilai_angka !=', '');
+            } else if ($this->db->fieldExists('nilai', $tabelAcuan)) {
+                $qNilai->where('nilai IS NOT NULL')->where('nilai !=', '');
+            }
+            $nilaiMasuk = $qNilai->countAllResults();
 
             if ($nilaiMasuk >= $targetNilai) {
                 $cek = $this->validasiModel->where('rombel_id', $r['id'])->first();

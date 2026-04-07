@@ -11,13 +11,23 @@ const LANG = window.LANG || {
     js_err_fetch: 'Gagal mengambil data:'
 };
 
-const defaultConfig = {
-  school_name: 'SMPIT Ad Durrah',
-  app_title: 'Rapor Digital',
-  academic_year: '2024/2025'
-};
-
-let config = { ...defaultConfig };
+// ==========================================
+// FUNGSI BARU: REFRESH DROPDOWN ROMBEL VIA URL
+// ==========================================
+function updateRombelDropdown() {
+    const tahunSelect = document.getElementById('filter_tahun');
+    const semesterSelect = document.getElementById('filter_semester');
+    
+    if (tahunSelect && semesterSelect) {
+        const tahun = tahunSelect.value;
+        const semester = semesterSelect.value;
+        
+        // Hanya reload jika kedua pilihan sudah terisi (tidak kosong)
+        if (tahun !== "" && semester !== "") {
+            window.location.href = `?tahun=${encodeURIComponent(tahun)}&semester=${encodeURIComponent(semester)}`;
+        }
+    }
+}
 
 document.addEventListener('click', function(e) {
   if (e.target.tagName === 'A' && e.target.closest('.submenu')) {
@@ -42,22 +52,6 @@ function closeMobileSidebar() {
   if(overlay) overlay.classList.remove('active');
   document.body.style.overflow = '';
 }
-
-function updateUI() {
-  const schoolName = config.school_name || defaultConfig.school_name;
-  const appTitle = config.app_title || defaultConfig.app_title;
-  
-  const elSidebarSchool = document.getElementById('sidebar-school-name');
-  if (elSidebarSchool) elSidebarSchool.textContent = schoolName;
-
-  const elSidebarApp = document.getElementById('sidebar-app-title');
-  if (elSidebarApp) elSidebarApp.textContent = appTitle;
-
-  const elHeaderSchool = document.getElementById('header-school-name');
-  if (elHeaderSchool) elHeaderSchool.textContent = schoolName;
-}
-
-updateUI();
 
 // ==========================================
 // MESIN CHART & AJAX DINAMIS

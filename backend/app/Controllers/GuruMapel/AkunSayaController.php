@@ -8,16 +8,27 @@ use App\Models\Admin\UserModel;
 class AkunSayaController extends GuruMapelBaseController
 {
     public function index()
-    {        
-    
+    {
         $userId = session()->get('id') ?? session()->get('user_id');
-    // ... kode lainnya ...
         $userModel = new UserModel();
         $user = $userModel->find($userId);
 
         if (!$user) return redirect()->to('/logout');
 
         $db = \Config\Database::connect();
+
+        // ======================================================================
+        // PERBAIKAN: Gunakan variabel $user, bukan $userData yang tidak terdefinisi
+        // ======================================================================
+        $guruTendikData = $db->table('guru_tendik')->where('user_id', $userId)->get()->getRowArray();
+
+        if ($guruTendikData) {
+            $user['nama_lengkap']    = !empty($user['nama_lengkap']) ? $user['nama_lengkap'] : $guruTendikData['nama_lengkap'];
+            $user['no_hp']           = !empty($user['no_hp']) ? $user['no_hp'] : $guruTendikData['no_hp'];
+            $user['no_darurat']      = !empty($user['no_darurat']) ? $user['no_darurat'] : $guruTendikData['no_darurat'];
+            $user['alamat_domisili'] = !empty($user['alamat_domisili']) ? $user['alamat_domisili'] : $guruTendikData['alamat_domisili'];
+            $user['email']           = !empty($user['email']) ? $user['email'] : $guruTendikData['email'];
+        }
 
         // Ambil Log Login
         $loginLogs = $db->table('login_logs')
@@ -32,50 +43,46 @@ class AkunSayaController extends GuruMapelBaseController
             $prefs = ['notif_login' => 0, 'two_factor' => 0, 'bahasa' => 'id', 'theme' => 'light', 'notif_email' => 0, 'notif_sistem' => 0, 'notif_update' => 0];
         }
 
-        // ==========================================================
-        // INI BAGIAN YANG DIUBAH: AKTIFKAN MULTI-BAHASA (LOCALE)
-        // ==========================================================
-        // 1. Ambil kode bahasa dari database (contoh: 'en', 'id', 'ar')
-        $bahasaTerpilih = $prefs['bahasa'] ?? 'id'; 
-        
-        // 2. Perintahkan CodeIgniter untuk pakai bahasa tersebut
-        \Config\Services::language()->setLocale($bahasaTerpilih);
-        // ==========================================================
+        // // AKTIFKAN MULTI-BAHASA (LOCALE)
+        // $bahasaTerpilih = $prefs['bahasa'] ?? 'id';
+        // \Config\Services::language()->setLocale($bahasaTerpilih);
 
         // Ambil Semua Role
         $dbRoles = method_exists($userModel, 'getUserRoles') ? $userModel->getUserRoles($userId) : [];
         $roleIds = array_column($dbRoles, 'role_id');
         if (!empty($user['role_id']) && !in_array($user['role_id'], $roleIds)) {
             $dbRoles[] = [
-                'role_id' => $user['role_id'], 
+                'role_id' => $user['role_id'],
                 'role_name' => session()->get('role_label')
             ];
         }
 
         $data = [
-            'title'       => lang('Akun.page_title'), // Title tab browser juga ikut berubah
-            'user'        => $user, 
-            'login_logs'  => $loginLogs, 
-            'prefs'       => $prefs,    
-            'semua_role'  => $dbRoles,  
+            'title'       => lang('Admin/Akun.page_title') ?? 'Akun Saya',
+            'user'        => $user,  // KUNCI UTAMA: Kirim $user yang sudah terisi!
+            'login_logs'  => $loginLogs,
+            'prefs'       => $prefs,
+            'semua_role'  => $dbRoles,
             'navigations' => $this->getSidebarMenu(),
             'color'       => $this->getColor(),
         ];
-        
-        return view('GuruMapel/akun-saya', $data); 
+
+        return view('GuruMapel/akun-saya', $data);
     }
 
     // ==========================================
-    // FUNGSI BARU UNTUK MENERIMA REQUEST AJAX
+    // PERBAIKAN: FUNGSI UPDATE SINKRON 2 TABEL
     // ==========================================
-
     public function updateProfile()
     {
+        if (!$this->request->isAJAX()) return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'Akses ditolak']);
+
         $userId = session()->get('id') ?? session()->get('user_id');
         $userModel = new UserModel();
+        $db = \Config\Database::connect();
 
         // Ambil data dari request POST
-        $data = [
+        $dataToUpdate = [
             'nama_lengkap'    => $this->request->getPost('nama_lengkap'),
             'email'           => $this->request->getPost('email'),
             'no_hp'           => $this->request->getPost('no_hp'),
@@ -84,19 +91,37 @@ class AkunSayaController extends GuruMapelBaseController
         ];
 
         // Validasi sederhana (pastikan email tidak dipakai user lain)
-        $cekEmail = $userModel->where('email', $data['email'])->where('id !=', $userId)->first();
+        $cekEmail = $userModel->where('email', $dataToUpdate['email'])->where('id !=', $userId)->first();
         if ($cekEmail) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Email sudah digunakan oleh akun lain!']);
         }
 
-        // Update ke database
-        if ($userModel->update($userId, $data)) {
-            // Update session nama agar di header/navbar langsung berubah
-            session()->set('nama_lengkap', $data['nama_lengkap']);
-            return $this->response->setJSON(['status' => 'success', 'message' => 'Profil berhasil diperbarui!']);
-        }
+        $db->transStart();
+        try {
+            // 1. Update ke tabel users
+            $userModel->update($userId, $dataToUpdate);
 
-        return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui profil.']);
+            // 2. Sinkronkan ke tabel guru_tendik
+            $cekGuru = $db->table('guru_tendik')->where('user_id', $userId)->get()->getRow();
+            if ($cekGuru) {
+                $db->table('guru_tendik')->where('user_id', $userId)->update($dataToUpdate);
+            }
+
+            // 3. Update session nama agar di header/navbar langsung berubah
+            if (!empty($dataToUpdate['nama_lengkap'])) {
+                session()->set('nama_lengkap', $dataToUpdate['nama_lengkap']);
+            }
+
+            $db->transComplete();
+
+            if ($db->transStatus() === false) {
+                return $this->response->setStatusCode(500)->setJSON(['status' => 'error', 'message' => 'Gagal melakukan sinkronisasi database.']);
+            }
+
+            return $this->response->setJSON(['status' => 'success', 'message' => 'Profil berhasil diperbarui!']);
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(500)->setJSON(['status' => 'error', 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()]);
+        }
     }
 
     public function updatePassword()
@@ -126,17 +151,25 @@ class AkunSayaController extends GuruMapelBaseController
     {
         $userId = session()->get('id') ?? session()->get('user_id');
         $db = \Config\Database::connect();
-        
+
+        $bahasaTerpilih = $this->request->getPost('bahasa'); // Tangkap bahasanya
+
         $data = [
             'user_id'      => $userId,
             'notif_login'  => $this->request->getPost('notif_login'),
             'two_factor'   => $this->request->getPost('two_factor'),
-            'bahasa'       => $this->request->getPost('bahasa'),
+            'bahasa'       => $bahasaTerpilih,
             'theme'        => $this->request->getPost('theme'),
             'notif_email'  => $this->request->getPost('notif_email'),
             'notif_sistem' => $this->request->getPost('notif_sistem'),
             'notif_update' => $this->request->getPost('notif_update'),
         ];
+
+        // ========================================================
+        // INI KUNCI UTAMANYA: Update Session Secara Instan!
+        // ========================================================
+        session()->set('lang', $bahasaTerpilih);
+        session()->set('locale', $bahasaTerpilih); 
 
         // Cek apakah user sudah punya data preferensi
         $cek = $db->table('user_preferences')->where('user_id', $userId)->get()->getRow();
@@ -152,31 +185,65 @@ class AkunSayaController extends GuruMapelBaseController
 
     public function uploadAvatar()
     {
+        if (!$this->request->isAJAX()) return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'Akses ditolak']);
+
         $userId = session()->get('id') ?? session()->get('user_id');
         $userModel = new UserModel();
-        $file = $this->request->getFile('avatar');
+        $userData = $userModel->find($userId);
+        $fileAvatar = $this->request->getFile('avatar');
 
-        if ($file && $file->isValid() && !$file->hasMoved()) {
-            // Validasi tipe dan ukuran
-            $newName = $file->getRandomName();
-            $file->move(FCPATH . 'assets/uploads/avatars', $newName);
+        if ($fileAvatar && $fileAvatar->isValid() && !$fileAvatar->hasMoved()) {
+            // Pastikan folder tujuan ada
+            // 1. TENTUKAN FOLDER UNIVERSAL
+            $path = FCPATH . 'assets/uploads/avatars/';
+            if (!is_dir($path)) mkdir($path, 0777, true);
 
-            // Hapus foto lama jika ada
-            $oldUser = $userModel->find($userId);
-            if (!empty($oldUser['foto_profil']) && file_exists(FCPATH . 'assets/uploads/avatars/' . $oldUser['foto_profil'])) {
-                unlink(FCPATH . 'assets/uploads/avatars/' . $oldUser['foto_profil']);
+            // 2. BACA VARIABEL USER (Mendukung $user maupun $userData)
+            $currentUser = isset($userData) ? $userData : (isset($user) ? $user : []);
+
+            // 3. HAPUS FOTO LAMA
+            if (!empty($currentUser['foto_profil']) && file_exists($path . $currentUser['foto_profil'])) {
+                unlink($path . $currentUser['foto_profil']);
             }
 
-            // Simpan nama file ke DB
-            $userModel->update($userId, ['foto_profil' => $newName]);
+            // 4. SIMPAN FILE ASLI SEMENTARA
+            $originalName = $fileAvatar->getRandomName();
+            $fileAvatar->move($path, $originalName);
 
+            // 5. SIAPKAN NAMA WEBP BARU
+            $webpName = pathinfo($originalName, PATHINFO_FILENAME) . '.webp';
+            $finalName = $originalName; // Fallback
+
+            // 6. PROSES KONVERSI KE WEBP
+            try {
+                \Config\Services::image()
+                    ->withFile($path . $originalName)
+                    ->fit(250, 250, 'center')
+                    ->convert(IMAGETYPE_WEBP)
+                    ->save($path . $webpName, 75);
+
+                if (file_exists($path . $webpName)) {
+                    unlink($path . $originalName); // Hapus file asli
+                    $finalName = $webpName;
+                }
+            } catch (\Exception $e) {
+                // Abaikan jika server tidak dukung WebP
+            }
+
+            // 7. UPDATE DATABASE DAN SESSION
+            // Pastikan $userModel sudah dideklarasikan di luar blok ini
+            $userModel->update($userId, ['foto_profil' => $finalName]);
+            session()->set('foto_profil', $finalName);
+
+            // 8. KEMBALIKAN JSON DENGAN JALUR YANG BENAR (avatars)
             return $this->response->setJSON([
-                'status' => 'success', 
-                'message' => 'Foto profil berhasil diunggah!',
-                'new_avatar_url' => base_url('assets/uploads/avatars/' . $newName)
+                'status'  => 'success',
+                'message' => 'Foto profil berhasil disimpan!',
+                'new_avatar_url' => base_url('assets/uploads/avatars/' . $finalName),
+                'token'   => csrf_hash()
             ]);
         }
 
-        return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal mengunggah foto.']);
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal mengunggah foto atau file tidak valid.']);
     }
 }

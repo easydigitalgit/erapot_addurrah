@@ -11,6 +11,7 @@
   :root {
     --warna-primary: <?= $color['warna_primary'] ?>;
     --warna-secondary: <?= $color['warna_secondary'] ?>;
+    --warna-scroll: <?= $color['warna_primary'] ?>;
   }
   
   .glass-card {
@@ -47,6 +48,17 @@
       height: 1.25rem;
       cursor: pointer;
   }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--warna-scroll);
+    border-radius: 3px;
+  }
 </style>
 <?= $this->endSection() ?>
 
@@ -68,24 +80,23 @@
         
         <div class="relative z-10 flex flex-col md:flex-row items-center gap-6">
             <?php 
-                $namaSiswa = $siswa['nama_lengkap'] ?? 'Siswa';
-                $inisial = strtoupper(substr($namaSiswa, 0, 2)); 
-                
-                $fotoProfil = $siswa['foto_profil'] ?? null;
-                $pathFisik = FCPATH . 'assets/uploads/siswa/' . $fotoProfil;
-                
-                if ($fotoProfil && file_exists($pathFisik)) {
-                    $avatarUrl = base_url('assets/uploads/siswa/' . $fotoProfil);
+                $fotoProfil  = $user['foto_profil'] ?? session()->get('foto_profil');
+                $namaLengkap = $user['nama_lengkap'] ?? session()->get('nama_lengkap') ?? session()->get('username') ?? 'User';
+                $inisial     = strtoupper(substr($namaLengkap, 0, 2));
+
+                if (!empty($fotoProfil) && file_exists(FCPATH . 'assets/uploads/avatars/' . $fotoProfil)) {
+                    $avatarUrl = base_url('assets/uploads/avatars/' . $fotoProfil);
                 } else {
-                    $avatarUrl = "https://ui-avatars.com/api/?name={$inisial}&background=ffffff&color=1F7A4D&size=160&bold=true&rounded=true";
+                    $avatarUrl = "https://ui-avatars.com/api/?name={$inisial}&background=1F7A4D&color=fff&size=160&bold=true&rounded=true";
                 }
             ?>
             
-            <div class="avatar-upload w-24 h-24 md:w-32 md:h-32 relative group shrink-0 z-10">
+            <div class="avatar-upload w-32 h-32 md:w-40 md:h-40 relative group shrink-0">
                 <img src="<?= $avatarUrl ?>" 
-                     alt="Avatar" 
-                     class="w-full h-full rounded-full object-cover border-4 border-white/30 shadow-xl transition-all duration-300 bg-white dark:bg-slate-800" 
-                     id="avatarImage">
+                    alt="Avatar" 
+                    class="w-full h-full rounded-full object-cover border-4 border-white/30 shadow-md transition-all duration-300" 
+                    id="avatarImage" 
+                    onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= urlencode($inisial) ?>&background=1F7A4D&color=fff&size=160&bold=true&rounded=true';">
                 
                 <label for="avatarUpload" class="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/60 rounded-full cursor-pointer transition-all duration-300 opacity-0 group-hover:opacity-100">
                     <svg class="w-8 h-8 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">

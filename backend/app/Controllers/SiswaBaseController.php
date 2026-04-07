@@ -12,15 +12,6 @@ class SiswaBaseController extends BaseController
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
-
-         $session = \Config\Services::session();
-        if ($session->has('bahasa')) {
-            $locale = $session->get('bahasa');
-            $this->request->setLocale($locale);
-            \Config\Services::language()->setLocale($locale);
-            config('App')->defaultLocale = $locale;
-        }
-
         // --- IDENTITAS ROLE UNTUK NAVBAR & FOOTER ---
         $this->data['role_lang'] = 'Siswa'; 
 

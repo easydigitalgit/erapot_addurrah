@@ -5,6 +5,11 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('styles') ?>
+<style>
+    :root {
+        --warna-scroll: <?= $color['warna_primary'] ?>;
+    }
+</style>
 <link rel="stylesheet" href="<?= base_url('assets/css/Admin/siswa.css') ?>">
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
@@ -126,14 +131,13 @@
                 <option value="IX"><?= lang('Admin/Siswa.class') ?> IX</option>
             </select>
         </div>
-
         <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2"><?= lang('Admin/Siswa.status') ?></label>
             <select id="filterStatus" class="w-full px-4 py-2.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm font-medium text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer shadow-sm transition-all appearance-none">
                 <option value=""><?= lang('Admin/Siswa.all_statuses') ?></option>
                 <option value="Aktif" selected><?= lang('Admin/Siswa.active') ?></option>
-                <option value="Alumni"><?= lang('Admin/Siswa.alumni') ?></option>
-                <option value="Nonaktif"><?= lang('Admin/Siswa.inactive') ?></option>
+                <option value="Lulus"><?= lang('Admin/Siswa.alumni') ?></option>
+                <option value="Nonaktif">Nonaktif (Pindah/Keluar)</option>
             </select>
         </div>
 
@@ -745,6 +749,39 @@
                         </div>
                     </div>
 
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-emerald-100 dark:border-emerald-800/50 mt-6">
+                        <h4 class="text-md font-bold text-emerald-600 dark:text-emerald-400 border-b border-emerald-100 dark:border-emerald-800/50 pb-2 mb-4">H. Ekstrakurikuler (Maksimal 3)</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1">Pilihan Ekskul 1</label>
+                                <select name="ekskul_1" id="ekskul_1" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white cursor-pointer font-semibold">
+                                    <option value="">-- Tidak Memilih --</option>
+                                    <?php foreach ($ekskulList as $ek): ?>
+                                        <option value="<?= $ek['id'] ?>"><?= $ek['nama_ekskul'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1">Pilihan Ekskul 2</label>
+                                <select name="ekskul_2" id="ekskul_2" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white cursor-pointer font-semibold">
+                                    <option value="">-- Tidak Memilih --</option>
+                                    <?php foreach ($ekskulList as $ek): ?>
+                                        <option value="<?= $ek['id'] ?>"><?= $ek['nama_ekskul'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1">Pilihan Ekskul 3</label>
+                                <select name="ekskul_3" id="ekskul_3" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white cursor-pointer font-semibold">
+                                    <option value="">-- Tidak Memilih --</option>
+                                    <?php foreach ($ekskulList as $ek): ?>
+                                        <option value="<?= $ek['id'] ?>"><?= $ek['nama_ekskul'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="flex flex-col sm:flex-row gap-3 pt-4 sticky bottom-0 bg-gray-50/90 dark:bg-slate-900/90 backdrop-blur z-10 pb-2 transition-colors mt-4">
                         <button type="button" onclick="closeAddModal()" class="flex-1 px-6 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-300 font-semibold rounded-xl hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors shadow-sm outline-none"><?= lang('Admin/Siswa.cancel') ?></button>
                         <button type="submit" class="flex-1 px-6 py-3 bg-[<?= $color['warna_primary'] ?>] text-white font-semibold rounded-xl transition-all shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2 outline-none">
@@ -802,7 +839,43 @@
 <?= $this->section('scripts') ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    const LANG = <?= json_encode(lang('Admin/Siswa')) ?>;
+    // Memetakan kunci bahasa secara manual agar terbaca sempurna oleh JavaScript
+    const LANG = {
+        js_loading_data: <?= json_encode(lang('Admin/Siswa.js_loading_data')) ?>,
+        js_server_error: <?= json_encode(lang('Admin/Siswa.js_server_error')) ?>,
+        js_select_rombel: <?= json_encode(lang('Admin/Siswa.js_select_rombel')) ?>,
+        not_in_class: <?= json_encode(lang('Admin/Siswa.not_in_class')) ?>,
+        js_candidate: <?= json_encode(lang('Admin/Siswa.js_candidate')) ?>,
+        js_not_set: <?= json_encode(lang('Admin/Siswa.js_not_set')) ?>,
+        js_no_data: <?= json_encode(lang('Admin/Siswa.js_no_data')) ?>,
+        js_showing: <?= json_encode(lang('Admin/Siswa.js_showing')) ?>,
+        js_from: <?= json_encode(lang('Admin/Siswa.js_from')) ?>,
+        js_data: <?= json_encode(lang('Admin/Siswa.js_data')) ?>,
+        js_view_detail: <?= json_encode(lang('Admin/Siswa.js_view_detail')) ?>,
+        js_edit: <?= json_encode(lang('Admin/Siswa.js_edit')) ?>,
+        js_add_student: <?= json_encode(lang('Admin/Siswa.js_add_student')) ?>,
+        js_edit_student: <?= json_encode(lang('Admin/Siswa.js_edit_student')) ?>,
+        btn_update: <?= json_encode(lang('Admin/Siswa.btn_update')) ?>,
+        js_saving: <?= json_encode(lang('Admin/Siswa.js_saving')) ?>,
+        js_success: <?= json_encode(lang('Admin/Siswa.js_success')) ?>,
+        js_failed: <?= json_encode(lang('Admin/Siswa.js_failed')) ?>,
+        js_select_district: <?= json_encode(lang('Admin/Siswa.js_select_district')) ?>,
+        js_db_error: <?= json_encode(lang('Admin/Siswa.js_db_error')) ?>,
+        js_select_village: <?= json_encode(lang('Admin/Siswa.js_select_village')) ?>,
+        js_loading_village: <?= json_encode(lang('Admin/Siswa.js_loading_village')) ?>,
+        js_processing: <?= json_encode(lang('Admin/Siswa.js_processing')) ?>,
+        js_info: <?= json_encode(lang('Admin/Siswa.js_info')) ?>,
+        js_import_warning: <?= json_encode(lang('Admin/Siswa.js_import_warning')) ?>,
+        js_import_success_title: <?= json_encode(lang('Admin/Siswa.js_import_success_title')) ?>,
+        js_connection_lost: <?= json_encode(lang('Admin/Siswa.js_connection_lost')) ?>,
+        js_selected: <?= json_encode(lang('Admin/Siswa.js_selected')) ?>,
+        active: <?= json_encode(lang('Admin/Siswa.active')) ?>,
+        graduated: <?= json_encode(lang('Admin/Siswa.graduated')) ?>,
+        moved: <?= json_encode(lang('Admin/Siswa.moved')) ?>,
+        dropped_out: <?= json_encode(lang('Admin/Siswa.dropped_out')) ?>,
+        form_subtitle: <?= json_encode(lang('Admin/Siswa.form_subtitle')) ?>,
+        save_all_data: <?= json_encode(lang('Admin/Siswa.save_all_data')) ?>
+    };
     const APP_LANG = document.documentElement.lang || 'id-ID';
 </script>
 <script src="<?= base_url('assets/js/Admin/siswa.js') ?>?v=<?= time() ?>"></script>

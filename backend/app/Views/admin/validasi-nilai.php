@@ -5,6 +5,9 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('styles') ?>
+<style>
+    :root { --warna-scroll: <?= $color['warna_primary'] ?>; }
+</style>
 <link rel="stylesheet" href="<?= base_url('assets/css/Admin/validasi-nilai.css') ?>">
 <?= $this->endSection() ?>
 
@@ -190,8 +193,17 @@
 
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-[<?= $color['warna_primary'] ?>]/10 flex items-center justify-center font-bold text-[<?= $color['warna_primary'] ?>] border border-[<?= $color['warna_primary'] ?>]/20 group-hover:scale-105 transition-transform duration-300">
-                                    <?= substr($row['wali_kelas'], 0, 2) ?>
+                                <div class="w-10 h-10 rounded-xl bg-[<?= $color['warna_primary'] ?>]/10 flex items-center justify-center font-bold text-[<?= $color['warna_primary'] ?>] border border-[<?= $color['warna_primary'] ?>]/20 group-hover:scale-105 transition-transform duration-300 overflow-hidden">
+                                    <?php 
+                                        $namaWali = $row['wali_kelas'];
+                                        $inisial = strtoupper(substr($namaWali !== 'Belum Diatur' ? $namaWali : 'U', 0, 2));
+                                        if (!empty($row['foto_profil'])): 
+                                            $fotoUrl = base_url('assets/uploads/avatars/' . $row['foto_profil']) . '?v=' . time();
+                                    ?>
+                                        <img src="<?= $fotoUrl ?>" class="w-full h-full object-cover" onerror="this.onerror=null; this.outerHTML='<?= $inisial ?>';">
+                                    <?php else: ?>
+                                        <?= $inisial ?>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="min-w-0">
                                     <p class="font-bold text-gray-800 dark:text-white truncate transition-colors"><?= $row['wali_kelas'] ?></p>
@@ -227,7 +239,7 @@
 
                        <td class="px-6 py-4 text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <button onclick="showDetailValidasi(<?= $row['id'] ?>, '<?= htmlspecialchars($row['rombel'], ENT_QUOTES, 'UTF-8') ?>', '<?= htmlspecialchars($row['wali_kelas'], ENT_QUOTES, 'UTF-8') ?>')" 
+                                <button onclick="showDetailValidasi(<?= $row['id'] ?>, '<?= htmlspecialchars($row['rombel'], ENT_QUOTES, 'UTF-8') ?>', '<?= htmlspecialchars($row['wali_kelas'], ENT_QUOTES, 'UTF-8') ?>', '<?= htmlspecialchars($row['foto_profil'] ?? '', ENT_QUOTES, 'UTF-8') ?>')"
                                         class="p-2.5 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-600 text-blue-600 dark:text-blue-400 hover:text-white rounded-xl transition-all shadow-sm outline-none transform hover:scale-105" title="Lihat Detail Progress Mapel">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                                 </button>

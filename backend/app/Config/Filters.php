@@ -29,6 +29,7 @@ class Filters extends BaseFilters
         'role'          => \App\Filters\RoleFilter::class,
         'auth'          => \App\Filters\AuthFilter::class,
         'permission'    => \App\Filters\PermissionFilter::class,    
+        'langfilter'    => \App\Filters\LanguangeFilter::class,
     ];
 
     public array $required = [
@@ -48,6 +49,7 @@ class Filters extends BaseFilters
             // Tambahkan 'cors' di sini agar jalan di SEMUA request
             'cors', 
             // 'honeypot',
+            'langfilter',
             // 'csrf',
             // 'invalidchars',
         ],

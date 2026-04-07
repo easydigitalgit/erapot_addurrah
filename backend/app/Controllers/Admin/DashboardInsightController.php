@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminBaseController;
@@ -11,20 +12,37 @@ class DashboardInsightController extends AdminBaseController
         $rombelModel = new RombelModel();
         $db = \Config\Database::connect();
 
-        // AMBIL TAHUN AJARAN UNIK DARI TABEL tahun_ajaran
         $tahunQuery = $db->query("SELECT DISTINCT tahun FROM tahun_ajaran ORDER BY tahun DESC")->getResultArray();
         $tahunAjaran = array_column($tahunQuery, 'tahun');
+
+        // 🚀 TANGKAP FILTER DARI URL
+        $getTahun = $this->request->getGet('tahun');
+        $getSemester = $this->request->getGet('semester');
+
+        if ($getTahun && $getSemester) {
+            $taAktif = $db->table('tahun_ajaran')->where('tahun', $getTahun)->where('semester', $getSemester)->get()->getRowArray();
+        } else {
+            $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        }
+
+        $idTaAktif = $taAktif ? $taAktif['id'] : 0;
+        
+        // Fallback jika TA tidak ditemukan
+        $active_tahun = $taAktif ? $taAktif['tahun'] : ($getTahun ?? ($tahunAjaran[0] ?? null));
+        $active_semester = $taAktif ? $taAktif['semester'] : ($getSemester ?? 'Ganjil');
 
         $data = [
             'user' => 'Admin',
             'navigations' => $this->getSidebarMenu(),
             'color' => $this->getColor(),
             'tahun_ajaran' => $tahunAjaran,
-            // Rombel diurutkan berdasarkan tingkat lalu nama
-            'rombels' => $rombelModel->orderBy('tingkat', 'ASC')->orderBy('nama_rombel', 'ASC')->findAll()
+            'active_tahun' => $active_tahun,
+            'active_semester' => $active_semester,
+            // 🚀 HANYA TAMPILKAN ROMBEL DARI TAHUN AJARAN TERPILIH
+            'rombels' => $rombelModel->where('id_tahun_ajaran', $idTaAktif)->orderBy('tingkat', 'ASC')->orderBy('nama_rombel', 'ASC')->findAll()
         ];
 
-        return view('admin/dashboard-insight', $data); 
+        return view('admin/dashboard-insight', $data);
     }
 
     public function getChartData()
@@ -41,17 +59,32 @@ class DashboardInsightController extends AdminBaseController
         // ---------------------------------------------------------
         // 1. BASE JOIN & FILTER UTAMA 
         // ---------------------------------------------------------
-        $baseJoin = "FROM nilai_akademik n 
+        $tabelAcuan = $db->tableExists('nilai_akademik') ? 'nilai_akademik' : ($db->tableExists('nilai_formatif') ? 'nilai_formatif' : 'nilai_sumatif');
+
+        $baseJoin = "FROM $tabelAcuan n 
                      JOIN rombel r ON n.rombel_id = r.id 
                      LEFT JOIN tahun_ajaran ta ON ta.id = r.id_tahun_ajaran ";
 
         $whereClause = "WHERE 1=1";
         $bindings = [];
 
-        if (!empty($tahun)) { $whereClause .= " AND ta.tahun = ?"; $bindings[] = $tahun; }
-        if (!empty($semester)) { $whereClause .= " AND n.semester = ?"; $bindings[] = $semester; }
-        if (!empty($tingkat)) { $whereClause .= " AND r.tingkat = ?"; $bindings[] = $tingkat; }
-        if (!empty($rombel_id)) { $whereClause .= " AND n.rombel_id = ?"; $bindings[] = $rombel_id; }
+        if (!empty($tahun)) {
+            $whereClause .= " AND ta.tahun = ?";
+            $bindings[] = $tahun;
+        }
+        // Cek secara aman apakah tabel acuan memiliki field semester
+        if (!empty($semester) && $db->fieldExists('semester', $tabelAcuan)) {
+            $whereClause .= " AND n.semester = ?";
+            $bindings[] = $semester;
+        }
+        if (!empty($tingkat)) {
+            $whereClause .= " AND r.tingkat = ?";
+            $bindings[] = $tingkat;
+        }
+        if (!empty($rombel_id)) {
+            $whereClause .= " AND n.rombel_id = ?";
+            $bindings[] = $rombel_id;
+        }
 
         // ---------------------------------------------------------
         // 2. DATA STATISTIK AKADEMIK
@@ -67,11 +100,13 @@ class DashboardInsightController extends AdminBaseController
             $baseJoin $whereClause GROUP BY n.siswa_id
         ", $bindings)->getResultArray();
 
-        $tuntas = 0; $bimbingan = 0; $remedial = 0;
-        foreach($qStudentAvgs as $sa) {
+        $tuntas = 0;
+        $bimbingan = 0;
+        $remedial = 0;
+        foreach ($qStudentAvgs as $sa) {
             $nilai = (float)$sa['avg_siswa'];
-            if($nilai >= 75) $tuntas++;
-            else if($nilai >= 70) $bimbingan++;
+            if ($nilai >= 75) $tuntas++;
+            else if ($nilai >= 70) $bimbingan++;
             else $remedial++;
         }
 
@@ -84,15 +119,24 @@ class DashboardInsightController extends AdminBaseController
         $tahfidzPct = 0;
         $charExcellent = 0;
         $specialNotes = 0;
-        $attendanceRate = 100; 
-        
+        $attendanceRate = 100;
+
         $studentJoin = "FROM siswa s JOIN rombel r ON s.rombel_id = r.id LEFT JOIN tahun_ajaran ta ON r.id_tahun_ajaran = ta.id";
         $studentWhere = "WHERE s.status_siswa = 'Aktif'";
         $studentBindings = [];
 
-        if (!empty($tahun)) { $studentWhere .= " AND ta.tahun = ?"; $studentBindings[] = $tahun; }
-        if (!empty($tingkat)) { $studentWhere .= " AND r.tingkat = ?"; $studentBindings[] = $tingkat; }
-        if (!empty($rombel_id)) { $studentWhere .= " AND r.id = ?"; $studentBindings[] = $rombel_id; }
+        if (!empty($tahun)) {
+            $studentWhere .= " AND ta.tahun = ?";
+            $studentBindings[] = $tahun;
+        }
+        if (!empty($tingkat)) {
+            $studentWhere .= " AND r.tingkat = ?";
+            $studentBindings[] = $tingkat;
+        }
+        if (!empty($rombel_id)) {
+            $studentWhere .= " AND r.id = ?";
+            $studentBindings[] = $rombel_id;
+        }
 
         if ($db->tableExists('setoran_tahfidz') && $totalSiswa > 0) {
             $qTahfidz = $db->query("SELECT COUNT(DISTINCT st.siswa_id) as total FROM setoran_tahfidz st WHERE st.siswa_id IN (SELECT s.id $studentJoin $studentWhere)", $studentBindings)->getRowArray();
@@ -102,7 +146,7 @@ class DashboardInsightController extends AdminBaseController
 
         if ($db->tableExists('catatan_akhlak')) {
             $qChar = $db->query("SELECT ca.kategori_akhlak, COUNT(ca.id) as total FROM catatan_akhlak ca WHERE ca.siswa_id IN (SELECT s.id $studentJoin $studentWhere) GROUP BY ca.kategori_akhlak", $studentBindings)->getResultArray();
-            foreach($qChar as $c) {
+            foreach ($qChar as $c) {
                 if ($c['kategori_akhlak'] == 'Sangat Baik') $charExcellent = $c['total'];
                 if ($c['kategori_akhlak'] == 'Perlu Pembinaan') $specialNotes = $c['total'];
             }
@@ -116,29 +160,48 @@ class DashboardInsightController extends AdminBaseController
             $baseJoin $whereClause 
             GROUP BY r.tingkat ORDER BY r.tingkat ASC
         ", $bindings)->getResultArray();
-        
-        $levelLabels = []; $levelData = [];
-        foreach($qLevel as $lvl) {
+
+        $levelLabels = [];
+        $levelData = [];
+        foreach ($qLevel as $lvl) {
             $levelLabels[] = 'Kelas ' . $lvl['tingkat'];
             $levelData[] = round((float)$lvl['avg_nilai'], 1);
         }
 
         $trendWhere = "WHERE 1=1";
         $trendBindings = [];
-        if (!empty($tingkat)) { $trendWhere .= " AND r.tingkat = ?"; $trendBindings[] = $tingkat; }
-        if (!empty($rombel_id)) { $trendWhere .= " AND n.rombel_id = ?"; $trendBindings[] = $rombel_id; }
+        if (!empty($tingkat)) {
+            $trendWhere .= " AND r.tingkat = ?";
+            $trendBindings[] = $tingkat;
+        }
+        if (!empty($rombel_id)) {
+            $trendWhere .= " AND n.rombel_id = ?";
+            $trendBindings[] = $rombel_id;
+        }
 
-        $qTrend = $db->query("
-            SELECT ta.tahun as tahun_ajaran, n.semester, AVG(n.nilai_angka) as avg_nilai 
-            $baseJoin $trendWhere
-            GROUP BY ta.tahun, n.semester
-            ORDER BY ta.tahun DESC, n.semester DESC LIMIT 5
-        ", $trendBindings)->getResultArray();
+        $hasSemesterField = $db->fieldExists('semester', $tabelAcuan);
 
-        $qTrend = array_reverse($qTrend); 
+        if ($hasSemesterField) {
+            $qTrend = $db->query("
+                SELECT ta.tahun as tahun_ajaran, n.semester, AVG(n.nilai_angka) as avg_nilai 
+                $baseJoin $trendWhere
+                GROUP BY ta.tahun, n.semester
+                ORDER BY ta.tahun DESC, n.semester DESC LIMIT 5
+            ", $trendBindings)->getResultArray();
+        } else {
+            $qTrend = $db->query("
+                SELECT ta.tahun as tahun_ajaran, 'Ganjil' as semester, AVG(n.nilai_angka) as avg_nilai 
+                $baseJoin $trendWhere
+                GROUP BY ta.tahun
+                ORDER BY ta.tahun DESC LIMIT 5
+            ", $trendBindings)->getResultArray();
+        }
 
-        $trendLabels = []; $trendData = [];
-        foreach($qTrend as $tr) {
+        $qTrend = array_reverse($qTrend);
+
+        $trendLabels = [];
+        $trendData = [];
+        foreach ($qTrend as $tr) {
             if (!$tr['tahun_ajaran']) continue;
             $thn = explode('/', $tr['tahun_ajaran']);
             $shortThn = isset($thn[1]) ? substr($thn[0], -2) . '/' . substr($thn[1], -2) : $tr['tahun_ajaran'];
@@ -146,7 +209,6 @@ class DashboardInsightController extends AdminBaseController
             $trendLabels[] = "$sem $shortThn";
             $trendData[] = round((float)$tr['avg_nilai'], 1);
         }
-
         // ---------------------------------------------------------
         // 5. LOGIC REKOMENDASI DINAMIS (AI SEDERHANA)
         // ---------------------------------------------------------
@@ -156,14 +218,22 @@ class DashboardInsightController extends AdminBaseController
             GROUP BY r.id ORDER BY avg_nilai DESC LIMIT 1
         ", $bindings)->getRowArray();
 
+        // Menyusun string nama kelas (contoh: "Kelas VII Granit")
+        $nama_kelas_tertinggi = $bestClass ? "Kelas " . $bestClass['tingkat'] . " " . $bestClass['nama_rombel'] : "-";
+        $nilai_tertinggi      = $bestClass ? round($bestClass['avg_nilai'], 1) : 0;
+
+        // Default pesan jika data kurang
         $goodMsg = "Belum ada data nilai yang cukup untuk dianalisis.";
         if ($bestClass && $bestClass['avg_nilai'] > 0) {
-            $goodMsg = "Kelas " . $bestClass['tingkat'] . " " . $bestClass['nama_rombel'] . " menunjukkan rata-rata tertinggi (" . round($bestClass['avg_nilai'], 1) . "). Pertahankan metode dan kualitas pembelajaran.";
+            // Memanggil translasi dan mengirim data nama kelas & nilai
+            $goodMsg = lang('Admin/DashboardInsight.alert_increase_desc', [$nama_kelas_tertinggi, $nilai_tertinggi]);
         }
 
+        // Pesan Warning
         $warnMsg = "Luar biasa! Seluruh siswa saat ini terpantau berada di atas batas minimal ketuntasan.";
         if ($remedial > 0) {
-            $warnMsg = "Terdapat " . $remedial . " siswa yang membutuhkan perhatian khusus. Disarankan segera menjadwalkan bimbingan atau remedial terstruktur.";
+            // Memanggil translasi dan mengirim data jumlah siswa
+            $warnMsg = lang('Admin/DashboardInsight.alert_attention_desc', [$remedial]);
         } else if ($bimbingan > 0) {
             $warnMsg = "Ada " . $bimbingan . " siswa di ambang batas (Perlu Bimbingan). Pastikan untuk memberikan motivasi ekstra agar tidak turun ke zona remedial.";
         }
@@ -183,6 +253,7 @@ class DashboardInsightController extends AdminBaseController
                 'attendance_rate' => $attendanceRate,
                 'special_notes'   => $specialNotes
             ],
+            // Memasukkan array rekomendasi dengan benar
             'recommendations' => [
                 'good'    => $goodMsg,
                 'warning' => $warnMsg

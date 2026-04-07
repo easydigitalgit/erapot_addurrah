@@ -12,69 +12,67 @@ class AdminBaseController extends BaseController
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
-
-        // --- MANAJEMEN BAHASA KETAT ---
-        $session = \Config\Services::session();
-        if ($session->has('bahasa')) {
-            $locale = $session->get('bahasa');
-            $this->request->setLocale($locale);
-            \Config\Services::language()->setLocale($locale);
-            config('App')->defaultLocale = $locale;
-        }
-
         // --- IDENTITAS ROLE UNTUK NAVBAR & FOOTER ---
-        $this->data['role_lang'] = 'Admin'; 
+        $this->data['role_lang'] = 'Admin';
 
-        $this->data['sidebar_menu'] = $this->getSidebarMenu(); 
+        $this->data['sidebar_menu'] = $this->getSidebarMenu();
     }
 
     protected function getSidebarMenu()
     {
         $sub_dashboard = [
-            ['url' => '/admin/dashboard-statistik', 'label' => lang('Sidebar.school_stats')],
-            ['url' => '/admin/dashboard-insight', 'label' => lang('Sidebar.academic_insight')],
+            ['url' => 'admin/dashboard-statistik', 'label' => lang('Sidebar.school_stats')],
+            ['url' => 'admin/dashboard-insight', 'label' => lang('Sidebar.academic_insight')],
         ];
-    
+
         $sub_manajemen_pengguna = [
-            ['url' => '/admin/users', 'label' => lang('Sidebar.users')],
-            ['url' => '/admin/siswa', 'label' => lang('Sidebar.students')],
-            ['url' => '/admin/guru-tendik', 'label' => lang('Sidebar.teachers_staff')],
-            ['url' => '/admin/orangtua', 'label' => lang('Sidebar.parents')],
+            ['url' => 'admin/users', 'label' => lang('Sidebar.users')],
+            ['url' => 'admin/siswa', 'label' => lang('Sidebar.students')],
+            ['url' => 'admin/guru-tendik', 'label' => lang('Sidebar.teachers_staff')],
+            ['url' => 'admin/orangtua', 'label' => lang('Sidebar.parents')],
         ];
-    
+
         $sub_master_akademik = [
-            ['url' => '/admin/tingkat-rombel', 'label' => lang('Sidebar.level_class')],
-            ['url' => '/admin/mata-pelajaran', 'label' => lang('Sidebar.subjects')],
-            ['url' => '/admin/wali-kelas', 'label' => lang('Sidebar.homeroom_teachers')],
-            ['url' => '/admin/mapping-mapel', 'label' => lang('Sidebar.subject_mapping')],
+            ['url' => 'admin/tingkat-rombel', 'label' => lang('Sidebar.level_class')],
+            ['url' => 'admin/mata-pelajaran', 'label' => lang('Sidebar.subjects')],
+            ['url' => 'admin/wali-kelas', 'label' => lang('Sidebar.homeroom_teachers')],
+            ['url' => 'admin/mapping-mapel', 'label' => lang('Sidebar.subject_mapping')],
+            ['url' => 'admin/riwayat-guru', 'label' => 'Riwayat Jabatan Guru'],
+
+            // --- MENU BARU: MASTER LINGKUP MATERI (LM) ---
+            ['url' => 'admin/master-lm', 'label' => lang('Sidebar.l_m')],
+            
+            // --- MENU BARU: MASTER EKSTRAKURIKULER ---
+            ['url' => 'admin/master-ekskul', 'label' => lang('Sidebar.ekskul')],
         ];
-    
+
         $sub_konfigurasi = [
-            ['url' => '/admin/tahun-ajaran', 'label' => lang('Sidebar.academic_year')],
-            ['url' => '/admin/kurikulum', 'label' => lang('Sidebar.curriculum')],
-            ['url' => '/admin/jadwal-pelajaran', 'label' => lang('Sidebar.schedule')],
-            ['url' => '/admin/target-tahfidz', 'label' => lang('Sidebar.tahfidz_target')],
-            ['url' => '/admin/aturan-nilai', 'label' => lang('Sidebar.scoring_rules')],
+            ['url' => 'admin/tahun-ajaran', 'label' => lang('Sidebar.academic_year')],
+            ['url' => 'admin/kurikulum', 'label' => lang('Sidebar.curriculum')],
+            ['url' => 'admin/jadwal-pelajaran', 'label' => lang('Sidebar.schedule')],
+            ['url' => 'admin/target-tahfidz', 'label' => lang('Sidebar.tahfidz_target')],
+            ['url' => 'admin/aturan-nilai', 'label' => lang('Sidebar.scoring_rules')],
         ];
-    
+
         $sub_penilaian = [
-            ['url' => '/admin/input-nilai-siswa', 'label' => lang('Sidebar.input_grades')],
-            ['url' => '/admin/monitoring-input', 'label' => lang('Sidebar.monitor_grades')],
-            ['url' => '/admin/validasi-nilai', 'label' => lang('Sidebar.validate_grades')],
+            ['url' => 'admin/monitoring-nilai-siswa', 'label' => lang('Sidebar.input_grades')],
+            ['url' => 'admin/monitoring-input', 'label' => lang('Sidebar.monitor_grades')],
+            ['url' => 'admin/validasi-nilai', 'label' => lang('Sidebar.validate_grades')],
         ];
-    
+
         $sub_rapor = [
-            ['url' => '/admin/preview-rapor', 'label' => lang('Sidebar.preview_report')],
-            ['url' => '/admin/cetak-rapor', 'label' => lang('Sidebar.print_report')], 
-            ['url' => '/admin/cetak-leger', 'label' => lang('Sidebar.ledger')],
+            ['url' => 'admin/cetak-rapor', 'label' => lang('Sidebar.print_report')],
+            ['url' => 'admin/tahfidz', 'label' => 'Cetak Rapor Nilai Tahfiz', 'active' => url_is('admin/tahfidz*')],
+            ['url' => 'admin/cetak-leger', 'label' => lang('Sidebar.ledger')],
+            ['url' => 'admin/cetak-leger-ekskul', 'label' => lang('Sidebar.leger_ekskul')],
         ];
-    
+
         $sub_sistem = [
-            ['url' => '/admin/profile-sekolah', 'label' => lang('Sidebar.school_profile')],
-            ['url' => '/admin/hak-akses', 'label' => lang('Sidebar.access_rights')],
-            ['url' => '/admin/backup', 'label' => lang('Sidebar.backup')],
+            ['url' => 'admin/profile-sekolah', 'label' => lang('Sidebar.school_profile')],
+            ['url' => 'admin/hak-akses', 'label' => lang('Sidebar.access_rights')],
+            ['url' => 'admin/backup', 'label' => lang('Sidebar.backup')],
         ];
-    
+
         return [
             'dashboard' => [
                 'url'      => '',
@@ -119,7 +117,7 @@ class AdminBaseController extends BaseController
                 'submenu'  => $sub_sistem
             ],
             'akun_saya' => [
-                'url'      => '/admin/akun-saya',
+                'url'      => 'admin/akun-saya',
                 'label'    => lang('Sidebar.akun_saya'),
                 'icon'     => '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>',
                 'submenu'  => []
@@ -130,21 +128,18 @@ class AdminBaseController extends BaseController
     protected function getColor()
     {
         $uri = service('uri');
-        
-        // PERBAIKAN: Gunakan getTotalSegments() sebelum memanggil getSegment(2)
+
         $currentSegment = 'dashboard';
         if ($uri->getTotalSegments() >= 2) {
             $currentSegment = $uri->getSegment(2);
         }
 
-        $nav_items = $navigations ?? $sidebar_menu ?? []; 
+        // --- BYPASS CACHE: Langsung tembak ke Database agar warna selalu Fresh! ---
+        $db = \Config\Database::connect();
+        $sekolahData = $db->table('sekolah')->select('warna_primary, warna_secondary')->get()->getRowArray();
 
-        $sekolahData = function_exists('get_identitas_sekolah') ? get_identitas_sekolah() : [];
-
-        $app_name       = 'Rapor Digital';
-        $app_sub        = $sekolahData['nama_sekolah'] ?? 'Rapor Digital';
-        $warna_primary  = $sekolahData['warna_primary'] ?? '#1F7A4D'; // Default Emerald Green
-        $warna_secondary= $sekolahData['warna_secondary'] ?? '#E6F4EC'; // Default Soft Green
+        $warna_primary   = $sekolahData['warna_primary'] ?? '#1F7A4D'; // Default Emerald Green
+        $warna_secondary = $sekolahData['warna_secondary'] ?? '#E6F4EC'; // Default Soft Green
 
         return [
             'warna_primary' => $warna_primary,

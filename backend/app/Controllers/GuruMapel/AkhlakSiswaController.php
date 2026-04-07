@@ -10,12 +10,19 @@ class AkhlakSiswaController extends GuruMapelBaseController
         $db = \Config\Database::connect();
         $userId = session()->get('id');
 
-        // 1. Ambil Penugasan Kelas & Mapel
+        // 1. Ambil Identitas Guru & Tahun Ajaran Aktif
+        $dataGuru = $db->table('guru_tendik')->select('id')->where('user_id', $userId)->get()->getRowArray();
+        $guruId   = $dataGuru ? $dataGuru['id'] : 0;
+
+        $taAktif     = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        $id_ta_aktif = $taAktif ? $taAktif['id'] : 0;
+
+        // 2. Ambil Penugasan Kelas & Mapel (Filter Tahun Aktif)
         $penugasan = $db->table('guru_mapel gm')
             ->select('gm.rombel_id, gm.mapel_id, m.nama_mapel, r.nama_rombel')
             ->join('mata_pelajaran m', 'm.id = gm.mapel_id', 'left')
             ->join('rombel r', 'r.id = gm.rombel_id', 'left')
-            ->where('gm.user_id', $userId)
+            ->where(['gm.guru_id' => $guruId, 'r.id_tahun_ajaran' => $id_ta_aktif])
             ->get()->getRowArray();
 
         $rombel_id = $penugasan['rombel_id'] ?? 0;

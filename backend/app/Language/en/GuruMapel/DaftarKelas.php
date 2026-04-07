@@ -16,4 +16,8 @@ return [
     'btn_open_class'  => 'OPEN CLASS',
     'empty_title'     => 'No Classes Found',
     'empty_desc'      => 'Try changing your filter or search.',
+
+    'filter_selesai'  => 'Completed', 
+    'filter_proses'   => 'In Progress',  
+    'filter_belum'    => 'Not Started',
 ];

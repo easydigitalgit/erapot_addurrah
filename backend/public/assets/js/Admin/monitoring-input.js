@@ -34,8 +34,8 @@ function closeMobileSidebar() {
   document.body.style.overflow = '';
 }
 
-// 1. UPDATE LACI DETAIL (Tombol aksi mengarah ke Notifikasi Internal)
-function showDetail(guru, mapel, kelas, persen, status, badgeType, guruId) {
+// 1. UPDATE LACI DETAIL (Dinamisasi Warna)
+function showDetail(guru, mapel, kelas, persen, status, badgeType, guruId, fotoProfil) {
   const drawer = document.getElementById('drawerHeader');
   const parentDrawer = document.getElementById('detailDrawer');
   const overlay = document.getElementById('detailDrawerOverlay');
@@ -46,26 +46,33 @@ function showDetail(guru, mapel, kelas, persen, status, badgeType, guruId) {
   if (badgeType === 'success') progressColor = 'text-emerald-600';
   else if (badgeType === 'warning') progressColor = 'text-amber-600';
 
-  // Siapkan Tombol Aksi (Hanya muncul jika belum 100%)
   let btnAction = '';
-  if (persen < 100) {
-      btnAction = `<button onclick="sendReminderSingle('${guru.replace(/'/g, "\\'")}', '${mapel}', '${kelas}', '${guruId}')" class="w-full py-3 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 font-semibold rounded-xl hover:bg-amber-100 dark:hover:bg-amber-900/50 transition-colors text-sm border border-amber-100 dark:border-amber-800/50 flex items-center justify-center gap-2 outline-none">
-                    <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-                    Kirim Notifikasi Aplikasi
-                 </button>`;
+  // LOGIKA AVATAR GURU (Dinamis Warna Inisial)
+  let avatarBoxHTML = '';
+  if (fotoProfil && fotoProfil !== 'null' && String(fotoProfil).trim() !== '') {
+      const cleanBaseUrl = (typeof BASE_URL !== 'undefined' ? BASE_URL : window.location.origin).replace(/\/$/, '');
+      const cacheBuster = '?v=' + new Date().getTime();
+      const fotoUrl = `${cleanBaseUrl}/assets/uploads/avatars/${fotoProfil}${cacheBuster}`;
+      
+      avatarBoxHTML = `
+        <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center text-3xl font-black mb-4 shadow-lg overflow-hidden border-4 border-white/50" style="color: var(--warna-scroll);">
+            <img src="${fotoUrl}" class="w-full h-full object-cover" onerror="this.onerror=null; this.outerHTML='${inisial}';">
+        </div>`;
   } else {
-      btnAction = `<div class="p-3 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl text-center text-sm font-semibold border border-emerald-100 dark:border-emerald-800/50">Tugas Guru Telah Selesai ✅</div>`;
+      avatarBoxHTML = `
+        <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center text-3xl font-black mb-4 shadow-lg border-4 border-white/50" style="color: var(--warna-scroll);">
+            ${inisial}
+        </div>`;
   }
 
+  // LACI DINAMIS (Menggunakan style var(--warna-scroll))
   drawer.innerHTML = `
-    <div class="bg-blue-600 px-6 py-8 flex flex-col items-center relative text-white shrink-0">
+    <div class="px-6 py-8 flex flex-col items-center relative text-white shrink-0" style="background-color: var(--warna-scroll);">
         
-        <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center text-blue-600 text-3xl font-black mb-4 shadow-lg">
-            ${inisial}
-        </div>
+        ${avatarBoxHTML}
         
         <h3 class="text-xl font-bold text-center">${guru}</h3>
-        <p class="text-blue-100 text-sm mb-4">${mapel}</p>
+        <p class="text-white/80 text-sm mb-4">${mapel}</p>
         
         <div class="flex flex-wrap justify-center gap-2 text-sm">
             <span class="px-4 py-1.5 bg-white/20 rounded-full border border-white/30 backdrop-blur-sm">${kelas}</span>
@@ -169,10 +176,6 @@ window.sendReminderSingle = function(guru, mapel, kelas, guruId) {
 
 // 2. KIRIM NOTIFIKASI MASSAL KE DATABASE
 window.sendReminder = function() {
-    // --- PERBAIKAN: CARA MENGAMBIL DATA DARI TABEL HTML ---
-    // Karena kadang window.ALL_MONITORING_DATA gagal terload (null/undefined), 
-    // kita gunakan strategi "Fallback": baca data langsung dari button di HTML tabel!
-    
     let targetGurus = [];
     
     // Sabuk Pengaman 1: Jika variabel global jalan, pakai itu.
@@ -184,7 +187,6 @@ window.sendReminder = function() {
         const detailButtons = document.querySelectorAll('button[onclick^="showDetail"]');
         detailButtons.forEach(btn => {
             const onclickText = btn.getAttribute('onclick');
-            // Contoh format: showDetail('Guru A', 'Mapel', 'Kelas', '90', 'Proses', 'warning', '15')
             const paramsMatch = onclickText.match(/showDetail\((.*?)\)/);
             if (paramsMatch && paramsMatch[1]) {
                 const params = paramsMatch[1].split(',').map(s => s.trim().replace(/^'|'$/g, ''));
@@ -316,3 +318,65 @@ document.addEventListener('keydown', (e) => {
     closeDetailDrawer();
   }
 });
+
+// =================================================================
+// COMPACT PAGINATION (PREV - INDICATOR - NEXT)
+// =================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    setupTablePagination();
+});
+
+function setupTablePagination() {
+    const tableBody = document.querySelector('#monitoringTable tbody');
+    const paginationContainer = document.getElementById('pagination-container');
+    
+    if (!tableBody || !paginationContainer) return;
+
+    const rows = Array.from(tableBody.querySelectorAll('tr.group'));
+    if (rows.length === 0) return; 
+
+    paginationContainer.classList.remove('hidden');
+    paginationContainer.classList.add('flex');
+
+    let currentPage = 1;
+    const rowsPerPage = 10; 
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+    const infoEl = document.getElementById('pagination-info');
+    const indicatorEl = document.getElementById('pageIndicator');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    window.displayPage = function(page) {
+        // Validasi Halaman
+        if (page < 1) page = 1;
+        if (page > totalPages) page = totalPages;
+        
+        currentPage = page;
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        // Potong Baris Tabel
+        rows.forEach((row, index) => {
+            row.style.display = (index >= start && index < end) ? '' : 'none';
+        });
+
+        // Update Info Teks (Kiri)
+        const currentEnd = Math.min(end, rows.length);
+        if (infoEl) infoEl.innerText = `Data ${start + 1} - ${currentEnd} dari ${rows.length}`;
+
+        // Update Indikator (Tengah)
+        if (indicatorEl) indicatorEl.innerText = `${currentPage} / ${totalPages}`;
+
+        // Update Status Tombol (Kiri & Kanan)
+        if (prevBtn) prevBtn.disabled = (currentPage === 1);
+        if (nextBtn) nextBtn.disabled = (currentPage === totalPages);
+    }
+
+    // Pasang Event Listener ke Tombol
+    if (prevBtn) prevBtn.onclick = () => window.displayPage(currentPage - 1);
+    if (nextBtn) nextBtn.onclick = () => window.displayPage(currentPage + 1);
+
+    // Jalankan Halaman Pertama
+    window.displayPage(1); 
+}

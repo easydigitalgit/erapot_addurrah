@@ -11,7 +11,6 @@ class SiswaModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     
-    // PERBAIKAN: Semua field dapodik terbaru didaftarkan agar bisa di-insert/update
     protected $allowedFields    = [
         'user_id', 'rombel_id', 'nis', 'nisn', 'nik', 
         'nama_lengkap', 'email_siswa', 'jenis_kelamin', 
@@ -24,20 +23,17 @@ class SiswaModel extends Model
         'layak_pip', 'alasan_layak_pip', 'kebutuhan_khusus', 'no_kk', 
         'berat_badan', 'tinggi_badan', 'lingkar_kepala', 'jml_saudara_kandung', 'jarak_ke_sekolah',
         'asal_sekolah', 'diterima_dikelas', 'tgl_diterima', 
+        'ekskul_1', 'ekskul_2', 'ekskul_3', // <--- FITUR BARU EKSKUL
         'foto_siswa', 'status_siswa'
     ];
 
    public function getSiswaLengkap()
     {
-        // KUNCI PERBAIKAN: 
-        // 1. Alias jk_siswa untuk jenis_kelamin siswa (agar tak tabrakan dengan guru)
-        // 2. Alias stat_siswa untuk status_siswa
-        // 3. Alias nama_wali_kelas yang di-COALESCE agar selalu ada nilainya meski kosong
-        
         return $this->select('siswa.*, 
                               siswa.jenis_kelamin as jk_siswa, 
                               siswa.status_siswa as stat_siswa, 
                               siswa.status_dalam_keluarga as stat_keluarga, 
+                              siswa.ekskul_1, siswa.ekskul_2, siswa.ekskul_3,
                               rombel.nama_rombel, 
                               rombel.tingkat, 
                               rombel.kurikulum, 

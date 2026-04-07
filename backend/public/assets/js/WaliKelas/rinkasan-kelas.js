@@ -1,15 +1,16 @@
 
-    // Default configuration
-    const defaultConfig = {
-      school_name: 'SMPIT Ad Durrah',
-      teacher_name: 'Ustadz Ahmad Fauzi, S.Pd',
-      class_name: 'VII-A',
-      primary_color: '#1F7A4D',
-      secondary_color: '#E6F4EC',
-      text_color: '#1f2937',
-      background_color: '#f9fafb',
-      accent_color: '#10b981'
-    };
+ const configData = window.sekolahConfig || {};
+
+const defaultConfig = {
+    school_name: configData.school_name || 'SMPIT Ad Durrah',
+    teacher_name: configData.teacher_name || 'Guru/Wali Kelas',
+    class_name: configData.class_name || 'Belum Ada Kelas',
+    primary_color: configData.primary_color || '#1F7A4D',
+    secondary_color: configData.secondary_color || '#E6F4EC',
+    text_color: '#1f2937',        // Warna teks dasar
+    background_color: '#f9fafb',  // Warna background dasar
+    accent_color: configData.primary_color || '#10b981' // Disamakan dengan primary_color
+};
 
     // Toggle accordion
     function toggleAccordion(id) {

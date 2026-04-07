@@ -5,6 +5,9 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('styles') ?>
+<style>
+    :root { --warna-scroll: <?= $color['warna_primary'] ?>; }
+</style>
 <link rel="stylesheet" href="<?= base_url('assets/css/Admin/wali-kelas.css') ?>">
 <?= $this->endSection() ?>
 
@@ -18,10 +21,13 @@
     <span class="text-[<?= $color['warna_primary'] ?>] font-medium"><?= lang('Admin/WaliKelas.page_title') ?></span>
   </div>
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-    <div>
+    <div class="flex items-center gap-3">
       <h1 id="page-title" class="text-xl md:text-3xl font-bold text-gray-800 dark:text-white transition-colors"><?= lang('Admin/WaliKelas.page_title') ?></h1>
-      <p id="page-subtitle" class="text-sm md:text-base text-gray-600 dark:text-slate-400 mt-1 transition-colors"><?= lang('Admin/WaliKelas.page_subtitle') ?></p>
+      <span class="px-3 py-1 bg-[<?= $color['warna_primary'] ?>] text-white text-[10px] md:text-xs font-bold rounded-full shadow-sm">
+        <?= $tahunAjaranAktif ?>
+      </span>
     </div>
+    <p id="page-subtitle" class="text-sm md:text-base text-gray-600 dark:text-slate-400 mt-1 transition-colors"><?= lang('Admin/WaliKelas.page_subtitle') ?></p>
   </div>
 </div>
 

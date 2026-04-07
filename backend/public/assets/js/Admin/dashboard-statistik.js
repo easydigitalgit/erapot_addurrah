@@ -1,25 +1,15 @@
-const defaultConfig = {
-    school_name: 'SMPIT Ad Durrah',
-    app_title: 'Rapor Digital',
-    // Ambil tahun ajaran dinamis dari script PHP
-    academic_year: typeof window.DYNAMIC_YEAR !== 'undefined' ? window.DYNAMIC_YEAR : '2024/2025',
-    primary_color: '#1F7A4D',
-    secondary_color: '#E6F4EC',
-    text_color: '#1F2937',
-    background_color: '#F9FAFB',
-    accent_color: '#34A853'
-};
-
-let config = { ...defaultConfig };
-    
+// Menutup sidebar otomatis di tampilan mobile saat salah satu menu diklik
 document.addEventListener('click', function(e) {
     if (e.target.tagName === 'A' && e.target.closest('.submenu')) {
         if (window.innerWidth <= 1024) {
-            closeMobileSidebar();
+            if (typeof closeMobileSidebar === 'function') {
+                closeMobileSidebar();
+            }
         }
     }
 });
 
+// Fungsi untuk melebarkan/menyusutkan sidebar di mode desktop
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const mainContent = document.getElementById('main-content');
@@ -42,6 +32,7 @@ function toggleSidebar() {
     }
 }
 
+// Fungsi untuk membuka menu sidebar di mode mobile
 function openMobileSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
@@ -52,6 +43,7 @@ function openMobileSidebar() {
     document.body.style.overflow = 'hidden';
 }
 
+// Fungsi untuk menutup menu sidebar di mode mobile
 function closeMobileSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
@@ -62,71 +54,9 @@ function closeMobileSidebar() {
     document.body.style.overflow = '';
 }
 
-function updateUI() {
-    const schoolName = config.school_name || defaultConfig.school_name;
-    const appTitle = config.app_title || defaultConfig.app_title;
-    const academicYear = config.academic_year || defaultConfig.academic_year;
-    
-    const els = {
-        'sidebar-school-name': schoolName,
-        'sidebar-app-title': appTitle,
-        'header-school-name': schoolName,
-        'header-academic-year': academicYear,
-        'welcome-school-name': schoolName,
-        // Target utama kita untuk mengubah Card
-        'card-academic-year': academicYear 
-    };
-
-    for (const [id, value] of Object.entries(els)) {
-        const element = document.getElementById(id);
-        if (element) element.textContent = value;
-    }
-}
-
-async function onConfigChange(newConfig) {
-    config = { ...config, ...newConfig };
-    updateUI();
-}
-
-function mapToCapabilities(cfg) {
-    const setAndApply = (key, value) => {
-        cfg[key] = value;
-        if (window.elementSdk) window.elementSdk.setConfig({ [key]: value });
-    };
-
-    return {
-        recolorables: [
-            { get: () => cfg.background_color || defaultConfig.background_color, set: (v) => setAndApply('background_color', v) },
-            { get: () => cfg.secondary_color || defaultConfig.secondary_color, set: (v) => setAndApply('secondary_color', v) },
-            { get: () => cfg.text_color || defaultConfig.text_color, set: (v) => setAndApply('text_color', v) },
-            { get: () => cfg.primary_color || defaultConfig.primary_color, set: (v) => setAndApply('primary_color', v) },
-            { get: () => cfg.accent_color || defaultConfig.accent_color, set: (v) => setAndApply('accent_color', v) }
-        ],
-        borderables: [],
-        fontEditable: undefined,
-        fontSizeable: undefined
-    };
-}
-
-function mapToEditPanelValues(cfg) {
-    return new Map([
-        ['school_name', cfg.school_name || defaultConfig.school_name],
-        ['app_title', cfg.app_title || defaultConfig.app_title],
-        ['academic_year', cfg.academic_year || defaultConfig.academic_year]
-    ]);
-}
-
-if (window.elementSdk) {
-    window.elementSdk.init({
-        defaultConfig,
-        onConfigChange,
-        mapToCapabilities,
-        mapToEditPanelValues
-    });
-}
-
+// Menjalankan fungsi otomatis saat halaman selesai dimuat
 document.addEventListener('DOMContentLoaded', () => {
-    updateUI();
+    // Membuka menu sidebar pertama secara default agar terlihat rapi
     const firstMenu = document.querySelector('.sidebar-menu button');
     if (firstMenu && typeof toggleMenu === 'function') {
         toggleMenu(firstMenu);

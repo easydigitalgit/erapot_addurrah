@@ -1,79 +1,91 @@
 <?php
+
 return [
-    'page_title'          => 'لوحة معلومات التحفيظ - التقرير الرقمي',
-    'breadcrumb_tahfidz'  => 'التحفيظ',
-    'main_dashboard'      => 'لوحة المعلومات الرئيسية',
-    'export_report'       => 'تصدير التقرير',
-    'wib'                 => 'توقيت إندونيسيا', // Or leave empty if not applicable
+    'page_title_browser'  => 'لوحة تحكم معلم التحفيظ',
+    'breadcrumb_1'        => 'التحفيظ',
+    'breadcrumb_2'        => 'لوحة التحكم الرئيسية',
     
-    // Greeting
-    'greeting_morning'    => 'صباح الخير',
-    'greeting_afternoon'  => 'طاب مساؤكم',
-    'greeting_evening'    => 'مساء الخير',
-    'greeting_night'      => 'تصبح على خير',
-    'welcome_msg'         => 'مرحباً بك',
-    'ahlan_wa_sahlan'     => 'أهلاً وسهلاً،',
-    'intro_text'          => 'نسأل الله أن ييسر خطانا في توجيه حفظة القرآن اليوم. إليك ملخص تقدم الحلقة الخاصة بك.',
+    'btn_export'          => 'تصدير الملخص اليومي',
     
-    // Quick Actions
-    'btn_quick_deposit'   => 'تسميع سريع للحفظ',
-    'btn_standings'       => 'الترتيب',
-    'btn_fill_report'     => 'تعبئة التقرير',
+    // Header Greeting
+    'greeting'            => 'مرحباً بك',
+    'welcome_msg'         => 'أهلاً وسهلاً',
+    'header_desc'         => 'راقب تقدم حفظ طلابك، تحقق من الإيداعات الأخيرة، وقم بإدارة أهداف حفظ القرآن بسهولة.',
     
-    // Stats Cards
+    // Header Buttons
+    'btn_quick_deposit'   => 'تسميع سريع',
+    'btn_standings'       => 'ترتيب الحفظ',
+    'btn_report_card'     => 'تعبئة التقرير',
+    
+    // Stats
     'stat_total_students' => 'إجمالي الطلاب',
-    'stat_deposited'      => 'تم التسميع',
     'stat_today'          => 'اليوم',
-    'stat_target_reached' => 'تحقيق الهدف',
-    'stat_activity'       => 'معدل النشاط',
+    'stat_deposited'      => 'قاموا بالتسميع',
+    'stat_target_achieved'=> 'الهدف المنجز (طلاب)',
+    'stat_activity_today' => 'نشاط اليوم',
     
-    // Needs Attention Section
-    'needs_attention'     => 'يحتاج إلى اهتمام خاص',
-    'no_issues'           => '✅ الحمد لله، لا يوجد طلاب يعانون من مشاكل في الحفظ اليوم.',
-    'class'               => 'الصف',
-    'contact_parent'      => 'الاتصال بولي الأمر',
+    // Attention Section
+    'attention_title'     => 'طلاب بحاجة لاهتمام خاص',
+    'attention_empty'     => 'الحمد لله، جميع الطلاب يحفظون بنشاط وطلاقة.',
+    'btn_contact_parent'  => 'اتصل بولي الأمر',
+    
+    // WhatsApp Format
+    'wa_reason_default'   => 'الحفظ ليس بطلاقة بعد',
+    'wa_message'          => "السلام عليكم والد/والدة {nama}. نود إعلامكم أن {nama} يحتاج إلى توجيه مراجعة إضافي في المنزل بسبب {alasan}.",
     
     // Distribution Section
-    'achievement_dist'    => 'توزيع إنجازات الطلاب',
-    'juz_30'              => 'الجزء 30',
-    'juz_29'              => 'الجزء 29',
-    'juz_28_plus'         => 'الجزء 28+',
-    'target_label'        => '(الهدف)',
+    'dist_title'          => 'توزيع إنجازات الطلاب',
+    'dist_juz30'          => 'الجزء 30',
+    'dist_begin'          => 'مبتدئ',
+    'dist_juz29'          => 'الجزء 29',
+    'dist_juz28'          => 'الجزء 28+',
+    'dist_advanced'       => 'متقدم',
     
-    // Live Feed
-    'live_feed'           => 'موجز التسميع المباشر',
-    'no_activity'         => 'لا يوجد نشاط تسميع بعد.',
+    // Live Feed Section
+    'live_feed_title'     => 'بث مباشر للطلاب',
+    'live_feed_empty'     => 'لا توجد سجلات تسميع من طلابك اليوم.',
     'surah'               => 'سورة',
+    'ayah'                => 'آية',
     
-    // Modals & Toasts
-    'toast_download_ok'   => 'تم التنزيل بنجاح!',
-    'toast_download_desc' => 'جاري تنزيل ملف الملخص.',
-    'modal_deposit_title' => 'تسميع سريع للحفظ',
-    'modal_deposit_desc'  => 'تسجيل الحفظ اليومي دون تغيير الصفحة',
-    'label_student_name'  => 'اسم الطالب',
-    'select_student'      => '-- ابحث / اختر الطالب --',
-    'label_surah'         => 'سورة',
-    'ph_surah'            => 'مثال: الملك',
-    'label_ayat'          => 'آية',
-    'ph_ayat'             => 'مثال: 1-10',
-    'label_deposit_type'  => 'نوع التسميع',
-    'type_ziyadah'        => 'زيادة (جديد)',
-    'type_murojaah'       => 'مراجعة (تكرار)',
-    'label_fluency'       => 'الطلاقة',
-    'fluency_very_good'   => 'ممتاز',
-    'fluency_good'        => 'جيد',
-    'fluency_poor'        => 'ضعيف',
-    'fluency_memorized'   => 'لم يحفظ',
-    'link_full_form'      => 'فتح النموذج الكامل &rarr;',
+    // Predicates
+    'pred_excellent'      => 'ممتاز',
+    'pred_good'           => 'جيد',
+    'pred_enough'         => 'مقبول',
+    'pred_not_memorized'  => 'لم يحفظ',
+    'eval_not_memorized'  => 'التقييم: لم يحفظ / لحن جلي',
+    'eval_not_fluent'     => 'الحفظ ضعيف',
+    
+    // Toast Ready
+    'toast_ready_title'   => 'التقرير جاهز!',
+    'toast_ready_desc'    => 'تم تنزيل ملف الملخص بنجاح.',
+    
+    // Quick Deposit Modal
+    'modal_quick_title'   => 'نموذج التسميع السريع',
+    'modal_quick_desc'    => 'تسجيل حفظ جديد أو مراجعة',
+    'lbl_student_name'    => 'اسم الطالب',
+    'opt_sel_student'     => 'اختر الطالب',
+    'lbl_surah'           => 'اسم السورة',
+    'ph_surah'            => 'مثال: النبأ',
+    'lbl_ayah'            => 'آية',
+    'ph_ayah'             => 'مثال: 1-15',
+    'lbl_type'            => 'نوع التسميع',
+    'opt_ziyadah'         => 'زيادة (جديد)',
+    'opt_murojaah'        => 'مراجعة',
+    'lbl_predicate'       => 'تقدير الطلاقة',
+    'btn_open_full'       => 'فتح النموذج الكامل',
     'btn_cancel'          => 'إلغاء',
-    'btn_save_data'       => 'حفظ البيانات',
+    'btn_save'            => 'حفظ البيانات',
     
     // Success Modal
-    'alhamdulillah'       => 'الحمد لله!',
-    'success_save_desc'   => 'تم حفظ بيانات تسميع الطالب بنجاح في النظام.',
+    'success_title'       => 'الحمد لله!',
+    'success_desc'        => 'تمت إضافة بيانات تسميع الطالب بنجاح إلى النظام.',
     'btn_close_continue'  => 'إغلاق ومتابعة',
     
-    // JS Strings
+    // JS Translations
+    'js_greet_night'      => 'طاب مساؤك',
+    'js_greet_morning'    => 'صباح الخير',
+    'js_greet_afternoon'  => 'طاب يومك',
+    'js_greet_evening'    => 'مساء الخير',
     'js_preparing'        => 'جاري التحضير...',
-    'js_saving'           => 'جاري الحفظ...',
+    'js_saving'           => 'جاري الحفظ...'
 ];

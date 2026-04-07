@@ -5,6 +5,9 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('styles') ?>
+<style>
+    :root { --warna-scroll: <?= $color['warna_primary'] ?>; }
+</style>
   <link rel="stylesheet" href="<?= base_url('assets/css/Admin/dashboard-insight.css') ?>">
 <?= $this->endSection() ?>
 
@@ -22,21 +25,21 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
        <div>
            <label class="block text-sm font-medium text-gray-700 mb-2 dark:text-white"><?= lang('Admin/DashboardInsight.filter_year') ?></label> 
-           <select id="filter_tahun" onchange="fetchDashboardData()" class="w-full px-4 py-2.5 bg-white dark:bg-slate-700 dark:border-slate-600 dark:text-gray-200 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>] transition-colors cursor-pointer outline-none"> 
+           <select id="filter_tahun" onchange="updateRombelDropdown()" class="w-full px-4 py-2.5 bg-white dark:bg-slate-700 dark:border-slate-600 dark:text-gray-200 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>] transition-colors cursor-pointer outline-none"> 
              <option value=""><?= lang('Admin/DashboardInsight.all_years') ?></option>
              <?php if(!empty($tahun_ajaran)): ?>
                  <?php foreach($tahun_ajaran as $thn): ?>
-                     <option value="<?= esc($thn) ?>"><?= esc($thn) ?></option>
+                     <option value="<?= esc($thn) ?>" <?= ($thn == $active_tahun) ? 'selected' : '' ?>><?= esc($thn) ?></option>
                  <?php endforeach; ?>
              <?php endif; ?>
            </select>
        </div>
        <div>
            <label class="block text-sm font-medium text-gray-700 mb-2 dark:text-white"><?= lang('Admin/DashboardInsight.filter_semester') ?></label> 
-           <select id="filter_semester" onchange="fetchDashboardData()" class="w-full px-4 py-2.5 bg-white border dark:bg-slate-700 dark:border-slate-600 dark:text-gray-200  border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>] transition-colors cursor-pointer outline-none"> 
+           <select id="filter_semester" onchange="updateRombelDropdown()" class="w-full px-4 py-2.5 bg-white border dark:bg-slate-700 dark:border-slate-600 dark:text-gray-200  border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>] transition-colors cursor-pointer outline-none"> 
                <option value=""><?= lang('Admin/DashboardInsight.all_semesters') ?></option> 
-               <option value="Ganjil"><?= lang('Admin/DashboardInsight.odd_semester') ?></option> 
-               <option value="Genap"><?= lang('Admin/DashboardInsight.even_semester') ?></option> 
+               <option value="Ganjil" <?= ($active_semester == 'Ganjil') ? 'selected' : '' ?>><?= lang('Admin/DashboardInsight.odd_semester') ?></option> 
+               <option value="Genap" <?= ($active_semester == 'Genap') ? 'selected' : '' ?>><?= lang('Admin/DashboardInsight.even_semester') ?></option> 
            </select>
        </div>
        <div>

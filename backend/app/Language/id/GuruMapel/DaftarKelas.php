@@ -16,4 +16,8 @@ return [
     'btn_open_class'  => 'BUKA KELAS',
     'empty_title'     => 'Tidak Ada Kelas Ditemukan',
     'empty_desc'      => 'Coba ubah filter atau pencarian Anda.',
+
+    'filter_selesai'     => 'Selesai', // <-- Tambahkan ini untuk dipanggil oleh $card['status']
+    'filter_proses'      => 'Proses',  // <-- Tambahkan ini untuk dipanggil oleh $card['status']
+    'filter_belum'       => 'Belum Mulai', // Opsional, jaga-jaga kalau dipanggil
 ];

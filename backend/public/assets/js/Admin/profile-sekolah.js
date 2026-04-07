@@ -1,4 +1,3 @@
-// Function Sidebar (Jika dibutuhkan di file ini)
 function openMobileSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
@@ -19,43 +18,39 @@ function closeMobileSidebar() {
     }
 }
 
-// === TRIGGER SAAT HALAMAN SELESAI DIMUAT ===
 document.addEventListener('DOMContentLoaded', function() {
-    // Open Sistem menu by default (jika ada logika sidebar)
     const menus = document.querySelectorAll('.sidebar-menu button');
     if (menus.length > 6 && typeof toggleMenu === 'function') {
         toggleMenu(menus[6]);
     }
-
     if(savedProv) {
         loadKabupaten(savedProv, savedKab);
     }
 });
 
 // === LOGIKA WILAYAH (AJAX) ===
-
-// 1. Fungsi Load Kabupaten
 function loadKabupaten(kodeProv, selectedKab = null) {
     const kabSelect = document.getElementById('kabupaten');
     const kecSelect = document.getElementById('kecamatan');
     const desaSelect = document.getElementById('desa');
 
-    resetDropdown(kabSelect, LANG.js_loading);
-    resetDropdown(kecSelect, LANG.select_regency_first);
-    resetDropdown(desaSelect, LANG.select_district_first);
+    resetDropdown(kabSelect, LANG.js_loading || 'Memuat...');
+    resetDropdown(kecSelect, LANG.select_regency_first || '-- Pilih Kabupaten Dulu --');
+    if(desaSelect) resetDropdown(desaSelect, LANG.select_district_first || '-- Pilih Kecamatan Dulu --');
 
     if (!kodeProv) {
-        resetDropdown(kabSelect, LANG.select_province_first);
+        resetDropdown(kabSelect, LANG.select_province_first || '-- Pilih Provinsi Dulu --');
         return;
     }
 
     fetch(`${URL_GET_KAB}?kode_propinsi=${kodeProv}`, { headers: { "X-Requested-With": "XMLHttpRequest" } })
     .then(response => {
-        if(!response.ok) throw new Error("Gagal mengambil data Kabupaten");
+        if(!response.ok) throw new Error(LANG.js_fail_load_region);
         return response.json();
     })
     .then(data => {
-        populateDropdown(kabSelect, data, selectedKab, LANG.select_regency, 'kode');
+        // Gunakan LANG.select_regency dengan fallback Anti-Undefined
+        populateDropdown(kabSelect, data, selectedKab, LANG.select_regency || '-- Pilih Kabupaten --', 'kode');
         kabSelect.disabled = false;
         if(selectedKab) {
             loadKecamatan(selectedKab, savedKec);
@@ -64,23 +59,23 @@ function loadKabupaten(kodeProv, selectedKab = null) {
     .catch(err => handleError(err, kabSelect));
 }
 
-// 2. Fungsi Load Kecamatan
 function loadKecamatan(kodeKab, selectedKec = null) {
     const kecSelect = document.getElementById('kecamatan');
     const desaSelect = document.getElementById('desa');
 
-    resetDropdown(kecSelect, LANG.js_loading);
-    resetDropdown(desaSelect, LANG.select_district_first);
+    resetDropdown(kecSelect, LANG.js_loading || 'Memuat...');
+    if(desaSelect) resetDropdown(desaSelect, LANG.select_district_first || '-- Pilih Kecamatan Dulu --');
 
     if (!kodeKab) return;
 
     fetch(`${URL_GET_KEC}?kode_kabupaten=${kodeKab}`, { headers: { "X-Requested-With": "XMLHttpRequest" } })
     .then(response => {
-        if(!response.ok) throw new Error("Gagal mengambil data Kecamatan");
+        if(!response.ok) throw new Error(LANG.js_fail_load_region);
         return response.json();
     })
     .then(data => {
-        populateDropdown(kecSelect, data, selectedKec, LANG.select_district, 'kode');
+        // Gunakan LANG.select_district dengan fallback Anti-Undefined
+        populateDropdown(kecSelect, data, selectedKec, LANG.select_district || '-- Pilih Kecamatan --', 'kode');
         kecSelect.disabled = false;
         if(selectedKec) {
             loadDesa(selectedKec, savedDesa);
@@ -89,29 +84,28 @@ function loadKecamatan(kodeKab, selectedKec = null) {
     .catch(err => handleError(err, kecSelect));
 }
 
-// 3. Fungsi Load Desa
 function loadDesa(kodeKec, selectedDesa = null) {
     const desaSelect = document.getElementById('desa');
     if(!desaSelect) return;
 
-    resetDropdown(desaSelect, LANG.js_loading);
+    resetDropdown(desaSelect, LANG.js_loading || 'Memuat...');
 
     if (!kodeKec) return;
 
     fetch(`${URL_GET_DESA}?kode_kecamatan=${kodeKec}`, { headers: { "X-Requested-With": "XMLHttpRequest" } })
     .then(response => {
-        if(!response.ok) throw new Error("Gagal mengambil data Desa");
+        if(!response.ok) throw new Error(LANG.js_fail_load_region);
         return response.json();
     })
     .then(data => {
-        populateDropdown(desaSelect, data, selectedDesa, LANG.select_village, 'id'); 
+        // Gunakan LANG.select_village dengan fallback Anti-Undefined
+        populateDropdown(desaSelect, data, selectedDesa, LANG.select_village || '-- Pilih Kelurahan/Desa --', 'id'); 
         desaSelect.disabled = false;
     })
     .catch(err => handleError(err, desaSelect));
 }
 
 // === HELPER FUNCTIONS ===
-
 function resetDropdown(element, defaultText) {
     if(element) {
         element.innerHTML = `<option value="">${defaultText}</option>`;
@@ -142,7 +136,6 @@ function handleError(err, element) {
 }
 
 // === UI & FORM HANDLERS ===
-
 function previewImage(event) {
     const input = event.target;
     if (input.files && input.files[0]) {
@@ -160,13 +153,16 @@ function previewImage(event) {
 function syncColor(type, value, isFromText = false) {
     const picker = document.getElementById('picker_' + type);
     const text = document.getElementById('text_' + type);
+    const display = document.getElementById('display_' + type);
 
     if (isFromText) {
-        if (value.length === 7 && value.startsWith('#')) {
+        if (value.length === 7 && /^#[0-9A-Fa-f]{6}$/.test(value)) {
             picker.value = value;
+            if(display) display.style.backgroundColor = value;
         }
     } else {
-        text.value = value.toUpperCase();
+        text.value = value.replace('#', '').toUpperCase();
+        if(display) display.style.backgroundColor = value;
     }
 }
 
@@ -217,13 +213,12 @@ function handleSubmit(event) {
     });
 }
 
-// Toast Function
 function showToast(message, type = 'success') {
     const existingToast = document.querySelector('.custom-toast');
     if (existingToast) existingToast.remove();
 
     const toast = document.createElement('div');
-    toast.className = 'custom-toast fixed top-4 right-4 z-[9999] px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-[-20px] opacity-0';
+    toast.className = 'custom-toast fixed top-4 right-4 z-[99999] px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-[-20px] opacity-0';
     
     let bgClass, iconSvg;
     if (type === 'success') {
@@ -238,7 +233,7 @@ function showToast(message, type = 'success') {
     }
 
     toast.classList.add(...bgClass.split(' '));
-    toast.innerHTML = `<div>${iconSvg}</div><div class="font-medium ${type === 'info' ? 'text-white' : 'text-gray-800'}">${message}</div>`;
+    toast.innerHTML = `<div>${iconSvg}</div><div class="font-medium ${type === 'info' ? 'text-white' : 'text-gray-800'} text-sm">${message}</div>`;
     document.body.appendChild(toast);
 
     requestAnimationFrame(() => toast.classList.remove('translate-y-[-20px]', 'opacity-0'));

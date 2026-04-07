@@ -3,50 +3,77 @@ use CodeIgniter\I18n\Time;
 
 $sekolah = function_exists('get_identitas_sekolah') ? get_identitas_sekolah() : [];
 
-// ========================================================
-// LOGIKA MENGAMBIL TAHUN AJARAN AKTIF DARI DATABASE
-// ========================================================
 $db = \Config\Database::connect();
 $ta_aktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
 
-// --- DIUBAH MENJADI UNIVERSAL ---
 $nama_sekolah = $sekolah['nama_sekolah'] ?? lang('Navbar.title_default');
 $sub_judul    = lang('Navbar.subtitle');
-// --------------------------------
 
-// Ganti variabel tahun ajar dan semester menggunakan data query terbaru
 $tahun_ajar   = $ta_aktif['tahun'] ?? date('Y').'/'.(date('Y')+1);
 $semester     = $ta_aktif['semester'] ?? 'Ganjil';
 
 $logo_db = $sekolah['logo'] ?? 'default_logo.png';
 $logo_url = ($logo_db !== 'default_logo.png' && $logo_db !== '') ? base_url('uploads/logo/' . $logo_db) : null;
 
-$namaLengkap = session()->get('nama_lengkap') ?? session()->get('username') ?? 'User';
-$inisial = strtoupper(substr($namaLengkap, 0, 2)); 
+// ========================================================
+// LOGIKA CERDAS MENCARI NAMA LENGKAP USER
+// ========================================================
+$userId = session()->get('id');
+$roleKey = session()->get('role_key');
+$namaUser = session()->get('nama_lengkap');
+
+// Jika nama lengkap di session kosong, kita cari manual ke database sesuai Role
+if (empty($namaUser)) {
+    if ($roleKey === 'guru_mapel' || $roleKey === 'wali_kelas') {
+        $profil = $db->table('guru_tendik')->select('nama_lengkap')->where('user_id', $userId)->get()->getRowArray();
+        $namaUser = $profil ? $profil['nama_lengkap'] : '';
+    } elseif ($roleKey === 'siswa') {
+        $profil = $db->table('siswa')->select('nama_lengkap')->where('user_id', $userId)->get()->getRowArray();
+        $namaUser = $profil ? $profil['nama_lengkap'] : '';
+    }
+    
+    // KHUSUS ADMIN atau jika profil di atas tidak ditemukan
+    if (empty($namaUser)) {
+        // Ambil semua data dari tabel users (tanpa dibatasi select username saja)
+        $profil = $db->table('users')->where('id', $userId)->get()->getRowArray();
+        
+        if ($profil) {
+            // Cek apakah tabel users punya kolom nama_lengkap dan ada isinya
+            // Jika tidak ada, baru fallback ke username
+            $namaUser = !empty($profil['nama_lengkap']) ? $profil['nama_lengkap'] : ($profil['username'] ?? 'Pengguna');
+        } else {
+            $namaUser = 'Pengguna';
+        }
+    }
+}
+
+// Fallback final jika semua gagal
+if (empty($namaUser)) {
+    $namaUser = 'Pengguna';
+}
+
+// Inisialisasi Avatar
+$inisial    = strtoupper(substr($namaUser, 0, 2));
 $fotoProfil = session()->get('foto_profil');
 
 if ($fotoProfil && file_exists(FCPATH . 'assets/uploads/avatars/' . $fotoProfil)) {
     $avatarUrl = base_url('assets/uploads/avatars/' . $fotoProfil);
-} elseif ($fotoProfil && file_exists(FCPATH . 'assets/uploads/siswa/' . $fotoProfil)) {
-    $avatarUrl = base_url('assets/uploads/siswa/' . $fotoProfil);
 } else {
-    $avatarUrl = "https://ui-avatars.com/api/?name={$inisial}&background=1F7A4D&color=fff&size=160&bold=true&rounded=true";
+    $avatarUrl = "https://ui-avatars.com/api/?name={$inisial}&background=1F7A4D&color=fff&size=100&bold=true";
 }
-
+// ========================================================
 // ========================================================
 // LOGIKA MENGAMBIL NOTIFIKASI DARI DATABASE
 // ========================================================
-$userId = session()->get('id');
 $notifikasiList = [];
 $unreadCount = 0;
 
 if ($userId && file_exists(APPPATH . 'Models/NotifikasiModel.php')) {
     $notifModel = new \App\Models\NotifikasiModel();
     $unreadCount = $notifModel->countUnread($userId);
-    $notifikasiList = $notifModel->getLatest($userId, 5); // Ambil 5 terbaru
+    $notifikasiList = $notifModel->getLatest($userId, 5); 
 }
 ?>
-
 <header id="header" class="bg-white/80 dark:bg-slate-800 dark:border-slate-700 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40 w-full shadow-sm transition-colors">
     <div class="flex items-center justify-between px-4 md:px-6 lg:px-8 py-3 lg:py-4">
         
@@ -143,19 +170,15 @@ if ($userId && file_exists(APPPATH . 'Models/NotifikasiModel.php')) {
             <div class="flex items-center gap-3 pl-3 lg:pl-4 border-l border-gray-200 dark:border-slate-700 transition-colors">
                 <div class="text-right hidden sm:block">
                     <p class="text-xs md:text-sm font-bold dark:text-white text-gray-800 capitalize leading-tight transition-colors">
-                        <?= session()->get('username') ? session()->get('username') : 'User'; ?>
-                    </p>
-                    <p class="text-[10px] text-gray-500 dark:text-slate-400 font-semibold uppercase tracking-wider mt-0.5 transition-colors">
+                        <?= esc($namaUser) ?> 
+                    </p>                  
+                     <p class="text-[10px] text-gray-500 dark:text-slate-400 font-semibold uppercase tracking-wider mt-0.5 transition-colors">
                         <?= session()->get('role_label') ? session()->get('role_label') : lang('Navbar.guest'); ?>
                     </p>
                 </div>
                 
-                <?php 
-                    $uname = session()->get('username') ? session()->get('username') : 'U';
-                    $inisial = strtoupper(substr($uname, 0, 2)); 
-                ?>
                 <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-[<?= $color['warna_primary'] ?? '#10b981' ?>] flex items-center justify-center text-white font-black text-sm shadow-md ring-2 ring-white dark:ring-slate-800 transition-colors">
-                    <img class="rounded-xl w-full h-full object-cover" src="<?= $avatarUrl ?>" alt="Avatar">
+                    <img id="navbarAvatar" class="rounded-xl w-full h-full object-cover bg-white dark:bg-slate-800" src="<?= $avatarUrl ?>" alt="Avatar" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= $inisial ?>&background=1F7A4D&color=fff&size=100&bold=true';">
                 </div>
             </div>
         </div>
@@ -179,3 +202,33 @@ if ($userId && file_exists(APPPATH . 'Models/NotifikasiModel.php')) {
         }
     });
 </script>
+
+<?php if (session()->get('trigger_auto_backup') && session()->get('role_key') === 'admin'): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ubah bagian ini di navbar.php
+        fetch('<?= base_url('admin/backup/run-pseudo-cron') ?>', {
+            method: 'GET',
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // --- PASANG CCTV DI SINI ---
+            console.log("STATUS PSEUDO-CRON: ", data); 
+            // ---------------------------
+        
+            if (data.status === 'ok' && data.notif_created) {
+                const notifBtn = document.querySelector('#notification-container button');
+                if (notifBtn && !notifBtn.querySelector('.bg-red-500')) {
+                    notifBtn.innerHTML += '<span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-700 animate-pulse transition-colors"></span>';
+                }
+            }
+        })
+        .catch(error => console.error('ERROR PSEUDO-CRON:', error)); // Ubah log jadi error agar jelas
+    });
+</script>
+<?php 
+    // Hapus session agar mesin tidak berjalan berulang-ulang setiap kali Admin pindah halaman
+    session()->remove('trigger_auto_backup'); 
+?>
+<?php endif; ?>

@@ -1,30 +1,78 @@
-const textObj = window.LANG || {
-    js_unlock_title: 'Buka Kunci Jadwal?', js_unlock_desc: 'Jadwal akan kembali bisa diedit.',
-    js_btn_yes_unlock: 'Ya, Buka Kunci', js_btn_cancel: 'Batal', js_unlock_success: 'Kunci berhasil dibuka.',
-    js_locked_warn: 'Terkunci!', js_locked_desc: 'Jadwal sedang terkunci.', js_feat_na: 'Fitur Belum Tersedia',
-    js_feat_na_desc: 'Sistem sedang dalam pengembangan.', js_empty_schedule: 'Jadwal masih kosong.',
-    js_period: 'Jam', js_period_ke: 'Jam ke-', js_empty_slot: 'Kosong', js_select_room_warn: 'Pilih Rombel dulu!',
-    js_saving: 'Menyimpan...', js_err_no_room: 'Error: Rombel belum dipilih.', js_err_sys: 'Terjadi kesalahan.',
-    js_lock_check_warn: 'Centang persetujuan dulu', js_lock_success: 'Berhasil!', js_lock_success_desc: 'Jadwal dikunci.',
-    js_clear_slot_title: 'Kosongkan Slot?', js_clear_slot_desc: 'Yakin kosongkan?', js_btn_yes_clear: 'Ya, Kosongkan!',
-    js_clear_success: 'Dikosongkan!', js_clear_success_desc: 'Slot dikosongkan.', js_import_locked: 'Jadwal dikunci.',
-    js_processing: 'Memproses...', js_err_fatal: 'Kesalahan server.', js_err_conn: 'Koneksi terputus.'
-};
-
+const textObj = window.LANG;
 let isLocked = localStorage.getItem('jadwal_locked') === 'true';
 let currentMode = isLocked ? 'view' : 'edit'; 
+
+const ALL_MAPELS = typeof window.DATA_MAPEL !== 'undefined' ? window.DATA_MAPEL : [];
+const ALL_GURUS = typeof window.DATA_GURU !== 'undefined' ? window.DATA_GURU : [];
+
+// Variabel global untuk menyimpan data mapping kelas yang sedang dipilih
+let currentRombelMappings = []; 
 
 document.addEventListener('DOMContentLoaded', () => {
     applyLockState(); 
     renderSchedule();
 
-    // ==========================================
-    // LOGIKA DROPDOWN MAPPING DI MODAL TAMBAH
-    // ==========================================
     const rombelSelect = document.getElementById('add_rombel_id'); 
     const mapelSelect = document.getElementById('add_mapel_id');   
     const guruSelect = document.getElementById('add_guru_id');     
-    const hiddenGuru = document.getElementById('hidden_guru_id');
+    const hariSelect = document.getElementById('add_hari');
+    const jamSelect = document.getElementById('add_jam_ke');
+
+    // LOGIKA DINAMIS HARI KE JAM PELAJARAN
+    if (hariSelect && jamSelect) {
+        hariSelect.addEventListener('change', function() {
+            const hari = this.value.toUpperCase();
+            
+            if (!hari) {
+                jamSelect.innerHTML = '<option value="">Pilih Hari Terlebih Dahulu</option>';
+                jamSelect.disabled = true;
+                jamSelect.classList.remove('bg-white', 'dark:bg-slate-700', 'cursor-pointer');
+                jamSelect.classList.add('bg-gray-50', 'dark:bg-slate-900', 'cursor-not-allowed', 'opacity-70', 'pointer-events-none');
+                return;
+            }
+
+            // Kamus Waktu Sesuai File Roster Excel
+            const JADWAL_WAKTU = {
+                'REGULER': [ // Senin - Kamis
+                    {les: 1, waktu: '09:30 - 10:00'}, {les: 2, waktu: '10:00 - 10:30'},
+                    {les: 3, waktu: '10:30 - 11:00'}, {les: 4, waktu: '11:00 - 11:30'},
+                    {les: 5, waktu: '11:30 - 12:00'}, {les: 6, waktu: '13:30 - 14:00'},
+                    {les: 7, waktu: '14:00 - 14:30'}, {les: 8, waktu: '14:30 - 15:00'},
+                    {les: 9, waktu: '15:00 - 15:30'}
+                ],
+                'JUMAT_BIASA': [ // Jumat Tanpa BPI
+                    {les: 1, waktu: '09:30 - 09:50'}, {les: 2, waktu: '09:50 - 10:10'},
+                    {les: 3, waktu: '10:10 - 10:30'}, {les: 4, waktu: '10:30 - 10:50'},
+                    {les: 5, waktu: '10:50 - 11:10'}, {les: 6, waktu: '11:10 - 11:30'},
+                    {les: 7, waktu: '11:30 - 11:50'}, {les: 8, waktu: '13:30 - 13:50'},
+                    {les: 9, waktu: '13:50 - 14:10'}
+                ],
+              'JUMAT_BPI': [ // Khusus Jumat BPI (Mulai 10:30)
+                    {les: 1, waktu: '10:30 - 11:00'}, {les: 2, waktu: '11:00 - 11:30'},
+                    {les: 3, waktu: '11:30 - 12:00'}, {les: 4, waktu: '13:30 - 14:00'},
+                    {les: 5, waktu: '14:00 - 14:30'}, {les: 6, waktu: '14:30 - 15:00'},
+                    {les: 7, waktu: '15:00 - 15:30'}
+                ]
+            };
+
+            let opsiWaktu = JADWAL_WAKTU.REGULER;
+            if (hari === 'JUMAT BPI') {
+                opsiWaktu = JADWAL_WAKTU.JUMAT_BPI;
+            } else if (hari === 'JUMAT' || hari === "JUM'AT") {
+                opsiWaktu = JADWAL_WAKTU.JUMAT_BIASA;
+            }
+
+            let optionsHtml = '<option value="">Pilih Jam Ke-</option>';
+            opsiWaktu.forEach(w => {
+                optionsHtml += `<option value="${w.les}">${w.les} (${w.waktu})</option>`;
+            });
+
+            jamSelect.innerHTML = optionsHtml;
+            jamSelect.disabled = false;
+            jamSelect.classList.remove('bg-gray-50', 'dark:bg-slate-900', 'cursor-not-allowed', 'opacity-70', 'pointer-events-none');
+            jamSelect.classList.add('bg-white', 'dark:bg-slate-700', 'cursor-pointer');
+        });
+    }
 
     if (rombelSelect) {
         rombelSelect.addEventListener('change', async function() {
@@ -32,37 +80,43 @@ document.addEventListener('DOMContentLoaded', () => {
             
             mapelSelect.innerHTML = '<option value="">Memuat data...</option>';
             guruSelect.innerHTML = '<option value="">Pilih Mapel Terlebih Dahulu</option>';
-            hiddenGuru.value = '';
+            
             mapelSelect.disabled = true;
+            guruSelect.disabled = true;
             
             mapelSelect.classList.remove('bg-white', 'dark:bg-slate-700', 'cursor-pointer');
             mapelSelect.classList.add('bg-gray-50', 'dark:bg-slate-900', 'cursor-not-allowed', 'opacity-70', 'pointer-events-none');
+            
+            guruSelect.classList.remove('bg-white', 'dark:bg-slate-700', 'cursor-pointer');
+            guruSelect.classList.add('bg-gray-50', 'dark:bg-slate-900', 'cursor-not-allowed', 'opacity-70', 'pointer-events-none');
 
             if (!rombelId) {
                 mapelSelect.innerHTML = '<option value="">Pilih Rombel Terlebih Dahulu</option>';
                 return;
             }
 
+            const filterValue = document.getElementById('tahunSemesterFilter') ? document.getElementById('tahunSemesterFilter').value : '';
+            let taParam = '', semParam = '';
+            if (filterValue) {
+                const [ta_id, semester] = filterValue.split('_');
+                taParam = `&ta_id=${ta_id}`;
+                semParam = `&semester=${semester}`;
+            }
+
             try {
-                const response = await fetch(`${BASE_URL}admin/jadwal/get-mapping-by-rombel?rombel_id=${rombelId}`, {
+                const response = await fetch(`${BASE_URL}admin/jadwal/get-mapping-by-rombel?rombel_id=${rombelId}${taParam}${semParam}`, {
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 });
                 
                 const json = await response.json();
 
                 if (json.status === 'success') {
-                    let currentMappings = json.data;
-                    
-                    if (currentMappings.length === 0) {
-                        mapelSelect.innerHTML = '<option value="" disabled>Semua JP/Mapping untuk kelas ini sudah penuh</option>';
-                        return;
-                    }
-
+                    currentRombelMappings = json.data;
                     let mapelOptions = '<option value="">Pilih mata pelajaran</option>';
-                    currentMappings.forEach(item => {
-                        mapelOptions += `<option value="${item.mapel_id}" data-guru="${item.guru_id}" data-namaguru="${item.nama_guru}">
-                                            ${item.nama_mapel} (Sisa: ${item.sisa_jp} JP)
-                                         </option>`;
+
+                    ALL_MAPELS.forEach(m => {
+                        let displayLabel = m.nama_mapel;
+                        mapelOptions += `<option value="${m.id}">${displayLabel}</option>`;
                     });
                     
                     mapelSelect.innerHTML = mapelOptions;
@@ -73,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     mapelSelect.innerHTML = `<option value="">Error: ${json.message}</option>`;
                 }
             } catch (error) {
-                console.error("Gagal memuat mapping:", error);
                 mapelSelect.innerHTML = '<option value="">Gagal memuat data dari server</option>';
             }
         });
@@ -81,81 +134,101 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (mapelSelect) {
         mapelSelect.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
+            const selectedMapelId = this.value;
             
-            if (selectedOption.value === "") {
+            if (selectedMapelId === "") {
                  guruSelect.innerHTML = '<option value="">Pilih Mapel Terlebih Dahulu</option>';
-                 hiddenGuru.value = '';
+                 guruSelect.disabled = true;
+                 guruSelect.classList.remove('bg-white', 'dark:bg-slate-700', 'cursor-pointer');
+                 guruSelect.classList.add('bg-gray-50', 'dark:bg-slate-900', 'cursor-not-allowed', 'opacity-70', 'pointer-events-none');
                  return;
             }
 
-            const guruId = selectedOption.getAttribute('data-guru');
-            const namaGuru = selectedOption.getAttribute('data-namaguru');
+            const mappedGurus = currentRombelMappings.filter(m => m.mapel_id == selectedMapelId);
+            const mappedGuruIds = mappedGurus.map(m => m.guru_id);
 
-            guruSelect.innerHTML = `<option value="${guruId}" selected>${namaGuru}</option>`;
-            hiddenGuru.value = guruId; 
+            let guruOptions = '<option value="">Pilih Guru Pengampu</option>';
+            let recommendedGuruId = null;
+
+            ALL_GURUS.forEach(g => {
+                let displayLabel = g.nama_lengkap;
+                const isMapped = mappedGuruIds.includes(g.id);
+                if (isMapped) {
+                    displayLabel += ` ✓ (Sesuai Mapping)`;
+                    if (!recommendedGuruId) recommendedGuruId = g.id;
+                }
+                guruOptions += `<option value="${g.id}">${displayLabel}</option>`;
+            });
+
+            guruSelect.innerHTML = guruOptions;
+            guruSelect.disabled = false;
+            guruSelect.classList.remove('bg-gray-50', 'dark:bg-slate-900', 'cursor-not-allowed', 'opacity-70', 'pointer-events-none');
+            guruSelect.classList.add('bg-white', 'dark:bg-slate-700', 'cursor-pointer');
+
+            if (recommendedGuruId) guruSelect.value = recommendedGuruId;
         });
     }
 });
 
-// ==========================================
-// FUNGSI UTAMA (CREATE, EDIT, FETCH)
-// ==========================================
-
 async function fetchMappingAndSetForEdit(rombelId, mapelId, guruId) {
     const mapelSelect = document.getElementById('add_mapel_id');
     const guruSelect = document.getElementById('add_guru_id');
-    const hiddenGuru = document.getElementById('hidden_guru_id');
 
     mapelSelect.innerHTML = '<option value="">Memuat data...</option>';
+    guruSelect.innerHTML = '<option value="">Memuat data...</option>';
     mapelSelect.disabled = true;
+    guruSelect.disabled = true;
+
+    const filterValue = document.getElementById('tahunSemesterFilter') ? document.getElementById('tahunSemesterFilter').value : '';
+    let taParam = '', semParam = '';
+    if (filterValue) {
+        const [ta_id, semester] = filterValue.split('_');
+        taParam = `&ta_id=${ta_id}`;
+        semParam = `&semester=${semester}`;
+    }
 
     try {
-        const response = await fetch(`${BASE_URL}admin/jadwal/get-mapping-by-rombel?rombel_id=${rombelId}`, {
+        const response = await fetch(`${BASE_URL}admin/jadwal/get-mapping-by-rombel?rombel_id=${rombelId}${taParam}${semParam}`, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         });
         const json = await response.json();
         
         if (json.status === 'success') {
+            currentRombelMappings = json.data;
+            
             let mapelOptions = '<option value="">Pilih mata pelajaran</option>';
-            // Karena ini mode edit, kita pastikan mapel yang mau diedit tetap muncul di dropdown
-            let mapelExists = false;
-
-            json.data.forEach(item => {
-                if(item.mapel_id == mapelId) mapelExists = true;
-                mapelOptions += `<option value="${item.mapel_id}" data-guru="${item.guru_id}" data-namaguru="${item.nama_guru}">
-                                    ${item.nama_mapel} (Sisa: ${item.sisa_jp} JP)
-                                 </option>`;
+            ALL_MAPELS.forEach(m => {
+                let displayLabel = m.nama_mapel;
+                if (m.id == mapelId) displayLabel += ` (Edit Mode)`;
+                mapelOptions += `<option value="${m.id}">${displayLabel}</option>`;
             });
-
-            // Jika mapel target tidak ada (sisa 0), kita injeksi manual untuk edit
-            if(!mapelExists) {
-                 const sched = DB_SCHEDULES.find(s => s.mapel_id == mapelId && s.guru_id == guruId);
-                 if(sched) {
-                     mapelOptions += `<option value="${sched.mapel_id}" data-guru="${sched.guru_id}" data-namaguru="${sched.nama_lengkap}">
-                                        ${sched.nama_mapel} (Edit Mode)
-                                     </option>`;
-                 }
-            }
 
             mapelSelect.innerHTML = mapelOptions;
             mapelSelect.disabled = false;
             mapelSelect.classList.remove('bg-gray-50', 'dark:bg-slate-900', 'cursor-not-allowed', 'opacity-70', 'pointer-events-none');
             mapelSelect.classList.add('bg-white', 'dark:bg-slate-700', 'cursor-pointer');
-
-            // Select value
             mapelSelect.value = mapelId;
 
-            // Trigger guru
-            const selectedOption = mapelSelect.options[mapelSelect.selectedIndex];
-            if (selectedOption && selectedOption.value !== "") {
-                const namaGuru = selectedOption.getAttribute('data-namaguru');
-                guruSelect.innerHTML = `<option value="${guruId}" selected>${namaGuru}</option>`;
-                hiddenGuru.value = guruId;
-            }
+            const mappedGurus = currentRombelMappings.filter(m => m.mapel_id == mapelId);
+            const mappedGuruIds = mappedGurus.map(m => m.guru_id);
+
+            let guruOptions = '<option value="">Pilih Guru Pengampu</option>';
+            ALL_GURUS.forEach(g => {
+                let displayLabel = g.nama_lengkap;
+                if (mappedGuruIds.includes(g.id)) displayLabel += ` ✓ (Sesuai Mapping)`;
+                guruOptions += `<option value="${g.id}">${displayLabel}</option>`;
+            });
+
+            guruSelect.innerHTML = guruOptions;
+            guruSelect.disabled = false;
+            guruSelect.classList.remove('bg-gray-50', 'dark:bg-slate-900', 'cursor-not-allowed', 'opacity-70', 'pointer-events-none');
+            guruSelect.classList.add('bg-white', 'dark:bg-slate-700', 'cursor-pointer');
+            
+            if (guruId) setTimeout(() => { guruSelect.value = guruId; }, 50);
         }
     } catch(e) {
-        console.error(e);
+        mapelSelect.innerHTML = '<option value="">Error fetching data</option>';
+        guruSelect.innerHTML = '<option value="">Error fetching data</option>';
     }
 }
 
@@ -166,6 +239,12 @@ function showCreateScheduleModal() {
     }
 
     const filterRombel = document.getElementById('rombelFilter');
+    const filterTahunSemester = document.getElementById('tahunSemesterFilter');
+
+    if (!filterTahunSemester || !filterTahunSemester.value) {
+        Swal.fire('Perhatian', 'Pastikan Tahun Ajaran dan Semester sudah terpilih di filter.', 'warning');
+        return;
+    }
     if (!filterRombel || !filterRombel.value) {
         Swal.fire('Perhatian', textObj.js_select_room_warn, 'warning');
         if(filterRombel) filterRombel.focus(); 
@@ -178,13 +257,15 @@ function showCreateScheduleModal() {
     if (form) form.reset(); 
 
     document.getElementById('inputIdJadwal').value = ''; 
-    document.getElementById('hidden_guru_id').value = '';
 
     const addRombel = document.getElementById('add_rombel_id');
     if (addRombel) {
         addRombel.value = rombelId;
-        addRombel.dispatchEvent(new Event('change')); // Trigger AJAX mapel otomatis
+        addRombel.dispatchEvent(new Event('change')); 
     }
+
+    const addHari = document.getElementById('add_hari');
+    if (addHari) addHari.dispatchEvent(new Event('change'));
 
     const modal = document.getElementById('createScheduleModal');
     if (modal) {
@@ -211,14 +292,31 @@ function prepareEditJadwal(mode) {
     const addRombel = document.getElementById('add_rombel_id');
     addRombel.value = scheduleData.rombel_id;
 
-    // Load data via AJAX berdasarkan rombel dan paksa select mapel yg mau diedit
     fetchMappingAndSetForEdit(scheduleData.rombel_id, scheduleData.mapel_id, scheduleData.guru_id);
 
-    setSelectValue('hari', scheduleData.hari);
-    setSelectValue('jam_ke', scheduleData.jam_ke); 
+  // SISTEM DETEKTIF REVERSE-ENGINEERING: Menentukan ini Jumat Biasa atau BPI
+    let hariToSelect = scheduleData.hari;
+    if (hariToSelect === 'Jumat' || hariToSelect === "Jum'at") {
+        const bpiStarts = ['10:30:00', '11:00:00', '11:30:00', '13:30:00', '14:00:00', '14:30:00', '15:00:00'];
+        const bpiEnds = ['11:00:00', '11:30:00', '12:00:00', '14:00:00', '14:30:00', '15:00:00', '15:30:00'];
+        
+        if (bpiStarts.includes(scheduleData.jam_mulai) && bpiEnds.includes(scheduleData.jam_selesai)) {
+            hariToSelect = 'Jumat BPI';
+        } else {
+            hariToSelect = 'Jumat';
+        }
+    }   
+
+    setSelectValue('hari', hariToSelect);
+    
+    const hariSelect = document.getElementById('add_hari');
+    if (hariSelect) hariSelect.dispatchEvent(new Event('change'));
+    
+    setTimeout(() => {
+        setSelectValue('jam_ke', scheduleData.jam_ke); 
+    }, 50);
 }
 
-// MENGGANTIKAN FUNGSI LAMA YANG ERROR
 async function handleCreateSchedule(event) {
     event.preventDefault(); 
     const form = document.getElementById('formTambahJadwal');
@@ -266,10 +364,6 @@ async function handleCreateSchedule(event) {
     }
 }
 
-// ==========================================
-// FUNGSI LAINNYA (LOCK, UI, DRAWER)
-// ==========================================
-
 function applyLockState() {
     const badge = document.getElementById('badgeLockStatus');
     const textStatus = document.getElementById('textLockStatus');
@@ -281,13 +375,11 @@ function applyLockState() {
             badge.className = 'badge bg-red-100 text-red-700 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border border-red-200 shadow-sm';
         }
         if(textStatus) textStatus.textContent = 'Status: Terkunci (Tidak bisa diedit)';
-        
         if(btnLock) {
             btnLock.className = "px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-amber-500/30 flex items-center gap-2";
             btnLock.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" /></svg><span>Buka Kunci</span>`;
             btnLock.setAttribute('onclick', 'confirmUnlockSchedule()');
         }
-
         currentMode = 'view'; 
     } else {
         if(badge) {
@@ -295,7 +387,6 @@ function applyLockState() {
             badge.className = 'badge bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border border-emerald-200 shadow-sm';
         }
         if(textStatus) textStatus.textContent = 'Status: Bisa Diedit';
-        
         if(btnLock) {
             btnLock.className = "px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-blue-600/30 flex items-center gap-2";
             btnLock.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg><span>Kunci Jadwal</span>`;
@@ -351,33 +442,62 @@ function updateModeUI() {
     }
 }
 
-function generateOtomatis() {
-    Swal.fire({
-        icon: 'info',
-        title: textObj.js_feat_na,
-        text: textObj.js_feat_na_desc,
-        confirmButtonColor: '#10b981'
-    });
-}
-
 function renderSchedule() {
     const rombelSelect = document.getElementById('rombelFilter');
+    const tahunSemesterSelect = document.getElementById('tahunSemesterFilter');
+
     const selectedRombelId = rombelSelect ? rombelSelect.value : null;
-    if (!selectedRombelId) {
-        document.getElementById('scheduleContainer').innerHTML = '';
+    const filterValue = tahunSemesterSelect ? tahunSemesterSelect.value : null;
+    const container = document.getElementById('scheduleContainer');
+
+    if (!selectedRombelId || !filterValue) {
+        if(container) container.innerHTML = `<div class="p-8 text-center bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700"><p class="text-gray-500 dark:text-slate-400 font-medium">Pilih Rombel terlebih dahulu.</p></div>`;
+        updateStatCards(0, 0, 0, 0);
         return;
     }
 
+    // 🚀 FILTER HANYA BERDASARKAN ROMBEL (TA sudah difilter di server)
     const data = DB_SCHEDULES.filter(item => item.rombel_id == selectedRombelId);
-    const container = document.getElementById('scheduleContainer');
     
+    // =========================================================
+    // ALGORITMA KALKULASI DINAMIS (PERBAIKAN STATISTIK)
+    // =========================================================
+    // Pisahkan data yang tampil di grid kotak (jam_ke > 0) dengan non-reguler (jam_ke = 0)
+    const regulerData = data.filter(item => item.jam_ke > 0);
+    const ekstraData = data.filter(item => item.jam_ke == 0);
+
+    // Deteksi apakah kelas ini menggunakan Jumat BPI (Jika ya, Jumat cuma 7 les, bukan 9)
+    const hasBPI = ekstraData.some(item => item.kode_jadwal_excel === 'BPI' || (item.nama_mapel && item.nama_mapel.toUpperCase() === 'BPI'));
+    
+    // Kapasitas Dinamis: 36 Les (Senin-Kamis) + 7 Les (Jumat BPI) atau 9 Les (Jumat Biasa)
+    const maxGridSlots = hasBPI ? 43 : 45; 
+
+    // Total JP = Reguler + BPI + Tahfizh (Sesuai beban asli)
+    const totalJP = data.length; 
+    
+    // Persentase & Jam Kosong MURNI berpatokan pada kotak UI (Reguler)
+    const filledGridSlots = regulerData.length;
+    let emptySlots = maxGridSlots - filledGridSlots;
+    if (emptySlots < 0) emptySlots = 0; // Failsafe
+    
+    let filledPercentage = maxGridSlots > 0 ? Math.round((filledGridSlots / maxGridSlots) * 100) : 0;
+    if (filledPercentage > 100) filledPercentage = 100; // Failsafe
+
+    // Hitung beban guru (Hanya ambil data yang memiliki ID guru)
+    const uniqueTeachers = new Set(data.filter(item => item.guru_id).map(item => item.guru_id));
+    const totalTeachers = uniqueTeachers.size;
+    const avgTeacherLoad = totalTeachers > 0 ? Math.round(totalJP / totalTeachers) : 0;
+
+    updateStatCards(totalJP, avgTeacherLoad, emptySlots, filledPercentage);
+    // =========================================================
+
     if (data.length === 0) {
         if(container) container.innerHTML = `<div class="p-8 text-center bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700"><p class="text-gray-500 dark:text-slate-400 font-medium">${textObj.js_empty_schedule}</p></div>`;
         return;
     }
 
     const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
-    const periods = 8; 
+    const periods = 9; // Grid UI tetap merender 9 baris untuk konsistensi layar
 
     let html = '<div class="schedule-grid border-gray-200 dark:border-slate-700" style="display: grid; grid-template-columns: 80px repeat(5, 1fr); gap: 1px; background: #e5e7eb; border-radius: 16px; overflow: hidden; border: 1px solid;">';
     
@@ -394,10 +514,13 @@ function renderSchedule() {
 
         days.forEach((day) => {
             const schedule = data.find(s => s.hari === day && s.jam_ke == period);
+            
+            // Mengunci visual kotak Jumat Les 8 & 9 agar tidak abu-abu "Kosong" jika kelas tersebut pakai BPI
+            const isBpiBlankSlot = (hasBPI && day === 'Jumat' && period > 7);
+
             if (schedule) {
                 let guruName = schedule.nama_lengkap;
-                if(schedule.gelar) guruName += ', ' + schedule.gelar;
-                let clickAction = `onclick="showScheduleDetail('${schedule.id}', '${day}', ${period}, '${schedule.nama_mapel}', '${guruName}', '${schedule.jam_mulai} - ${schedule.jam_selesai}')"`;
+                let clickAction = `onclick="showScheduleDetail('${schedule.id}', '${day}', ${period}, '${schedule.nama_mapel.replace(/'/g, "\\'")}', '${guruName.replace(/'/g, "\\'")}', '${schedule.jam_mulai} - ${schedule.jam_selesai}')"`;
                 html += `<div class="cursor-pointer bg-white dark:bg-slate-800 hover:opacity-90 transition-opacity border-l-[3px] border-[var(--warna-primary)]" style="padding: 12px; height: 100%;" ${clickAction}>
                   <div class="flex flex-col h-full justify-between">
                     <div>
@@ -405,6 +528,14 @@ function renderSchedule() {
                         <p class="font-bold text-gray-900 dark:text-white text-xs sm:text-sm mb-1 line-clamp-2 leading-tight">${schedule.nama_mapel}</p>
                     </div>
                     <p class="text-[10px] sm:text-xs text-gray-600 dark:text-slate-400 line-clamp-1">${guruName}</p>
+                  </div>
+                </div>`;
+            } else if (isBpiBlankSlot) {
+                // Render kotak mati/OFF khusus Jumat sore jika jadwal BPI
+                html += `<div class="bg-gray-100 dark:bg-slate-900/50" style="padding: 12px; height: 100%; display: flex; align-items: center; justify-content: center;">
+                  <div class="text-center text-gray-300 dark:text-slate-600">
+                    <svg class="w-5 h-5 mx-auto mb-1 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    <p class="text-[9px] font-bold uppercase tracking-wider">OFF</p>
                   </div>
                 </div>`;
             } else {
@@ -423,8 +554,30 @@ function renderSchedule() {
     if(container) container.innerHTML = html;
 }
 
+function updateStatCards(totalJP, avgTeacherLoad, emptySlots, percentage) {
+    const elTotalJP = document.getElementById('statTotalJP');
+    const elTeacherLoad = document.getElementById('statTeacherLoad');
+    const elEmptySlots = document.getElementById('statEmptySlots');
+    const elPercentage = document.getElementById('statPercentage');
+
+    if (elTotalJP) elTotalJP.textContent = `${totalJP} JP`;
+    if (elTeacherLoad) elTeacherLoad.textContent = `${avgTeacherLoad} JP`;
+    if (elEmptySlots) elEmptySlots.textContent = `${emptySlots} Slot`;
+    if (elPercentage) elPercentage.textContent = `${percentage}%`;
+}
+
 function getTimeSlot(period) {
-    const times = ['07:30-08:10', '08:10-08:50', '08:50-09:30', '09:45-10:25', '10:25-11:05', '11:05-11:45', '13:00-13:40', '13:40-14:20'];
+    const times = [
+        '09:30-10:00', 
+        '10:00-10:30', 
+        '10:30-11:00', 
+        '11:00-11:30', 
+        '11:30-12:00', 
+        '13:30-14:00', 
+        '14:00-14:30', 
+        '14:30-15:00',
+        '15:00-15:30'
+    ];
     return times[period - 1] || '';
 }
 
@@ -551,7 +704,7 @@ function deleteScheduleSlot() {
 }
 
 function performDelete(id) {
-    fetch(`${BASE_URL}/admin/jadwal/delete/${id}`, {
+    fetch(`${BASE_URL}admin/jadwal/delete/${id}`, {
         method: 'DELETE',
         headers: { 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/json' }
     })

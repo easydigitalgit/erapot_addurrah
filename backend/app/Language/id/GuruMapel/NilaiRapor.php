@@ -1,0 +1,60 @@
+<?php
+
+return [
+    'page_title'          => 'Sinkronisasi Nilai Rapor - Guru Mapel',
+    'breadcrumb'          => 'Guru Mapel',
+    'breadcrumb_active'   => 'Nilai Akhir Rapor',
+    'title'               => 'Kalkulasi & Sinkronisasi Nilai Rapor',
+    'subtitle'            => 'Mengambil rekap dari nilai formatif dan sumatif sesuai bobot rumus secara otomatis.',
+    'btn_sync'            => 'Sinkronisasi Kelas Ini',
+    
+    'filter_category'     => 'Kategori Rapor',
+    'opt_mid_term'        => 'Rapor Tengah Semester',
+    'opt_end_term'        => 'Rapor Akhir Semester',
+    'filter_academic_yr'  => 'Tahun Ajaran',
+    'opt_select_yr'       => '-- Pilih Tahun Ajaran --',
+    'lbl_active'          => '(AKTIF)',
+    'filter_class'        => 'Kelas (Rombel)',
+    'opt_select_yr_first' => '-- Pilih Tahun Ajaran Dulu --',
+    'filter_subject'      => 'Mata Pelajaran',
+    'opt_select_class_1st'=> '-- Pilih Kelas Dulu --',
+    
+    'th_student_name'     => 'Nama Siswa',
+    'th_formative'        => 'FORMATIF',
+    'th_summative'        => 'SUMATIF',
+    'th_final_grade'      => 'Nilai Akhir Rapor',
+    'th_status'           => 'Status',
+    
+    'th_avg_nh'           => 'Rata NH',
+    'th_avg_uh'           => 'Rata UH',
+    'th_avg_sts'          => 'Rata STS',
+    'th_avg_sas'          => 'Rata SAS',
+    
+    // JS Translations
+    'js_loading_init'     => 'Memproses Filter...',
+    'js_loading_desc'     => 'Silakan Pilih Kelas dan Mata Pelajaran untuk melihat data nilai.',
+    'js_select_class'     => '-- Pilih Kelas --',
+    'js_select_subject'   => '-- Pilih Mata Pelajaran --',
+    'js_loading_classes'  => 'Memuat data kelas...',
+    'js_err_server_resp'  => 'Respon server gagal (Bukan format JSON).',
+    'js_no_schedule_opt'  => 'Tidak ada jadwal mengajar di TA ini',
+    'js_no_schedule_desc' => 'Anda tidak memiliki jadwal/tugas mengajar di Tahun Ajaran ini.',
+    'js_select_filter'    => 'Silakan Pilih Filter Kelas dan Mata Pelajaran',
+    'js_err_load_class'   => 'Error memuat kelas',
+    'js_loading_data'     => 'Memuat data siswa & nilai...',
+    'js_err_fetch_data'   => 'Gagal mengambil data dari server.',
+    'js_no_student'       => 'Belum Ada Siswa',
+    'js_no_student_desc'  => 'Tidak ada data siswa aktif di kelas ini.',
+    'js_synced'           => 'Disinkronisasi',
+    'js_not_recap'        => 'Belum Direkap',
+    'js_sync_title'       => 'Sinkronisasi Rapor {0}?', // {0} diganti Kategori
+    'js_sync_desc'        => 'Sistem akan menarik dan mengkalkulasi seluruh nilai sesuai bobot terbaru.',
+    'js_btn_yes_sync'     => 'Ya, Sinkronisasikan!',
+    'js_btn_cancel'       => 'Batal',
+    'js_processing'       => 'Sedang Memproses...',
+    'js_calc_weight'      => 'Tunggu sebentar, sistem sedang melakukan kalkulasi bobot.',
+    'js_err_read_resp'    => 'Gagal membaca respon server.',
+    'js_success'          => 'Berhasil!',
+    'js_fail'             => 'Gagal',
+    'js_err_system'       => 'Error System'
+];

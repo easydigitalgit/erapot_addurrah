@@ -60,15 +60,19 @@
         <input type="text" class="search-input w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 dark:!border-slate-600 bg-gray-50 dark:!bg-slate-900 text-gray-800 dark:!text-white focus:border-[<?= $color['warna_primary'] ?>]/80 outline-none transition-colors" placeholder="<?= lang('GuruMapel/BankSoal.search_placeholder') ?>" id="searchInput" oninput="filterQuestions()">
        </div>
        <div class="flex gap-3 flex-wrap">
-        <button class="btn-primary flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-white font-bold bg-[<?= $color['warna_primary'] ?>]/90 hover:bg-[<?= $color['warna_primary'] ?>] shadow-lg shadow-[<?= $color['warna_primary'] ?>]/20 transition-all outline-none" onclick="showAddQuestionModal()">
-         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg> <?= lang('GuruMapel/BankSoal.btn_add_question') ?> 
-        </button> 
-        <button class="btn-secondary flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-[<?= $color['warna_primary'] ?>] font-bold border-2 border-[<?= $color['warna_primary'] ?>]/50 hover:bg-[<?= $color['warna_primary'] ?>]/10 transition-colors outline-none" onclick="showImportModal()">
-         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg> <?= lang('GuruMapel/BankSoal.btn_import') ?> 
-        </button>
-        <button class="btn-secondary flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-[<?= $color['warna_primary'] ?>] font-bold border-2 border-[<?= $color['warna_primary'] ?>]/50 hover:bg-[<?= $color['warna_primary'] ?>]/10 transition-colors outline-none" onclick="showAddPaketModal()">
-         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg> <?= lang('GuruMapel/BankSoal.btn_create_packet') ?> 
-        </button>
+        
+        <?php if(has_permission('guru_materi', 'create')): ?>
+            <button class="btn-primary flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-white font-bold bg-[<?= $color['warna_primary'] ?>]/90 hover:bg-[<?= $color['warna_primary'] ?>] shadow-lg shadow-[<?= $color['warna_primary'] ?>]/20 transition-all outline-none" onclick="showAddQuestionModal()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg> <?= lang('GuruMapel/BankSoal.btn_add_question') ?> 
+            </button> 
+            <button class="btn-secondary flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-[<?= $color['warna_primary'] ?>] font-bold border-2 border-[<?= $color['warna_primary'] ?>]/50 hover:bg-[<?= $color['warna_primary'] ?>]/10 transition-colors outline-none" onclick="showImportModal()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg> <?= lang('GuruMapel/BankSoal.btn_import') ?> 
+            </button>
+            <button class="btn-secondary flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-[<?= $color['warna_primary'] ?>] font-bold border-2 border-[<?= $color['warna_primary'] ?>]/50 hover:bg-[<?= $color['warna_primary'] ?>]/10 transition-colors outline-none" onclick="showAddPaketModal()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg> <?= lang('GuruMapel/BankSoal.btn_create_packet') ?> 
+            </button>
+        <?php endif; ?>
+
        </div>
       </div>
       
@@ -98,9 +102,13 @@
        </div>
        <h3 class="text-xl font-black text-gray-900 dark:!text-white mb-2 transition-colors"><?= lang('GuruMapel/BankSoal.empty_state_title') ?></h3>
        <p class="text-gray-600 dark:!text-slate-400 font-medium mb-6 transition-colors" id="emptyStateText"><?= lang('GuruMapel/BankSoal.empty_state_desc') ?></p>
-       <button class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[<?= $color['warna_primary'] ?>]/90 hover:bg-[<?= $color['warna_primary'] ?>] text-white font-bold shadow-lg shadow-[<?= $color['warna_primary'] ?>]/20 transition-all outline-none" onclick="showAddQuestionModal()">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg> <?= lang('GuruMapel/BankSoal.btn_add_now') ?> 
-       </button>
+       
+       <?php if(has_permission('guru_materi', 'create')): ?>
+           <button class="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[<?= $color['warna_primary'] ?>]/90 hover:bg-[<?= $color['warna_primary'] ?>] text-white font-bold shadow-lg shadow-[<?= $color['warna_primary'] ?>]/20 transition-all outline-none" onclick="showAddQuestionModal()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg> <?= lang('GuruMapel/BankSoal.btn_add_now') ?> 
+           </button>
+       <?php endif; ?>
+
       </div>
      </div>
 
@@ -326,6 +334,9 @@
     const csrfTokenName = "<?= csrf_token() ?>";
     const csrfTokenHash = "<?= csrf_hash() ?>";
     
+    // PERBAIKAN: Gunakan ID modul 'guru_materi'
+    const CAN_DELETE = <?= has_permission('guru_materi', 'delete') ? 'true' : 'false' ?>;
+    
     // Kamus Javascript
     const LANG = {
         empty_search: "<?= lang('GuruMapel/BankSoal.empty_search_js') ?? 'Tidak ada soal yang cocok dengan filter/pencarian Anda.' ?>",
@@ -379,5 +390,5 @@
         err_conn: "<?= lang('GuruMapel/BankSoal.js_err_conn') ?? '⚠️ Terjadi kesalahan koneksi server' ?>"
     };
 </script>
-<script src="<?= base_url('assets/js/GuruMapel/bank-soal.js') ?>?v=<?= time() ?>"></script>
+<script src="<?= base_url('assets/js/GuruMapel/bank-soal.js') ?>"></script>
 <?= $this->endSection() ?>

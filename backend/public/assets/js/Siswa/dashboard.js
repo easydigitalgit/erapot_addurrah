@@ -42,9 +42,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const reader = new FileReader();
                     reader.onload = (e) => {
+                        // Update gambar profil besar di dashboard
                         document.getElementById('avatarImage').src = e.target.result;
                     };
                     reader.readAsDataURL(file);
+
+                    // --- UPDATE AVATAR DI NAVBAR SECARA LIVE ---
+                    const navbarAvatar = document.getElementById('navbarAvatar');
+                    if (navbarAvatar && data.new_avatar_url) {
+                        const originalNavSrc = navbarAvatar.src;
+                        navbarAvatar.src = data.new_avatar_url; 
+                        
+                        // Jaring pengaman (fallback) jika gambar gagal dimuat
+                        navbarAvatar.onerror = function() {
+                            this.onerror = null;
+                            this.src = originalNavSrc;
+                        };
+                    }
+                    // ---------------------------------------------
 
                     Swal.fire({
                         icon: 'success',

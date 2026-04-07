@@ -41,7 +41,7 @@ return [
     'sec_change_pass'     => 'Change Password',
     'sec_pass_desc'       => 'Secure your account regularly.',
     'sec_login_notif'     => 'Login Notification',
-    'sec_login_notif_desc'=> 'Get an email every time a successful login occurs',
+    'sec_login_notif_desc' => 'Get an email every time a successful login occurs',
     'sec_2fa'             => 'Two-Factor Authentication (2FA)',
     'sec_2fa_desc'        => 'Additional security with OTP',
     'sec_tips_title'      => 'Security Tips',
@@ -91,7 +91,7 @@ return [
     'privacy_audit'       => 'Audit Log',
     'privacy_audit_desc'  => 'Every change to your account is recorded in detail in the system audit log.',
     'privacy_history'     => 'Change History',
-    'privacy_history_desc'=> 'Last updated: Today',
+    'privacy_history_desc' => 'Last updated: Today',
 
     // Change Password Modal
     'modal_pass_title'    => 'Change Password',
@@ -102,5 +102,13 @@ return [
     'modal_confirm_pass'  => 'Confirm New Password',
     'modal_warning'       => 'After the password is changed, you will be automatically logged out and asked to log in again with the new password.',
     'btn_cancel'          => 'Cancel',
-    'btn_save'            => 'Change Password'
+    'btn_save'            => 'Change Password',
+    // --- TEKS UNTUK JAVASCRIPT ---
+    'js_saving'        => 'Saving...',
+    'js_err_pwd_match' => 'New password and confirmation do not match',
+    'js_err_pwd_len'   => 'Password must be at least 8 characters',
+    'js_processing'    => 'Processing...',
+    'js_succ_pwd'      => 'Password changed! Redirecting to Login...',
+    'js_err_img_size'  => 'Maximum image size is 2MB!',
+    'js_uploading'     => 'Uploading photo...',
 ];

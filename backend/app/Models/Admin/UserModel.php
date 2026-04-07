@@ -17,21 +17,24 @@ class UserModel extends Model
     public function getUserByLogin($loginInput)
     {
         return $this->groupStart()
-                    ->where('username', $loginInput)
-                    ->orWhere('email', $loginInput)
-                ->groupEnd()
-                ->first();
+            ->where('username', $loginInput)
+            ->orWhere('email', $loginInput)
+            ->groupEnd()
+            ->first();
     }
 
     /**
      * INI FUNGSI UTAMANYA
      * Menggabungkan data dari 4 tabel menjadi 1 baris data rapi
      */
-   public function getUsersWithDetails($search = null, $role = null, $status = null)
+    public function getUsersWithDetails($search = null, $role = null, $status = null)
     {
         // 1. SELECT DATA UTAMA
         $this->select('users.id, users.username, users.email, users.role_id, users.is_active, users.created_at, users.foto_profil');
-        
+
+        // TAMBAHKAN BARIS INI UNTUK MENGAMBIL FOTO SISWA:
+        $this->select('siswa.foto_siswa');
+
         // Tarik nama role utama dari tabel roles
         $this->select('roles.role_name');
 
@@ -45,7 +48,6 @@ class UserModel extends Model
         $this->select('COALESCE(guru_tendik.nama_lengkap, siswa.nama_lengkap, orangtua_wali.nama_ayah, users.username) as full_name');
         $this->select('COALESCE(guru_tendik.no_hp, siswa.no_telp_rumah, orangtua_wali.no_hp_ortu, "-") as phone');
         $this->select('COALESCE(guru_tendik.nuptk, guru_tendik.nik, siswa.nis, "-") as nomor_induk');
-        $this->select('COALESCE(guru_tendik.foto, siswa.foto_siswa, "default.jpg") as user_photo');
 
         // 3. JOIN
         // Join ke tabel roles di sini HANYA untuk mendapatkan nama role_id utama
@@ -61,7 +63,7 @@ class UserModel extends Model
                 ->orLike('users.email', $search)
                 ->orLike('guru_tendik.nama_lengkap', $search)
                 ->orLike('siswa.nama_lengkap', $search)
-            ->groupEnd();
+                ->groupEnd();
         }
 
         if ($role) {
@@ -79,7 +81,7 @@ class UserModel extends Model
         // Urutkan
         $this->orderBy('users.created_at', 'DESC');
 
-        return $this; 
+        return $this;
     }
 
     // Hitung Statistik
@@ -111,4 +113,4 @@ class UserModel extends Model
             ->get()
             ->getResultArray();
     }
-}   
+}

@@ -37,49 +37,61 @@ class DashboardController extends SiswaBaseController
         return view('Siswa/dashboard', $data);
     }
 
-    public function uploadAvatar()
+    // GANTI NAMA FUNGSINYA DI SINI
+    public function updateFoto()
     {
         if (!$this->request->isAJAX()) {
             return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'Akses ditolak']);
         }
 
         $userId = session()->get('id') ?? session()->get('user_id');
-        $userModel = new \App\Models\Admin\UserModel(); // Pastikan namespace modelnya benar
+        $userModel = new \App\Models\Admin\UserModel(); 
         $userData = $userModel->find($userId);
         
         $fileAvatar = $this->request->getFile('avatar');
 
         if ($fileAvatar && $fileAvatar->isValid() && !$fileAvatar->hasMoved()) {
             
-            // 1. GANTI PATH FOLDER PENYIMPANAN DI SINI
-            $path = FCPATH . 'assets/uploads/siswa/';
+            $path = FCPATH . 'assets/uploads/avatars/'; // Pastikan SEMUA role pakai path ini
             
             if (!is_dir($path)) mkdir($path, 0777, true);
 
-            // Auto Delete foto lama (akan otomatis mencari di folder siswa)
             if (!empty($userData['foto_profil']) && file_exists($path . $userData['foto_profil'])) {
                 unlink($path . $userData['foto_profil']);
             }
 
-            $newName = $fileAvatar->getRandomName();
-            $fileAvatar->move($path, $newName);
+            $originalName = $fileAvatar->getRandomName();
+            $fileAvatar->move($path, $originalName);
+
+            $webpName  = pathinfo($originalName, PATHINFO_FILENAME) . '.webp';
+            $finalName = $originalName; // Fallback jika konversi gagal
 
             try {
                 \Config\Services::image()
-                    ->withFile($path . $newName)
+                    ->withFile($path . $originalName)
                     ->fit(250, 250, 'center')
-                    ->save($path . $newName, 70);
+                    ->convert(IMAGETYPE_WEBP)
+                    ->save($path . $webpName, 75);
+
+                if (file_exists($path . $webpName)) {
+                    unlink($path . $originalName); // Hapus aslinya
+                    $finalName = $webpName;
+                }
             } catch (\Exception $e) {}
 
-            $userModel->update($userId, ['foto_profil' => $newName]);
-            session()->set('foto_profil', $newName);
+            $userModel->update($userId, ['foto_profil' => $finalName]);
+            
+            // Juga update di tabel siswa agar sinkron (opsional tapi disarankan)
+            $db = \Config\Database::connect();
+            $db->table('siswa')->where('user_id', $userId)->update(['foto_siswa' => $finalName]);
+
+            session()->set('foto_profil', $finalName);
 
             return $this->response->setJSON([
                 'status' => 'success',
                 'message' => lang('Siswa/Dashboard.js_photo_updated') ?? 'Foto profil berhasil disimpan!',
-                // 2. GANTI PATH URL BALIKAN KE JS DI SINI
-                'new_avatar_url' => base_url('assets/uploads/siswa/' . $newName),
-                'token' => csrf_hash() // Tambahkan token agar JS tidak error setelah upload
+                'new_avatar_url' => base_url('assets/uploads/avatars/' . $finalName),
+                'token' => csrf_hash() 
             ]);
         }
 

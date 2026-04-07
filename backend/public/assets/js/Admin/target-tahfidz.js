@@ -14,27 +14,41 @@ function closeMobileSidebar() {
   document.body.style.overflow = '';
 }
 
-function showDetailDrawer(tingkat, semester, target) {
-  const elTitle = document.getElementById('drawerTitle');
-  const elSubtitle = document.getElementById('drawerSubtitle');
-
-  // Fallback super aman anti undefined
-  const txtTarget = LANG.js_target || 'Target';
-  const txtLevel = LANG.th_level || 'Level';
-  const txtSemester = LANG.th_semester || 'Semester';
-
-  if (elTitle) elTitle.textContent = `${txtTarget} ${target}`;
-  if (elSubtitle) elSubtitle.textContent = `${txtLevel} ${tingkat} - ${txtSemester} ${semester}`;
+// PERBAIKAN: Menambahkan parameter yang dibutuhkan untuk laci
+window.showDetailDrawer = function(tingkat, semester, target, surahMulai, surahSampai, minimal) {
+  document.getElementById('drawerTitle').textContent = target;
+  document.getElementById('drawerSubtitle').textContent = `Tingkat ${tingkat} - Semester ${semester}`;
+  
+  document.getElementById('drawerSurahMulai').textContent = surahMulai;
+  document.getElementById('drawerSurahSampai').textContent = surahSampai;
+  document.getElementById('drawerMinimal').textContent = `${minimal}%`;
   
   const drawer = document.getElementById('detailDrawer');
   const overlay = document.getElementById('drawerOverlay');
 
+  if (overlay) {
+      overlay.classList.remove('hidden');
+      setTimeout(() => { overlay.classList.remove('opacity-0'); }, 10);
+  }
   if (drawer) {
       drawer.classList.remove('hidden');
       setTimeout(() => { drawer.classList.remove('translate-x-full'); }, 10);
   }
-  if (overlay) overlay.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+}
+
+window.closeDrawer = function() {
+  const drawer = document.getElementById('detailDrawer');
+  const overlay = document.getElementById('drawerOverlay');
+  
+  if (drawer) drawer.classList.add('translate-x-full');
+  if (overlay) overlay.classList.add('opacity-0');
+  
+  setTimeout(()=> {
+      if (drawer) drawer.classList.add('hidden');
+      if (overlay) overlay.classList.add('hidden');
+      document.body.style.overflow = '';
+  }, 300);
 }
 
 function toggleModal(modalId, show) {
@@ -48,17 +62,6 @@ function toggleModal(modalId, show) {
           document.body.style.overflow = '';
       }
   }
-}
-
-function closeDrawer() {
-  const drawer = document.getElementById('detailDrawer');
-  const overlay = document.getElementById('drawerOverlay');
-  if (drawer) {
-      drawer.classList.add('translate-x-full');
-      setTimeout(()=> drawer.classList.add('hidden'), 300);
-  }
-  if (overlay) overlay.classList.add('hidden');
-  document.body.style.overflow = '';
 }
 
 function showAddTargetModal() { toggleModal('addTargetModal', true); }
@@ -94,12 +97,6 @@ function saveTarget(event) {
 function showTemplateModal() { toggleModal('templateModal', true); }
 function closeTemplateModal() { toggleModal('templateModal', false); }
 
-function selectTemplate(templateType) {
-  const message = LANG?.js_template_applied || 'Template berhasil dipilih!';
-  showToast(message, 'success');
-  closeTemplateModal();
-}
-
 function showEditModal(data) {
   document.getElementById('edit_id').value = data.id;
   document.getElementById('edit_juz_id').value = data.juz_id;
@@ -113,7 +110,6 @@ function showEditModal(data) {
   const labelInfo = document.getElementById('label_tingkat_semester');
   const textEditing = document.getElementById('text_editing');
   
-  // Fallback super aman anti hardcoded
   if(textEditing) textEditing.textContent = LANG.js_editing_target || 'Currently editing target:';
   
   const semesterStr = data.semester === 'Ganjil' ? (LANG.odd || 'Ganjil') : (LANG.even || 'Genap');
@@ -231,31 +227,34 @@ function closeRiwayatModal() {
 
 function loadRiwayat() {
     const container = document.getElementById('listRiwayatContainer');
-    container.innerHTML = `<li class="text-center text-sm text-gray-500 py-10">${LANG?.loading_history || 'Memuat riwayat...'}</li>`;
+    container.innerHTML = `<li class="text-center text-sm text-gray-500 dark:text-slate-400 py-10">${LANG?.loading_history || 'Memuat riwayat...'}</li>`;
 
     fetch(`${BASE_URL}/admin/target-tahfidz/riwayat`, { headers: { "X-Requested-With": "XMLHttpRequest" } })
     .then(response => response.json())
     .then(data => {
         if(data.status === 'success') {
             if(data.data.length === 0) {
-                container.innerHTML = `<li class="text-center text-sm text-gray-500 py-10">${LANG?.no_history || 'Belum ada riwayat'}</li>`;
+                container.innerHTML = `<li class="text-center text-sm text-gray-500 dark:text-slate-400 py-10">${LANG?.no_history || 'Belum ada riwayat'}</li>`;
                 return;
             }
             let html = '';
             data.data.forEach(item => {
-                let iconBg = item.status === 'Aktif' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-600';
+                let iconBg = item.status === 'Aktif' 
+                    ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' 
+                    : 'bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-slate-400';
+                    
                 html += `
                 <li class="flex gap-4">
                     <div class="relative flex flex-col items-center justify-start">
-                        <div class="w-8 h-8 rounded-full ${iconBg} flex items-center justify-center z-10 shrink-0">
+                        <div class="w-8 h-8 rounded-full ${iconBg} flex items-center justify-center z-10 shrink-0 border dark:border-slate-600">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </div>
-                        <div class="w-0.5 h-full bg-gray-200 absolute top-8"></div>
+                        <div class="w-0.5 h-full bg-gray-200 dark:bg-slate-700 absolute top-8"></div>
                     </div>
-                    <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm w-full mb-2">
-                        <p class="text-xs font-semibold text-gray-500 mb-1">${item.tanggal}</p>
-                        <p class="text-sm font-bold text-gray-800">${item.aksi}</p>
-                        <p class="text-sm text-gray-600 mt-1">${item.detail}</p>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-gray-100 dark:border-slate-700 shadow-sm w-full mb-2 transition-colors">
+                        <p class="text-xs font-semibold text-gray-500 dark:text-slate-400 mb-1">${item.tanggal}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-white">${item.aksi}</p>
+                        <p class="text-sm text-gray-600 dark:text-slate-300 mt-1">${item.detail}</p>
                     </div>
                 </li>`;
             });
@@ -263,30 +262,36 @@ function loadRiwayat() {
         }
     })
     .catch(err => {
-        container.innerHTML = `<li class="text-center text-sm text-red-500 py-10">${LANG?.fail_load_history || 'Gagal'}</li>`;
+        container.innerHTML = `<li class="text-center text-sm text-red-500 dark:text-red-400 py-10">${LANG?.fail_load_history || 'Gagal'}</li>`;
     });
 }
 
 function showToast(message, type = 'success') {
   const toast = document.createElement('div');
-  toast.className = 'toast fixed top-4 right-4 z-[100000] flex items-center gap-3 px-4 py-3 bg-white border border-gray-100 rounded-xl shadow-lg transition-all duration-300';
+  toast.className = 'toast fixed top-4 right-4 z-[100000] flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl shadow-lg transition-all duration-300';
   const icon = type === 'success' 
-      ? '<svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>' 
-      : '<svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
+      ? '<svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>' 
+      : '<svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
   
-  // Perbaiki notifikasi judul menjadi "Notifikasi" secara default
-  toast.innerHTML = `<div class="w-10 h-10 rounded-full flex items-center justify-center ${type === 'success' ? 'bg-emerald-100' : 'bg-amber-100'} flex-shrink-0">${icon}</div><div><p class="font-semibold text-gray-800 text-sm">Notifikasi</p><p class="text-xs text-gray-500">${message}</p></div>`;
+  toast.innerHTML = `<div class="w-10 h-10 rounded-full flex items-center justify-center ${type === 'success' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-amber-100 dark:bg-amber-900/30'} flex-shrink-0">${icon}</div><div><p class="font-semibold text-gray-800 dark:text-white text-sm">Notifikasi</p><p class="text-xs text-gray-500 dark:text-slate-400">${message}</p></div>`;
   
   document.body.appendChild(toast);
+  
+  requestAnimationFrame(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(0)';
+  });
+
   setTimeout(() => {
       toast.style.opacity = '0';
+      toast.style.transform = 'translateX(100%)';
       setTimeout(() => toast.remove(), 300);
   }, 3000);
 }
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-      closeDrawer(); closeAddTargetModal(); closeEditTargetModal(); closeTemplateModal(); closeImportModal(); closeRiwayatModal();
+      window.closeDrawer(); closeAddTargetModal(); closeEditTargetModal(); closeTemplateModal(); closeImportModal(); closeRiwayatModal();
   }
 });
 

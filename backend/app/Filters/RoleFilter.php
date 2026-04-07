@@ -32,13 +32,8 @@ class RoleFilter implements FilterInterface
         // 4. CEK KECOCOKAN ROLE
         // $arguments berisi daftar role yang boleh masuk. Contoh: ['admin', 'kepsek']
         if (!in_array($userRole, $arguments)) {
-            
-            // SKENARIO DITOLAK:
-            // Jika role user tidak ada di daftar yang diizinkan, tampilkan Error 404 atau 403.
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Akses Ditolak: Anda tidak memiliki izin untuk mengakses halaman ini.");
-            
-            // Atau bisa juga redirect balik ke dashboard mereka:
-            // return redirect()->back()->with('error', 'Anda tidak punya akses ke sana.');
+            // SKENARIO DITOLAK: Redirect ke login dengan pesan tegas
+            return redirect()->to('/login')->with('error', 'Akses Ditolak: Anda tidak memiliki izin untuk mengakses halaman tersebut.');
         }
     }
 

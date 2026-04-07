@@ -82,6 +82,21 @@ function renderQuestionsTable() {
         if(q.status === "sering") statusBadge = `<span class="inline-flex px-2.5 py-1 bg-amber-50 text-amber-700 dark:!bg-amber-900/30 dark:!text-amber-400 text-[10px] font-black uppercase tracking-wider rounded-md border border-amber-200 dark:!border-amber-800/50 transition-colors shadow-sm">${LANG.status_often}</span>`;
         if(q.status === "terkunci") statusBadge = `<span class="inline-flex px-2.5 py-1 bg-rose-50 text-rose-700 dark:!bg-rose-900/30 dark:!text-rose-400 text-[10px] font-black uppercase tracking-wider rounded-md border border-rose-200 dark:!border-rose-800/50 transition-colors shadow-sm">${LANG.status_locked}</span>`;
 
+        // IMPLEMENTASI RBAC: Siapkan Action Buttons Default (Selalu bisa Preview)
+        let actionButtons = `
+            <button class="flex items-center justify-center p-2.5 bg-indigo-50 text-indigo-600 dark:!bg-indigo-900/30 dark:!text-indigo-400 rounded-lg hover:bg-indigo-100 dark:hover:!bg-indigo-900/50 transition-colors outline-none" onclick="showPreview(${q.id})" title="${LANG.btn_preview}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            </button>
+        `;
+
+        // IMPLEMENTASI RBAC: Tombol Hapus hanya muncul jika CAN_DELETE bernilai true
+        if (typeof CAN_DELETE !== 'undefined' && CAN_DELETE) {
+            actionButtons += `
+            <button class="flex items-center justify-center p-2.5 bg-gray-100 text-gray-500 dark:!bg-slate-700 dark:!text-slate-400 hover:bg-rose-100 hover:text-rose-600 dark:hover:!bg-rose-900/50 dark:hover:!text-rose-400 rounded-lg transition-colors outline-none" onclick="deleteQuestion(${q.id})" title="${LANG.btn_delete}" ${q.status === 'terkunci' ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : ''}>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>`;
+        }
+
         return `
         <tr onclick="showPreview(${q.id})" class="cursor-pointer bg-white dark:!bg-slate-800 hover:bg-gray-50 dark:hover:!bg-slate-700/50 border-b border-gray-100 dark:!border-slate-700 transition-colors group">
             <td class="text-center py-4 px-4 transition-colors"><span class="font-bold text-gray-700 dark:!text-slate-400">${index + 1}</span></td>
@@ -95,12 +110,7 @@ function renderQuestionsTable() {
             <td class="py-4 px-4 transition-colors">${statusBadge}</td>
             <td class="py-4 px-4 transition-colors" onclick="event.stopPropagation()">
                 <div class="flex gap-2">
-                    <button class="flex items-center justify-center p-2.5 bg-indigo-50 text-indigo-600 dark:!bg-indigo-900/30 dark:!text-indigo-400 rounded-lg hover:bg-indigo-100 dark:hover:!bg-indigo-900/50 transition-colors outline-none" onclick="showPreview(${q.id})" title="${LANG.btn_preview}">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                    </button>
-                    <button class="flex items-center justify-center p-2.5 bg-gray-100 text-gray-500 dark:!bg-slate-700 dark:!text-slate-400 hover:bg-rose-100 hover:text-rose-600 dark:hover:!bg-rose-900/50 dark:hover:!text-rose-400 rounded-lg transition-colors outline-none" onclick="deleteQuestion(${q.id})" title="${LANG.btn_delete}" ${q.status === 'terkunci' ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : ''}>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    </button>
+                    ${actionButtons}
                 </div>
             </td>
         </tr>`;
@@ -456,10 +466,7 @@ function showAddQuestionModal() {
     }
 }
 
-// Perbaikan Kunci: Pencegahan Konflik Klik
 function closeAddQuestionModal(event) {
-    // Jika dipanggil dari tombol X (event tidak ada atau tidak memiliki id modal) 
-    // ATAU jika yang diklik persis adalah area gelap (overlay)
     if (!event || event.target.id === "addQuestionModal") {
         const modal = document.getElementById("addQuestionModal");
         if(modal) {

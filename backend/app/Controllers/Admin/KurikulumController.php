@@ -226,4 +226,56 @@ class KurikulumController extends AdminBaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'System Error: ' . $e->getMessage()]);
         }
     }
+    // ==========================================
+    // FUNGSI UPLOAD DOKUMEN PANDUAN
+    // ==========================================
+    public function uploadDokumen()
+    {
+        if (!$this->request->isAJAX()) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Invalid request']);
+        }
+
+        $file = $this->request->getFile('file_doc');
+        
+        if (!$file || !$file->isValid()) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File rusak atau tidak ada file yang dipilih.']);
+        }
+
+        $ext = strtolower($file->getClientExtension());
+        if ($ext !== 'pdf') {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Format file harus .pdf']);
+        }
+
+        // FCPATH otomatis mengarah ke folder "public" di CI4.
+        // Jadi ini akan membuat folder di: public/assets/dokumen/
+        $path = FCPATH . 'assets/dokumen/';
+        
+        // Buat foldernya jika belum ada
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        // Tentukan nama file statis agar selalu menimpa file lama
+        $fileName = 'Panduan_Kurikulum.pdf';
+
+        try {
+            // Hapus file lama jika ada (mencegah error overwrite di beberapa server)
+            if (file_exists($path . $fileName)) {
+                unlink($path . $fileName);
+            }
+
+            // Pindahkan file baru dari temp ke folder public/assets/dokumen/
+            $file->move($path, $fileName);
+
+            return $this->response->setJSON([
+                'status' => 'success', 
+                'message' => 'Dokumen panduan berhasil diperbarui!'
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error', 
+                'message' => 'Gagal mengunggah: ' . $e->getMessage()
+            ]);
+        }
+    }
 }

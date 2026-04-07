@@ -5,6 +5,9 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('styles') ?>
+<style>
+    :root { --warna-scroll: <?= $color['warna_primary'] ?>; }
+</style>
 <link rel="stylesheet" href="<?= base_url('assets/css/Admin/kurikulum.css') ?>">
 <?= $this->endSection() ?>
 
@@ -99,10 +102,11 @@
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg> <?= lang('Admin/Kurikulum.btn_sys_impact') ?> </button>
-      <a href="<?= base_url('assets/dokumen/Panduan_Kurikulum.pdf') ?>" target="_blank" download="Panduan_Kurikulum.pdf" class="w-full px-5 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-300 font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-slate-600 transition-all shadow-sm flex items-center justify-center gap-2 outline-none cursor-pointer">
+      <button onclick="showDocModal()" class="w-full px-5 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-300 font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-slate-600 transition-all shadow-sm flex items-center justify-center gap-2 outline-none cursor-pointer">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg> <?= lang('Admin/Kurikulum.btn_doc') ?> </a>
+        </svg> <?= lang('Admin/Kurikulum.btn_doc') ?> 
+      </button>
     </div>
   </div>
 </div>
@@ -233,6 +237,74 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('modals') ?>
+
+<div id="docModal" class="fixed inset-0 hidden" style="z-index: 100000 !important;">
+  <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity pointer-events-auto" onclick="closeDocModal()"></div>
+  <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none md:pl-64">
+    <div class="relative w-full bg-white dark:bg-slate-800 rounded-3xl shadow-2xl flex flex-col max-h-[90vh] pointer-events-auto border border-transparent dark:border-slate-700 transition-colors duration-300" style="max-width: 500px; z-index: 100001;">
+      <div class="p-6 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between bg-white dark:bg-slate-800 rounded-t-3xl z-20 flex-shrink-0 transition-colors">
+        <div>
+          <h3 class="text-xl font-bold text-gray-800 dark:text-white">Dokumentasi Kurikulum</h3>
+          <p class="text-sm font-medium text-gray-500 dark:text-slate-400 mt-1">Unduh atau perbarui panduan.</p>
+        </div>
+        <button type="button" onclick="closeDocModal()" class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-full transition-colors cursor-pointer text-gray-500 dark:text-slate-400 outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <div class="p-6 overflow-y-auto custom-scrollbar">
+        
+        <div class="mb-8">
+            <p class="text-sm font-bold text-gray-700 dark:text-slate-300 mb-3">Panduan Saat Ini:</p>
+            <?php 
+            $docPath = FCPATH . 'assets/dokumen/Panduan_Kurikulum.pdf';
+            if(file_exists($docPath)): 
+            ?>
+                <div class="p-4 rounded-xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-8 h-8 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v16a2 2 0 002 2z"></path></svg>
+                        <div>
+                            <p class="text-sm font-bold text-gray-800 dark:text-white">Panduan_Kurikulum.pdf</p>
+                            <p class="text-xs text-gray-500 dark:text-slate-400">Tersedia untuk diunduh</p>
+                        </div>
+                    </div>
+                    <a href="<?= base_url('assets/dokumen/Panduan_Kurikulum.pdf') ?>" target="_blank" download="Panduan_Kurikulum.pdf" class="px-4 py-2 bg-[<?= $color['warna_primary'] ?>] text-white text-xs font-bold rounded-lg hover:brightness-110 transition shadow-md">Unduh</a>
+                </div>
+            <?php else: ?>
+                <div class="p-4 rounded-xl border border-dashed border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-700/50 text-center">
+                    <p class="text-sm text-gray-500 dark:text-slate-400 italic">Belum ada dokumen panduan yang diunggah.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <div class="relative flex py-2 items-center">
+            <div class="flex-grow border-t border-gray-200 dark:border-slate-600"></div>
+            <span class="flex-shrink-0 mx-4 text-gray-400 text-xs uppercase tracking-widest font-bold">Atau</span>
+            <div class="flex-grow border-t border-gray-200 dark:border-slate-600"></div>
+        </div>
+
+        <form id="docForm" action="<?= base_url('admin/kurikulum/upload-dokumen') ?>" method="POST" onsubmit="handleDocSubmit(event)" enctype="multipart/form-data" class="mt-6">
+          <?= csrf_field() ?>
+          <div class="mb-6">
+            <p class="text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Unggah Panduan Baru (.pdf)</p>
+            <input type="file" name="file_doc" accept=".pdf" required class="block w-full text-sm text-gray-500 dark:text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gray-100 dark:file:bg-slate-700 file:text-gray-700 dark:file:text-slate-200 hover:file:bg-gray-200 dark:hover:file:bg-slate-600 border border-gray-200 dark:border-slate-600 cursor-pointer outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>] transition-colors rounded-xl p-1">
+            <p class="text-[11px] text-gray-500 dark:text-slate-400 mt-2">* Mengunggah file baru akan menimpa file panduan lama.</p>
+          </div>
+          <div class="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-slate-700 transition-colors">
+            <button type="submit" class="w-full px-5 py-3 text-white font-bold rounded-xl shadow-lg transition-transform transform hover:-translate-y-0.5 flex items-center justify-center gap-2 outline-none cursor-pointer" style="background-color: <?= $color['warna_primary'] ?>;">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg> Ganti Dokumen
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="editCurriculumModal" class="fixed inset-0 hidden" style="z-index: 99999;">
   <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity pointer-events-auto" onclick="closeEditModal()"></div>

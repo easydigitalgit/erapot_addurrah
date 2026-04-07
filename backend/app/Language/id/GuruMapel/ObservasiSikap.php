@@ -52,4 +52,19 @@ return [
     'quick_select_scale'  => '-- Pilih Skala --',
     'quick_notes_title'   => 'Catatan (Berlaku untuk semua siswa)',
     'btn_save_all'        => 'Simpan Semua',
+
+    // Javascript Keys (Fallback)
+    'js_empty_data'       => 'Belum ada data observasi',
+    'js_advanced_act'     => 'Aksi Lanjutan',
+    'js_delete_perm'      => 'Hapus Permanen',
+    'js_err_incomplete'   => '⚠️ Mohon lengkapi semua data!',
+    'js_err_quick_inc'    => '⚠️ Pilih minimal 1 siswa dan lengkapi data!',
+    'js_succ_saved'       => '✓ Observasi berhasil disimpan!',
+    'js_del_confirm'      => 'Yakin ingin menghapus catatan observasi ini?',
+    'js_succ_del'         => '🗑️ Data observasi dihapus!',
+    
+    // Pesan error umum dalam fungsi JS
+    'js_err_save'         => 'Gagal menyimpan data',
+    'js_err_delete'       => 'Gagal menghapus data',
+    'js_err_network'      => 'Terjadi kesalahan jaringan',
 ];

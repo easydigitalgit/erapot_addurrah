@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+
+class MasterJabatan extends Migration
+{
+    public function up()
+    {
+        $this->forge->addField([
+            'id' => [
+                'type'           => 'INT',
+                'unsigned'       => true,
+                'auto_increment' => true,
+            ],
+            'nama_jabatan' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 100,
+                'null'       => false,
+            ],
+        ]);
+
+        // Menjadikan kolom 'id' sebagai Primary Key
+        $this->forge->addKey('id', true);
+
+        // Membuat tabel
+        $this->forge->createTable('master_jabatan');
+    }
+
+    public function down()
+    {
+        // Menghapus tabel jika migrasi di-rollback
+        $this->forge->dropTable('master_jabatan');
+    }
+}

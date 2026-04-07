@@ -242,6 +242,21 @@ function selectSkala(element, skala) {
   selectedSkala = skala;
 }
 
+// ... [KODE LAINNYA DI ATAS TETAP SAMA] ...
+
+function selectSkala(element, skala) {
+  document.querySelectorAll(".skala-badge").forEach(b => b.classList.remove("active", "ring-2", "scale-105", "ring-emerald-400", "ring-blue-400", "ring-amber-400", "ring-rose-400"));
+  
+  element.classList.add("active", "ring-2", "scale-105");
+  if(skala === 'sangat-baik') element.classList.add("ring-emerald-400");
+  if(skala === 'baik') element.classList.add("ring-blue-400");
+  if(skala === 'cukup') element.classList.add("ring-amber-400");
+  if(skala === 'perlu-pembinaan') element.classList.add("ring-rose-400");
+
+  selectedSkala = skala;
+}
+
+// IMPLEMENTASI RBAC PADA TOMBOL DELETE PERMANEN
 function expandRow(button, id) {
   const row = button.closest("tr");
   if (row.classList.contains("expand-row")) {
@@ -256,23 +271,34 @@ function expandRow(button, id) {
       row.classList.add("expand-row", "bg-emerald-50/50", "dark:!bg-slate-700/80");
       const detailRow = document.createElement("tr");
       
-      // PERBAIKAN: Menambahkan class dark mode di baris detail aksi
       detailRow.className = "detail-row bg-gray-50 dark:!bg-slate-800/90 border-b border-gray-100 dark:!border-slate-700 transition-colors";
+      
+      // Jika Admin tidak mengizinkan Delete, kita tampilkan pesan bahwa fitur dikunci
+      let actionHTML = '';
+      if (typeof CAN_DELETE !== 'undefined' && CAN_DELETE) {
+          actionHTML = `
+            <button onclick="hapusObservasi(${id})" class="flex items-center gap-2 px-4 py-2 bg-rose-50 dark:!bg-rose-900/20 text-rose-600 dark:!text-rose-400 text-xs font-bold rounded-xl border border-rose-200 dark:!border-rose-800/50 hover:bg-rose-100 dark:hover:!bg-rose-900/40 transition-colors shadow-sm outline-none">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg> 
+              ${LANG.delete_perm}
+            </button>`;
+      } else {
+          actionHTML = `<span class="text-xs font-bold text-gray-400 italic flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg> Fitur Terkunci (RBAC)</span>`;
+      }
+
       detailRow.innerHTML = `
           <td colspan="7" class="p-0">
             <div class="p-4 flex items-center justify-end border-t border-dashed border-gray-200 dark:!border-slate-700 w-full transition-colors">
               <div class="flex items-center gap-3">
                   <span class="text-xs font-bold text-gray-500 dark:!text-slate-400 uppercase tracking-widest transition-colors">${LANG.advanced_act}:</span>
-                  <button onclick="hapusObservasi(${id})" class="flex items-center gap-2 px-4 py-2 bg-rose-50 dark:!bg-rose-900/20 text-rose-600 dark:!text-rose-400 text-xs font-bold rounded-xl border border-rose-200 dark:!border-rose-800/50 hover:bg-rose-100 dark:hover:!bg-rose-900/40 transition-colors shadow-sm outline-none">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg> 
-                    ${LANG.delete_perm}
-                  </button>
+                  ${actionHTML}
               </div>
             </div>
           </td>`;
       row.insertAdjacentElement("afterend", detailRow);
   }
 }
+
+// ... [KODE LAINNYA DI BAWAH TETAP SAMA] ...
 
 function simpanObservasi() {
   const siswaId = document.getElementById("modalSiswa").value;

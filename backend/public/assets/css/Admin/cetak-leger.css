@@ -223,10 +223,8 @@
     }
 
     .leger-table-wrapper {
-      overflow: auto;
-      border: 1px solid #E5E7EB;
-      border-radius: 8px;
-      background: white;
+      overflow: auto;      
+      border-radius: 8px;      
       max-height: 70vh;
       position: relative;
       -webkit-overflow-scrolling: touch;
@@ -293,7 +291,7 @@
 
     .leger-table {
       width: 100%;
-      border-collapse: separate;
+      border-collapse: collapse;
       border-spacing: 0;
       font-size: 0.75rem;
       min-width: 1400px;
@@ -316,8 +314,7 @@
   
 
     .leger-table tbody td {
-      padding: 0.625rem 0.5rem;
-      border: 1px solid #E5E7EB;
+      padding: 0.625rem 0.5rem;      
       text-align: center;
     }
 
@@ -336,8 +333,7 @@
     .leger-table tbody td:first-child,
     .leger-table tbody td:nth-child(2),
     .leger-table tbody td:nth-child(3) {
-      position: sticky;
-      background: white;
+      position: sticky;      
       font-weight: 600;
       z-index: 10;
     }
@@ -560,3 +556,46 @@
     }
 
     @view-transition { navigation: auto; }
+
+    /* =========================================================
+   DARK MODE OVERRIDES (PENYELARASAN MODE GELAP TUNTAS)
+   ========================================================= */
+
+/* 1. Paksa SEMUA garis/border menjadi gelap (Wrapper, Header, dan Sel Tabel) */
+.dark .leger-table-wrapper,
+.dark .leger-table th,
+.dark .leger-table td {
+  border-color: #334155 !important; /* Setara dengan warna slate-700 */
+}
+
+/* 2. Ubah warna background kolom yang menempel (sticky) */
+.dark .leger-table tbody td:first-child,
+.dark .leger-table tbody td:nth-child(2),
+.dark .leger-table tbody td:nth-child(3) {
+  background-color: #1e293b !important; /* Setara dengan bg-slate-800 */
+  color: #e2e8f0 !important;
+}
+
+/* 3. Ubah warna belang-belang (Zebra) baris genap menjadi elegan */
+.dark .leger-table tbody tr:nth-child(even),
+.dark .leger-table tbody tr:nth-child(even) td:first-child,
+.dark .leger-table tbody tr:nth-child(even) td:nth-child(2),
+.dark .leger-table tbody tr:nth-child(even) td:nth-child(3) {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* 4. Ubah warna saat baris ditunjuk mouse (Hover) */
+.dark .leger-table tbody tr:hover,
+.dark .leger-table tbody tr:hover td:first-child,
+.dark .leger-table tbody tr:hover td:nth-child(2),
+.dark .leger-table tbody tr:hover td:nth-child(3) {
+  background-color: rgba(31, 122, 77, 0.2) !important;
+}
+
+/* 5. Ubah warna tombol toggle (Nilai Angka / Predikat) */
+.dark .toggle-slider {
+  background-color: #475569 !important;
+}
+.dark input:checked + .toggle-slider {
+  background-color: #1F7A4D !important; 
+}

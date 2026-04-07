@@ -52,4 +52,19 @@ return [
     'quick_select_scale'  => '-- Select Scale --',
     'quick_notes_title'   => 'Notes (Applies to all students)',
     'btn_save_all'        => 'Save All',
+
+    // Javascript Keys (Fallback)
+    'js_empty_data'       => 'No observation data yet',
+    'js_advanced_act'     => 'Advanced Actions',
+    'js_delete_perm'      => 'Delete Permanently',
+    'js_err_incomplete'   => '⚠️ Please complete all data fields!',
+    'js_err_quick_inc'    => '⚠️ Select at least 1 student and complete the data!',
+    'js_succ_saved'       => '✓ Observation successfully saved!',
+    'js_del_confirm'      => 'Are you sure you want to delete this observation record?',
+    'js_succ_del'         => '🗑️ Observation data deleted!',
+    
+    // General error messages in JS functions
+    'js_err_save'         => 'Failed to save data',
+    'js_err_delete'       => 'Failed to delete data',
+    'js_err_network'      => 'A network error occurred',
 ];

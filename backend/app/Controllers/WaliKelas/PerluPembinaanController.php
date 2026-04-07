@@ -9,33 +9,54 @@ class PerluPembinaanController extends WaliKelasBaseController
     {
         $db = \Config\Database::connect();
         $userId = session()->get('user_id');
-
-        $sekolah = $db->table('sekolah')->select('warna_primary, warna_secondary')->get()->getRowArray();
+        
+        // 1. AMBIL WARNA TEMA & SEKOLAH
+        $sekolah = $db->table('sekolah')->select('nama_sekolah, warna_primary, warna_secondary')->get()->getRowArray();
         $warna_primary = $sekolah ? $sekolah['warna_primary'] : '#10b981';
         $warna_secondary = $sekolah ? $sekolah['warna_secondary'] : '#ecfdf5';
+        $nama_sekolah = $sekolah ? $sekolah['nama_sekolah'] : 'SMPIT Ad Durrah';
 
         $guru = $db->table('guru_tendik')->where('user_id', $userId)->get()->getRowArray();
         
         $rombel = null;
         $siswa_kelas = [];
-        $siswa_pembinaan = [];
+        $siswa_pembinaan = []; 
         $statistik = ['akademik' => 0, 'karakter' => 0, 'tahfidz' => 0, 'absensi' => 0];
 
         if ($guru) {
+            // 2. CARI TAHUN AJARAN AKTIF (Logika Pintar)
+            $sess_ta  = session()->get('tahun_ajaran');
+            $sess_smt = session()->get('semester');
+
+            if ($sess_ta && $sess_smt) {
+                $ta_aktif = $db->table('tahun_ajaran')->where('tahun', $sess_ta)->where('semester', $sess_smt)->get()->getRowArray();
+            } else {
+                $ta_aktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+            }
+
+            $id_ta = $ta_aktif ? $ta_aktif['id'] : 0;
+
+            // 3. CARI ROMBEL (Dengan Bypass Bypass Pintar)
             $rombel = $db->table('rombel')
                          ->where('wali_kelas_id', $guru['id'])
-                         ->where('tahun_ajaran', session()->get('tahun_ajaran') ?? '2024/2025')
-                         ->where('semester', session()->get('semester') ?? 'Ganjil')
+                         ->where('id_tahun_ajaran', $id_ta)
                          ->get()->getRowArray();
 
+
             if ($rombel) {
-                // Ambil daftar seluruh siswa di kelas untuk Modal Pilihan
+                // Ambil string tahun & semester dari id_tahun_ajaran yang didapat
+                $ta_asli = $db->table('tahun_ajaran')->where('id', $rombel['id_tahun_ajaran'])->get()->getRowArray();
+                $rombel['semester'] = $ta_asli ? $ta_asli['semester'] : 'Ganjil';
+                $rombel['tahun_ajaran'] = $ta_asli ? $ta_asli['tahun'] : '2024/2025';
+
+                // 4. Ambil daftar seluruh siswa di kelas untuk Modal Pilihan
                 $siswa_kelas = $db->table('siswa')
+                                  ->select('id, nama_lengkap, nisn, nis') // Tambah NIS untuk view
                                   ->where('rombel_id', $rombel['id'])
                                   ->where('status_siswa', 'Aktif')
                                   ->get()->getResultArray();
 
-                // Ambil data catatan riwayat pembinaan
+                // 5. DINAMISKAN: Ambil data catatan riwayat pembinaan
                 if ($db->tableExists('catatan_akhlak')) {
                     $catatan_db = $db->table('catatan_akhlak')
                                      ->select('catatan_akhlak.*, siswa.nama_lengkap, siswa.nisn')
@@ -50,11 +71,11 @@ class PerluPembinaanController extends WaliKelasBaseController
                         $s_id = $c['siswa_id'];
                         $kat = $c['kategori_akhlak'] ?? 'Karakter';
                         
-                        // Hitung statistik atas
-                        if(strtolower($kat) == 'akademik') $statistik['akademik']++;
-                        if(strtolower($kat) == 'karakter' || strtolower($kat) == 'sikap') $statistik['karakter']++;
-                        if(strtolower($kat) == 'tahfidz') $statistik['tahfidz']++;
-                        if(strtolower($kat) == 'absensi') $statistik['absensi']++;
+                        // Hitung statistik atas secara dinamis (menggunakan stripos agar tidak case sensitive)
+                        if(stripos($kat, 'akademik') !== false) $statistik['akademik']++;
+                        if(stripos($kat, 'karakter') !== false || stripos($kat, 'sikap') !== false) $statistik['karakter']++;
+                        if(stripos($kat, 'tahfidz') !== false) $statistik['tahfidz']++;
+                        if(stripos($kat, 'absen') !== false) $statistik['absensi']++;
 
                         if (!isset($grouped_pembinaan[$s_id])) {
                             $grouped_pembinaan[$s_id] = [
@@ -74,7 +95,7 @@ class PerluPembinaanController extends WaliKelasBaseController
                         }
 
                         // Jika punya > 1 masalah, ubah jadi Urgent (Merah)
-                        if (count($grouped_pembinaan[$s_id]['kategori']) > 1 || strtolower($kat) == 'akademik') {
+                        if (count($grouped_pembinaan[$s_id]['kategori']) > 1 || stripos($kat, 'akademik') !== false) {
                             $grouped_pembinaan[$s_id]['status'] = 'urgent';
                             $grouped_pembinaan[$s_id]['tema'] = 'red';
                         }
@@ -87,7 +108,9 @@ class PerluPembinaanController extends WaliKelasBaseController
         $data = [
             'title'           => 'Siswa Perlu Pembinaan',
             'user'            => session()->get('nama_lengkap') ?? 'Wali Kelas',
+            'nama_sekolah'    => $nama_sekolah, // Untuk JS Dinamis
             'navigations'     => $this->getSidebarMenu(),
+            'guru'            => $guru,
             'rombel'          => $rombel,
             'statistik'       => $statistik,
             'siswa_kelas'     => $siswa_kelas,
@@ -101,7 +124,6 @@ class PerluPembinaanController extends WaliKelasBaseController
         return view('WaliKelas/perlu-pembinaan', $data); 
     }
 
-    // FUNGSI UNTUK MENYIMPAN CATATAN BARU
     public function saveCatatan()
     {
         $db = \Config\Database::connect();
@@ -116,7 +138,7 @@ class PerluPembinaanController extends WaliKelasBaseController
         $guru = $db->table('guru_tendik')->where('user_id', $userId)->get()->getRowArray();
 
         if (!$siswa_id || !$kategori || !$catatan) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Data tidak lengkap']);
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Data tidak lengkap. Pastikan semua kolom terisi.']);
         }
 
         $data = [
@@ -131,8 +153,11 @@ class PerluPembinaanController extends WaliKelasBaseController
             'tanggal'          => date('Y-m-d H:i:s')
         ];
 
-        $db->table('catatan_akhlak')->insert($data);
-
-        return $this->response->setJSON(['status' => 'success', 'message' => 'Catatan pembinaan berhasil disimpan!']);
+        try {
+            $db->table('catatan_akhlak')->insert($data);
+            return $this->response->setJSON(['status' => 'success', 'message' => 'Catatan pembinaan berhasil disimpan!']);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Terjadi kesalahan pada database.']);
+        }
     }
 }

@@ -1,381 +1,499 @@
 <?= $this->extend('layout/main') ?>
 
 <?= $this->section('title') ?>
-  Daftar Siswa Kelas Perwalian - Rapor Digital
+<?= lang('WaliKelas/DaftarSiswa.page_title') ?> - Rapor Digital
 <?= $this->endSection() ?>
 
 <?= $this->section('styles') ?>
-  <link rel="stylesheet" href="<?= base_url('assets/css/WaliKelas/daftar-siswa.css') ?>">
-  <style>
+<link rel="stylesheet" href="<?= base_url('assets/css/WaliKelas/daftar-siswa.css') ?>">
+<style>
+    /* Injeksi Warna Dinamis dari Database */
     :root {
-      --warna-primary: <?= $color['warna_primary'] ?? '#10b981' ?>;
-      --warna-secondary: <?= $color['warna_secondary'] ?? '#ecfdf5' ?>;
+        --warna-primary: <?= $color['warna_primary'] ?? '#10b981' ?>;
+        --warna-secondary: <?= $color['warna_secondary'] ?? '#ecfdf5' ?>;
+        --warna-scroll: <?= $color['warna_primary'] ?>; 
     }
+
     .text-tema { color: var(--warna-primary) !important; }
     .bg-tema { background-color: var(--warna-primary) !important; }
     .bg-tema-light { background-color: var(--warna-secondary) !important; }
     .border-tema { border-color: var(--warna-primary) !important; }
-  </style>
+    .focus-tema:focus {
+        border-color: var(--warna-primary) !important;
+        outline: none;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--warna-primary) 20%, transparent);
+    }
+
+    /* Dark Mode Overrides */
+    html.dark .text-tema { color: color-mix(in srgb, var(--warna-primary) 80%, white) !important; }
+    html.dark .bg-tema-light { background-color: rgba(255, 255, 255, 0.05) !important; }
+    html.dark .bg-white { background-color: #1e293b !important; border-color: #334155 !important; }
+    html.dark .text-gray-800 { color: #f1f5f9 !important; }
+    html.dark .text-gray-600 { color: #cbd5e1 !important; }
+    html.dark .text-gray-500 { color: #94a3b8 !important; }
+    html.dark .bg-gray-50 { background-color: #0f172a !important; }
+    html.dark .border-gray-100 { border-color: #334155 !important; }
+    html.dark .border-gray-200 { border-color: #475569 !important; }
+    html.dark .divide-gray-100> :not([hidden])~ :not([hidden]) { border-color: #334155 !important; }
+    html.dark .custom-scrollbar::-webkit-scrollbar-thumb { background-color: var(--warna-primary); }
+
+    .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+    .status-dot.safe { background-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+    .status-dot.warning { background-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+    .status-dot.danger { background-color: #ef4444; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--warna-scroll);
+      border-radius: 3px;
+    }
+</style>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 lg:p-5 mb-6">
-      <div class="flex items-center justify-between mb-4">
-       <h2 class="font-semibold text-gray-800">Filter &amp; Pencarian</h2><button onclick="resetFilters()" class="text-xs text-emerald-600 hover:text-emerald-700 font-medium"> Setel Ulang </button>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"><!-- Search -->
-       <div class="relative"><label class="text-xs font-medium text-gray-600 mb-1.5 block">Cari Nama / NIS</label>
-        <div class="relative">
-         <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-         </svg><input type="text" id="searchInput" placeholder="Ketik nama atau NIS..." class="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" onkeyup="filterTable()">
+
+<?php if (!$rombel): ?>
+    <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-xl p-6 text-center mb-6">
+        <h3 class="text-lg font-bold text-amber-800 dark:text-amber-500 mb-2"><?= lang('WaliKelas/DaftarSiswa.err_no_access_title') ?></h3>
+        <p class="text-sm text-amber-700 dark:text-amber-400"><?= lang('WaliKelas/DaftarSiswa.err_no_access_desc') ?></p>
+    </div>
+<?php else: ?>
+
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-white"><?= lang('WaliKelas/DaftarSiswa.page_title') ?></h1>
+            <p class="text-sm text-gray-500 dark:text-slate-400 mt-1"><?= lang('WaliKelas/DaftarSiswa.class_text') ?> <span class="font-semibold text-tema"><?= esc($rombel['nama_rombel'] ?? '-') ?></span> • <?= esc($tahun_ajaran) ?> <?= lang('WaliKelas/DaftarSiswa.semester_text') ?> <?= esc($semester) ?></p>
         </div>
-       </div><!-- Status Filter -->
-       <div><label class="text-xs font-medium text-gray-600 mb-1.5 block">Status</label> <select id="statusFilter" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" onchange="filterTable()"> <option value="">Semua Status</option> <option value="Aktif">Aktif</option> <option value="Perlu Pembinaan">Perlu Pembinaan</option> </select>
-       </div><!-- Akademik Filter -->
-       <div><label class="text-xs font-medium text-gray-600 mb-1.5 block">Status Akademik</label> <select id="akademikFilter" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" onchange="filterTable()"> <option value="">Semua</option> <option value="Aman">Nilai Aman</option> <option value="Perlu Perhatian">Nilai Bermasalah</option> </select>
-       </div><!-- Tahfidz Filter -->
-       <div><label class="text-xs font-medium text-gray-600 mb-1.5 block">Progres Tahfidz</label> <select id="tahfidzFilter" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" onchange="filterTable()"> <option value="">Semua</option> <option value="Sesuai Target">Sesuai Target</option> <option value="Di Bawah Target">Di Bawah Target</option> </select>
-       </div>
-      </div>
-     </div><!-- Stats Cards -->
-     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6">
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 card-hover">
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6">
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-xs lg:text-sm text-gray-500 mb-1">Total Siswa</p>
-                    <p class="text-2xl lg:text-3xl font-bold text-gray-800"><?= $statistik['total_siswa'] ?? 0 ?></p>
+                    <p class="text-xs lg:text-sm text-gray-500 dark:text-slate-400 mb-1"><?= lang('WaliKelas/DaftarSiswa.stat_total') ?></p>
+                    <p class="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-white"><?= $statistik['total_siswa'] ?? 0 ?></p>
                 </div>
-                <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-tema-light flex items-center justify-center">
-                    <svg class="w-5 h-5 lg:w-6 lg:h-6 text-tema" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-tema-light text-tema flex items-center justify-center">
+                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 card-hover">
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-xs lg:text-sm text-gray-500 mb-1">Hadir Hari Ini</p>
-                    <p class="text-2xl lg:text-3xl font-bold text-blue-600"><?= $statistik['hadir_hari_ini'] ?? 0 ?></p>
+                    <p class="text-xs lg:text-sm text-gray-500 dark:text-slate-400 mb-1"><?= lang('WaliKelas/DaftarSiswa.stat_present_today') ?></p>
+                    <p class="text-2xl lg:text-3xl font-bold text-blue-600 dark:text-blue-400"><?= $statistik['hadir_hari_ini'] ?? 0 ?></p>
                     <p class="text-xs text-gray-400 mt-1"><?= $statistik['persen_hadir'] ?? 0 ?>%</p>
                 </div>
-                <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <svg class="w-5 h-5 lg:w-6 lg:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+                <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 card-hover">
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-xs lg:text-sm text-gray-500 mb-1">Perlu Pembinaan</p>
-                    <p class="text-2xl lg:text-3xl font-bold text-amber-600"><?= $statistik['perlu_pembinaan'] ?? 0 ?></p>
-                    <p class="text-xs text-gray-400 mt-1">Siswa</p>
+                    <p class="text-xs lg:text-sm text-gray-500 dark:text-slate-400 mb-1"><?= lang('WaliKelas/DaftarSiswa.stat_needs_guidance') ?></p>
+                    <p class="text-2xl lg:text-3xl font-bold text-amber-600 dark:text-amber-500"><?= $statistik['perlu_pembinaan'] ?? 0 ?></p>
+                    <p class="text-xs text-gray-400 mt-1"><?= lang('WaliKelas/DaftarSiswa.lbl_students') ?></p>
                 </div>
-                <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-amber-50 flex items-center justify-center">
-                    <svg class="w-5 h-5 lg:w-6 lg:h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-500 flex items-center justify-center">
+                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 card-hover">
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-xs lg:text-sm text-gray-500 mb-1">Tahfidz Target</p>
-                    <p class="text-2xl lg:text-3xl font-bold text-purple-600">--</p>
-                    <p class="text-xs text-gray-400 mt-1">Sesuai KKM</p>
+                    <p class="text-xs lg:text-sm text-gray-500 dark:text-slate-400 mb-1"><?= lang('WaliKelas/DaftarSiswa.stat_tahfidz_target') ?></p>
+                    <p class="text-2xl lg:text-3xl font-bold text-purple-600 dark:text-purple-400">--</p>
+                    <p class="text-xs text-gray-400 mt-1"><?= lang('WaliKelas/DaftarSiswa.lbl_waiting_data') ?></p>
                 </div>
-                <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-purple-50 flex items-center justify-center">
-                    <svg class="w-5 h-5 lg:w-6 lg:h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                    <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                 </div>
             </div>
         </div>
-    </div><!-- Students Table -->
-     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-      <div class="p-4 lg:p-5 border-b border-gray-100">
-       <div class="flex items-center justify-between">
-        <h2 class="font-semibold text-gray-800">Daftar Siswa Kelas VII-A</h2>
-        <div class="flex items-center gap-2"><button class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors tooltip-hover">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg><span class="tooltip-text">Export Excel</span> </button> <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors tooltip-hover">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4H7a2 2 0 01-2-2v-4a2 2 0 012-2h10a2 2 0 012 2v4a2 2 0 01-2 2zm0 0h2a2 2 0 002-2v-4a2 2 0 00-2-2h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 00-.293.707V17a2 2 0 002 2z" />
-          </svg><span class="tooltip-text">Cetak</span> </button>
-        </div>
-       </div>
-      </div><!-- Table Responsive Wrapper -->
-      <div class="overflow-x-auto">
-       <table class="w-full" id="studentTable">
-        <thead class="bg-gray-50">
-         <tr>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">No</th>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Siswa</th>
-          <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Akademik</th>
-          <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Kehadiran</th>
-          <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Tahfidz</th>
-          <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Catatan</th>
-          <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
-         </tr>
-        </thead>
-       <tbody class="divide-y divide-gray-100" id="tableBody">
-            <?php if(empty($siswa_kelas)): ?>
-                <tr><td colspan="7" class="px-4 py-8 text-center text-gray-500">Belum ada data siswa di kelas ini.</td></tr>
-            <?php else: ?>
-                <?php $no = 1; foreach($siswa_kelas as $s): 
-                    // Konfigurasi Warna & Status
-                    $akademik_status = ($s['rata_nilai'] > 0 && $s['rata_nilai'] < 75) ? 'Perlu Perhatian' : 'Aman';
-                    $akademik_color  = ($s['rata_nilai'] > 0 && $s['rata_nilai'] < 75) ? 'red' : 'emerald';
-                    $akademik_dot    = ($s['rata_nilai'] > 0 && $s['rata_nilai'] < 75) ? 'danger' : 'safe';
+    </div>
 
-                    $tahfidz_status = $s['capaian_tahfidz'] == 'Proses' ? 'Belum Ada' : 'Sesuai Target';
-                    $tahfidz_color  = $s['capaian_tahfidz'] == 'Proses' ? 'amber' : 'emerald';
-                    $tahfidz_dot    = $s['capaian_tahfidz'] == 'Proses' ? 'warning' : 'safe';
-                    
-                    $catatan_color = $s['tipe_catatan'] == 'Tidak ada' ? 'blue' : 'red';
-                    
-                    $themes = ['emerald', 'blue', 'amber', 'purple', 'pink', 'red'];
-                    $theme = $themes[strlen($s['nama_lengkap']) % count($themes)];
-                    
-                    // Escape data siswa untuk Javascript
-                    $jsonSiswa = htmlspecialchars(json_encode($s), ENT_QUOTES, 'UTF-8');
-                ?>
-                <tr class="table-row-hover student-row" 
-                    data-name="<?= esc($s['nama_lengkap']) ?>" 
-                    data-nis="<?= esc($s['nis']) ?>" 
-                    data-status="Aktif" 
-                    data-akademik="<?= $akademik_status ?>" 
-                    data-tahfidz="<?= $tahfidz_status ?>">
-                    
-                    <td class="px-4 py-4 text-sm text-gray-600"><?= $no++ ?></td>
-                    
-                    <td class="px-4 py-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-<?= $theme ?>-400 to-<?= $theme ?>-500 flex items-center justify-center text-white text-sm font-semibold shadow-md">
-                                <?= strtoupper(substr($s['nama_lengkap'], 0, 2)) ?>
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-800"><?= esc($s['nama_lengkap']) ?></p>
-                                <p class="text-[11px] text-gray-500 mt-0.5">NIS: <?= esc($s['nis']) ?></p>
-                            </div>
-                        </div>
-                    </td>
-                    
-                    <td class="px-4 py-4 text-center">
-                        <div class="flex items-center justify-center gap-2">
-                            <span class="status-dot <?= $akademik_dot ?>"></span> 
-                            <span class="inline-block px-2.5 py-1 bg-<?= $akademik_color ?>-100 text-<?= $akademik_color ?>-700 text-xs rounded-full font-medium">
-                                <?= $akademik_status ?>
-                            </span>
-                        </div>
-                    </td>
-                    
-                    <td class="px-4 py-4 text-center">
-                        <p class="text-sm font-semibold text-gray-800"><?= $s['persen_absen'] ?>%</p>
-                        <p class="text-xs text-gray-500"><?= $s['rekap_absen'] ?></p>
-                    </td>
-                    
-                    <td class="px-4 py-4 text-center">
-                        <div class="flex items-center justify-center gap-2">
-                            <span class="status-dot <?= $tahfidz_dot ?>"></span>
-                            <p class="text-xs font-medium text-<?= $tahfidz_color ?>-700"><?= $s['capaian_tahfidz'] ?></p>
-                        </div>
-                    </td>
-                    
-                    <td class="px-4 py-4 text-center">
-                        <span class="inline-block px-2.5 py-1 bg-<?= $catatan_color ?>-50 text-<?= $catatan_color ?>-700 text-xs rounded-full">
-                            <?= $s['tipe_catatan'] ?>
-                        </span>
-                    </td>
-                    
-                    <td class="px-4 py-4 text-center">
-                        <div class="flex items-center justify-center gap-2">
-                            <button onclick="openProfileModal(<?= $jsonSiswa ?>)" class="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors tooltip-hover">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                <span class="tooltip-text">Profil</span> 
-                            </button> 
-                            <button onclick="openNoteModal('<?= $s['id'] ?>', '<?= addslashes($s['nama_lengkap']) ?>')" class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors tooltip-hover">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                                <span class="tooltip-text">Catatan</span> 
-                            </button> 
-                            <button onclick="openRaporModal(<?= $jsonSiswa ?>)" class="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors tooltip-hover">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                <span class="tooltip-text">Rapor</span> 
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </tbody>
-       </table>
-      </div>
-      
-      <div class="p-4 border-t border-gray-100 flex items-center justify-between">
-       <p class="text-xs text-gray-500">Menampilkan <span class="font-medium" id="visibleCount"><?= count($siswa_kelas ?? []) ?></span> dari <span class="font-medium"><?= count($siswa_kelas ?? []) ?></span> siswa</p>
-       <div class="flex items-center gap-2"><button class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50" disabled>
-         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-         </svg></button> <button class="px-2.5 py-1.5 bg-emerald-100 text-emerald-700 text-sm font-semibold rounded-lg">1</button> <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-         </svg></button>
-       </div>
-      </div>
-     </div><!-- Pagination -->
-     </div>
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4 lg:p-5 mb-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="font-semibold text-gray-800 dark:text-slate-100"><?= lang('WaliKelas/DaftarSiswa.filter_title') ?></h2>
+            <button onclick="resetFilters()" class="text-xs text-tema hover-text-tema font-bold transition-all px-3 py-1.5 bg-tema-light dark:bg-slate-700 rounded-lg"><?= lang('WaliKelas/DaftarSiswa.btn_reset') ?></button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="relative">
+                <label class="text-xs font-bold text-gray-600 dark:text-slate-400 mb-1.5 block"><?= lang('WaliKelas/DaftarSiswa.filter_search') ?></label>
+                <div class="relative">
+                    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    <input type="text" id="searchInput" placeholder="<?= lang('WaliKelas/DaftarSiswa.search_ph') ?>" class="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm text-gray-800 dark:text-slate-200 placeholder-gray-400 focus-tema transition-all" onkeyup="filterTable()">
+                </div>
+            </div>
+
+            <div>
+                <label class="text-xs font-bold text-gray-600 dark:text-slate-400 mb-1.5 block"><?= lang('WaliKelas/DaftarSiswa.filter_status') ?></label>
+                <select id="statusFilter" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 text-gray-800 dark:text-slate-200 rounded-lg text-sm focus-tema transition-all cursor-pointer" onchange="filterTable()">
+                    <option value=""><?= lang('WaliKelas/DaftarSiswa.opt_all_status') ?></option>
+                    <option value="Aktif"><?= lang('WaliKelas/DaftarSiswa.opt_active') ?></option>
+                    <option value="Perlu Pembinaan"><?= lang('WaliKelas/DaftarSiswa.opt_needs_guidance') ?></option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-xs font-bold text-gray-600 dark:text-slate-400 mb-1.5 block"><?= lang('WaliKelas/DaftarSiswa.filter_academic') ?></label>
+                <select id="akademikFilter" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 text-gray-800 dark:text-slate-200 rounded-lg text-sm focus-tema transition-all cursor-pointer" onchange="filterTable()">
+                    <option value=""><?= lang('WaliKelas/DaftarSiswa.opt_all') ?></option>
+                    <option value="Aman"><?= lang('WaliKelas/DaftarSiswa.opt_safe_grade') ?></option>
+                    <option value="Perlu Perhatian"><?= lang('WaliKelas/DaftarSiswa.opt_prob_grade') ?></option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-xs font-bold text-gray-600 dark:text-slate-400 mb-1.5 block"><?= lang('WaliKelas/DaftarSiswa.filter_tahfidz') ?></label>
+                <select id="tahfidzFilter" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 text-gray-800 dark:text-slate-200 rounded-lg text-sm focus-tema transition-all cursor-pointer" onchange="filterTable()">
+                    <option value=""><?= lang('WaliKelas/DaftarSiswa.opt_all') ?></option>
+                    <option value="Sesuai Target"><?= lang('WaliKelas/DaftarSiswa.opt_on_target') ?></option>
+                    <option value="Di Bawah Target"><?= lang('WaliKelas/DaftarSiswa.opt_no_data') ?></option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden mb-6">
+        <div class="p-4 lg:p-5 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between">
+            <h2 class="font-bold text-gray-800 dark:text-slate-100"><?= lang('WaliKelas/DaftarSiswa.list_title') ?></h2>
+            <div class="flex items-center gap-2">
+                <button class="p-2 bg-gray-50 dark:bg-slate-700 text-gray-600 dark:text-slate-300 hover:bg-tema hover:text-white rounded-lg transition-all tooltip relative" aria-label="<?= lang('WaliKelas/DaftarSiswa.btn_export') ?>">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full whitespace-nowrap" id="studentTable">
+                <thead class="bg-gray-50/80 dark:bg-slate-900/50">
+                    <tr>
+                        <th class="px-5 py-4 text-left text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider w-16"><?= lang('WaliKelas/DaftarSiswa.th_no') ?></th>
+                        <th class="px-5 py-4 text-left text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider"><?= lang('WaliKelas/DaftarSiswa.th_student_data') ?></th>
+                        <th class="px-5 py-4 text-center text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider"><?= lang('WaliKelas/DaftarSiswa.th_academic') ?></th>
+                        <th class="px-5 py-4 text-center text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider"><?= lang('WaliKelas/DaftarSiswa.th_attendance') ?></th>
+                        <th class="px-5 py-4 text-center text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider"><?= lang('WaliKelas/DaftarSiswa.th_tahfidz') ?></th>
+                        <th class="px-5 py-4 text-center text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider"><?= lang('WaliKelas/DaftarSiswa.th_notes_status') ?></th>
+                        <th class="px-5 py-4 text-center text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider sticky right-0 bg-gray-50/80 dark:bg-slate-900/50 z-10 backdrop-blur-sm"><?= lang('WaliKelas/DaftarSiswa.th_action') ?></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-slate-700/50" id="tableBody">
+                    <?php if (empty($siswa_kelas)): ?>
+                        <tr>
+                            <td colspan="7" class="px-5 py-10 text-center text-gray-500 dark:text-slate-400 font-medium"><?= lang('WaliKelas/DaftarSiswa.empty_data') ?></td>
+                        </tr>
+                    <?php else: ?>
+                        <?php $no = 1;
+                        foreach ($siswa_kelas as $s):
+                            $akademik_status = ($s['rata_nilai'] > 0 && $s['rata_nilai'] < 75) ? 'Perlu Perhatian' : 'Aman';
+                            $akademik_color  = ($s['rata_nilai'] > 0 && $s['rata_nilai'] < 75) ? 'red' : 'emerald';
+                            $akademik_dot    = ($s['rata_nilai'] > 0 && $s['rata_nilai'] < 75) ? 'danger' : 'safe';
+                            $akademik_lang   = ($s['rata_nilai'] > 0 && $s['rata_nilai'] < 75) ? lang('WaliKelas/DaftarSiswa.badge_needs_attn') : lang('WaliKelas/DaftarSiswa.badge_safe');
+
+                            $tahfidz_status = $s['capaian_tahfidz'] == 'Proses' ? 'Belum Ada' : 'Sesuai Target';
+                            $tahfidz_color  = $s['capaian_tahfidz'] == 'Proses' ? 'amber' : 'emerald';
+                            $tahfidz_dot    = $s['capaian_tahfidz'] == 'Proses' ? 'warning' : 'safe';
+                            $tahfidz_lang   = $s['capaian_tahfidz'] == 'Proses' ? lang('WaliKelas/DaftarSiswa.badge_progress') : esc($s['capaian_tahfidz']);
+
+                            $catatan_color = $s['tipe_catatan'] == 'Tidak ada' ? 'slate' : 'rose';
+                            $catatan_bg = $s['tipe_catatan'] == 'Tidak ada' ? 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300' : 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800';
+                            $catatan_lang = $s['tipe_catatan'] == 'Tidak ada' ? lang('WaliKelas/DaftarSiswa.badge_no_notes') : $s['tipe_catatan'];
+
+                            $themes = ['emerald', 'blue', 'amber', 'purple', 'teal'];
+                            $theme = $themes[strlen($s['nama_lengkap']) % count($themes)];
+
+                            $jsonSiswa = htmlspecialchars(json_encode($s), ENT_QUOTES, 'UTF-8');
+                        ?>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors student-row group"
+                                data-name="<?= esc($s['nama_lengkap']) ?>"
+                                data-nis="<?= esc($s['nis']) ?>"
+                                data-status="Aktif"
+                                data-akademik="<?= $akademik_status ?>"
+                                data-tahfidz="<?= $tahfidz_status ?>">
+
+                                <td class="px-5 py-4 text-sm text-gray-500 dark:text-slate-400 font-medium"><?= $no++ ?></td>
+
+                                <td class="px-5 py-4">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-full bg-<?= $theme ?>-100 dark:bg-<?= $theme ?>-900/30 text-<?= $theme ?>-600 dark:text-<?= $theme ?>-400 border border-<?= $theme ?>-200 dark:border-<?= $theme ?>-800/50 flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-105 transition-transform overflow-hidden">
+                                    <?php 
+                                        // Logika Hybrid Langsung di View
+                                        $inisial = strtoupper(substr($s['nama_lengkap'], 0, 2));
+                                        $fotoFinal = !empty($s['foto_profil']) ? $s['foto_profil'] : (!empty($s['foto_siswa']) ? $s['foto_siswa'] : ($s['foto_fix'] ?? ''));
+                                    ?>
+                                    <?php if (!empty($fotoFinal)): ?>
+                                        <?php $cacheBuster = '?v=' . time(); ?>
+                                        <img src="<?= base_url('assets/uploads/avatars/' . $fotoFinal) . $cacheBuster ?>" 
+                                             alt="Foto" 
+                                             class="w-full h-full object-cover" 
+                                             onerror="this.onerror=function(){ this.outerHTML='<?= $inisial ?>'; }; this.src='<?= base_url('uploads/siswa/' . $fotoFinal) . $cacheBuster ?>';">
+                                    <?php else: ?>
+                                        <?= $inisial ?>
+                                    <?php endif; ?>
+                                </div>
+                                        <div>
+                                            <p class="font-bold text-gray-800 dark:text-slate-200 text-sm group-hover:text-tema transition-colors"><?= esc($s['nama_lengkap']) ?></p>
+                                            <p class="text-[11px] text-gray-500 dark:text-slate-400 font-mono mt-0.5 border border-gray-200 dark:border-slate-600 rounded bg-white dark:bg-slate-800 px-1 inline-block">NIS: <?= esc($s['nis']) ?></p>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="px-5 py-4 text-center">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="status-dot <?= $akademik_dot ?>"></span>
+                                        <span class="inline-block px-2.5 py-1 bg-<?= $akademik_color ?>-50 dark:bg-<?= $akademik_color ?>-900/20 text-<?= $akademik_color ?>-700 dark:text-<?= $akademik_color ?>-400 text-[11px] rounded-md font-bold uppercase tracking-wider border border-<?= $akademik_color ?>-200 dark:border-<?= $akademik_color ?>-800/50">
+                                            <?= $akademik_lang ?>
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td class="px-5 py-4 text-center">
+                                    <div class="inline-flex flex-col items-center justify-center">
+                                        <p class="text-sm font-bold text-gray-800 dark:text-slate-200"><?= $s['persen_absen'] ?>%</p>
+                                        <p class="text-[10px] text-gray-500 dark:text-slate-400 bg-gray-100 dark:bg-slate-700 px-1.5 rounded mt-0.5"><?= $s['rekap_absen'] ?></p>
+                                    </div>
+                                </td>
+
+                                <td class="px-5 py-4 text-center">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="status-dot <?= $tahfidz_dot ?>"></span>
+                                        <p class="text-[12px] font-bold text-<?= $tahfidz_color ?>-600 dark:text-<?= $tahfidz_color ?>-400 bg-<?= $tahfidz_color ?>-50 dark:bg-<?= $tahfidz_color ?>-900/20 px-2 py-0.5 rounded border border-<?= $tahfidz_color ?>-200 dark:border-<?= $tahfidz_color ?>-800/50"><?= $tahfidz_lang ?></p>
+                                    </div>
+                                </td>
+
+                                <td class="px-5 py-4 text-center">
+                                    <span class="inline-block px-3 py-1 text-[11px] rounded-md font-bold <?= $catatan_bg ?>">
+                                        <?= $catatan_lang ?>
+                                    </span>
+                                </td>
+
+                                <td class="px-5 py-4 text-center sticky right-0 bg-white dark:bg-slate-800 group-hover:bg-gray-50 dark:group-hover:bg-slate-700/50 transition-colors border-l border-gray-50 dark:border-slate-700/50 z-10">
+                                    <div class="flex items-center justify-center gap-1.5">
+                                        <button onclick="openProfileModal(<?= $jsonSiswa ?>)" class="p-1.5 text-gray-400 hover:text-white bg-gray-50 dark:bg-slate-700 hover:bg-blue-500 rounded-md transition-all shadow-sm" title="<?= lang('WaliKelas/DaftarSiswa.tooltip_profile') ?>">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                        </button>
+
+                                        <?php if (has_permission('wali_kelas', 'create')): ?>
+                                            <button onclick="openNoteModal('<?= $s['id'] ?>', '<?= addslashes($s['nama_lengkap']) ?>')" class="p-1.5 text-gray-400 hover:text-white bg-gray-50 dark:bg-slate-700 hover:bg-amber-500 rounded-md transition-all shadow-sm" title="<?= lang('WaliKelas/DaftarSiswa.tooltip_note') ?>">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                            </button>
+                                        <?php endif; ?>
+
+                                        <button onclick="openRaporModal(<?= $jsonSiswa ?>)" class="p-1.5 text-gray-400 hover:text-white bg-gray-50 dark:bg-slate-700 hover:bg-tema rounded-md transition-all shadow-sm" title="<?= lang('WaliKelas/DaftarSiswa.tooltip_report') ?>">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="p-4 border-t border-gray-100 dark:border-slate-700 flex items-center justify-between bg-gray-50/50 dark:bg-slate-800/80">
+            <p class="text-xs text-gray-500 dark:text-slate-400"><?= lang('WaliKelas/DaftarSiswa.showing_text_1') ?> <span class="font-bold text-tema" id="visibleCount"><?= count($siswa_kelas ?? []) ?></span> <?= lang('WaliKelas/DaftarSiswa.showing_text_2') ?></p>
+        </div>
+    </div>
+
+<?php endif; ?>
 <?= $this->endSection() ?>
 
 <?= $this->section('modals') ?>
-<div id="noteModal" class="fixed inset-0 z-50 hidden">
-   <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50" onclick="closeNoteModal()"></div>
-   <div class="absolute inset-4 lg:inset-10 flex items-center justify-center">
-    <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-full overflow-hidden flex flex-col">
-     <div class="p-5 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
-      <h2 id="noteModalTitle" class="text-lg font-bold text-gray-800">Catatan Wali Kelas</h2><button onclick="closeNoteModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-       <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-       </svg></button>
-     </div>
-     <div class="flex-1 overflow-y-auto p-5">
-      <div class="space-y-4">
-       <div><label class="text-sm font-medium text-gray-700 block mb-2">Jenis Catatan</label> <select class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"> <option>Akademik</option> <option>Karakter</option> <option>Tahfidz</option> <option>Kehadiran</option> <option>Lainnya</option> </select>
-       </div>
-       <div><label class="text-sm font-medium text-gray-700 block mb-2">Status Urgensi</label>
-        <div class="flex gap-2"><button class="flex-1 px-3 py-2 border-2 border-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:border-emerald-500 transition-colors"> Normal </button> <button class="flex-1 px-3 py-2 border-2 border-amber-300 bg-amber-50 text-amber-700 text-sm font-medium rounded-lg"> Perhatian </button> <button class="flex-1 px-3 py-2 border-2 border-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:border-red-500 transition-colors"> Urgent </button>
+
+<div id="noteModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="modal-overlay absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeNoteModal()"></div>
+    <div class="modal-content relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-all flex flex-col">
+        <div class="bg-tema p-5 text-white flex items-center justify-between">
+            <h2 id="noteModalTitle" class="text-lg font-bold">Catatan Wali Kelas</h2>
+            <button onclick="closeNoteModal()" class="p-1.5 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
         </div>
-       </div>
-       <div><label class="text-sm font-medium text-gray-700 block mb-2">Catatan</label> <textarea placeholder="Tuliskan catatan pembinaan untuk siswa..." class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none h-28" id="noteText"></textarea>
-       </div>
-       <div><label class="text-sm font-medium text-gray-700 block mb-2">Tanggal Pencatatan</label> <input type="date" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" value="2024-12-15">
-       </div>
-      </div>
-     </div>
-     <div class="p-5 border-t border-gray-100 flex gap-3 flex-shrink-0"><button onclick="closeNoteModal()" class="flex-1 py-2.5 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"> Batal </button> <button onclick="saveNote()" class="flex-1 py-2.5 px-4 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"> Simpan Catatan </button>
-     </div>
+        <div class="p-6 space-y-4">
+            <input type="hidden" id="noteSiswaId">
+            <div>
+                <label class="text-xs font-bold text-gray-600 dark:text-slate-400 mb-1 block"><?= lang('WaliKelas/DaftarSiswa.modal_note_type') ?></label>
+                <select class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus-tema outline-none text-sm text-gray-700 dark:text-slate-200">
+                    <option><?= lang('WaliKelas/DaftarSiswa.note_opt_1') ?></option>
+                    <option><?= lang('WaliKelas/DaftarSiswa.note_opt_2') ?></option>
+                    <option><?= lang('WaliKelas/DaftarSiswa.note_opt_3') ?></option>
+                </select>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-600 dark:text-slate-400 mb-1 block"><?= lang('WaliKelas/DaftarSiswa.modal_note_content') ?></label>
+                <textarea placeholder="<?= lang('WaliKelas/DaftarSiswa.note_placeholder') ?>" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus-tema outline-none text-sm text-gray-700 dark:text-slate-200 resize-none h-28"></textarea>
+            </div>
+        </div>
+        <div class="p-5 border-t border-gray-100 dark:border-slate-700 flex gap-3 bg-gray-50/50 dark:bg-slate-800/80">
+            <button onclick="closeNoteModal()" class="flex-1 py-2.5 px-4 border border-gray-300 dark:border-slate-600 text-gray-600 dark:text-slate-300 font-bold rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"><?= lang('WaliKelas/DaftarSiswa.btn_cancel') ?></button>
+            <button onclick="saveNote(event)" class="flex-1 py-2.5 px-4 bg-tema text-white font-bold rounded-xl hover-bg-tema transition-colors shadow-lg shadow-[var(--warna-primary)]/20"><?= lang('WaliKelas/DaftarSiswa.btn_save') ?></button>
+        </div>
     </div>
-   </div>
-  </div><!-- Rapor Modal -->
-  <div id="profileModal" class="fixed inset-0 z-50 hidden">
-   <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50" onclick="closeProfileModal()"></div>
-   <div class="absolute inset-4 lg:inset-10 flex items-center justify-center">
-    <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-full overflow-hidden flex flex-col transform scale-95 transition-transform" id="profileModalContent">
-     <div class="p-5 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
-      <h2 id="profileModalTitle" class="text-lg font-bold text-gray-800">Profil Lengkap Siswa</h2>
-      <button onclick="closeProfileModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors"><svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
-     </div>
-     <div class="flex-1 overflow-y-auto p-5">
-      <div class="grid grid-cols-3 gap-4 mb-6 pb-6 border-b border-gray-100">
-       <div class="col-span-3 text-center">
-        <div id="profileInitial" class="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg mx-auto mb-3">MR</div>
-        <h3 id="profileName" class="text-lg font-bold text-gray-800">Nama Siswa</h3>
-        <p class="text-xs text-gray-500 mt-1">NIS: <span id="profileNis">-</span> • NISN: <span id="profileNisn">-</span></p>
-       </div>
-       <div class="bg-emerald-50 p-3 rounded-lg text-center">
-        <p class="text-xs text-gray-600 mb-1">Jenis Kelamin</p>
-        <p id="prof_jk" class="font-semibold text-gray-800">-</p>
-       </div>
-       <div class="bg-blue-50 p-3 rounded-lg text-center">
-        <p class="text-xs text-gray-600 mb-1">Tempat Lahir</p>
-        <p id="prof_tempat" class="font-semibold text-gray-800">-</p>
-       </div>
-       <div class="bg-purple-50 p-3 rounded-lg text-center">
-        <p class="text-xs text-gray-600 mb-1">Tgl. Lahir</p>
-        <p id="prof_tgl" class="font-semibold text-gray-800">-</p>
-       </div>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-       <div class="bg-gray-50 p-4 rounded-lg">
-        <h4 class="font-semibold text-gray-800 mb-3">Status Akademik</h4>
-        <div class="space-y-2">
-         <div class="flex items-center justify-between"><span class="text-sm text-gray-600">Rata-rata Nilai</span> <span id="prof_rata" class="font-semibold text-gray-800">0</span></div>
-         <div class="flex items-center justify-between"><span class="text-sm text-gray-600">Status</span> <span id="prof_status_akademik" class="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded-full font-medium">-</span></div>
-        </div>
-       </div>
-       <div class="bg-gray-50 p-4 rounded-lg">
-        <h4 class="font-semibold text-gray-800 mb-3">Kehadiran</h4>
-        <div class="space-y-2">
-         <div class="flex items-center justify-between"><span class="text-sm text-gray-600">Hadir</span> <span id="prof_h" class="font-semibold text-emerald-600">0</span></div>
-         <div class="flex items-center justify-between"><span class="text-sm text-gray-600">Sakit & Izin</span> <span class="font-semibold"><span id="prof_s">0</span> / <span id="prof_i">0</span></span></div>
-         <div class="pt-2 border-t border-gray-200">
-          <div class="flex items-center justify-between"><span class="text-sm font-medium text-gray-700">Persentase Hadir</span> <span id="prof_persen_absen" class="font-bold text-gray-800">0%</span></div>
-         </div>
-        </div>
-       </div>
-       <div class="bg-gray-50 p-4 rounded-lg">
-        <h4 class="font-semibold text-gray-800 mb-3">Tahfidz</h4>
-        <div class="space-y-2">
-         <div class="flex items-center justify-between"><span class="text-sm text-gray-600">Capaian Terakhir</span> <span id="prof_capaian_tahfidz" class="font-semibold text-amber-600">-</span></div>
-        </div>
-       </div>
-       <div class="bg-gray-50 p-4 rounded-lg">
-        <h4 class="font-semibold text-gray-800 mb-3">Karakter</h4>
-        <div class="space-y-2">
-         <div class="flex items-center justify-between"><span class="text-sm text-gray-600">Kategori Catatan</span> <span id="prof_tipe_catatan" class="font-semibold text-red-600">-</span></div>
-        </div>
-       </div>
-      </div>
-      <div class="mt-6 pt-6 border-t border-gray-100">
-       <h4 class="font-semibold text-gray-800 mb-3">Catatan Terbaru Wali Kelas</h4>
-       <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
-        <p id="prof_isi_catatan" class="text-sm text-gray-700">Belum ada catatan.</p>
-       </div>
-      </div>
-     </div>
-     <div class="p-5 border-t border-gray-100 flex gap-3 flex-shrink-0">
-      <button onclick="closeProfileModal()" class="flex-1 py-2.5 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"> Tutup </button>
-     </div>
-    </div>
-   </div>
 </div>
 
-<div id="raporModal" class="fixed inset-0 z-50 hidden">
-   <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50" onclick="closeRaporModal()"></div>
-   <div class="absolute inset-4 lg:inset-10 flex items-center justify-center">
-    <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-full overflow-hidden flex flex-col transform scale-95 transition-transform" id="raporModalContent">
-     <div class="p-5 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
-      <h2 id="raporModalTitle" class="text-lg font-bold text-gray-800">Preview Rapor Peserta Didik</h2><button onclick="closeRaporModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors"><svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
-     </div>
-     <div class="flex-1 overflow-y-auto p-6">
-      <div class="text-center mb-8 pb-6 border-b-2 border-gray-300">
-       <h3 class="text-xl font-bold text-gray-800 mb-1">RAPOR PESERTA DIDIK</h3>
-       <p class="text-sm text-gray-600 mb-4">SMPIT Ad Durrah | Semester 1 | Tahun Akademik 2024/2025</p>
-       <div class="grid grid-cols-3 gap-4 text-sm">
-        <div><p class="text-gray-600">Nama Siswa</p><p id="raporStudentName" class="font-semibold text-gray-800">-</p></div>
-        <div><p class="text-gray-600">NIS</p><p id="raporStudentNIS" class="font-semibold text-gray-800">-</p></div>
-        <div><p class="text-gray-600">Kelas</p><p class="font-semibold text-gray-800"><?= esc($rombel['nama_rombel'] ?? '-') ?></p></div>
-       </div>
-      </div>
-      <div class="mb-8">
-       <h4 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b-2 border-emerald-500">Nilai Akademik</h4>
-       <div id="raporNilaiContainer" class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+<div id="profileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 lg:p-10">
+    <div class="modal-overlay absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeProfileModal()"></div>
+    <div class="relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col transform scale-95 transition-all" id="profileModalContent">
+        <div class="p-5 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between bg-slate-50/80 dark:bg-slate-800/80 backdrop-blur-md">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-tema-light dark:bg-slate-700 text-tema flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>
+                <h2 id="profileModalTitle" class="text-xl font-bold text-gray-800 dark:text-white"><?= lang('WaliKelas/DaftarSiswa.modal_prof_title') ?></h2>
             </div>
-       <div class="mt-4 bg-emerald-50 border border-emerald-200 rounded-lg p-4">
-        <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">Rata-rata Nilai</span> <span id="raporRataRata" class="text-3xl font-bold text-emerald-700">0</span></div>
-       </div>
-      </div>
-      <div class="mb-8">
-       <h4 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b-2 border-purple-500">Kehadiran</h4>
-       <div class="grid grid-cols-4 gap-3">
-        <div class="bg-green-50 p-4 rounded-lg text-center"><p class="text-sm text-gray-600 mb-1">Hadir</p><p id="raporHadir" class="text-3xl font-bold text-green-600">0</p></div>
-        <div class="bg-yellow-50 p-4 rounded-lg text-center"><p class="text-sm text-gray-600 mb-1">Sakit</p><p id="raporSakit" class="text-3xl font-bold text-yellow-600">0</p></div>
-        <div class="bg-blue-50 p-4 rounded-lg text-center"><p class="text-sm text-gray-600 mb-1">Izin</p><p id="raporIzin" class="text-3xl font-bold text-blue-600">0</p></div>
-        <div class="bg-red-50 p-4 rounded-lg text-center"><p class="text-sm text-gray-600 mb-1">Alfa</p><p id="raporAlfa" class="text-3xl font-bold text-red-600">0</p></div>
-       </div>
-      </div>
-      <div class="mb-8">
-       <h4 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b-2 border-green-500">Program Tahfidz</h4>
-       <div class="bg-green-50 p-4 rounded-lg flex justify-between items-center">
-        <p class="text-gray-600">Capaian Terakhir</p><p id="raporTahfidz" class="font-bold text-green-700 text-lg">-</p>
-       </div>
-      </div>
-      <div class="bg-amber-50 border border-amber-300 rounded-lg p-4">
-       <h4 class="font-bold text-amber-900 mb-2">Catatan Wali Kelas</h4>
-       <p id="raporCatatan" class="text-sm text-gray-800">-</p>
-      </div>
-     </div>
-     <div class="p-5 border-t border-gray-100 flex gap-3 flex-shrink-0">
-      <button onclick="closeRaporModal()" class="flex-1 py-2.5 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"> Tutup </button>
-     </div>
+            <button onclick="closeProfileModal()" class="p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-xl transition-all"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-6 mb-8 border-b border-gray-100 dark:border-slate-700 pb-8">
+                <div id="profileInitial" class="w-24 h-24 rounded-full bg-gradient-to-br from-tema to-teal-700 flex items-center justify-center text-white text-4xl font-extrabold shadow-xl shrink-0 border-4 border-white dark:border-slate-800 overflow-hidden"></div>
+                
+                <div class="text-center md:text-left flex-1">
+                    <h3 id="profileName" class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Nama Siswa</h3>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-2 text-sm">
+                        <span class="bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 px-3 py-1 rounded-lg font-mono font-medium">NIS: <span id="profileNis">-</span></span>
+                        <span class="bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 px-3 py-1 rounded-lg font-mono font-medium">NISN: <span id="profileNisn">-</span></span>
+                        <span class="bg-tema-light dark:bg-slate-700 text-tema px-3 py-1 rounded-lg font-bold"><span id="prof_jk">-</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="bg-gray-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-gray-100 dark:border-slate-700/50">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg></div>
+                        <h4 class="font-bold text-gray-800 dark:text-slate-100"><?= lang('WaliKelas/DaftarSiswa.prof_acad_achieve') ?></h4>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between"><span class="text-sm text-gray-500 dark:text-slate-400"><?= lang('WaliKelas/DaftarSiswa.prof_avg_grade') ?></span> <span id="prof_rata" class="font-bold text-xl text-gray-800 dark:text-white">0</span></div>
+                        <div class="flex items-center justify-between"><span class="text-sm text-gray-500 dark:text-slate-400"><?= lang('WaliKelas/DaftarSiswa.prof_grad_status') ?></span> <span id="prof_status_akademik" class="px-3 py-1 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-slate-300 text-xs rounded-lg font-bold uppercase">-</span></div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-gray-100 dark:border-slate-700/50">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 flex items-center justify-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
+                        <h4 class="font-bold text-gray-800 dark:text-slate-100"><?= lang('WaliKelas/DaftarSiswa.prof_attendance') ?></h4>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center mb-3">
+                        <div class="bg-white dark:bg-slate-800 py-2 rounded-lg border border-gray-100 dark:border-slate-700">
+                            <p class="text-xl font-bold text-emerald-600" id="prof_h">0</p>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold"><?= lang('WaliKelas/DaftarSiswa.prof_h') ?></p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 py-2 rounded-lg border border-gray-100 dark:border-slate-700">
+                            <p class="text-xl font-bold text-amber-500" id="prof_s">0</p>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold"><?= lang('WaliKelas/DaftarSiswa.prof_s') ?></p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 py-2 rounded-lg border border-gray-100 dark:border-slate-700">
+                            <p class="text-xl font-bold text-red-500" id="prof_a">0</p>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold"><?= lang('WaliKelas/DaftarSiswa.prof_a') ?></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-2"><span class="text-xs font-bold text-gray-500 dark:text-slate-400"><?= lang('WaliKelas/DaftarSiswa.prof_attn_percent') ?></span> <span id="prof_persen_absen" class="font-bold text-tema">0%</span></div>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-gray-100 dark:border-slate-700/50 md:col-span-2">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg></div>
+                        <h4 class="font-bold text-gray-800 dark:text-slate-100"><?= lang('WaliKelas/DaftarSiswa.prof_tahfidz_prog') ?></h4>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-gray-100 dark:border-slate-700 flex items-center justify-between">
+                        <span class="text-sm text-gray-500 dark:text-slate-400"><?= lang('WaliKelas/DaftarSiswa.prof_last_tahfidz') ?></span>
+                        <span id="prof_capaian_tahfidz" class="font-bold text-lg text-purple-600 dark:text-purple-400">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-gray-100 dark:border-slate-700">
+                <h4 class="font-bold text-gray-800 dark:text-slate-100 mb-3 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                    <?= lang('WaliKelas/DaftarSiswa.prof_special_note') ?>
+                </h4>
+                <div class="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/50 rounded-xl p-4 relative">
+                    <span id="prof_tipe_catatan" class="absolute -top-3 left-4 bg-amber-200 dark:bg-amber-800 text-amber-800 dark:text-amber-200 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">-</span>
+                    <p id="prof_isi_catatan" class="text-sm text-gray-700 dark:text-slate-300 italic pt-1"><?= lang('WaliKelas/DaftarSiswa.prof_no_note') ?></p>
+                </div>
+            </div>
+        </div>
     </div>
-   </div>
 </div>
-<?= $this->endSection() ?>
+
+<div id="raporModal" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4">
+    <div class="modal-overlay absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onclick="closeRaporModal()"></div>
+    <div class="relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col transform scale-95 transition-all">
+        <div class="bg-tema p-5 text-white flex items-center justify-between">
+            <h2 class="text-lg font-bold"><?= lang('WaliKelas/DaftarSiswa.modal_rapor_title') ?></h2>
+            <button onclick="closeRaporModal()" class="p-1.5 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-6 bg-gray-50/50 dark:bg-slate-900/50 custom-scrollbar">
+            <div class="bg-white dark:bg-slate-800 max-w-3xl mx-auto shadow-sm border border-gray-200 dark:border-slate-700 rounded-xl p-8 lg:p-12">
+                <div class="text-center mb-8 pb-6 border-b-4 border-gray-800 dark:border-slate-500">
+                    <h3 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-widest mb-1"><?= lang('WaliKelas/DaftarSiswa.rapor_header_1') ?></h3>
+                    <p class="text-sm font-bold text-gray-600 dark:text-slate-400 uppercase tracking-widest"><?= esc($nama_sekolah ?? 'SMPIT Ad Durrah') ?></p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 text-sm mb-8 bg-gray-50 dark:bg-slate-900/50 p-4 rounded-lg font-mono">
+                    <div><span class="text-gray-500 block text-xs"><?= lang('WaliKelas/DaftarSiswa.rapor_stu_name') ?></span><strong class="text-base text-gray-800 dark:text-white" id="raporStudentName">-</strong></div>
+                    <div><span class="text-gray-500 block text-xs"><?= lang('WaliKelas/DaftarSiswa.rapor_stu_nis') ?></span><strong class="text-base text-gray-800 dark:text-white" id="raporStudentNIS">-</strong></div>
+                </div>
+
+                <div class="mb-8">
+                    <h4 class="font-bold text-gray-800 dark:text-white mb-3 text-lg bg-tema-light dark:bg-slate-700 px-3 py-1 border-l-4 border-tema"><?= lang('WaliKelas/DaftarSiswa.rapor_sec_a') ?></h4>
+                    <p class="text-sm text-gray-700 dark:text-slate-300 italic border border-dashed border-gray-300 dark:border-slate-600 p-4 rounded-lg" id="raporCatatan">-</p>
+                </div>
+
+                <div class="mb-8">
+                    <h4 class="font-bold text-gray-800 dark:text-white mb-3 text-lg bg-tema-light dark:bg-slate-700 px-3 py-1 border-l-4 border-tema"><?= lang('WaliKelas/DaftarSiswa.rapor_sec_b') ?></h4>
+                    <div id="raporNilaiContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?= $this->endSection() ?> 
 
 <?= $this->section('scripts') ?>
-  <script src="<?= base_url('assets/js/WaliKelas/daftar-siswa.js') ?>"></script>
+<script>
+    const BASE_URL = '<?= rtrim(base_url(), '/') ?>';
+    
+    // Jembatan Data PHP ke Javascript
+    window.sekolahConfig = {
+        school_name: '<?= esc($nama_sekolah ?? 'SMPIT Ad Durrah') ?>',
+        teacher_name: '<?= esc($guru['nama_lengkap'] ?? 'Guru/Wali Kelas') ?>',
+        class_name: '<?= esc($rombel['nama_rombel'] ?? 'Belum Ada Kelas') ?>',
+        primary_color: '<?= esc($color['warna_primary'] ?? '#10b981') ?>',
+        secondary_color: '<?= esc($color['warna_secondary'] ?? '#ecfdf5') ?>'
+    };
+
+    // KAMUS BAHASA JS
+    window.LANG = {
+        gender_m: "<?= lang('WaliKelas/DaftarSiswa.gender_m') ?>",
+        gender_f: "<?= lang('WaliKelas/DaftarSiswa.gender_f') ?>",
+        prof_safe: "<?= lang('WaliKelas/DaftarSiswa.prof_safe') ?>",
+        prof_warn: "<?= lang('WaliKelas/DaftarSiswa.prof_warn') ?>",
+        note_saved: "<?= lang('WaliKelas/DaftarSiswa.note_saved') ?>",
+        note_title_prefix: "<?= lang('WaliKelas/DaftarSiswa.note_title_prefix') ?>",
+        rapor_no_grade: "<?= lang('WaliKelas/DaftarSiswa.rapor_no_grade') ?>",
+        rapor_good_behavior: "<?= lang('WaliKelas/DaftarSiswa.rapor_good_behavior') ?>"
+    };
+
+    // IMPLEMENTASI RBAC: Kunci Fitur Edit Modul Daftar Siswa Wali (wali_kelas)
+    const CAN_UPDATE = <?= has_permission('wali_kelas', 'update') ? 'true' : 'false' ?>;
+</script>
+<script src="<?= base_url('assets/js/WaliKelas/daftar-siswa.js') ?>?v=<?= time() ?>"></script>
 <?= $this->endSection() ?>

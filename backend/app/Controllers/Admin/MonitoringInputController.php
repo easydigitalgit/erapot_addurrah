@@ -33,9 +33,11 @@ class MonitoringInputController extends AdminBaseController
         $builder = $this->db->table('guru_mapel gm');
         $builder->select('gm.guru_id, gm.mapel_id, gm.rombel_id, 
                           g.nama_lengkap as nama_guru, g.nuptk, g.no_hp as hp_guru,
+                          u.foto_profil,
                           m.nama_mapel, 
                           r.nama_rombel');
         $builder->join('guru_tendik g', 'g.id = gm.guru_id');
+        $builder->join('users u', 'u.id = g.user_id', 'left');
         $builder->join('mata_pelajaran m', 'm.id = gm.mapel_id');
         $builder->join('rombel r', 'r.id = gm.rombel_id');
         
@@ -67,21 +69,30 @@ class MonitoringInputController extends AdminBaseController
         $highest_persen = -1; // Untuk cari yang tertinggi
 
         foreach ($daftarMengajar as $item) {
-            // Hitung Total Siswa di Kelas
-            $totalSiswa = $this->siswaModel
-                ->where('rombel_id', $item['rombel_id'])
-                ->where('status_siswa', 'Aktif')
+            // Hitung Total Siswa di Kelas (MENGGUNAKAN MESIN WAKTU)
+            $totalSiswa = $this->db->table('anggota_rombel ar')
+                ->join('siswa s', 's.id = ar.siswa_id')
+                ->where('ar.rombel_id', $item['rombel_id'])
+                ->where('ar.tahun_ajaran_id', $ta_aktif ? $ta_aktif['id'] : 0)
+                ->where('ar.semester', $semester)
+                ->where('s.status_siswa', 'Aktif')
                 ->countAllResults();
 
             if ($totalSiswa == 0) continue; // Abaikan kelas tanpa siswa aktif
 
-            // Hitung Yang Sudah Dinilai (Berdasarkan Tahun Ajaran Aktif)
-            $sudahDinilai = $this->nilaiModel
-                ->where('mapel_id', $item['mapel_id'])
-                ->where('rombel_id', $item['rombel_id'])
-                ->where('tahun_ajaran', $tahun_ajaran)
-                ->where('semester', $semester)
-                ->countAllResults();
+            // Hitung Yang Sudah Dinilai (Berdasarkan Tahun Ajaran Aktif dan Schema Database)
+            $tabelAcuan = $this->db->tableExists('nilai_akademik') ? 'nilai_akademik' : ($this->db->tableExists('nilai_formatif') ? 'nilai_formatif' : 'nilai_sumatif');
+            $fieldTA    = $this->db->fieldExists('tahun_ajaran_id', $tabelAcuan) ? 'tahun_ajaran_id' : 'tahun_ajaran';
+            $fieldSmt   = $this->db->fieldExists('semester', $tabelAcuan);
+
+            $builderNilai = $this->db->table($tabelAcuan);
+            $builderNilai->where('mapel_id', $item['mapel_id']);
+            $builderNilai->where('rombel_id', $item['rombel_id']);
+            $builderNilai->where($fieldTA, $tahun_ajaran);
+            if ($fieldSmt) {
+                $builderNilai->where('semester', $semester);
+            }
+            $sudahDinilai = $builderNilai->countAllResults();
 
             // Hitung Persen
             $persen = ($totalSiswa > 0) ? round(($sudahDinilai / $totalSiswa) * 100) : 0;
@@ -117,6 +128,7 @@ class MonitoringInputController extends AdminBaseController
                 'guru'          => $item['nama_guru'],
                 'nuptk'         => $item['nuptk'],
                 'hp_guru'       => $item['hp_guru'],
+                'foto_profil'   => $item['foto_profil'] ?? null,
                 'mapel'         => $item['nama_mapel'],
                 'kelas'         => $item['nama_rombel'],
                 'guru_id'       => $item['guru_id'], 

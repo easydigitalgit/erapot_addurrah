@@ -1,19 +1,4 @@
-function openMobileSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
-    sidebar.classList.add('mobile-open');
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeMobileSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
-    sidebar.classList.remove('mobile-open');
-    overlay.classList.remove('active');
-    document.body.style.overflow = '';
-}
-
+// Gunakan object LANG_BACKUP dari view
 function toggleAutoBackup(toggle) {
     toggle.classList.toggle('active');
     const scheduleSettings = document.getElementById('scheduleSettings');
@@ -23,16 +8,15 @@ function toggleAutoBackup(toggle) {
         scheduleSettings.style.opacity = '1';
         scheduleSettings.style.pointerEvents = 'auto';
         hiddenInput.value = '1';
-        showToast('Konfigurasi aktif, silakan simpan.', 'info');
+        showToast(LANG_BACKUP.conf_on, 'info');
     } else {
         scheduleSettings.style.opacity = '0.5';
         scheduleSettings.style.pointerEvents = 'none';
         hiddenInput.value = '0';
-        showToast('Konfigurasi nonaktif, silakan simpan.', 'info');
+        showToast(LANG_BACKUP.conf_off, 'info');
     }
 }
 
-// Logika Menyembunyikan Checkbox Kategori jika Pilih FULL
 function toggleCategories(isFull) {
     const checkboxes = document.querySelectorAll('.backup-cat-checkbox');
     checkboxes.forEach(cb => {
@@ -46,13 +30,13 @@ function toggleCategories(isFull) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Tangkap Event Simpan Pengaturan
     const formAutoBackup = document.getElementById('formAutoBackup');
     if (formAutoBackup) {
         formAutoBackup.addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSaveSetting');
-            btn.innerHTML = 'Menyimpan...';
+            const originalText = btn.innerHTML;
+            btn.innerHTML = LANG_BACKUP.saving;
             btn.disabled = true;
 
             const formData = new FormData(this);
@@ -64,12 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(res => res.json())
             .then(data => {
                 showToast(data.message, data.status);
-                btn.innerHTML = 'Simpan Pengaturan Jadwal';
+                btn.innerHTML = originalText;
                 btn.disabled = false;
             })
             .catch(err => {
-                showToast('Gagal terhubung ke server', 'error');
-                btn.innerHTML = 'Simpan Pengaturan Jadwal';
+                showToast(LANG_BACKUP.err_conn, 'error');
+                btn.innerHTML = originalText;
                 btn.disabled = false;
             });
         });
@@ -102,28 +86,37 @@ function startBackup() {
     const checkbox = document.getElementById('confirmBackupModal');
     
     if (!checkbox.checked) {
-        showToast('Harap centang konfirmasi terlebih dahulu', 'error');
+        showToast(LANG_BACKUP.warn_check, 'error');
         return;
     }
 
     closeBackupModal();
-    showToast('Mengekstrak dan merakit database... mohon jangan tutup halaman!', 'info');
     
     const formData = new FormData();
     if (typeof CSRF_NAME !== 'undefined') formData.append(CSRF_NAME, CSRF_TOKEN);
 
-    // Ambil Data Mode dan Kategori
     const mode = document.querySelector('input[name="backupMode"]:checked').value;
     formData.append('mode', mode);
 
     if (mode === 'partial') {
         const checkedCats = Array.from(document.querySelectorAll('.backup-cat-checkbox:checked')).map(cb => cb.value);
         if (checkedCats.length === 0) {
-            showToast('Anda harus memilih minimal 1 kategori untuk Partial Backup!', 'error');
+            showToast(LANG_BACKUP.warn_cat, 'error');
             return;
         }
         formData.append('categories', JSON.stringify(checkedCats));
     }
+
+    // Peningkatan UX: SweetAlert Loading Spinner agar user tidak refresh page
+    Swal.fire({
+        title: LANG_BACKUP.prog,
+        text: LANG_BACKUP.desc,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
     fetch(BASE_URL + 'admin/backup/do-backup', {
         method: 'POST', body: formData, headers: { "X-Requested-With": "XMLHttpRequest" }
@@ -131,35 +124,45 @@ function startBackup() {
     .then(response => response.json())
     .then(res => {
         if (res.status === 'success') {
-            showToast(res.message, 'success');
+            Swal.fire({ icon: 'success', title: 'Berhasil!', text: res.message, timer: 2000, showConfirmButton: false });
             setTimeout(() => window.location.reload(), 2000);
         } else {
-            showToast(res.message, 'error');
+            Swal.fire('Error', res.message, 'error');
         }
     })
     .catch(err => {
-        showToast('Terjadi kesalahan jaringan saat proses backup.', 'error');
+        Swal.fire('Network Error', LANG_BACKUP.err_conn, 'error');
     });
 }
 
 function deleteBackup(filename) {
-    if (confirm(`Hapus permanen file: ${filename} ?`)) {
-        showToast('Menghapus backup...', 'info');
-        const formData = new FormData();
-        formData.append('filename', filename);
-        if (typeof CSRF_NAME !== 'undefined') formData.append(CSRF_NAME, CSRF_TOKEN);
+    Swal.fire({
+        title: 'Hapus File?',
+        text: LANG_BACKUP.del_conf + ' ' + filename,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Hapus!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            showToast(LANG_BACKUP.deleting, 'info');
+            const formData = new FormData();
+            formData.append('filename', filename);
+            if (typeof CSRF_NAME !== 'undefined') formData.append(CSRF_NAME, CSRF_TOKEN);
 
-        fetch(BASE_URL + 'admin/backup/delete', {
-            method: 'POST', body: formData, headers: { "X-Requested-With": "XMLHttpRequest" }
-        })
-        .then(res => res.json())
-        .then(res => {
-            if (res.status === 'success') {
-                showToast(res.message, 'success');
-                setTimeout(() => window.location.reload(), 1000);
-            } else { showToast(res.message, 'error'); }
-        });
-    }
+            fetch(BASE_URL + 'admin/backup/delete', {
+                method: 'POST', body: formData, headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status === 'success') {
+                    showToast(res.message, 'success');
+                    setTimeout(() => window.location.reload(), 1000);
+                } else { showToast(res.message, 'error'); }
+            });
+        }
+    });
 } 
 
 // ==========================================
@@ -199,16 +202,26 @@ function startRestore() {
     const checkbox2 = document.getElementById('confirmRestore2');
     
     if (!checkbox1.checked || !checkbox2.checked) {
-        showToast('Harap centang semua konfirmasi terlebih dahulu', 'error');
+        showToast(LANG_BACKUP.warn_all_chk, 'error');
         return;
     }
 
     if (!selectedRestoreFile && !selectedServerFile) {
-        showToast('Tidak ada file backup yang dipilih!', 'error'); return;
+        showToast(LANG_BACKUP.err_no_file, 'error'); return;
     }
 
     closeRestoreModal();
-    showToast('Sedang memproses Restore Database... Harap jangan tutup halaman ini!', 'info');
+    
+    // Peningkatan UX: SweetAlert Loading Spinner untuk Restore
+    Swal.fire({
+        title: LANG_BACKUP.rest_prog,
+        text: LANG_BACKUP.rest_desc,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
     
     const formData = new FormData();
     if (selectedRestoreFile) formData.append('backup_file', selectedRestoreFile);
@@ -221,11 +234,15 @@ function startRestore() {
     .then(res => res.json())
     .then(res => {
         if (res.status === 'success') {
-            showToast(res.message, 'success');
+            Swal.fire({ icon: 'success', title: 'Berhasil!', text: res.message, timer: 2500, showConfirmButton: false });
             setTimeout(() => window.location.reload(), 2500);
-        } else { showToast(res.message, 'error'); }
+        } else { 
+            Swal.fire('Restore Gagal', res.message, 'error'); 
+        }
     })
-    .catch(err => { showToast('Terjadi kesalahan jaringan saat proses restore.', 'error'); });
+    .catch(err => { 
+        Swal.fire('Network Error', LANG_BACKUP.err_conn, 'error'); 
+    });
 }
 
 // ==========================================

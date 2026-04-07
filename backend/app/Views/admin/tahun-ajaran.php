@@ -29,6 +29,9 @@ function formatTanggalIndo($tanggal)
 <?= $this->endSection() ?>
 
 <?= $this->section('styles') ?>
+<style>
+    :root { --warna-scroll: <?= $color['warna_primary'] ?>; }
+</style>
 <link rel="stylesheet" href="<?= base_url('assets/css/Admin/tahun-ajaran.css') ?>">
 <?= $this->endSection() ?>
 

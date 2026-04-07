@@ -142,7 +142,8 @@
     }
 
     thead {
-      background: linear-gradient(135deg, #1F7A4D 0%, #34A853 100%);
+      /* HAPUS background lama, ganti dengan menggunakan var() */
+      background: linear-gradient(135deg, var(--warna-scroll) 0%, color-mix(in srgb, var(--warna-scroll) 80%, black) 100%);
     }
 
     thead th {

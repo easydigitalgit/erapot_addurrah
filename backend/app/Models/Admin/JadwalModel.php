@@ -12,16 +12,18 @@ class JadwalModel extends Model
     protected $returnType       = 'array';
     
     protected $allowedFields    = [
+        'id_tahun_ajaran', 
+        'semester', 
         'rombel_id', 
-        'mapel_id', 
-        'guru_id', 
+        'mapel_id', // <-- Ini yang bikin NULL kalau nggak ada
+        'guru_id',  // <-- Ini juga
+        'kode_jadwal_excel',
         'hari', 
+        'jam_ke', 
         'jam_mulai', 
-        'jam_selesai',
-        'kode_jadwal_excel', // Tambahkan ini
-        'jenis_jadwal'       // Tambahkan ini
+        'jam_selesai', 
+        'jenis_jadwal'
     ];
-
     protected $useTimestamps = false; 
 
     public function getKelasAjarGuru($guruId)

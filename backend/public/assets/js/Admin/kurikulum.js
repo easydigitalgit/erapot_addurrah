@@ -321,6 +321,7 @@ document.addEventListener('keydown', (e) => {
         closeStructureModal();
         closeImpactModal();
         closeImportModal();
+        closeDocModal(); // <--- Tambahkan ini
     }
 });
 
@@ -377,3 +378,54 @@ async function handleImportSubmit(event) {
         }
     }
 }
+// ==========================================
+// FITUR MODAL DOKUMENTASI (PANDUAN KURIKULUM)
+// ==========================================
+function showDocModal() {
+    toggleModal('docModal', true);
+}
+
+function closeDocModal() {
+    toggleModal('docModal', false);
+    const form = document.getElementById('docForm');
+    if (form) form.reset();
+}
+
+// Handler AJAX Upload Dokumen
+async function handleDocSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const btn = form.querySelector('button[type="submit"]');
+    const oriText = btn.innerHTML;
+    
+    btn.innerHTML = textObj.js_loading;
+    btn.disabled = true;
+
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'X-Requested-With': 'XMLHttpRequest' } // Pastikan header ajax dikirim
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            showToast(data.message, 'success');
+            setTimeout(() => {
+                window.location.reload(); 
+            }, 1500);
+        } else {
+            showToast(data.message, 'error');
+        }
+    } catch (error) {
+        showToast(textObj.js_err_conn, 'error');
+        console.error(error);
+    } finally {
+        if(btn) { 
+            btn.innerHTML = oriText; 
+            btn.disabled = false; 
+        }
+    }
+}
+

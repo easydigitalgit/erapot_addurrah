@@ -20,13 +20,15 @@ return [
     'homeroom_teachers'  => 'Homeroom Teachers',
     'subject_mapping'    => 'Subject Teacher Mapping',
     'academic_config'    => 'Academic Configuration',
+    'nilai_kolektif'     => 'Collective Grades',
+    'nilai_formatif'     => 'Formative Value',
     'academic_year'      => 'Active Academic Year',
     'curriculum'         => 'Curriculum',
     'schedule'           => 'Class Schedule',
     'tahfidz_target'     => 'Tahfidz Target',
     'scoring_rules'      => 'Scoring Rules',
     'grading'            => 'Grading',
-    'input_grades'       => 'Input Student Grades',
+    'input_grades'       => 'Monitoring Student Grades',
     'monitor_grades'     => 'Grade Input Monitoring',
     'validate_grades'    => 'Validate & Lock Grades',
     'reports'            => 'Reports & Records',
@@ -37,6 +39,9 @@ return [
     'school_profile'     => 'School Profile',
     'access_rights'      => 'Access Rights',
     'backup'             => 'Backup & Restore',
+    'l_m'                => 'Scope of Material',
+    'ekskul'             => 'Extracurricular',
+    'leger_ekskul'       => 'Extracurricular Ledger',
 
     // Guru Mapel
     'kelas_mengajar'     => 'Teaching Classes',
@@ -52,7 +57,7 @@ return [
     'materi_soal'        => 'Materials & Questions',
     'upload_materi'      => 'Upload Materials',
     'bank_soal'          => 'Question Bank',
-    
+
     // Wali Kelas (NEW ADDITION)
     'class_summary'      => 'Class Summary',
     'needs_guidance'     => 'Needs Guidance',
@@ -73,4 +78,43 @@ return [
     'setoran_hafalan'     => 'Memorization Record',
     'monitoring_target'   => 'Target Monitoring',
     'nilai_rapor_tahfidz' => 'Tahfidz Report Grades',
+
+    // HOMEROOM TEACHER MENU (WALI KELAS)
+    // Group: Dashboard
+    'ringkasan_kelas'       => 'Class Summary',
+    'siswa_perlu_pembinaan' => 'Needs Guidance',
+
+    // Group: Kelas Perwalian
+    'kelas_perwalian'       => 'Homeroom Class',
+
+    // Group: Monitoring Nilai
+    'monitoring_nilai'      => 'Grade Monitoring',
+    'progres_nilai_mapel'   => 'Subject Grade Progress',
+    'validasi_catatan_guru' => 'Validate Teacher Notes',
+
+    // Group: Karakter & Pembinaan
+    'karakter_pembinaan'    => 'Character & Guidance',
+    'absensi_kelas'         => 'Class Attendance',
+    'pelanggaran_prestasi'  => 'Violations & Achievements',
+    'catatan_wali_kelas'    => 'Homeroom Notes',
+    'progres_tahfidz'       => 'Tahfidz Progress',
+
+    // Group: Rapor
+    'rapor'                 => 'Report Card',
+    'preview_rapor_kelas'   => 'Class Report Preview',
+
+    // Umum / Bawah (Jika belum ada di file Anda)    
+    'keluar'                => 'Logout',
+    'tutup_menu'            => 'Close Menu',
+
+    // Orang Tua
+    'akademik'  => 'Academics',
+    'tahfidz'   => 'Tahfidz',
+    'kehadiran' => 'Attendance',
+
+    // NILAI RAPOR
+    'nilai_rapor' => 'Report Grades',
+
+    // NILAI EKSTRAKULIKULER
+    'nilai_ekskul' => 'Extracurricular Grades',
 ];

@@ -36,9 +36,26 @@ const deskripsiTemplates = {
 
 function checkReadyToInput() {
     const jenisSumatif = document.getElementById('jenisSumatif').value;
+    const taId = document.getElementById('tahunAjaran').value; 
     const btnLoadData = document.getElementById('btnLoadData');
-    
+    const bobotInput = document.getElementById('bobot');
+
+    // =========================================================
+    // FITUR BARU: AUTO UPDATE BOBOT BERDASARKAN JENIS SUMATIF
+    // =========================================================
     if (jenisSumatif !== "") {
+        // Cari bobot yang sub_kategori-nya sama dengan jenis sumatif (case-insensitive)
+        const foundBobot = SETTING_BOBOT.find(b => b.sub_kategori.toLowerCase() === jenisSumatif.toLowerCase());
+        
+        // Tampilkan bobot (tambah simbol % agar cantik)
+        bobotInput.value = foundBobot ? foundBobot.bobot + '%' : '0%';
+    } else {
+        bobotInput.value = "";
+    }
+    // =========================================================
+    
+    // Logika buka kunci tombol Load Data
+    if (jenisSumatif !== "" && taId !== "") {
         btnLoadData.removeAttribute('disabled');
         btnLoadData.classList.remove('opacity-50', 'cursor-not-allowed');
     } else {
@@ -64,6 +81,26 @@ function getPredikatClass(predikat) {
   return "bg-gray-100 dark:!bg-slate-700 text-gray-400 dark:!text-slate-500 border border-gray-200 dark:!border-slate-600";
 }
 
+// ===============================================================
+// FIX MUTLAK: PEMBUNUH KARAKTER SPESIAL (HANYA ANGKA 0-100)
+// ===============================================================
+function enforceMax100(input) {
+    // 1. Sapu bersih semua karakter yang BUKAN angka (Titik, Koma, Huruf, Spasi, Minus)
+    input.value = input.value.replace(/[^0-9]/g, '');
+
+    // 2. Batasi nilai absolut agar tidak menembus 100
+    if (input.value !== "") {
+        let val = parseInt(input.value, 10); // Konversi string murni ke integer
+        
+        if (val > 100) {
+            input.value = 100;
+        } else {
+            // Mencegah penulisan angka nol ganda seperti '005' otomatis jadi '5'
+            input.value = val;
+        }
+    }
+}
+
 function updatePredikatAndDeskripsi(studentId) {
   const kkm = parseInt(document.getElementById("kkm").value) || 75;
   const input = document.getElementById(`nilai-${studentId}`);
@@ -80,9 +117,8 @@ function updatePredikatAndDeskripsi(studentId) {
     deskripsiTextarea.value = deskripsiTemplates[predikat] || "";
   }
 
-  // Handle Border Input Colors
   input.classList.remove("border-red-500", "border-emerald-500");
-  if (nilai) {
+  if (nilai !== "") {
     const n = parseInt(nilai);
     if (n < kkm) { input.classList.add("border-red-500"); } 
     else { input.classList.add("border-emerald-500"); }
@@ -91,33 +127,88 @@ function updatePredikatAndDeskripsi(studentId) {
   autoSave(studentId);
 }
 
-function autoSave(studentId) {
-  const input = document.getElementById(`nilai-${studentId}`);
-  const deskripsi = document.getElementById(`deskripsi-${studentId}`);
+// ===============================================================
+// FIX MUTLAK: AUTO-SAVE REAL TIME KE SERVER 
+// ===============================================================
+async function autoSave(studentId) {
+    const input = document.getElementById(`nilai-${studentId}`);
+    const deskripsi = document.getElementById(`deskripsi-${studentId}`);
 
-  nilaiData[studentId] = {
-    nilai: input.value,
-    deskripsi: deskripsi.value,
-    locked: nilaiData[studentId]?.locked || false,
-  };
+    // 1. Simpan ke memori lokal JS
+    nilaiData[studentId] = {
+        nilai: input.value,
+        deskripsi: deskripsi.value,
+        locked: nilaiData[studentId]?.locked || false,
+    };
 
-  showToast(LANG.auto_save);
+    // 2. Cegah nembak server kalau nilainya bener-bener kosong
+    if (input.value === "") return;
+
+    const jenisSumatif = document.getElementById('jenisSumatif').value;
+    const taId = document.getElementById('tahunAjaran').value;
+    const btnSave = document.getElementById('btnSaveDraft');
+    const url = btnSave.getAttribute('data-url');
+    
+    // Cari ID Nilai kalau udah ada di elemen HTML
+    const row = input.closest('tr');
+    const nilaiId = row.querySelector('.nilai-id').value;
+
+    try {
+        // 3. Tembak diam-diem ke Server pakai API save-draft
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                [csrfTokenName]: csrfTokenHash
+            },
+            body: JSON.stringify({
+                jenis_sumatif: jenisSumatif,
+                ta_id: taId,
+                mapel_id: ACTIVE_MAPEL_ID,
+                rombel_id: ACTIVE_ROMBEL_ID,
+                data_nilai: [{
+                    siswa_id: studentId,
+                    nilai_id: nilaiId,
+                    nilai: parseFloat(input.value),
+                    deskripsi: deskripsi.value
+                }]
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            showToast(LANG.auto_save, "success");
+        } else {
+            showToast(result.message || LANG.err_save_data, "error");
+        }
+    } catch (error) {
+        console.error("AutoSave AJAX Error:", error);
+        // Matikan sementara toast error koneksi agar tidak spamming jika koneksi jelek
+        // showToast(LANG.err_server_save, "error");
+    }
 }
 
 async function loadNilaiData() {
     const btnLoadData = document.getElementById('btnLoadData');
     const url = btnLoadData.getAttribute('data-url');
     const jenisSumatif = document.getElementById('jenisSumatif').value;
+    const taId = document.getElementById('tahunAjaran').value;
 
-    if (!jenisSumatif) return;
+    if (!jenisSumatif || !taId) return;
 
     const originalText = btnLoadData.innerHTML;
     btnLoadData.innerHTML = `<svg class="animate-spin h-5 w-5 mr-3 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ` + LANG.loading;
     btnLoadData.disabled = true;
 
     try {
-        // FIX: Kirim rombel_id dan mapel_id sebagai parameter URL
-        const response = await fetch(`${url}?jenis=${jenisSumatif}&rombel_id=${ACTIVE_ROMBEL_ID}&mapel_id=${ACTIVE_MAPEL_ID}`);
+        const response = await fetch(`${url}?jenis=${jenisSumatif}&rombel_id=${ACTIVE_ROMBEL_ID}&mapel_id=${ACTIVE_MAPEL_ID}&ta_id=${taId}`, {
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        });
+        
         const result = await response.json();
 
         if (result.status === 'success') {
@@ -151,7 +242,6 @@ async function loadNilaiData() {
         btnLoadData.disabled = false;
     }
 }
-
 function renderTable(dataSiswa) {
     const tbody = document.getElementById('nilaiTableBody');
     if (!tbody) return;
@@ -160,12 +250,19 @@ function renderTable(dataSiswa) {
     const kkm = parseInt(document.getElementById("kkm").value) || 75;
 
     dataSiswa.forEach((siswa, index) => {
-        const nilai = siswa.nilai !== null ? siswa.nilai : '';
+        // ===============================================================
+        // FIX MUTLAK: TEBAS ANGKA DESIMAL (.00) MENJADI BULAT
+        // ===============================================================
+        let nilai = siswa.nilai !== null ? siswa.nilai : '';
+        if (nilai !== '') {
+            // Mengubah "11.00" (String dari DB) menjadi 11 (Integer bulat murni)
+            nilai = parseInt(nilai, 10); 
+        }
+
         const deskripsi = siswa.deskripsi !== null ? siswa.deskripsi : '';
         const idNilai = siswa.nilai_id !== null ? siswa.nilai_id : '';
         const predikat = getPredikat(nilai, kkm);
 
-        // Styling input dinamis untuk Dark Mode & Locked State
         const isInputLocked = (currentStatus === 'locked') 
             ? 'readonly class="input-nilai w-24 py-3 px-3 rounded-xl border border-gray-200 dark:!border-slate-700 bg-gray-100 dark:!bg-slate-700/50 text-gray-500 dark:!text-slate-500 cursor-not-allowed font-black text-center text-xl outline-none shadow-inner"' 
             : 'class="input-nilai w-24 py-3 px-3 rounded-xl border-2 border-gray-300 dark:!border-slate-600 bg-white dark:!bg-slate-700 focus:border-emerald-500 dark:focus:!border-emerald-400 font-black text-center text-xl text-gray-900 dark:!text-white outline-none transition-colors shadow-sm"';
@@ -182,6 +279,7 @@ function renderTable(dataSiswa) {
 
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-gray-50 dark:hover:!bg-slate-700/30 transition-colors border-b border-gray-100 dark:!border-slate-700/50 last:border-0 group bg-white dark:!bg-slate-800';
+        
         tr.innerHTML = `
             <td class="py-4 px-6 text-center font-bold text-gray-500 dark:!text-slate-400 transition-colors">${index + 1}</td>
             <td class="py-4 px-6 font-bold text-gray-900 dark:!text-white transition-colors group-hover:text-[var(--warna-primary)]">
@@ -191,7 +289,7 @@ function renderTable(dataSiswa) {
             </td>
             <td class="py-4 px-6 text-gray-500 dark:!text-slate-400 font-bold text-xs font-mono uppercase tracking-wider transition-colors">${siswa.nis}</td>
             <td class="py-4 px-6 text-center">
-                <input type="number" min="0" max="100" id="nilai-${siswa.siswa_id}" ${isInputLocked} value="${nilai}" placeholder="-" onchange="updatePredikatAndDeskripsi(${siswa.siswa_id})">
+                <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" id="nilai-${siswa.siswa_id}" ${isInputLocked} value="${nilai}" placeholder="-" oninput="enforceMax100(this)" onchange="updatePredikatAndDeskripsi(${siswa.siswa_id})">
             </td>
             <td class="py-4 px-6 text-center">
                 <div id="predikat-${siswa.siswa_id}" class="inline-flex px-4 py-2 rounded-xl text-lg font-black uppercase tracking-wider transition-colors shadow-sm ${getPredikatClass(predikat)}">
@@ -199,13 +297,13 @@ function renderTable(dataSiswa) {
                 </div>
             </td>
             <td class="py-4 px-6">
-                <textarea id="deskripsi-${siswa.siswa_id}" ${isDescLocked} placeholder="${LANG.ph_desc}" onchange="autoSave(${siswa.siswa_id})">${deskripsi}</textarea>
+                <textarea id="deskripsi-${siswa.siswa_id}" ${isDescLocked} placeholder="${LANG.ph_desc || 'Ketik deskripsi...'}" onchange="autoSave(${siswa.siswa_id})">${deskripsi}</textarea>
             </td>
             <td class="py-4 px-6 text-center">
                 ${statusBadge}
             </td>
         `;
-        tbody.appendChild(row);
+        tbody.appendChild(tr);
     });
 }
 
@@ -214,7 +312,6 @@ function updateProgressStatus() {
   const step2 = document.getElementById("step2");
   const step3 = document.getElementById("step3");
 
-  // Reset classes manual (Bawaan CSS file) -> Ganti dengan Tailwind murni
   step1.className = "flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs transition-colors " + (currentStatus === "draft" ? "bg-[var(--warna-primary)] text-white shadow-lg shadow-[var(--warna-primary)]/30" : "bg-gray-100 dark:!bg-slate-700 text-gray-500 dark:!text-slate-400");
   step2.className = "flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs transition-colors " + (currentStatus === "ready" ? "bg-[var(--warna-primary)] text-white shadow-lg shadow-[var(--warna-primary)]/30" : "bg-gray-100 dark:!bg-slate-700 text-gray-500 dark:!text-slate-400");
   step3.className = "flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs transition-colors " + (currentStatus === "locked" ? "bg-[var(--warna-primary)] text-white shadow-lg shadow-[var(--warna-primary)]/30" : "bg-gray-100 dark:!bg-slate-700 text-gray-500 dark:!text-slate-400");
@@ -236,6 +333,7 @@ async function saveDraft() {
     const btnSave = document.getElementById('btnSaveDraft');
     const url = btnSave.getAttribute('data-url');
     const jenisSumatif = document.getElementById('jenisSumatif').value;
+    const taId = document.getElementById('tahunAjaran').value;
 
     const rows = document.querySelectorAll('#nilaiTableBody tr');
     let dataNilai = [];
@@ -273,6 +371,7 @@ async function saveDraft() {
             },
             body: JSON.stringify({
                 jenis_sumatif: jenisSumatif,
+                ta_id: taId, 
                 mapel_id: ACTIVE_MAPEL_ID,
                 rombel_id: ACTIVE_ROMBEL_ID,
                 data_nilai: dataNilai
@@ -321,14 +420,16 @@ async function markReady() {
             closeConfirmModal();
             await executeMarkReady(btnMarkReady, url, jenisSumatif);
         };
-        return; // Hentikan eksekusi, tunggu konfirmasi modal
+        return; 
     }
 
     await executeMarkReady(btnMarkReady, url, jenisSumatif);
 }
 
 async function executeMarkReady(btnMarkReady, url, jenisSumatif) {
+    const taId = document.getElementById('tahunAjaran').value;
     const originalText = btnMarkReady.innerHTML;
+    
     btnMarkReady.innerHTML = LANG.processing;
     btnMarkReady.disabled = true;
 
@@ -342,6 +443,7 @@ async function executeMarkReady(btnMarkReady, url, jenisSumatif) {
             },
             body: JSON.stringify({
                 jenis_sumatif: jenisSumatif,
+                ta_id: taId,
                 status: 'siap_validasi',
                 mapel_id: ACTIVE_MAPEL_ID,
                 rombel_id: ACTIVE_ROMBEL_ID
@@ -372,6 +474,7 @@ function lockNilai() {
     const btnLock = document.getElementById('btnLock');
     const url = btnLock.getAttribute('data-url');
     const jenisSumatif = document.getElementById('jenisSumatif').value;
+    const taId = document.getElementById('tahunAjaran').value;
 
     document.getElementById("confirmMessage").innerHTML = LANG.lock_warning;
     document.getElementById("confirmModal").classList.remove("hidden");
@@ -395,6 +498,7 @@ function lockNilai() {
                 },
                 body: JSON.stringify({
                     jenis_sumatif: jenisSumatif,
+                    ta_id: taId,
                     status: 'terkunci',
                     mapel_id: ACTIVE_MAPEL_ID,
                     rombel_id: ACTIVE_ROMBEL_ID
@@ -464,6 +568,7 @@ async function cancelReady() {
     const btnCancel = document.getElementById('btnCancelReady');
     const url = btnCancel.getAttribute('data-url'); 
     const jenisSumatif = document.getElementById('jenisSumatif').value;
+    const taId = document.getElementById('tahunAjaran').value;
     
     document.getElementById("confirmMessage").innerHTML = LANG.warn_cancel_ready;
     document.getElementById("confirmModal").classList.remove("hidden");
@@ -487,6 +592,7 @@ async function cancelReady() {
                 },
                 body: JSON.stringify({
                     jenis_sumatif: jenisSumatif,
+                    ta_id: taId,
                     status: 'draft',
                     mapel_id: ACTIVE_MAPEL_ID,
                     rombel_id: ACTIVE_ROMBEL_ID
@@ -540,6 +646,13 @@ function showToast(message, type = 'success') {
       if(iconDiv) iconDiv.className = 'w-8 h-8 rounded-full bg-rose-100 dark:!bg-rose-900/30 flex items-center justify-center flex-shrink-0 transition-colors';
       if(svg) {
         svg.className = 'w-5 h-5 text-rose-600 dark:!text-rose-400';
+        svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />';
+      }
+  } else if (type === 'warning') {
+      toast.classList.add('border-amber-500');
+      if(iconDiv) iconDiv.className = 'w-8 h-8 rounded-full bg-amber-100 dark:!bg-amber-900/30 flex items-center justify-center flex-shrink-0 transition-colors';
+      if(svg) {
+        svg.className = 'w-5 h-5 text-amber-600 dark:!text-amber-400';
         svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />';
       }
   } else {

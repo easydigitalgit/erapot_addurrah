@@ -3,38 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Cetak Rapor Lengkap</title>
+     <?php
+    // Logo Sekolah Base64 dari User (PNG)
+    $logo_sekolah_base64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAADbQAAAmxCAYAAAAzDJ9VAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAACHDwAAjA8AAP1SAACBQAAAfXkAAOmLAAA85QAAGcxzPIV3AAAKL2lDQ1BJQ0MgUHJvZmlsZQAASMedlndUVNcWh8+9d3qhzTDSGXqTLjCA9C4gHQRRGGYGGMoAwwxNbIioQEQREQFFkKCAAaOhSKyIYiEoqGAPSBBQYjCKqKhkRtZKfHl57+Xl98e939pn73P32XuftS4AJE8fLi8FlgIgmSfgB3o401eFR9Cx/QAGeIABpgAwWempvkHuwUAkLzcXerrICfyL3gwBSPy+ZejpT6eD/0/SrFS+AADIX8TmbE46S8T5Ik7KFKSK7TMipsYkihlGiZkvSlDEcmKOW+Sln30W2VHM7GQeW8TinFPZyWwx94h4e4aQI2LER8QFGVxOpohvi1gzSZjMFfFbcWwyh5kOAIoktgs4rHgRm4iYxA8OdBHxcgBwpLgvOOYLFnCyBOJDuaSkZvO5cfECui5Lj25qbc2ge3IykzgCgaE/k5XI5LPpLemJqUxeNgCLZ/4sGXFt6aIiW5paW1oamhmZflGo/7r4NyXu7SK9CvjcM4jW94ftr/xS6gBgzIpqs+sPW8x+ADq2AiB3/w+b5iEA';
+    ?>
     <style>
         /* 1. SETTING HALAMAN & FONT UTAMA */
         .page-break { page-break-before: always; }
         
-     body {
+        body {
             font-family: Arial, sans-serif;
             font-size: 11pt;
             line-height: 1.3;
             color: #000;
-            
-            /* ============================================================ */
-            /* WATERMARK JURUS TERAKHIR: SUPER SAMAR (3%) */
-            /* ============================================================ */
-            
-            /* Saya pecah coding warnanya:
-               fill="#DAA520" (Warna Emas)
-               fill-opacity="0.03" (Transparansi 3% - Sangat Tipis)
-               Ini biasanya lebih ampuh dibaca oleh PDF Engine
-            */
-            /* Copy baris ini dan masukkan ke dalam body { } */
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTgiPjx0ZXh0IHg9IjUwJSIgeT0iMTMiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI5IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI0RBQTUyMCIgZmlsbC1vcGFjaXR5PSIwLjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TTVAgSVQgQUQgRFVSUkFIPC90ZXh0Pjwvc3ZnPg==');
-            
-            background-repeat: repeat;
-            background-position: center top;
+            margin: 0;
+            padding: 30mm 20mm;
+            position: relative;
+        }
 
-            /* Area Bersih (Margin) Tetap Ada */
-            padding: 30mm 20mm; 
-            
-            background-origin: content-box;
-            background-clip: content-box;
-            
-            margin: 0; 
+        /* Watermark Logo Sekolah */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 500px;
+            height: 500px;
+            margin-left: -250px;
+            margin-top: -250px;
+            background-image: url('<?= $logo_sekolah_base64 ?? '' ?>');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            opacity: 0.08;
+            z-index: -1000;
         }
 
         /* 2. HILANGKAN JARAK BAWAAN PARAGRAF */
@@ -129,7 +131,7 @@
         </div>
 
         <div style="margin-top: 60px; font-weight: bold; font-size: 12pt;">
-            DINAS PENDIDIKAN<br>KOTA MEDAN
+            DINAS PENDIDIKAN<br><?= esc($sekolah['kabupaten_nama'] ?? 'KOTA MEDAN') ?>
         </div>
     </div>
 
@@ -223,11 +225,17 @@
                 </td>
                 <td width="20%"></td>
                 <td width="40%" class="text-left">
-                    <p>Medan, <?= $tanggal_rapor ?></p>
-                    <p>Kepala SMPS IT Ad Durrah,</p>
-                    <div class="ttd-space"></div>
-                    <p class="font-bold underline">Muhammad Taufiq, S.Pd, Gr</p>
-                    <p>NIP. -</p>
+                    <?= esc($sekolah['kabupaten_nama'] ?? ($sekolah['kabupaten'] ?? 'Lhokseumawe')) ?>, <?= $tanggal_rapor ?><br>
+                    Kepala Sekolah,
+                    <div style="height: 120px; position: relative; margin-top: 5px; margin-bottom: 5px;">
+                        <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
+                            <img src="<?= base_url('assets/uploads/ttd/' . $kepsek['ttd_digital']) ?>" style="height: 100px;">
+                        <?php else: ?>
+                            <br><br><br><br><br>
+                        <?php endif; ?>
+                    </div>
+                    <strong><?= esc($kepsek['nama_lengkap'] ?? '................................') ?></strong><br>
+                    <?= !empty($kepsek['nuptk']) ? 'NUPTK. '.$kepsek['nuptk'] : (!empty($kepsek['niy']) ? 'NIY. '.$kepsek['niy'] : 'NIP/NIY. -') ?>
                 </td>
             </tr>
         </table>
@@ -310,32 +318,7 @@
             </tbody>
         </table>
 
-        <h4 style="margin-top: 15px; margin-bottom: 5px;">Pencapaian Tahfidz & Tahsin</h4>
-        <table class="tbl-border">
-            <thead>
-                <tr>
-                    <th width="30%">Aspek Penilaian</th>
-                    <th width="15%">Predikat</th>
-                    <th width="55%">Deskripsi Perkembangan</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if(empty($tahfidz)): ?>
-                    <tr><td colspan="3" class="text-center" style="padding: 10px;">Belum ada data pencapaian tahfidz/tahsin semester ini.</td></tr>
-                <?php else: ?>
-                <tr>
-                    <td class="font-bold">Hafalan (Ziyadah & Muroja'ah)</td>
-                    <td class="text-center font-bold" style="font-size: 11pt;"><?= $tahfidz['predikat'] ?? '-' ?></td>
-                    <td class="deskripsi-text"><?= $tahfidz['deskripsi_hafalan'] ?? "Ananda telah mengikuti program tahfidz dengan baik." ?></td>
-                </tr>
-                <tr>
-                    <td class="font-bold">Tahsin (Tajwid & Makhroj)</td>
-                    <td class="text-center font-bold" style="font-size: 11pt;"><?= $tahfidz['predikat'] ?? '-' ?></td>
-                    <td class="deskripsi-text"><?= $tahfidz['deskripsi_tahsin'] ?? "Bacaan Al-Qur'an ananda sesuai dengan kaidah tajwid." ?></td>
-                </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+        <!-- Tahfidz & Tahsin section removed as it has its own report module -->
 
         <h4 style="margin-top: 15px; margin-bottom: 5px;">Ketidakhadiran</h4>
         <table class="tbl-border" style="width: 50%;">
@@ -367,30 +350,30 @@
         </div>
         <?php endif; ?>
 
-        <table class="ttd-wrapper" style="margin-top: 30px;">
+        <table style="width: 100%; margin-top: 40px; border: none; font-size: 10pt;">
             <tr>
-                <td width="33%">
-                    <p>Mengetahui,</p>
-                    <p>Orang Tua/Wali,</p>
-                    <div style="height: 60px;"></div>
-                    <p class="font-bold underline">( ........................... )</p>
+                <td style="width: 28%; text-align: center; vertical-align: top;">
+                    Mengetahui,<br>Orang Tua/Wali
+                    <br><br><br><br><br><br><br>
+                    ( ................................ )
                 </td>
-                <td width="33%"></td>
-                <td width="33%">
-                    <p>Medan, <?= $tanggal_rapor ?></p>
-                    <p>Wali Kelas,</p>
-                    <div style="height: 60px;"></div>
-                    <p class="font-bold underline"><?= $siswa['wali_kelas'] ?? '...........................' ?></p>
-                    <p>NIP. -</p>
+                <td style="width: 32%; text-align: center; vertical-align: top;">
+                    Diverifikasi Oleh,<br>Wali Kelas
+                    <br><br><br><br><br><br><br>
+                    <strong>( <?= esc($siswa['wali_kelas'] ?? '................................') ?> )</strong>
                 </td>
-            </tr>
-            <tr>
-                <td colspan="3" class="text-center" style="padding-top: 15px;">
-                    <p>Mengetahui,</p>
-                    <p>Kepala SMPS IT Ad Durrah</p>
-                    <div style="height: 60px;"></div>
-                    <p class="font-bold underline">Muhammad Taufiq, S.Pd, Gr</p>
-                    <p>NIP. -</p>
+                <td style="width: 40%; text-align: center; vertical-align: top;">
+                    <?= esc($sekolah['kabupaten_nama'] ?? ($sekolah['kabupaten'] ?? 'Lhokseumawe')) ?>, <?= $tanggal_rapor ?><br>
+                    Kepala Sekolah,
+                    <div style="height: 120px; position: relative; margin-top: 5px; margin-bottom: 5px;">
+                        <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
+                            <img src="<?= base_url('assets/uploads/ttd/' . $kepsek['ttd_digital']) ?>" style="height: 100px;">
+                        <?php else: ?>
+                            <br><br><br><br><br>
+                        <?php endif; ?>
+                    </div>
+                    <strong><?= esc($kepsek['nama_lengkap'] ?? '................................') ?></strong><br>
+                    <?= !empty($kepsek['nuptk']) ? 'NUPTK. '.$kepsek['nuptk'] : (!empty($kepsek['niy']) ? 'NIY. '.$kepsek['niy'] : 'NIP/NIY. -') ?>
                 </td>
             </tr>
         </table>

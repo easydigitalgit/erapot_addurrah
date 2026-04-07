@@ -22,6 +22,7 @@ class TahunAjaranController extends AdminBaseController
 
     public function index(): string
     {
+        $db = \Config\Database::connect();
         $allYears = $this->tahunAjaranModel->orderBy('id', 'DESC')->findAll();
         $activeYear = $this->tahunAjaranModel->where('status', 'Aktif')->first();
 
@@ -29,15 +30,38 @@ class TahunAjaranController extends AdminBaseController
         $totalSiswa = $this->siswaModel->where('status_siswa', 'Aktif')->countAllResults();
         $totalGuru  = $this->guruModel->countAllResults();
 
-        $historyData = array_map(function ($row) use ($totalSiswa, $totalGuru) {
+        $historyData = array_map(function ($row) use ($db) {
             $isLocked = ($row['status'] == 'Arsip');
+            
+            // 1. HITUNG GURU (Dinamis: Aktif vs Arsip)
+            if ($row['status'] == 'Aktif') {
+                // Untuk tahun aktif, hitung guru yang menjabat Wali Kelas ATAU ada di Jadwal Pelajaran
+                $qWali = $db->table('rombel')->select('wali_kelas_id as guru_id')->where('id_tahun_ajaran', $row['id'])->where('wali_kelas_id IS NOT NULL', null, false);
+                $qMapel = $db->table('jadwal_pelajaran')->select('guru_id')->where('id_tahun_ajaran', $row['id']);
+                
+                // Gabungkan dan hitung DISTINCT ID
+                $teachersCount = $db->table('(' . $qWali->getCompiledSelect() . ' UNION ' . $qMapel->getCompiledSelect() . ') as t')
+                                    ->countAllResults();
+            } else {
+                // Untuk sejarah, ambil dari tabel riwayat_jabatan_guru
+                $teachersCount = $db->table('riwayat_jabatan_guru')
+                                    ->where('tahun_ajaran_id', $row['id'])
+                                    ->countAllResults();
+            }
+
+            // 2. HITUNG SISWA
+            $studentsCount = $db->table('siswa s')
+                                ->join('rombel r', 'r.id = s.rombel_id')
+                                ->where('r.id_tahun_ajaran', $row['id'])
+                                ->countAllResults();
+
             return [
                 'id'        => (int) $row['id'],
                 'year'      => $row['tahun'],
                 'semester'  => $row['semester'],
                 'status'    => strtolower($row['status']),
-                'students'  => ($row['status'] == 'Aktif') ? $totalSiswa : '-',
-                'teachers'  => ($row['status'] == 'Aktif') ? $totalGuru : '-',
+                'students'  => $studentsCount > 0 ? number_format($studentsCount) : '-',
+                'teachers'  => $teachersCount > 0 ? number_format($teachersCount) : '-',
                 'tgl_mulai' => $row['tgl_mulai'],
                 'tgl_akhir' => $row['tgl_akhir'],
                 'locked'    => $isLocked

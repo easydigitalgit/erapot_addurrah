@@ -5,7 +5,12 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('styles') ?>
-  <link rel="stylesheet" href="<?= base_url('/assets/css/Admin/monitoring-input.css') ?>">
+<style>
+    :root { 
+        --warna-scroll: <?= $color['warna_primary'] ?>; 
+    }
+</style>
+  <link rel="stylesheet" href="<?= base_url('/assets/css/Admin/monitoring-input.css') ?>?v=<?= time() ?>">
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -31,29 +36,29 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         
-        <div class="bg-gradient-to-br from-[<?= $color['warna_primary'] ?>] to-emerald-800 dark:to-emerald-950 rounded-3xl p-6 text-white shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+        <div class="bg-gradient-to-br from-[<?= $color['warna_primary'] ?>] to-gray-800 dark:to-gray-950 rounded-3xl p-6 text-white shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div class="absolute right-0 top-0 h-full w-32 bg-white/10 dark:bg-white/5 transform skew-x-12 group-hover:translate-x-4 transition-transform duration-500"></div>
             <div class="relative z-10">
-                <p class="text-emerald-100 dark:text-emerald-200/80 font-bold tracking-wider uppercase text-xs mb-2"><?= lang('Admin/MonitoringInput.stat_total_completeness') ?></p>
+                <p class="text-white/80 font-bold tracking-wider uppercase text-xs mb-2"><?= lang('Admin/MonitoringInput.stat_total_completeness') ?></p>
                 <div class="flex items-end gap-2 mb-3">
                     <h2 class="text-5xl font-black drop-shadow-sm"><?= $stats['avg_progres_sekolah'] ?>%</h2>
-                    <span class="text-emerald-200 dark:text-emerald-400 font-bold mb-1.5"><?= lang('Admin/MonitoringInput.stat_out_of') ?></span>
+                    <span class="text-white font-bold mb-1.5"><?= lang('Admin/MonitoringInput.stat_out_of') ?></span>
                 </div>
                 <div class="w-full bg-black/20 dark:bg-black/40 rounded-full h-2 mb-2">
                     <div class="bg-white h-2 rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(255,255,255,0.8)]" style="width: <?= $stats['avg_progres_sekolah'] ?>%"></div>
                 </div>
-                <p class="text-xs font-medium text-emerald-100 dark:text-emerald-300"><?= lang('Admin/MonitoringInput.stat_avg_desc') ?></p>
+                <p class="text-xs font-medium text-white/70"><?= lang('Admin/MonitoringInput.stat_avg_desc') ?></p>
             </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500 transition-all flex items-center justify-between group">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md hover:border-[<?= $color['warna_primary'] ?>] transition-all flex items-center justify-between group">
             <div>
                 <p class="text-gray-500 dark:text-slate-400 text-[11px] font-black uppercase tracking-widest mb-2 transition-colors"><?= lang('Admin/MonitoringInput.stat_total_graded') ?></p>
                 <h2 class="text-4xl font-black text-gray-800 dark:text-white transition-colors"><?= number_format($stats['total_siswa_dinilai']) ?></h2>
                 <p class="text-xs font-medium text-gray-500 dark:text-slate-400 mt-2 transition-colors"><?= lang('Admin/MonitoringInput.stat_graded_desc') ?></p>
             </div>
-            <div class="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center border border-blue-100 dark:border-blue-800/50 group-hover:scale-110 transition-transform">
-                <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            <div class="w-16 h-16 rounded-2xl bg-[<?= $color['warna_secondary'] ?>] flex items-center justify-center border border-[<?= $color['warna_primary'] ?>]/30 group-hover:scale-110 transition-transform">
+                <svg class="w-8 h-8 text-[<?= $color['warna_primary'] ?>]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
             </div>
         </div>
 
@@ -80,7 +85,7 @@
     <div class="table-wrapper mb-6 bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden transition-colors">
       <div class="overflow-x-auto custom-scrollbar">
       <table id="monitoringTable" class="w-full text-left border-collapse min-w-max">
-       <thead class="bg-gray-50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-slate-700 transition-colors">
+       <thead class="text-white border-b border-transparent transition-colors" style="background: var(--warna-scroll) !important;">
         <tr class="text-[11px] text-gray-500 dark:text-slate-400 uppercase tracking-widest font-black">
          <th class="px-6 py-4"><?= lang('Admin/MonitoringInput.th_teacher') ?></th>
          <th class="px-6 py-4"><?= lang('Admin/MonitoringInput.th_subject') ?></th>
@@ -106,8 +111,16 @@
             <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors group">
                 <td class="px-6 py-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-slate-700 flex items-center justify-center font-bold text-gray-600 dark:text-slate-300 border border-gray-200 dark:border-slate-600 shadow-sm transition-colors group-hover:scale-105 transform duration-300">
-                            <?= substr($row['guru'], 0, 2) ?>
+                        <div class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-slate-700 flex items-center justify-center font-bold text-gray-600 dark:text-slate-300 border border-gray-200 dark:border-slate-600 shadow-sm transition-colors group-hover:scale-105 transform duration-300 overflow-hidden">
+                            <?php 
+                                $inisial = strtoupper(substr($row['guru'], 0, 2));
+                                if (!empty($row['foto_profil'])): 
+                                    $fotoUrl = base_url('assets/uploads/avatars/' . $row['foto_profil']) . '?v=' . time();
+                            ?>
+                                <img src="<?= $fotoUrl ?>" class="w-full h-full object-cover" onerror="this.onerror=null; this.outerHTML='<?= $inisial ?>';">
+                            <?php else: ?>
+                                <?= $inisial ?>
+                            <?php endif; ?>
                         </div>
                         <div>
                             <p class="font-bold text-gray-900 dark:text-white transition-colors group-hover:text-[<?= $color['warna_primary'] ?>]"><?= $row['guru'] ?></p>
@@ -153,7 +166,7 @@
                 </td>
 
                 <td class="px-6 py-4 text-center">
-                    <button onclick="showDetail('<?= esc(addslashes($row['guru'])) ?>', '<?= esc(addslashes($row['mapel'])) ?>', '<?= esc(addslashes($row['kelas'])) ?>', '<?= $row['persen'] ?>', '<?= $row['status'] ?>', '<?= $row['badge'] ?>', '<?= $row['guru_id'] ?>')" 
+                    <button onclick="showDetail('<?= esc(addslashes($row['guru'])) ?>', '<?= esc(addslashes($row['mapel'])) ?>', '<?= esc(addslashes($row['kelas'])) ?>', '<?= $row['persen'] ?>', '<?= $row['status'] ?>', '<?= $row['badge'] ?>', '<?= $row['guru_id'] ?>', '<?= $row['foto_profil'] ?>')"
                             class="p-2.5 bg-gray-50 dark:bg-slate-700 hover:bg-[<?= $color['warna_primary'] ?>] hover:text-white rounded-xl transition-all shadow-sm text-gray-500 dark:text-slate-400 outline-none inline-flex items-center justify-center transform hover:scale-105 group/btn" title="<?= lang('Admin/MonitoringInput.btn_detail') ?>">
                         <svg class="w-5 h-5 transition-transform group-hover/btn:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                     </button>
@@ -165,7 +178,24 @@
        </tbody>
       </table>
       </div>
+    </div> 
+    <div id="pagination-container" class="hidden items-center justify-between px-6 py-4 border-t border-gray-100 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-900/20 transition-colors">
+    <span id="pagination-info" class="hidden md:block text-sm text-gray-500 dark:text-slate-400 font-medium"></span>
+    
+    <div class="flex items-center gap-2">
+        <button id="prevBtn" class="p-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-300 rounded-xl hover:bg-gray-50 transition-all disabled:opacity-30 disabled:cursor-not-allowed outline-none shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+
+        <div id="pageIndicator" class="px-5 py-1.5 text-white text-sm font-bold rounded-xl shadow-sm transition-all transform flex items-center justify-center min-w-[80px]" style="background: var(--warna-scroll);">
+            1 / 1
+        </div>
+
+        <button id="nextBtn" class="p-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-300 rounded-xl hover:bg-gray-50 transition-all disabled:opacity-30 disabled:cursor-not-allowed outline-none shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
     </div>
+</div>
 </div>
 
 <div id="detailDrawerOverlay" class="fixed inset-0 bg-gray-950/60 backdrop-blur-sm z-[99999] hidden transition-opacity duration-300 opacity-0" onclick="closeDetailDrawer()"></div>

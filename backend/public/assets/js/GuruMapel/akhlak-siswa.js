@@ -136,7 +136,8 @@ function updateCharCounter() {
     const text = document.getElementById('catatanText').value;
     const counter = document.getElementById('charCounter');
     if(counter) {
-        counter.textContent = `${text.length} karakter`;
+        // GANTI BARIS INI
+        counter.textContent = `${text.length} ${LANG.characters}`;
     }
 }
 

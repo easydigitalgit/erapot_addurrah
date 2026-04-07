@@ -54,6 +54,8 @@ function fetchMaterials() {
     .catch(err => console.error("Error fetching materials", err));
 }
 
+// ... KODE LAINNYA DI ATAS TETAP SAMA ...
+
 function renderMaterialsTable() {
   const container = document.getElementById("materialsTableContainer");
   const emptyState = document.getElementById("emptyState");
@@ -80,7 +82,6 @@ function renderMaterialsTable() {
     link: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>',
   };
 
-  // Type Colors for badges
   const typeColors = {
       pdf: 'bg-red-50 text-red-600 border-red-200 dark:!bg-red-900/30 dark:!text-red-400 dark:!border-red-800/50',
       ppt: 'bg-orange-50 text-orange-600 border-orange-200 dark:!bg-orange-900/30 dark:!text-orange-400 dark:!border-orange-800/50',
@@ -120,6 +121,16 @@ function renderMaterialsTable() {
                       </a>
                   ` : '';
 
+                  // IMPLEMENTASI RBAC: Tombol Delete Hanya Muncul Jika Diizinkan
+                  let btnDeleteHtml = '';
+                  if (typeof CAN_DELETE !== 'undefined' && CAN_DELETE) {
+                      btnDeleteHtml = `
+                      <button class="action-button flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600 dark:!bg-red-900/30 dark:!text-red-400 hover:bg-red-100 dark:hover:!bg-red-900/50 transition-colors outline-none" onclick="deleteMaterial(${m.id})" title="${LANG.btn_delete}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                      </button>
+                      `;
+                  }
+
                   let statusBadge = m.status === 'published' 
                     ? `<span class="inline-flex px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 dark:!bg-blue-900/30 dark:!text-blue-400 dark:!border-blue-800/50 transition-colors">${LANG.status_pub}</span>`
                     : `<span class="inline-flex px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700 border border-gray-200 dark:!bg-slate-700 dark:!text-slate-300 dark:!border-slate-600 transition-colors">${LANG.status_draft}</span>`;
@@ -148,9 +159,7 @@ function renderMaterialsTable() {
                     <div class="flex gap-2 justify-center">
                       ${btnPublishHtml}
                       ${btnDownloadHtml}
-                      <button class="action-button flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600 dark:!bg-red-900/30 dark:!text-red-400 hover:bg-red-100 dark:hover:!bg-red-900/50 transition-colors outline-none" onclick="deleteMaterial(${m.id})" title="${LANG.btn_delete}">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                      </button>
+                      ${btnDeleteHtml}
                     </div>
                   </td>
                 </tr>
@@ -160,6 +169,8 @@ function renderMaterialsTable() {
         </div>
       `;
 }
+
+// ... KODE LAINNYA DI BAWAH TETAP SAMA ...
 
 function filterMaterials(button, filter) {
   document.querySelectorAll(".filter-button").forEach((btn) => btn.classList.remove("active"));

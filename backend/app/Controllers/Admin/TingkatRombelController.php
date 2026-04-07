@@ -21,62 +21,48 @@ class TingkatRombelController extends AdminBaseController
 
         $listGuru = $guruModel->select('id, nama_lengkap')->findAll();
 
-        // 1. AMBIL TAHUN AJARAN AKTIF SECARA DINAMIS
         $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
         $idTaAktif = $taAktif ? $taAktif['id'] : null;
         $strTaAktif = $taAktif ? $taAktif['tahun'] : 'Belum Diset';
 
-        $totalSiswa = $siswaModel->where('status_siswa', 'Aktif')->countAllResults(); 
+        $tahun_ajaran_list = $db->table('tahun_ajaran')->orderBy('id', 'DESC')->get()->getResultArray();
+
+        $totalSiswa = $siswaModel->where('status_siswa', 'Aktif')->countAllResults();
         $totalRombel = $rombelModel->countAll();
 
-        // 2. Data Tabel Rombel
         $listRombel = $rombelModel
-            ->select('rombel.*, guru_tendik.nama_lengkap as nama_wali_kelas')
+            ->select('rombel.*, guru_tendik.nama_lengkap as nama_wali_kelas, ta.tahun as nama_tahun_ajaran, ta.semester as semester_ta')
             ->select('(SELECT COUNT(*) FROM siswa WHERE siswa.rombel_id = rombel.id AND siswa.status_siswa = "Aktif") as jumlah_siswa')
             ->join('guru_tendik', 'guru_tendik.id = rombel.wali_kelas_id', 'left')
+            ->join('tahun_ajaran ta', 'ta.id = rombel.id_tahun_ajaran', 'left')
+            ->orderBy('rombel.id_tahun_ajaran', 'DESC')
             ->orderBy('rombel.tingkat', 'ASC')
             ->orderBy('rombel.nama_rombel', 'ASC')
             ->findAll();
 
-        // INJEKSI TAHUN AJARAN AKTIF KE DALAM ARRAY (AGAR SELALU DINAMIS)
-        foreach ($listRombel as &$r) {
-            $r['nama_tahun_ajaran'] = $strTaAktif;
-        }
+        $rawRombelStats = $db->table('rombel')
+            ->select('id, tingkat, id_tahun_ajaran, is_lulus')
+            ->get()->getResultArray();
 
-        $stat_7 = [
-            'rombel' => $rombelModel->where('tingkat', 'VII')->countAllResults(),
-            'siswa' => $db->table('siswa')->join('rombel', 'rombel.id = siswa.rombel_id')->where('rombel.tingkat', 'VII')->where('siswa.status_siswa', 'Aktif')->countAllResults(),
-            'laki' => $db->table('siswa')->join('rombel', 'rombel.id = siswa.rombel_id')->where('rombel.tingkat', 'VII')->where('siswa.status_siswa', 'Aktif')->where('siswa.jenis_kelamin', 'L')->countAllResults(),
-            'perempuan' => $db->table('siswa')->join('rombel', 'rombel.id = siswa.rombel_id')->where('rombel.tingkat', 'VII')->where('siswa.status_siswa', 'Aktif')->where('siswa.jenis_kelamin', 'P')->countAllResults()
-        ];
-
-        $stat_8 = [
-            'rombel' => $rombelModel->where('tingkat', 'VIII')->countAllResults(),
-            'siswa' => $db->table('siswa')->join('rombel', 'rombel.id = siswa.rombel_id')->where('rombel.tingkat', 'VIII')->where('siswa.status_siswa', 'Aktif')->countAllResults(),
-            'laki' => $db->table('siswa')->join('rombel', 'rombel.id = siswa.rombel_id')->where('rombel.tingkat', 'VIII')->where('siswa.status_siswa', 'Aktif')->where('siswa.jenis_kelamin', 'L')->countAllResults(),
-            'perempuan' => $db->table('siswa')->join('rombel', 'rombel.id = siswa.rombel_id')->where('rombel.tingkat', 'VIII')->where('siswa.status_siswa', 'Aktif')->where('siswa.jenis_kelamin', 'P')->countAllResults()
-        ];
-
-        $stat_9 = [
-            'rombel' => $rombelModel->where('tingkat', 'IX')->countAllResults(),
-            'siswa' => $db->table('siswa')->join('rombel', 'rombel.id = siswa.rombel_id')->where('rombel.tingkat', 'IX')->where('siswa.status_siswa', 'Aktif')->countAllResults(),
-            'laki' => $db->table('siswa')->join('rombel', 'rombel.id = siswa.rombel_id')->where('rombel.tingkat', 'IX')->where('siswa.status_siswa', 'Aktif')->where('siswa.jenis_kelamin', 'L')->countAllResults(),
-            'perempuan' => $db->table('siswa')->join('rombel', 'rombel.id = siswa.rombel_id')->where('rombel.tingkat', 'IX')->where('siswa.status_siswa', 'Aktif')->where('siswa.jenis_kelamin', 'P')->countAllResults()
-        ];
+        $rawSiswaStats = $db->table('siswa')
+            ->select('siswa.id, siswa.jenis_kelamin, siswa.rombel_id, rombel.tingkat, rombel.id_tahun_ajaran, rombel.is_lulus')
+            ->join('rombel', 'rombel.id = siswa.rombel_id', 'inner')
+            ->where('siswa.status_siswa', 'Aktif')
+            ->get()->getResultArray();
 
         $data = [
-            'user'         => 'Admin',
-            'navigations'  => $this->getSidebarMenu(),
-            'rombel_list'  => $listRombel,
-            'guru_list'    => $listGuru,
-            'total_siswa'  => $totalSiswa,
-            'total_rombel' => $totalRombel,
-            'stat_7'       => $stat_7,
-            'stat_8'       => $stat_8,
-            'stat_9'       => $stat_9,
-            'idTaAktif'    => $idTaAktif,
-            'strTaAktif'   => $strTaAktif,
-            'color'        => $this->getColor()
+            'user'              => 'Admin',
+            'navigations'       => $this->getSidebarMenu(),
+            'rombel_list'       => $listRombel,
+            'guru_list'         => $listGuru,
+            'tahun_ajaran_list' => $tahun_ajaran_list,
+            'total_siswa'       => $totalSiswa,
+            'total_rombel'      => $totalRombel,
+            'raw_rombel_stats'  => $rawRombelStats,
+            'raw_siswa_stats'   => $rawSiswaStats,
+            'idTaAktif'         => $idTaAktif,
+            'strTaAktif'        => $strTaAktif,
+            'color'             => $this->getColor()
         ];
 
         return view('admin/tingkat-rombel', $data);
@@ -87,10 +73,10 @@ class TingkatRombelController extends AdminBaseController
         if (!$this->validate([
             'rombel_name' => 'required',
             'level'       => 'required',
+            'id_tahun_ajaran' => 'required',
             'homeroom_teacher' => [
-                'rules'  => 'required|is_unique[rombel.wali_kelas_id]',
+                'rules'  => 'permit_empty|is_unique[rombel.wali_kelas_id]',
                 'errors' => [
-                    'required'  => 'Wali kelas wajib dipilih.',
                     'is_unique' => 'Guru ini sudah menjadi wali kelas di kelas lain.'
                 ]
             ],
@@ -99,19 +85,20 @@ class TingkatRombelController extends AdminBaseController
         }
 
         $db = \Config\Database::connect();
-        $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
-        
-        $rombelModel = new RombelModel();
+        $targetTa = $db->table('tahun_ajaran')->where('id', $this->request->getPost('id_tahun_ajaran'))->get()->getRowArray();
+        $semester = $targetTa ? $targetTa['semester'] : 'Ganjil';
+
         $data = [
             'nama_rombel'     => $this->request->getPost('rombel_name'),
             'tingkat'         => $this->request->getPost('level'),
-            'wali_kelas_id'   => $this->request->getPost('homeroom_teacher'),
-            'id_tahun_ajaran' => $taAktif ? $taAktif['id'] : null,
-            'semester'        => 'Ganjil',
-            'kurikulum'       => 'Kurikulum Merdeka'
+            'wali_kelas_id'   => $this->request->getPost('homeroom_teacher') ?: null,
+            'id_tahun_ajaran' => $this->request->getPost('id_tahun_ajaran'),
+            'semester'        => $semester,
+            'kurikulum_id'    => 1, // Asumsi ID 1 adalah Kurikulum Merdeka di database
+            'is_lulus'        => 0
         ];
 
-        if ($rombelModel->insert($data)) {
+        if ($db->table('rombel')->insert($data)) {
             return $this->response->setJSON(['status' => 'success', 'message' => 'Rombel berhasil ditambahkan']);
         } else {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menyimpan data']);
@@ -126,10 +113,10 @@ class TingkatRombelController extends AdminBaseController
         if (!$this->validate([
             'rombel_name' => 'required',
             'level'       => 'required',
+            'id_tahun_ajaran' => 'required',
             'homeroom_teacher' => [
-                'rules'  => "required|is_unique[rombel.wali_kelas_id,id,{$id}]",
+                'rules'  => "permit_empty|is_unique[rombel.wali_kelas_id,id,{$id}]",
                 'errors' => [
-                    'required'  => 'Wali kelas wajib dipilih.',
                     'is_unique' => 'Guru ini sudah menjadi wali kelas di kelas lain.'
                 ]
             ],
@@ -138,17 +125,18 @@ class TingkatRombelController extends AdminBaseController
         }
 
         $db = \Config\Database::connect();
-        $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        $targetTa = $db->table('tahun_ajaran')->where('id', $this->request->getPost('id_tahun_ajaran'))->get()->getRowArray();
+        $semester = $targetTa ? $targetTa['semester'] : 'Ganjil';
 
-        $rombelModel = new RombelModel();
         $data = [
             'nama_rombel'     => $this->request->getPost('rombel_name'),
             'tingkat'         => $this->request->getPost('level'),
-            'wali_kelas_id'   => $this->request->getPost('homeroom_teacher'),
-            'id_tahun_ajaran' => $taAktif ? $taAktif['id'] : null,
+            'wali_kelas_id'   => $this->request->getPost('homeroom_teacher') ?: null,
+            'id_tahun_ajaran' => $this->request->getPost('id_tahun_ajaran'),
+            'semester'        => $semester
         ];
 
-        if ($rombelModel->update($id, $data)) {
+        if ($db->table('rombel')->where('id', $id)->update($data)) {
             return $this->response->setJSON(['status' => 'success', 'message' => 'Data berhasil diperbarui']);
         } else {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal update database']);
@@ -157,19 +145,19 @@ class TingkatRombelController extends AdminBaseController
 
     public function delete()
     {
-        $rombelModel = new RombelModel();
+        $db = \Config\Database::connect();
         $id = $this->request->getPost('id');
 
         if (!$id) return $this->response->setJSON(['status' => 'error', 'message' => 'ID tidak ditemukan.']);
 
         try {
-            if ($rombelModel->delete($id)) {
+            if ($db->table('rombel')->where('id', $id)->delete()) {
                 return $this->response->setJSON(['status' => 'success', 'message' => 'Data berhasil dihapus']);
             } else {
                 return $this->response->setJSON(['status' => 'error', 'message' => 'Database menolak penghapusan.']);
             }
         } catch (\Exception $e) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menghapus: Kemungkinan masih ada data terhubung ke Rombel ini.']);
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menghapus: Kemungkinan masih ada data siswa/jadwal terhubung ke Rombel ini.']);
         }
     }
 
@@ -177,33 +165,28 @@ class TingkatRombelController extends AdminBaseController
     {
         $db = \Config\Database::connect();
 
-        // Ambil Tahun Ajaran Aktif untuk diinjeksikan secara dinamis
-        $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
-        $strTaAktif = $taAktif ? $taAktif['tahun'] : 'Belum Diset';
-
         $builder = $db->table('rombel');
-        $builder->select('rombel.*, guru_tendik.nama_lengkap as nama_wali_kelas');
+        $builder->select('rombel.*, guru_tendik.nama_lengkap as nama_wali_kelas, ta.tahun as nama_tahun_ajaran');
         $builder->join('guru_tendik', 'guru_tendik.id = rombel.wali_kelas_id', 'left');
+        $builder->join('tahun_ajaran ta', 'ta.id = rombel.id_tahun_ajaran', 'left');
         $builder->where('rombel.id', $id);
         $rombel = $builder->get()->getRowArray();
 
         if ($rombel) {
             $siswaList = $db->table('siswa')
-                            ->select('id, nisn, nama_lengkap, jenis_kelamin')
-                            ->where('rombel_id', $id)
-                            ->where('status_siswa', 'Aktif')
-                            ->orderBy('nama_lengkap', 'ASC')
-                            ->get()->getResultArray();
+                ->select('id, nisn, nama_lengkap, jenis_kelamin')
+                ->where('rombel_id', $id)
+                ->where('status_siswa', 'Aktif')
+                ->orderBy('nama_lengkap', 'ASC')
+                ->get()->getResultArray();
 
-            $laki = 0; $perempuan = 0;
-            foreach($siswaList as $s) {
-                $jk = strtoupper(trim($s['jenis_kelamin'])); 
-                if($jk == 'L') $laki++;
-                if($jk == 'P') $perempuan++;
+            $laki = 0;
+            $perempuan = 0;
+            foreach ($siswaList as $s) {
+                $jk = strtoupper(trim($s['jenis_kelamin']));
+                if ($jk == 'L') $laki++;
+                if ($jk == 'P') $perempuan++;
             }
-
-            // FORCE OVERRIDE TAHUN AJARAN DINAMIS
-            $rombel['nama_tahun_ajaran'] = $strTaAktif;
 
             $rombel['siswa'] = $siswaList;
             $rombel['jumlah_laki'] = $laki;
@@ -217,29 +200,126 @@ class TingkatRombelController extends AdminBaseController
         }
     }
 
-    // ==============================================================
-    // FUNGSI API UNTUK KELOLA SISWA (TABS)
-    // ==============================================================
+    public function migrate()
+    {
+        $idLama = $this->request->getPost('rombel_id_lama');
+        $jenisMigrasi = $this->request->getPost('jenis_migrasi');
+
+        if (!$idLama || !$jenisMigrasi) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Data request tidak lengkap!']);
+        }
+
+        $db = \Config\Database::connect();
+
+        $rombelLama = $db->table('rombel')->where('id', $idLama)->get()->getRowArray();
+        if (!$rombelLama) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Rombel asal tidak ditemukan.']);
+        }
+
+        try {
+            $db->transException(true);
+            $db->transStart();
+
+            if ($jenisMigrasi === 'lulus') {
+                $db->table('siswa')
+                    ->where('rombel_id', $idLama)
+                    ->where('status_siswa', 'Aktif')
+                    ->update(['status_siswa' => 'Lulus']);
+
+                $db->table('rombel')
+                    ->where('id', $idLama)
+                    ->update(['is_lulus' => 1]);
+
+                $msg = "Luar Biasa! Seluruh siswa diluluskan dan Status Rombel menjadi LULUS!";
+            } else {
+                $idTaBaru = $this->request->getPost('target_tahun_ajaran');
+                $tingkatBaru = $this->request->getPost('target_tingkat');
+                $namaBaru = $this->request->getPost('target_nama_rombel');
+                $pindahSiswa = $this->request->getPost('copy_students');
+
+                if (!$idTaBaru || !$tingkatBaru || !$namaBaru) {
+                    return $this->response->setJSON(['status' => 'error', 'message' => 'Lengkapi semua form migrasi!']);
+                }
+
+                $cekExisting = $db->table('rombel')
+                    ->where('nama_rombel', $namaBaru)
+                    ->where('id_tahun_ajaran', $idTaBaru)
+                    ->get()->getRowArray();
+
+                if ($cekExisting) {
+                    return $this->response->setJSON(['status' => 'error', 'message' => 'Rombel dengan nama "' . $namaBaru . '" sudah ada di Tahun Ajaran / Semester tujuan!']);
+                }
+
+                $targetTa = $db->table('tahun_ajaran')->where('id', $idTaBaru)->get()->getRowArray();
+                $semesterBaru = $targetTa ? $targetTa['semester'] : 'Ganjil';
+
+                $dataBaru = [
+                    'nama_rombel' => $namaBaru,
+                    'tingkat' => $tingkatBaru,
+                    'id_tahun_ajaran' => $idTaBaru,
+                    'wali_kelas_id' => null,
+                    'kurikulum_id' => $rombelLama['kurikulum_id'] ?? 1,
+                    'semester' => $semesterBaru,
+                    'is_lulus' => 0
+                ];
+
+                $db->table('rombel')->insert($dataBaru);
+                $newRombelId = $db->insertID();
+
+                if ($pindahSiswa === '1') {
+                    $db->table('siswa')
+                        ->where('rombel_id', $idLama)
+                        ->where('status_siswa', 'Aktif')
+                        ->update(['rombel_id' => $newRombelId]);
+
+                    // --- 🚀 SUNTIKAN MESIN WAKTU ---
+                    // Rekam anak-anak yang baru dipindah ke tabel anggota_rombel
+                    $siswaPindah = $db->table('siswa')->select('id')->where('rombel_id', $newRombelId)->where('status_siswa', 'Aktif')->get()->getResultArray();
+                    $dataAnggotaBaru = [];
+                    foreach ($siswaPindah as $sp) {
+                        $dataAnggotaBaru[] = [
+                            'siswa_id'        => $sp['id'],
+                            'rombel_id'       => $newRombelId,
+                            'tahun_ajaran_id' => $idTaBaru,
+                            'semester'        => $semesterBaru
+                        ];
+                    }
+                    if (!empty($dataAnggotaBaru)) {
+                        $db->table('anggota_rombel')->insertBatch($dataAnggotaBaru);
+                    }
+                }
+
+                $msg = "Migrasi Berhasil! Kelas & Siswa telah dipindahkan. (Wali Kelas dikosongkan untuk menghindari duplikat)";
+            }
+
+            $db->transComplete();
+
+            return $this->response->setJSON(['status' => 'success', 'message' => $msg]);
+        } catch (\Throwable $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'DB Error: ' . $e->getMessage()]);
+        }
+    }
+
     public function searchUnassignedStudents()
     {
         $keyword = $this->request->getGet('keyword');
         $db = \Config\Database::connect();
-        
+
         $builder = $db->table('siswa')
-                      ->select('id, nisn, nama_lengkap, jenis_kelamin')
-                      ->where('status_siswa', 'Aktif')
-                      ->groupStart()
-                          ->where('rombel_id IS NULL')
-                          ->orWhere('rombel_id', 0)
-                      ->groupEnd();
-                      
+            ->select('id, nisn, nama_lengkap, jenis_kelamin')
+            ->where('status_siswa', 'Aktif')
+            ->groupStart()
+            ->where('rombel_id IS NULL')
+            ->orWhere('rombel_id', 0)
+            ->groupEnd();
+
         if (!empty($keyword)) {
             $builder->groupStart()
-                    ->like('nama_lengkap', $keyword)
-                    ->orLike('nisn', $keyword)
-                    ->groupEnd();
+                ->like('nama_lengkap', $keyword)
+                ->orLike('nisn', $keyword)
+                ->groupEnd();
         }
-        
+
         $data = $builder->orderBy('nama_lengkap', 'ASC')->limit(50)->get()->getResultArray();
         return $this->response->setJSON(['status' => 'success', 'data' => $data]);
     }
@@ -253,7 +333,18 @@ class TingkatRombelController extends AdminBaseController
 
         $db = \Config\Database::connect();
         $db->table('siswa')->where('id', $siswaId)->update(['rombel_id' => $rombelId]);
-        
+
+        // --- 🚀 SUNTIKAN MESIN WAKTU ---
+        $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        if ($taAktif) {
+            $db->table('anggota_rombel')->insert([
+                'siswa_id'        => $siswaId,
+                'rombel_id'       => $rombelId,
+                'tahun_ajaran_id' => $taAktif['id'],
+                'semester'        => $taAktif['semester']
+            ]);
+        }
+
         return $this->response->setJSON(['status' => 'success', 'message' => 'Siswa berhasil ditambahkan ke kelas']);
     }
 
@@ -264,13 +355,24 @@ class TingkatRombelController extends AdminBaseController
 
         $db = \Config\Database::connect();
         $db->table('siswa')->where('id', $siswaId)->update(['rombel_id' => null]);
-        
+
+        // --- 🚀 SUNTIKAN MESIN WAKTU ---
+        // Kita cabut juga dia dari mesin waktu di tahun ajaran yang sedang aktif
+        $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        if ($taAktif) {
+            $db->table('anggota_rombel')
+               ->where('siswa_id', $siswaId)
+               ->where('tahun_ajaran_id', $taAktif['id'])
+               ->where('semester', $taAktif['semester'])
+               ->delete();
+        }
+
         return $this->response->setJSON(['status' => 'success', 'message' => 'Siswa berhasil dikeluarkan dari kelas']);
     }
 
     public function transferStudents()
     {
-        $siswaIds = $this->request->getPost('siswa_ids'); 
+        $siswaIds = $this->request->getPost('siswa_ids');
         $targetRombelId = $this->request->getPost('target_rombel_id');
 
         if (empty($siswaIds) || !$targetRombelId) {
@@ -278,9 +380,27 @@ class TingkatRombelController extends AdminBaseController
         }
 
         $db = \Config\Database::connect();
+        $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        
         $db->transStart();
         foreach ($siswaIds as $id) {
+            // Update tabel utama
             $db->table('siswa')->where('id', $id)->update(['rombel_id' => $targetRombelId]);
+            
+            // --- 🚀 SUNTIKAN MESIN WAKTU ---
+            if ($taAktif) {
+                $cek = $db->table('anggota_rombel')->where(['siswa_id' => $id, 'tahun_ajaran_id' => $taAktif['id'], 'semester' => $taAktif['semester']])->get()->getRowArray();
+                if ($cek) {
+                    $db->table('anggota_rombel')->where('id', $cek['id'])->update(['rombel_id' => $targetRombelId]);
+                } else {
+                    $db->table('anggota_rombel')->insert([
+                        'siswa_id'        => $id,
+                        'rombel_id'       => $targetRombelId,
+                        'tahun_ajaran_id' => $taAktif['id'],
+                        'semester'        => $taAktif['semester']
+                    ]);
+                }
+            }
         }
         $db->transComplete();
 
@@ -291,9 +411,6 @@ class TingkatRombelController extends AdminBaseController
         return $this->response->setJSON(['status' => 'success', 'message' => 'Siswa berhasil dipindahkan']);
     }
 
-    // ==============================================================
-    // IMPORT / EXPORT
-    // ==============================================================
     public function export()
     {
         if (ob_get_length()) ob_clean();
@@ -314,14 +431,19 @@ class TingkatRombelController extends AdminBaseController
         }
 
         $db = \Config\Database::connect();
-        
-        $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
-        $strTaAktif = $taAktif ? $taAktif['tahun'] : 'Belum Diset';
 
         $builder = $db->table('rombel');
-        $builder->select('rombel.*, guru_tendik.nama_lengkap as nama_wali');
+        $builder->select('rombel.*, guru_tendik.nama_lengkap as nama_wali, ta.tahun as nama_tahun_ajaran');
         $builder->join('guru_tendik', 'guru_tendik.id = rombel.wali_kelas_id', 'left');
-        $builder->orderBy('rombel.tingkat', 'ASC')->orderBy('rombel.nama_rombel', 'ASC');
+        $builder->join('tahun_ajaran ta', 'ta.id = rombel.id_tahun_ajaran', 'left');
+
+        // 🚀 SUNTIKAN JOIN KURIKULUM
+        if ($db->tableExists('kurikulum')) {
+            $builder->select('kurikulum.nama_kurikulum');
+            $builder->join('kurikulum', 'kurikulum.id = rombel.kurikulum_id', 'left');
+        }
+
+        $builder->orderBy('rombel.id_tahun_ajaran', 'DESC')->orderBy('rombel.tingkat', 'ASC')->orderBy('rombel.nama_rombel', 'ASC');
         $dataRombel = $builder->get()->getResultArray();
 
         $row = 2;
@@ -329,8 +451,8 @@ class TingkatRombelController extends AdminBaseController
             $sheet->setCellValue('A' . $row, $r['id']);
             $sheet->setCellValue('B' . $row, $r['nama_rombel']);
             $sheet->setCellValue('C' . $row, $r['tingkat']);
-            $sheet->setCellValue('D' . $row, $r['kurikulum']);
-            $sheet->setCellValue('E' . $row, $strTaAktif); // Paksa ke tahun dinamis
+            $sheet->setCellValue('D' . $row, $r['nama_kurikulum'] ?? 'Kurikulum Merdeka');
+            $sheet->setCellValue('E' . $row, $r['nama_tahun_ajaran'] ?? '-');
             $sheet->setCellValue('F' . $row, $r['semester']);
             $sheet->setCellValue('G' . $row, $r['nama_wali'] ?? 'Belum Ada');
             $row++;
@@ -350,13 +472,13 @@ class TingkatRombelController extends AdminBaseController
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Data Rombel');
-        
+
         $headers = [
-            'ID Rombel (KOSONGKAN JIKA BARU)', 
-            'Nama Rombel (Wajib)', 
-            'Tingkat (VII / VIII / IX)', 
-            'ID Wali Kelas (Lihat Sheet 2)', 
-            'Kurikulum', 
+            'ID Rombel (KOSONGKAN JIKA BARU)',
+            'Nama Rombel (Wajib)',
+            'Tingkat (VII / VIII / IX)',
+            'ID Wali Kelas (Lihat Sheet 2)',
+            'Kurikulum',
             'Semester (Ganjil / Genap)'
         ];
 
@@ -379,7 +501,7 @@ class TingkatRombelController extends AdminBaseController
 
         $guruModel = new \App\Models\Admin\GuruTendikModel();
         $dataGuru = $guruModel->select('id, nama_lengkap')->orderBy('nama_lengkap', 'ASC')->findAll();
-        
+
         $rowGuru = 2;
         foreach ($dataGuru as $guru) {
             $sheet2->setCellValue('A' . $rowGuru, $guru['id']);
@@ -416,29 +538,44 @@ class TingkatRombelController extends AdminBaseController
             $idTa = $taAktif ? $taAktif['id'] : null;
 
             $spreadsheet = IOFactory::load($file->getTempName());
-            $sheet = $spreadsheet->getSheet(0)->toArray(null, true, true, true); 
-            
+            $sheet = $spreadsheet->getSheet(0)->toArray(null, true, true, true);
+
             $rombelModel = new \App\Models\Admin\RombelModel();
-            $countInsert = 0; $countUpdate = 0;
+            $countInsert = 0;
+            $countUpdate = 0;
 
             foreach ($sheet as $idx => $row) {
-                if ($idx == 1) continue; 
-                
+                if ($idx == 1) continue;
+
                 $namaRombel = trim($row['B'] ?? '');
                 $tingkat    = trim($row['C'] ?? '');
-                
+
                 if (empty($namaRombel) || empty($tingkat)) continue;
 
                 $idRombel = $row['A'] ?? null;
                 $waliId   = trim($row['D'] ?? '');
-                if (empty($waliId) || !is_numeric($waliId)) { $waliId = null; }
+                if (empty($waliId) || !is_numeric($waliId)) {
+                    $waliId = null;
+                }
 
+                // 🚀 CARI ID KURIKULUM DULU (Lebih aman ditaruh di luar array)
+                $namaKurikulum = trim($row['E'] ?? 'Kurikulum Merdeka');
+                $kurikulum_id_val = 1; // Fallback default ID 1
+                
+                if ($db->tableExists('kurikulum')) {
+                    $k = $db->table('kurikulum')->like('nama_kurikulum', $namaKurikulum, 'both')->get()->getRowArray();
+                    if ($k) {
+                        $kurikulum_id_val = $k['id'];
+                    }
+                }
+
+                // BARU MASUKKAN KE DALAM ARRAY DATA
                 $data = [
                     'nama_rombel'     => $namaRombel,
                     'tingkat'         => $tingkat,
                     'wali_kelas_id'   => $waliId,
-                    'kurikulum'       => trim($row['E'] ?? 'Kurikulum Merdeka'),
-                    'id_tahun_ajaran' => $idTa, // Set Tahun Ajaran Dinamis
+                    'kurikulum_id'    => $kurikulum_id_val,
+                    'id_tahun_ajaran' => $idTa,
                     'semester'        => trim($row['F'] ?? 'Ganjil')
                 ];
 
@@ -458,10 +595,122 @@ class TingkatRombelController extends AdminBaseController
 
             $db->transCommit();
             return $this->response->setJSON(['status' => 'success', 'message' => "Proses Selesai! $countInsert ditambahkan, $countUpdate diperbarui."]);
-
         } catch (\Throwable $e) {
             if (isset($db)) $db->transRollback();
             return $this->response->setJSON(['status' => 'error', 'message' => 'System Error: ' . $e->getMessage()]);
+        }
+    }
+
+    public function migrateMassal()
+    {
+        $idTaAsal = $this->request->getPost('asal_tahun_ajaran');
+        $idTaTujuan = $this->request->getPost('target_tahun_ajaran');
+
+        if (!$idTaAsal || !$idTaTujuan) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Tahun Ajaran Asal dan Tujuan harus dipilih!']);
+        }
+
+        if ($idTaAsal == $idTaTujuan) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Tahun Ajaran Tujuan tidak boleh sama dengan Tahun Ajaran Asal!']);
+        }
+
+        $db = \Config\Database::connect();
+
+        $rombels = $db->table('rombel')
+            ->where('id_tahun_ajaran', $idTaAsal)
+            ->where('is_lulus', 0)
+            ->get()->getResultArray();
+
+        if (empty($rombels)) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Tidak ada rombel aktif yang bisa dimigrasi pada Tahun Ajaran Asal tersebut.']);
+        }
+
+        $targetTa = $db->table('tahun_ajaran')->where('id', $idTaTujuan)->get()->getRowArray();
+        $semesterBaru = $targetTa ? $targetTa['semester'] : 'Ganjil';
+
+        try {
+            $db->transException(true);
+            $db->transStart();
+
+            $countLulus = 0;
+            $countNaik = 0;
+            $countGagalDuplikat = 0;
+
+            foreach ($rombels as $r) {
+                $idLama = $r['id'];
+                $tingkatLama = strtoupper(trim($r['tingkat']));
+                $namaRombel = trim($r['nama_rombel']);
+
+                if ($tingkatLama == 'IX' || $tingkatLama == '9') {
+                    $db->table('siswa')
+                        ->where('rombel_id', $idLama)
+                        ->where('status_siswa', 'Aktif')
+                        ->update(['status_siswa' => 'Lulus']);
+
+                    $db->table('rombel')
+                        ->where('id', $idLama)
+                        ->update(['is_lulus' => 1]);
+
+                    $countLulus++;
+                } else {
+                    $tingkatBaru = ($tingkatLama == 'VII' || $tingkatLama == '7') ? 'VIII' : 'IX';
+
+                    $cekExisting = $db->table('rombel')
+                        ->where('nama_rombel', $namaRombel)
+                        ->where('id_tahun_ajaran', $idTaTujuan)
+                        ->get()->getRowArray();
+
+                    if (!$cekExisting) {
+                        $dataBaru = [
+                            'nama_rombel' => $namaRombel,
+                            'tingkat' => $tingkatBaru,
+                            'id_tahun_ajaran' => $idTaTujuan,
+                            'wali_kelas_id' => null,
+                            'kurikulum_id' => $r['kurikulum_id'] ?? 1,
+                            'semester' => $semesterBaru,
+                            'is_lulus' => 0
+                        ];
+
+                        $db->table('rombel')->insert($dataBaru);
+                        $newRombelId = $db->insertID();
+
+                        $db->table('siswa')
+                            ->where('rombel_id', $idLama)
+                            ->where('status_siswa', 'Aktif')
+                            ->update(['rombel_id' => $newRombelId]);
+
+                        // --- 🚀 SUNTIKAN MESIN WAKTU ---
+                        $siswaPindah = $db->table('siswa')->select('id')->where('rombel_id', $newRombelId)->where('status_siswa', 'Aktif')->get()->getResultArray();
+                        $dataAnggotaBaru = [];
+                        foreach ($siswaPindah as $sp) {
+                            $dataAnggotaBaru[] = [
+                                'siswa_id'        => $sp['id'],
+                                'rombel_id'       => $newRombelId,
+                                'tahun_ajaran_id' => $idTaTujuan,
+                                'semester'        => $semesterBaru
+                            ];
+                        }
+                        if (!empty($dataAnggotaBaru)) {
+                            $db->table('anggota_rombel')->insertBatch($dataAnggotaBaru);
+                        }
+
+                        $countNaik++;
+                    } else {
+                        $countGagalDuplikat++;
+                    }
+                }
+            }
+
+            $db->transComplete();
+
+            $msg = "Sapu Jagat Berhasil! 🚀<br><b>$countNaik</b> Rombel Naik Tingkat.<br><b>$countLulus</b> Rombel Diluluskan.";
+            if ($countGagalDuplikat > 0) {
+                $msg .= "<br><br><span class='text-xs text-red-500'>($countGagalDuplikat Rombel dilewati karena nama sudah ada di TA Tujuan).</span>";
+            }
+
+            return $this->response->setJSON(['status' => 'success', 'message' => $msg]);
+        } catch (\Throwable $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'DB Error: ' . $e->getMessage()]);
         }
     }
 }

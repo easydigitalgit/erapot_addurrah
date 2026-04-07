@@ -33,13 +33,24 @@ class ProfileSekolahController extends AdminBaseController
         // Data Default jika DB Kosong
         if (!$sekolah) {
             $sekolah = [
-                'nama_sekolah'   => '', 'npsn' => '', 'nss' => '',
-                'jenjang'        => 'SMPIT', 'status_sekolah' => 'Swasta',
-                'tahun_berdiri'  => date('Y'), 'akreditasi' => 'Belum',
-                'alamat' => '', 'provinsi' => '', 'kabupaten' => '', 
-                'kecamatan' => '', 'desa_id' => '', 'kode_pos' => '',
-                'telepon' => '', 'email' => '', 'website' => '', 'logo' => 'default_logo.png',
-                'warna_primary' => '#1F7A4D', 'warna_secondary' => '#E6F4EC'
+                'nama_sekolah'   => '',
+                'npsn' => '',
+                'nss' => '',
+                'jenjang'        => 'SMPIT',
+                'status_sekolah' => 'Swasta',
+                'tahun_berdiri'  => date('Y'),
+                'akreditasi' => 'Belum',
+                'alamat' => '',
+                'provinsi' => '',
+                'kabupaten' => '',
+                'kecamatan' => '',
+                'kode_pos' => '',
+                'telepon' => '',
+                'email' => '',
+                'website' => '',
+                'logo' => 'default_logo.png',
+                'warna_primary' => '#1F7A4D',
+                'warna_secondary' => '#E6F4EC'
             ];
         }
 
@@ -51,7 +62,7 @@ class ProfileSekolahController extends AdminBaseController
             'list_propinsi' => $this->propinsiModel->orderBy('nama', 'ASC')->findAll()
         ];
 
-        return view('admin/profile-sekolah', $data); 
+        return view('admin/profile-sekolah', $data);
     }
 
     public function update()
@@ -66,13 +77,13 @@ class ProfileSekolahController extends AdminBaseController
             'nama_sekolah'  => 'required',
             'npsn'          => 'required|numeric',
             'tahun_berdiri' => 'required|numeric',
-            // Validasi logo opsional (hanya jika ada file)
+            // PERBAIKAN: Menambahkan dukungan untuk format image/webp jika admin mengunggah file WEBP secara langsung
             'logo_sekolah'  => [
-                'rules'  => 'max_size[logo_sekolah,2048]|is_image[logo_sekolah]|mime_in[logo_sekolah,image/jpg,image/jpeg,image/png]',
+                'rules'  => 'max_size[logo_sekolah,5000]|is_image[logo_sekolah]|mime_in[logo_sekolah,image/jpg,image/jpeg,image/png,image/webp]',
                 'errors' => [
-                    'max_size' => 'Ukuran logo max 2MB',
+                    'max_size' => 'Ukuran logo max 5MB',
                     'is_image' => 'File bukan gambar',
-                    'mime_in'  => 'Format harus JPG/PNG'
+                    'mime_in'  => 'Format harus JPG/PNG/WEBP'
                 ]
             ]
         ];
@@ -90,10 +101,7 @@ class ProfileSekolahController extends AdminBaseController
             $existing = $this->sekolahModel->first();
             $id = $existing ? $existing['id'] : null;
 
-            // KODE DIPERBARUI DI BAWAH INI:
-            // Kita tidak lagi memasukkan 'desa_id' ke dalam array $updateData
-            // Karena tabel 'sekolah' di database Anda tidak memiliki kolom tersebut.
-
+            // Menyusun data update persis dengan struktur field di tabel `sekolah` database
             $updateData = [
                 'id'             => $id,
                 'nama_sekolah'   => $this->request->getPost('nama_sekolah'),
@@ -107,70 +115,73 @@ class ProfileSekolahController extends AdminBaseController
                 'provinsi'       => $this->request->getPost('provinsi'),
                 'kabupaten'      => $this->request->getPost('kabupaten'),
                 'kecamatan'      => $this->request->getPost('kecamatan'),
-                // 'desa_id' sengaja DIBUANG dari sini agar tidak menabrak struktur database
                 'kode_pos'       => $this->request->getPost('kode_pos'),
+                'desa_id'        => $this->request->getPost('desa_id'), // <--- TANGKAP INPUTAN DESA DI SINI
                 'telepon'        => $this->request->getPost('telepon'),
                 'email'          => $this->request->getPost('email'),
                 'website'        => $this->request->getPost('website'),
                 'warna_primary'  => $this->request->getPost('warna_primary'),
-                'warna_secondary'=> $this->request->getPost('warna_secondary'),
+                'warna_secondary' => $this->request->getPost('warna_secondary'),
             ];
-
-            // 4. Handle Logo Upload (Dengan Pengecekan Folder)
+            // =========================================================================
+            // 4. UPLOAD LOGO SEKOLAH (TANPA KONVERSI AGAR TRANSPARAN AMAN)
+            // =========================================================================
             $fileLogo = $this->request->getFile('logo_sekolah');
-            
+
             if ($fileLogo && $fileLogo->isValid() && !$fileLogo->hasMoved()) {
-                // Buat folder jika belum ada (Mencegah Error 500)
+                // Buat folder jika belum ada
                 if (!is_dir(FCPATH . 'uploads/logo')) {
                     mkdir(FCPATH . 'uploads/logo', 0755, true);
                 }
 
-                $namaLogoBaru = $fileLogo->getRandomName();
-                $fileLogo->move('uploads/logo', $namaLogoBaru);
-                $updateData['logo'] = $namaLogoBaru;
-
-                // Hapus logo lama jika ada
+                // 4a. Hapus logo lama secara aman
                 if ($existing && !empty($existing['logo']) && $existing['logo'] != 'default_logo.png') {
-                    $pathLama = 'uploads/logo/' . $existing['logo'];
+                    $pathLama = FCPATH . 'uploads/logo/' . $existing['logo'];
                     if (file_exists($pathLama)) {
-                        unlink($pathLama);
+                        @unlink($pathLama);
                     }
                 }
-            }
 
-            // 5. Simpan Data
+                // 4b. Pindahkan file ASLI tanpa manipulasi (Menjaga PNG tetap transparan)
+                $namaLogoBaru = $fileLogo->getRandomName(); // Menghasilkan nama random dengan ekstensi aslinya (misal: .png)
+
+                // Pindahkan ke folder tujuan
+                $fileLogo->move(FCPATH . 'uploads/logo/', $namaLogoBaru);
+
+                // Simpan nama file ke array update database
+                $updateData['logo'] = $namaLogoBaru;
+            }
+            // =========================================================================
+            // 5. Simpan Data ke Database
             if ($this->sekolahModel->save($updateData)) {
+                // Hapus cache sekolah agar layout langsung memperbarui warnanya
                 session()->remove('cache_sekolah');
                 return $this->response->setJSON([
-                    'status' => 'success', 
+                    'status' => 'success',
                     'message' => 'Data berhasil disimpan!'
                 ]);
             } else {
-                // Tangkap error validasi dari Model (jika ada)
                 return $this->response->setJSON([
-                    'status' => 'error', 
+                    'status' => 'error',
                     'message' => 'Gagal menyimpan ke database.',
                     'errors' => $this->sekolahModel->errors()
                 ]);
             }
-
         } catch (\Exception $e) {
-            // INI YANG PENTING: Kirim pesan error asli ke frontend
             return $this->response->setStatusCode(500)->setJSON([
-                'status' => 'error', 
+                'status' => 'error',
                 'message' => 'Server Error: ' . $e->getMessage()
             ]);
         }
     }
 
     // === API WILAYAH ===
-
     public function get_kabupaten()
     {
         if (!$this->request->isAJAX()) return;
         $kode_prop = $this->request->getGet('kode_propinsi');
-        if(empty($kode_prop)) return $this->response->setJSON([]);
-        
+        if (empty($kode_prop)) return $this->response->setJSON([]);
+
         $data = $this->kabupatenModel->like('kode', $kode_prop . '.', 'after')->orderBy('nama', 'ASC')->findAll();
         return $this->response->setJSON($data);
     }
@@ -179,7 +190,7 @@ class ProfileSekolahController extends AdminBaseController
     {
         if (!$this->request->isAJAX()) return;
         $kab_kode = $this->request->getGet('kode_kabupaten');
-        if(empty($kab_kode)) return $this->response->setJSON([]);
+        if (empty($kab_kode)) return $this->response->setJSON([]);
 
         $data = $this->kecamatanModel->where('kab_kode', $kab_kode)->orderBy('nama', 'ASC')->findAll();
         return $this->response->setJSON($data);
@@ -189,11 +200,11 @@ class ProfileSekolahController extends AdminBaseController
     {
         if (!$this->request->isAJAX()) return;
         $kec_kode = $this->request->getGet('kode_kecamatan');
-        
+
         if (empty($kec_kode)) return $this->response->setJSON([]);
 
         try {
-            $clean_kode = rtrim($kec_kode, '.'); 
+            $clean_kode = rtrim($kec_kode, '.');
             $data = $this->desaModel->like('kode', $clean_kode . '.', 'after')->orderBy('nama', 'ASC')->findAll();
             return $this->response->setJSON($data);
         } catch (\Exception $e) {

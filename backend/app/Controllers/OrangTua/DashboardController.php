@@ -9,46 +9,50 @@ class DashboardController extends OrangTuaBaseController
     public function index()
     {
         $db = \Config\Database::connect();
-        $userId = session()->get('user_id');
+        $userId = session()->get('user_id') ?? session()->get('id');
 
         // 1. CARI DATA ORANG TUA DARI TABEL `orangtua_wali`
         $orangTua = $db->table('orangtua_wali')->where('user_id', $userId)->get()->getRowArray();
         
-        // Logika Cerdas Menentukan Sapaan & Nama (Bapak/Ibu)
         $sapaan = 'Bapak/Ibu'; 
-        $namaOrangTua = session()->get('nama_lengkap') ?? session()->get('username');
+        $namaOrangTua = session()->get('nama_lengkap') ?? session()->get('username') ?? 'Orang Tua';
         $siswaId = 0;
 
         if ($orangTua) {
-            $siswaId = $orangTua['siswa_id'];
-            
-            // Prioritas pengecekan nama dan penentuan gender sapaan
-            if (!empty($orangTua['nama_ayah'])) {
+            $siswaId = $orangTua['siswa_id'] ?? 0;
+            if (!empty($orangTua['nama_ayah']) && $orangTua['nama_ayah'] !== '-') {
                 $sapaan = 'Bapak';
                 $namaOrangTua = $orangTua['nama_ayah'];
-            } elseif (!empty($orangTua['nama_ibu'])) {
+            } elseif (!empty($orangTua['nama_ibu']) && $orangTua['nama_ibu'] !== '-') {
                 $sapaan = 'Ibu';
                 $namaOrangTua = $orangTua['nama_ibu'];
-            } elseif (!empty($orangTua['nama_wali'])) {
-                $sapaan = 'Bapak/Ibu'; // Wali bisa paman/tante/kakek, jadi default
+            } elseif (!empty($orangTua['nama_wali']) && $orangTua['nama_wali'] !== '-') {
+                $sapaan = 'Bapak/Ibu'; 
                 $namaOrangTua = $orangTua['nama_wali'];
             }
         }
 
-        // 2. CARI DATA ANAK (SISWA)
+        // 2. CARI DATA ANAK (Langsung panggil siswa.foto_siswa dan users.foto_profil)
         $anak = $db->table('siswa')
-                   ->select('siswa.id, siswa.nama_lengkap, siswa.nis, siswa.foto_siswa as foto, rombel.nama_rombel as kelas, rombel.wali_kelas_id')
+                   ->select("siswa.id, siswa.nama_lengkap, siswa.nis, rombel.nama_rombel as kelas, rombel.wali_kelas_id, users.foto_profil, siswa.foto_siswa")
                    ->join('rombel', 'rombel.id = siswa.rombel_id', 'left')
+                   ->join('users', 'users.id = siswa.user_id', 'left')
                    ->where('siswa.id', $siswaId)
-                   ->get()->getRowArray();
+                   ->get()
+                   ->getRowArray();
 
-        // Default Data (Jika anak belum di-mapping di DB)
-        $dataAnak = ['id' => 0, 'nama_lengkap' => 'Data Ananda Belum Terhubung', 'nis' => '-', 'kelas' => '-', 'foto' => ''];
+       $dataAnak = ['id' => 0, 'nama_lengkap' => 'Data Ananda Belum Terhubung', 'nis' => '-', 'kelas' => '-', 'foto_siswa' => '', 'foto_profil' => '', 'foto_fix' => ''];
         $waliKelas = ['nama_lengkap' => 'Belum ditentukan', 'no_wa' => '', 'pesan_default' => ''];
         $statistik = ['kehadiran' => 0, 'rata_nilai' => 0, 'hafalan_terakhir' => 'Belum ada setoran'];
         $aktivitas = [];
 
         if ($anak) {
+            // --- LOGIKA HYBRID AVATAR ANAK ---
+            $fotoProfil = $anak['foto_profil'] ?? '';
+            $fotoSiswa  = $anak['foto_siswa'] ?? '';
+            $anak['foto_fix'] = !empty($fotoProfil) ? $fotoProfil : (!empty($fotoSiswa) ? $fotoSiswa : null);
+            // ---------------------------------
+            
             $dataAnak = $anak;
 
             // 3. AMBIL DATA WALI KELAS
@@ -59,25 +63,41 @@ class DashboardController extends OrangTuaBaseController
                     $waliKelas = [
                         'nama_lengkap'  => $guru['nama_lengkap'],
                         'no_wa'         => $noWa,
-                        'pesan_default' => "Assalamu'alaikum Ustadz/ah " . $guru['nama_lengkap'] . ", saya wali murid dari ananda " . $anak['nama_lengkap'] . " ingin berkonsultasi mengenai perkembangan anak saya."
+                        'pesan_default' => "Assalamu'alaikum Ustadz/ah " . $guru['nama_lengkap'] . ", saya wali murid dari ananda " . $anak['nama_lengkap'] . " ingin berkonsultasi."
                     ];
                 }
             }
 
+            $tahun_ajaran_active = session()->get('tahun_ajaran_id');
+            $ta = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+            if (!$tahun_ajaran_active && $db->tableExists('tahun_ajaran')) {
+                if ($ta) $tahun_ajaran_active = $ta['id'];
+            }
+            $tahun_ajaran_teks = $ta ? $ta['tahun'] : '2025/2026';
+
             // 4. STATISTIK AKADEMIK
-            if ($db->tableExists('nilai_akademik')) {
-                $nilai = $db->table('nilai_akademik')
-                            ->selectAvg('nilai_angka', 'rata_rata')
-                            ->where('siswa_id', $anak['id'])
-                            ->get()->getRowArray();
-                $statistik['rata_nilai'] = $nilai['rata_rata'] ? round($nilai['rata_rata'], 1) : 0;
+            $tabelAcuan = $db->tableExists('nilai_akademik') ? 'nilai_akademik' : ($db->tableExists('nilai_formatif') ? 'nilai_formatif' : 'nilai_sumatif');
+            $fieldNilai = $db->fieldExists('nilai_angka', $tabelAcuan) ? 'nilai_angka' : 'nilai';
+            $fieldTA    = $db->fieldExists('tahun_ajaran_id', $tabelAcuan) ? 'tahun_ajaran_id' : 'tahun_ajaran';
+
+            if ($db->tableExists($tabelAcuan)) {
+                $qNilai = $db->table($tabelAcuan)->selectAvg($fieldNilai, 'rata_rata')->where('siswa_id', $anak['id']);
+                if ($tahun_ajaran_active) {
+                    if ($fieldTA == 'tahun_ajaran_id') {
+                        $qNilai->where('tahun_ajaran_id', $tahun_ajaran_active);
+                    } else {
+                        $qNilai->where('tahun_ajaran', $tahun_ajaran_teks);
+                    }
+                }
+                $nilai = $qNilai->get()->getRowArray();
+                $statistik['rata_nilai'] = isset($nilai['rata_rata']) ? round($nilai['rata_rata'], 1) : 0;
             }
 
             // 5. STATISTIK & TIMELINE TAHFIDZ TERAKHIR
             if ($db->tableExists('setoran_tahfidz')) {
                 $tahfidTerakhir = $db->table('setoran_tahfidz')
                                      ->where('siswa_id', $anak['id'])
-                                     ->orderBy('created_at', 'DESC')
+                                     ->orderBy('tanggal', 'DESC')
                                      ->limit(1)
                                      ->get()->getRowArray();
                                      
@@ -86,22 +106,27 @@ class DashboardController extends OrangTuaBaseController
                     
                     $aktivitas[] = [
                         'jenis'     => 'tahfidz',
-                        'judul'     => 'Setoran ' . $tahfidTerakhir['jenis_setoran'],
-                        'deskripsi' => 'Ananda menyetorkan Surah ' . $tahfidTerakhir['surah'] . ' ayat ' . $tahfidTerakhir['ayat'] . ' dengan predikat ' . $tahfidTerakhir['predikat'] . '.',
-                        'waktu'     => date('d M Y, H:i', strtotime($tahfidTerakhir['created_at'])) . ' WIB',
-                        'icon'      => '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>',
+                        'judul'     => 'Setoran Hafalan Al-Quran',
+                        'deskripsi' => 'Ananda menyetorkan ' . $tahfidTerakhir['surah'] . ' ayat ' . $tahfidTerakhir['ayat'] . '.',
+                        'waktu'     => date('d M Y', strtotime($tahfidTerakhir['tanggal'])),
                         'color'     => 'emerald',
-                        'timestamp' => strtotime($tahfidTerakhir['created_at'])
+                        'timestamp' => strtotime($tahfidTerakhir['tanggal'])
                     ];
                 }
             }
 
             // 6. STATISTIK KEHADIRAN
             if ($db->tableExists('rekap_absensi')) {
-                $absen = $db->table('rekap_absensi')->where('siswa_id', $anak['id'])->get()->getRowArray();
-                if ($absen) {
-                    $total_hari = 100; // Asumsi hari sekolah efektif
-                    $tidak_hadir = $absen['sakit'] + $absen['izin'] + $absen['alpha'];
+                $qAbsen = $db->table('rekap_absensi')->where('siswa_id', $anak['id']);
+                if ($tahun_ajaran_active) $qAbsen->where('tahun_ajaran_id', $tahun_ajaran_active);
+                $absen = $qAbsen->get()->getResultArray();
+                            
+                if (!empty($absen)) {
+                    $total_hari = 100; 
+                    $tidak_hadir = 0;
+                    foreach($absen as $a) {
+                        $tidak_hadir += (int)$a['sakit'] + (int)$a['izin'] + (int)$a['alpha'];
+                    }
                     $hadir = $total_hari - $tidak_hadir;
                     $statistik['kehadiran'] = ($hadir > 0) ? round(($hadir / $total_hari) * 100) : 0;
                 } else {
@@ -110,41 +135,46 @@ class DashboardController extends OrangTuaBaseController
             }
 
             // 7. TIMELINE AKADEMIK TERBARU
-            if ($db->tableExists('nilai_akademik')) {
-                $nilaiTerbaru = $db->table('nilai_akademik')
-                                   ->select('nilai_akademik.*, mata_pelajaran.nama_mapel')
-                                   ->join('mata_pelajaran', 'mata_pelajaran.id = nilai_akademik.mapel_id', 'left')
+            if ($db->tableExists($tabelAcuan)) {
+                $nilaiTerbaru = $db->table($tabelAcuan)
+                                   ->select($tabelAcuan . '.*, mata_pelajaran.nama_mapel')
+                                   ->join('mata_pelajaran', 'mata_pelajaran.id = ' . $tabelAcuan . '.mapel_id', 'left')
                                    ->where('siswa_id', $anak['id'])
-                                   ->orderBy('nilai_akademik.id', 'DESC')
+                                   ->orderBy($tabelAcuan . '.id', 'DESC')
                                    ->limit(2)
                                    ->get()->getResultArray();
 
                 foreach ($nilaiTerbaru as $n) {
                     $time = isset($n['created_at']) ? strtotime($n['created_at']) : (time() - rand(1000, 50000));
+                    $n_val = isset($n[$fieldNilai]) ? $n[$fieldNilai] : 0;
                     
                     $aktivitas[] = [
                         'jenis'     => 'akademik',
                         'judul'     => 'Nilai Baru: ' . ($n['nama_mapel'] ?? 'Pelajaran'),
-                        'deskripsi' => 'Ananda mendapatkan nilai ' . $n['nilai_angka'] . ' pada tugas/ulangan ini.',
+                        'deskripsi' => 'Ananda mendapatkan nilai ' . $n_val . ' pada tugas/ulangan ini.',
                         'waktu'     => date('d M Y', $time),
-                        'icon'      => '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>',
                         'color'     => 'blue',
                         'timestamp' => $time
                     ];
                 }
             }
 
-            // Urutkan aktivitas (Paling baru di atas)
             usort($aktivitas, function($a, $b) {
                 return $b['timestamp'] <=> $a['timestamp'];
             });
         }
 
+        $sekolah = $db->table('sekolah')->get()->getRowArray();
+        $color = [
+            'warna_primary'   => !empty($sekolah['warna_primary']) ? $sekolah['warna_primary'] : '#10b981',
+            'warna_secondary' => !empty($sekolah['warna_secondary']) ? $sekolah['warna_secondary'] : '#ecfdf5',
+        ];
+
         $data = [
             'title'       => 'Dashboard Wali Murid',
             'user'        => $namaOrangTua,
-            'sapaan'      => $sapaan, // VARIABEL SAPAAN BAPAK/IBU DIKIRIM KE VIEW
-            'color'       => $this->getColor(),
+            'sapaan'      => $sapaan,
+            'color'       => $color,
             'navigations' => $this->getSidebarMenu(),
             'anak'        => $dataAnak,
             'wali_kelas'  => $waliKelas,

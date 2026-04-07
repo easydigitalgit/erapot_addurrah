@@ -43,10 +43,11 @@ class UsersController extends AdminBaseController
             ->get()->getResultArray();
 
         $calonTahfidz = $this->db->table('guru_tendik') 
-            ->select('id, nama_lengkap as nama, nuptk, email')
-            ->where('user_id', null)
-            ->like('jabatan', 'tahfi', 'both')
-            ->orderBy('nama_lengkap', 'ASC')
+            ->select('guru_tendik.id, guru_tendik.nama_lengkap as nama, guru_tendik.nuptk, guru_tendik.email')
+            ->join('master_jabatan', 'master_jabatan.id = guru_tendik.jabatan_id', 'left')
+            ->where('guru_tendik.user_id', null)
+            ->like('master_jabatan.nama_jabatan', 'tahfi', 'both')
+            ->orderBy('guru_tendik.nama_lengkap', 'ASC')
             ->get()->getResultArray();
 
         $data = [

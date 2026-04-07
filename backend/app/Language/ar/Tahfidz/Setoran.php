@@ -1,94 +1,84 @@
 <?php
-return [
-    'page_title'           => 'إدخال التسميع - التقرير الرقمي',
-    'breadcrumb_tahfidz'   => 'التحفيظ',
-    'breadcrumb_setoran'   => 'سجل التسميع',
-    
-    // Header & Info
-    'title_input'          => 'إدخال التسميع (المتابعة)',
-    'subtitle_input'       => 'سجل الحفظ اليومي باستخدام ميزة',
-    'focus_mode'           => 'وضع التركيز',
-    'shortcut_info'        => 'الاختصار (Alt+S)',
-    'daily_inspiration'    => 'إلهام اليوم',
-    
-    // Filter Area
-    'select_class'         => 'اختر الفصل / الحلقة',
-    'ph_select_class'      => '-- اختر الفصل --',
-    'deposit_date'         => 'تاريخ التسميع',
-    'btn_show_worksheet'   => 'عرض ورقة العمل',
-    
-    // Empty State
-    'empty_area_title'     => 'منطقة الإدخال',
-    'empty_area_desc'      => 'الرجاء اختيار الفصل والتاريخ أعلاه، ثم الضغط على "عرض" لتحميل بيانات الطلاب.',
-    
-    // Statistics Bar
-    'stat_total_student'   => 'إجمالي الطلاب',
-    'stat_ziyadah'         => 'زيادة',
-    'stat_murojaah'        => 'مراجعة',
-    'stat_very_fluent'     => 'ممتاز',
-    
-    // Table Actions & Headers
-    'search_student'       => 'ابحث عن اسم الطالب...',
-    'btn_exit_focus'       => 'الخروج من وضع التركيز',
-    'btn_enter_focus'      => 'وضع التركيز',
-    'btn_set_all_ziyadah'  => 'تعيين الكل إلى زيادة',
-    
-    'th_no'                => 'الرقم',
-    'th_student_profile'   => 'ملف الطالب',
-    'th_type'              => 'النوع',
-    'th_surah_ayat'        => 'السورة والآية',
-    'th_predicate'         => 'التقييم',
-    'th_notes'             => 'ملاحظات التجويد',
-    
-    // Table Contents
-    'loading_data'         => 'جاري تحميل بيانات الطلاب...',
-    'no_student_in_class'  => 'لا يوجد طلاب في هذا الفصل بعد.',
-    'nis_label'            => 'الرقم:',
-    'ph_surah'             => 'سورة...',
-    'ph_ayat'              => 'آية...',
-    'ph_notes'             => 'ملاحظات...',
-    'btn_clear_row_title'  => 'مسح إدخال هذا الطالب',
-    
-    // Form Footer
-    'form_note_empty'      => 'اترك السورة فارغة إذا لم يقم الطالب بالتسميع.',
-    'form_note_shortcut'   => '💡 تلميح: اضغط <kbd>Alt + S</kbd> للحفظ السريع.',
-    'btn_save_all'         => 'حفظ جميع السجلات',
-    
-    // Legend / SOP
-    'legend_title'         => 'إرشادات ومؤشرات التقييم',
-    'legend_very_fluent'   => 'ممتاز',
-    'desc_very_fluent'     => 'حفظ متقن، تجويد دقيق، طلاقة دون تردد.',
-    'legend_fluent'        => 'جيد',
-    'desc_fluent'          => 'حفظ جيد، نسيان مرة أو مرتين ولكن يصحح نفسه.',
-    'legend_poor'          => 'ضعيف',
-    'desc_poor'            => 'تلعثم، نسيان أكثر من 3 مرات، يحتاج لتوجيه المعلم.',
-    'legend_memorized'     => 'لم يحفظ',
-    'desc_memorized'       => 'لم يحفظ الآيات المستهدفة أو القراءة ضعيفة جداً.',
-    
-    // Javascript Messages
-    'js_type_ziyadah'      => 'زيادة',
-    'js_type_murojaah'     => 'مراجعة',
-    'js_pred_very_fluent'  => 'ممتاز',
-    'js_pred_fluent'       => 'جيد',
-    'js_pred_poor'         => 'ضعيف',
-    'js_pred_memorized'    => 'لم يحفظ',
-    
-    'js_toast_all_set'     => 'تم تعيين جميع الطلاب إلى زيادة وجيد',
-    'js_alert_select_class'=> 'الرجاء تحديد الفصل أولاً!',
-    'js_alert_fetch_fail'  => '❌ فشل في جلب بيانات الطلاب. تحقق من الاتصال أو قاعدة البيانات.',
-    'js_saving'            => 'جاري الحفظ...',
-    'js_saving_title'      => 'حفظ السجلات',
-    'js_saving_desc'       => 'تسجيل حفظ الطلاب في قاعدة البيانات...',
-    'js_success_title'     => 'الحمد لله!',
-    'js_success_default'   => 'تم حفظ سجلات التسميع بنجاح.',
-    'js_warning_title'     => 'انتباه',
-    'js_error_title'       => 'فشل',
-    'js_server_error'      => 'خطأ في النظام',
-    'js_server_error_desc' => 'فشل الاتصال بالخادم. تحقق من اتصال الإنترنت الخاص بك.',
 
-    // Quotes
-    'quote_1'              => '"خيركم من تعلم القرآن وعلمه."',
-    'quote_2'              => '"اقرؤوا القرآن فإنه يأتي يوم القيامة شفيعاً لأصحابه."',
-    'quote_3'              => '"الماهر بالقرآن مع السفرة الكرام البررة."',
-    'quote_4'              => '"من قرأ حرفاً من كتاب الله فله به حسنة والحسنة بعشر أمثالها."',
+return [
+    'page_title_browser'    => 'إدخال التسميع',
+    'breadcrumb_1'          => 'التحفيظ',
+    'breadcrumb_2'          => 'التسميع اليومي',
+    'page_title'            => 'إدخال تسميع الحفظ',
+    'page_desc_1'           => 'استخدم',
+    'page_desc_2'           => 'وضع التركيز',
+    'page_desc_3'           => 'للشاشة الكاملة واضغط',
+    'page_desc_4'           => 'ALT + S',
+    'page_desc_5'           => 'للحفظ السريع.',
+    
+    'lbl_select_class'      => 'اختر الفصل',
+    'opt_select_class'      => 'اختر الفصل أولاً',
+    'class_prefix'          => 'الفصل',
+    'opt_no_class'          => 'ليس لديك فصول معينة',
+    'lbl_select_date'       => 'اختر تاريخ التسميع',
+    'btn_refresh_sheet'     => 'تحديث ورقة التسميع',
+    
+    'empty_title'           => 'اختر الفصل أولاً',
+    'empty_desc'            => 'يرجى اختيار فصل من القائمة المنسدلة أعلاه للبدء في إدخال الحفظ.',
+    
+    'stat_total_students'   => 'إجمالي الطلاب',
+    'stat_ziyadah'          => 'زيادة',
+    'stat_murojaah'         => 'مراجعة',
+    'stat_excellent'        => 'ممتاز',
+    
+    'search_ph'             => 'ابحث عن اسم الطالب في هذا الفصل...',
+    'btn_enter_focus'       => 'الدخول في وضع التركيز',
+    'btn_set_all_fluent'    => 'تعيين الكل = جيد (زيادة)',
+    
+    'th_no'                 => 'رقم',
+    'th_student_name'       => 'اسم الطالب',
+    'th_deposit_type'       => 'نوع التسميع',
+    'th_surah_ayah'         => 'السورة والآية',
+    'th_predicate'          => 'التقدير',
+    'th_notes'              => 'ملاحظات خاصة (اختياري)',
+    'th_action'             => 'إجراء',
+    
+    'lbl_empty_surah'       => 'إذا كان حقل السورة فارغاً، يعتبر التسميع ملغياً.',
+    'lbl_shortcut'          => 'استخدم (ALT + S) للحفظ.',
+    'btn_save_class'        => 'حفظ بيانات تسميع الفصل',
+    
+    'guide_title'           => 'دليل تقدير الطلاقة',
+    'guide_exc_title'       => 'ممتاز (متقن)',
+    'guide_exc_desc'        => 'الحفظ، المخارج، والتجويد مثالية بدون أي ملاحظات.',
+    'guide_good_title'      => 'جيد (جيد)',
+    'guide_good_desc'       => 'جيد بحد أقصى 3 ملاحظات طفيفة / مساعدة المعلم.',
+    'guide_enough_title'    => 'ضعيف (مقبول)',
+    'guide_enough_desc'     => 'غالباً ما ينسى الآيات، يتلعثم، ويحتاج إلى الكثير من المراجعة.',
+    'guide_poor_title'      => 'لم يحفظ (راسب)',
+    'guide_poor_desc'       => 'لا يلبي الحد الأدنى من المعايير للتسميع.',
+    
+    // JS Translations
+    'js_exit_focus'         => 'الخروج من وضع التركيز',
+    'js_enter_focus'        => 'الدخول في وضع التركيز',
+    'js_set_fluent_succ'    => 'تم تعيين جميع النماذج إلى جيد (زيادة).',
+    'swal_no_class_title'   => 'انتباه',
+    'swal_no_class_text'    => 'يرجى اختيار الفصل أولاً من القائمة المنسدلة.',
+    'js_fetching_data'      => 'جاري جلب بيانات الطلاب...',
+    'js_no_student_class'   => 'لا يوجد طلاب نشطون في هذا الفصل.',
+    
+    'opt_ziyadah'           => 'زيادة',
+    'opt_murojaah'          => 'مراجعة',
+    'ph_surah'              => 'سورة...',
+    'ph_ayah'               => 'آية...',
+    'opt_excellent'         => 'ممتاز',
+    'opt_good'              => 'جيد',
+    'opt_enough'            => 'ضعيف',
+    'opt_poor'              => 'لم يحفظ',
+    'ph_notes'              => 'ملاحظات (اختياري)',
+    
+    'js_btn_clear_row'      => 'مسح الصف',
+    'js_swal_rejected'      => 'مرفوض',
+    'js_err_server'         => 'فشل الاتصال بقاعدة البيانات.',
+    
+    'js_saving_title'       => 'جاري حفظ بيانات التسميع',
+    'js_saving_text'        => 'النظام يقوم بتسجيل حفظ الطلاب.',
+    'js_succ_title'         => 'الحمد لله!',
+    'js_warn_title'         => 'انتباه',
+    'js_fail_title'         => 'فشل الحفظ',
+    'js_err_conn_lost'      => 'فشل الاتصال بقاعدة بيانات المدرسة.'
 ];

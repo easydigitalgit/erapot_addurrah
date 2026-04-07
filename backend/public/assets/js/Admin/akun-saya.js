@@ -111,6 +111,30 @@ function closePasswordModal() {
 // 3. MESIN AJAX UTAMA
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
+
+    // --- TOGGLE PASSWORD VISIBILITY ---
+    const togglePasswordBtns = document.querySelectorAll('.toggle-password');
+    togglePasswordBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                // Ubah icon jadi mata disilang (Eye-slash)
+                this.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                </svg>`;
+                this.classList.add('text-gray-700', 'dark:text-gray-200');
+            } else {
+                input.type = 'password';
+                // Ubah icon kembali ke mata normal (Eye)
+                this.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>`;
+                this.classList.remove('text-gray-700', 'dark:text-gray-200');
+            }
+        });
+    });
     
     // --- A. SIMPAN PROFIL PRIBADI ---
     const personalInfoForm = document.getElementById('personalInfoForm');
@@ -193,6 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const avatarImg = document.getElementById('avatarImage');
                 const originalSrc = avatarImg.src; 
                 
+                // Animasi preview lokal sebelum upload
                 reader.onload = (event) => avatarImg.src = event.target.result;
                 reader.readAsDataURL(file);
                 
@@ -202,18 +227,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast(LANG.uploading, 'info');
                 
                 try {
-                    const response = await fetch(BASE_URL + 'admin/akun-saya/upload-avatar', {
+                    // Pastikan penulisan slash URL sempurna (mencegah error 404)
+                    let uploadUrl = BASE_URL.replace(/\/$/, '') + '/admin/akun-saya/upload-avatar';
+
+                    const response = await fetch(uploadUrl, {
                         method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' }
                     });
-                    const result = await response.json();
                     
+                    const result = await response.json();
                     if(!response.ok || result.status !== 'success') throw new Error(result.message);
                     
-                    avatarImg.src = result.new_avatar_url;
+                    // Buat Penghancur Cache JS
+                    const cacheBuster = '?v=' + new Date().getTime();
+                    
+                    // 1. Update gambar profil besar (Timpa base64 dengan URL asli dari server)
+                    avatarImg.src = result.new_avatar_url + cacheBuster;
+                    
+                    // 2. UPDATE AVATAR DI NAVBAR SECARA LIVE
+                    const navbarAvatar = document.getElementById('navbarAvatar');
+                    if (navbarAvatar) {
+                        const originalNavSrc = navbarAvatar.src;
+                        navbarAvatar.src = result.new_avatar_url + cacheBuster; 
+                        navbarAvatar.onerror = function() {
+                            this.onerror = null;
+                            this.src = originalNavSrc;
+                        };
+                    }
+                    
                     showToast(result.message, 'success'); 
                 } catch (error) {
-                    avatarImg.src = originalSrc;
-                    showToast(error.message, 'error');
+                    // KITA HAPUS LOGIKA KEMBALI KE GAMBAR LAMA DI SINI
+                    // Biarkan saja menggunakan gambar preview lokal (Base64) agar mata user tidak kaget
+                    showToast(error.message || 'Gagal terhubung ke server', 'error');
                 }
             }
         });    

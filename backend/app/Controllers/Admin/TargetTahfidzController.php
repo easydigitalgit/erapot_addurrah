@@ -17,19 +17,97 @@ class TargetTahfidzController extends AdminBaseController
         $targetModel = new TargetTahfidzModel();
         $juzModel    = new RefJuzModel();
         $surahModel  = new RefSurahModel();
+        $db = \Config\Database::connect();
 
+        // 1. AMBIL TAHUN AJARAN & SEMESTER AKTIF
+        $ta_aktif = $db->table('tahun_ajaran')
+                       ->groupStart()
+                           ->where('status', 'Aktif')
+                           ->orWhere('status', 'aktif')
+                           ->orWhere('status', '1')
+                       ->groupEnd()
+                       ->get()->getRowArray();
+                       
+        $tahun_ajaran = $ta_aktif ? $ta_aktif['tahun'] : 'Belum Diset';
+        $semester     = $ta_aktif ? $ta_aktif['semester'] : 'Ganjil';
+
+        // 2. HITUNG STATISTIK DINAMIS UNTUK CARDS (DISINKRONKAN DENGAN TABEL)
+        
+        // Card 2: Total Target (Menghitung SEMUA target aktif, sama seperti di tabel)
+        $totalTarget = $db->table('target_tahfidz')
+                          ->where('status', 'Aktif')
+                          ->countAllResults();
+
+        // Card 3: Tingkat Aktif (Menghitung SEMUA tingkat yang punya target aktif)
+        $tingkatRows = $db->table('target_tahfidz')
+                          ->select('tingkat')
+                          ->where('status', 'Aktif')
+                          ->distinct()
+                          ->get()->getResultArray();
+        
+        $tingkatAktifCount = count($tingkatRows);
+        
+        // Mengurutkan tingkat agar rapi (VII, VIII, IX)
+        $arrTingkat = array_column($tingkatRows, 'tingkat');
+        sort($arrTingkat);
+        $listTingkatStr = !empty($arrTingkat) ? implode(', ', $arrTingkat) : 'Belum Ada';
+
+        // Card 4: Persentase Partisipasi Siswa (Filter Tahun Aktif)
+        $id_ta_aktif = $ta_aktif ? $ta_aktif['id'] : 0;
+        $totalSiswaAktif = $db->table('siswa s')
+                              ->join('rombel r', 'r.id = s.rombel_id')
+                              ->where(['s.status_siswa' => 'Aktif', 'r.id_tahun_ajaran' => $id_ta_aktif])
+                              ->countAllResults();
+        
+        $siswaMenyetor = 0;
+        if ($db->tableExists('setoran_tahfidz') && $totalSiswaAktif > 0) {
+            $siswaMenyetor = $db->table('setoran_tahfidz st')
+                               ->join('siswa s', 's.id = st.siswa_id')
+                               ->join('rombel r', 'r.id = s.rombel_id')
+                               ->where('r.id_tahun_ajaran', $id_ta_aktif)
+                               ->select('st.siswa_id')
+                               ->distinct()
+                               ->countAllResults();
+        }
+        $persenPartisipasi = ($totalSiswaAktif > 0) ? round(($siswaMenyetor / $totalSiswaAktif) * 100) : 0;
+
+        $stats = [
+            'total_target'       => $totalTarget,
+            'jml_tingkat'        => $tingkatAktifCount,
+            'list_tingkat'       => $listTingkatStr,
+            'persen_partisipasi' => $persenPartisipasi
+        ];
+
+        // 3. AMBIL DATA TARGET UNTUK TABEL DENGAN JOIN (100% ANTI ERROR)
+        $targetsData = $db->table('target_tahfidz t')
+                          ->select('t.*, j.nama_juz, sm.nama_surah as surah_mulai, ss.nama_surah as surah_sampai')
+                          ->join('ref_juz j', 'j.id = t.juz_id', 'left')
+                          ->join('ref_surah sm', 'sm.id = t.surah_mulai_id', 'left')
+                          ->join('ref_surah ss', 'ss.id = t.surah_sampai_id', 'left')
+                          ->orderBy('t.tingkat', 'ASC')
+                          ->orderBy('t.semester', 'ASC')
+                          ->get()
+                          ->getResultArray();
+
+        // 4. KIRIM KE VIEW
         $data = [
-            'user'        => 'Admin',
-            'navigations' => $this->getSidebarMenu(),
-            'color'       => $this->getColor(),
-            'targets'     => $targetModel->getTargetLengkap(),
-            'ref_juz'   => $juzModel->findAll(),
-            'ref_surah' => $surahModel->orderBy('no_surah', 'ASC')->findAll(),
+            'user'         => 'Admin',
+            'navigations'  => $this->getSidebarMenu(),
+            'color'        => $this->getColor(),
+            'targets'      => $targetsData,
+            'ref_juz'      => $juzModel->findAll(),
+            'ref_surah'    => $surahModel->orderBy('no_surah', 'ASC')->findAll(),
+            'tahun_ajaran' => $tahun_ajaran,
+            'semester'     => $semester,
+            'stats'        => $stats
         ];
 
         return view('admin/target-tahfidz', $data);
     }
 
+    // ==========================================
+    // SISA KODE FUNGSI LAINNYA TETAP SAMA
+    // ==========================================
     public function store()
     {
         if (!$this->request->isAJAX()) return $this->response->setStatusCode(404);
@@ -144,11 +222,6 @@ class TargetTahfidzController extends AdminBaseController
         return $this->response->setJSON(['status' => 'success', 'data' => $surahs]);
     }
 
-    /**
-     * --------------------------------------------------------------------------
-     * IMPORT & RIWAYAT (BARU)
-     * --------------------------------------------------------------------------
-     */
     public function downloadTemplate()
     {
         if (ob_get_length()) ob_clean();
@@ -270,10 +343,8 @@ class TargetTahfidzController extends AdminBaseController
 
     public function getRiwayat()
     {
-        // Simulasi Riwayat (Gabungan histori perubahan & data lama)
-        // Di sistem aslinya, tabel log_riwayat harus dibuat terpisah. Ini versi fallback cerdas.
         $model = new TargetTahfidzModel();
-        $history = $model->orderBy('updated_at', 'DESC')->findAll(10); // Ambil 10 aktivitas terakhir
+        $history = $model->orderBy('updated_at', 'DESC')->findAll(10); 
 
         $data = [];
         foreach($history as $h) {

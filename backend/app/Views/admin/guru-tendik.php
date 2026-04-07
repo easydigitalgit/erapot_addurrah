@@ -5,24 +5,24 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('styles') ?>
-  <style>
-      :root {
-          --warna-scroll: <?= $color['warna_primary'] ?>;
-      }
-  
-      #addModal,
-      #importModal,
-      #detailDrawer,
-      #drawer-overlay {
-          z-index: 2147483647 !important;
-          position: fixed !important;
-      }
-  
-      #drawer-overlay {
-          z-index: 2147483646 !important;
-      }
-  </style>
-  <link rel="stylesheet" href="<?= base_url('assets/css/Admin/guru-tendik.css') ?>">
+<style>
+    :root {
+        --warna-scroll: <?= $color['warna_primary'] ?>;
+    }
+
+    #addModal,
+    #importModal,
+    #detailDrawer,
+    #drawer-overlay {
+        z-index: 2147483647 !important;
+        position: fixed !important;
+    }
+
+    #drawer-overlay {
+        z-index: 2147483646 !important;
+    }
+</style>
+<link rel="stylesheet" href="<?= base_url('assets/css/Admin/guru-tendik.css') ?>">
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -60,7 +60,6 @@
                 </svg>
                 <span class="hidden sm:inline"><?= lang('Admin/GuruTendik.btn_import') ?></span>
             </button>
-
             <button onclick="window.location.href='<?= base_url('admin/guru-tendik/export') ?>'" class="p-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-300 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors cursor-pointer shadow-sm" title="<?= lang('Admin/GuruTendik.btn_export') ?>">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -80,9 +79,9 @@
             </div>
         </div>
         <p class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-1"><?= lang('Admin/GuruTendik.total_guru') ?></p>
-        <h3 class="text-2xl font-bold text-gray-800 dark:text-white"><?= $total_guru ?? 0 ?></h3>
+        <h3 id="card-total-guru" class="text-2xl font-bold text-gray-800 dark:text-white"><?= $total_guru ?? 0 ?></h3>
     </div>
-    
+
     <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm transition-colors">
         <div class="flex items-center gap-3 mb-2">
             <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
@@ -92,7 +91,7 @@
             </div>
         </div>
         <p class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-1"><?= lang('Admin/GuruTendik.total_tahfiz') ?></p>
-        <h3 class="text-2xl font-bold text-gray-800 dark:text-white"><?= $total_tahfiz ?? 0 ?></h3>
+        <h3 id="card-total-tahfiz" class="text-2xl font-bold text-gray-800 dark:text-white"><?= $total_tahfiz ?? 0 ?></h3>
     </div>
 
     <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm transition-colors">
@@ -104,9 +103,9 @@
             </div>
         </div>
         <p class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-1"><?= lang('Admin/GuruTendik.total_tendik') ?></p>
-        <h3 class="text-2xl font-bold text-gray-800 dark:text-white"><?= $total_tendik ?? 0 ?></h3>
+        <h3 id="card-total-tendik" class="text-2xl font-bold text-gray-800 dark:text-white"><?= $total_tendik ?? 0 ?></h3>
     </div>
-    
+
     <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm transition-colors">
         <div class="flex items-center gap-3 mb-2">
             <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
@@ -116,13 +115,12 @@
             </div>
         </div>
         <p class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-1"><?= lang('Admin/GuruTendik.total_wali') ?></p>
-        <h3 class="text-2xl font-bold text-gray-800 dark:text-white"><?= $wali_kelas ?? 0 ?></h3>
+        <h3 id="card-wali-kelas" class="text-2xl font-bold text-gray-800 dark:text-white"><?= $wali_kelas ?? 0 ?></h3>
     </div>
 </div>
 
 <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100 dark:border-slate-700 mb-6 transition-colors">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        
         <div class="lg:col-span-2">
             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2"><?= lang('Admin/GuruTendik.search_lbl') ?></label>
             <div class="relative">
@@ -132,31 +130,31 @@
                 </svg>
             </div>
         </div>
-        
+
         <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2"><?= lang('Admin/GuruTendik.role_lbl') ?></label>
             <select id="filterRole" class="w-full px-4 py-2.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm font-medium text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>] transition-all cursor-pointer">
                 <option value=""><?= lang('Admin/GuruTendik.all_roles') ?></option>
-                <?php if(isset($jabatan_list)): ?>
-                    <?php foreach($jabatan_list as $jabatan): ?>
+                <?php if (isset($jabatan_list)): ?>
+                    <?php foreach ($jabatan_list as $jabatan): ?>
                         <option value="<?= esc($jabatan['nama_jabatan']) ?>"><?= esc($jabatan['nama_jabatan']) ?></option>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </select>
         </div>
-        
+
         <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2"><?= lang('Admin/GuruTendik.mapel_lbl') ?></label>
             <select id="filterMapel" class="w-full px-4 py-2.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm font-medium text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>] transition-all cursor-pointer">
                 <option value=""><?= lang('Admin/GuruTendik.all_mapels') ?></option>
-                <?php if(isset($mapel_list) && !empty($mapel_list)): ?>
-                    <?php foreach($mapel_list as $mapel): ?>
+                <?php if (isset($mapel_list) && !empty($mapel_list)): ?>
+                    <?php foreach ($mapel_list as $mapel): ?>
                         <option value="<?= esc($mapel['nama_mapel']) ?>"><?= esc($mapel['nama_mapel']) ?></option>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </select>
         </div>
-        
+
         <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2"><?= lang('Admin/GuruTendik.status_lbl') ?></label>
             <select id="filterStatus" class="w-full px-4 py-2.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm font-medium text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>] transition-all cursor-pointer">
@@ -165,22 +163,16 @@
                 <option value="Nonaktif"><?= lang('Admin/GuruTendik.status_inactive') ?></option>
             </select>
         </div>
-        
     </div>
 </div>
 
 <div class="grid grid-cols-1 min-w-0 w-full mb-10">
     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden w-full relative transition-colors">
-
         <div class="px-4 md:px-6 py-4 border-b border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 flex items-center justify-between min-h-[60px]">
             <div class="flex items-center gap-3">
                 <input type="checkbox" id="selectAll" class="w-4 h-4 text-[<?= $color['warna_primary'] ?>] rounded border-gray-300 dark:border-slate-500 bg-white dark:bg-slate-700 focus:ring-[<?= $color['warna_primary'] ?>] cursor-pointer">
-                <label for="selectAll" class="text-sm font-medium text-gray-700 dark:text-slate-300 cursor-pointer select-none">
-                    <?= lang('Admin/GuruTendik.select_all') ?>
-                </label>
-                <span id="selectedCount" class="hidden text-sm text-gray-500 dark:text-slate-400 font-normal ml-1">
-                    (0 <?= lang('Admin/GuruTendik.selected_count') ?>)
-                </span>
+                <label for="selectAll" class="text-sm font-medium text-gray-700 dark:text-slate-300 cursor-pointer select-none"><?= lang('Admin/GuruTendik.select_all') ?></label>
+                <span id="selectedCount" class="hidden text-sm text-gray-500 dark:text-slate-400 font-normal ml-1">(0 <?= lang('Admin/GuruTendik.selected_count') ?>)</span>
             </div>
 
             <div id="bulkActions" class="hidden flex items-center gap-2 animate-fade-in">
@@ -222,7 +214,6 @@
             <div class="text-sm text-gray-500 dark:text-slate-400" id="pagination-info">Menampilkan 0 data</div>
             <div class="flex gap-2" id="pagination-buttons"></div>
         </div>
-
     </div>
 </div>
 <?= $this->endSection() ?>
@@ -231,7 +222,6 @@
 
 <div id="importModal" class="fixed inset-0 z-[100] hidden">
     <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeImportModal()"></div>
-
     <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none md:left-64">
         <div class="relative w-full bg-white dark:bg-slate-800 rounded-2xl shadow-2xl flex flex-col max-h-[90vh] pointer-events-auto border border-transparent dark:border-slate-700 transition-colors" style="max-width: 500px;">
             <div class="p-6 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between">
@@ -243,7 +233,7 @@
                 </button>
             </div>
             <div class="p-6">
-                <form id="importForm" action="<?= base_url('admin/guru-tendik/import') ?>" method="POST" onsubmit="handleImport(event)" enctype="multipart/form-data">
+                <form id="importForm" action="<?= base_url('admin/guru-tendik/import') ?>" method="POST" onsubmit="window.handleImport(event)" enctype="multipart/form-data">
                     <div class="mb-4">
                         <p class="text-sm text-gray-600 dark:text-slate-400 mb-2"><?= lang('Admin/GuruTendik.import_step_1') ?></p>
                         <a href="<?= base_url('admin/guru-tendik/template') ?>" class="inline-flex items-center gap-2 text-[<?= $color['warna_primary'] ?>]/90 hover:text-[<?= $color['warna_primary'] ?>] dark:text-[<?= $color['warna_primary'] ?>] font-medium text-sm transition-colors">
@@ -269,13 +259,12 @@
 
 <div id="addModal" class="fixed inset-0 z-[100] hidden">
     <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeAddModal()"></div>
-
     <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none md:left-64">
         <div class="relative w-full bg-white dark:bg-slate-800 rounded-2xl shadow-2xl flex flex-col max-h-[90vh] pointer-events-auto border border-transparent dark:border-slate-700 transition-colors duration-300" style="max-width: 900px;">
 
             <div class="px-8 py-6 border-b border-gray-100 dark:border-slate-700 flex items-start justify-between bg-white dark:bg-slate-800 rounded-t-2xl z-20 flex-shrink-0 transition-colors">
                 <div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white"><?= lang('Admin/GuruTendik.add_modal_title') ?></h3>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="modalTitle"><?= lang('Admin/GuruTendik.add_modal_title') ?></h3>
                     <p class="text-sm text-gray-500 dark:text-slate-400 mt-1"><?= lang('Admin/GuruTendik.add_modal_desc') ?></p>
                 </div>
                 <button type="button" onclick="closeAddModal()" class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-full transition-colors cursor-pointer text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 outline-none">
@@ -286,7 +275,8 @@
             </div>
 
             <div class="flex-1 overflow-y-auto px-8 py-6 relative z-10 custom-scrollbar">
-                <form id="addTeacherForm" action="<?= base_url('admin/guru-tendik/store') ?>" onsubmit="handleSubmit(event)" method="POST" enctype="multipart/form-data" class="space-y-8" novalidate>
+                <form id="addTeacherForm" action="<?= base_url('admin/guru-tendik/store') ?>" method="POST" enctype="multipart/form-data" class="space-y-8" novalidate>
+                    <input type="hidden" id="item_id" name="id">
 
                     <div class="space-y-6">
                         <div class="flex items-center gap-3 pb-3 border-b border-emerald-500 dark:border-emerald-600/50">
@@ -294,81 +284,144 @@
                             <h4 class="text-lg font-bold text-gray-800 dark:text-white"><?= lang('Admin/GuruTendik.personal_data') ?></h4>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="md:col-span-2 space-y-1">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"><?= lang('Admin/GuruTendik.lbl_fullname') ?> <span class="text-red-500">*</span></label>
-                                <input type="text" name="fullname" required placeholder="<?= lang('Admin/GuruTendik.ph_fullname') ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50 focus:border-[<?= $color['warna_primary'] ?>] transition-all shadow-sm">
-                            </div>
-
-                            <div class="space-y-1">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"><?= lang('Admin/GuruTendik.lbl_nuptk') ?></label>
-                                <input type="text" name="nuptk" placeholder="<?= lang('Admin/GuruTendik.ph_nuptk') ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50 focus:border-[<?= $color['warna_primary'] ?>] transition-all shadow-sm">
-                            </div>
-
-                            <div class="space-y-1">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"><?= lang('Admin/GuruTendik.lbl_nik') ?> <span class="text-red-500">*</span></label>
-                                <input type="text" name="nik" required placeholder="<?= lang('Admin/GuruTendik.ph_nik') ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50 focus:border-[<?= $color['warna_primary'] ?>] transition-all shadow-sm">
-                            </div>
-
-                            <div class="md:col-span-2 space-y-1">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"><?= lang('Admin/GuruTendik.lbl_email') ?> <span class="text-red-500">*</span></label>
-                                <input type="email" name="email" required placeholder="<?= lang('Admin/GuruTendik.ph_email') ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50 focus:border-[<?= $color['warna_primary'] ?>] transition-all shadow-sm">
-                            </div>
-
-                            <div class="space-y-1">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"><?= lang('Admin/GuruTendik.lbl_phone') ?></label>
-                                <input type="text" name="phone" placeholder="<?= lang('Admin/GuruTendik.ph_phone') ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50 focus:border-[<?= $color['warna_primary'] ?>] transition-all shadow-sm">
-                            </div>
-                            
+                                <input type="text" name="fullname" id="fullname" required placeholder="<?= lang('Admin/GuruTendik.ph_fullname') ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>                            
                             <div class="space-y-1">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"><?= lang('Admin/GuruTendik.lbl_gender') ?> <span class="text-red-500">*</span></label>
-                                <select name="gender" required class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50 focus:border-[<?= $color['warna_primary'] ?>] transition-all shadow-sm outline-none appearance-none cursor-pointer">
+                                <select name="gender" id="gender" required class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
                                     <option value=""><?= lang('Admin/GuruTendik.ph_gender') ?></option>
                                     <option value="L"><?= lang('Admin/GuruTendik.gender_m') ?></option>
                                     <option value="P"><?= lang('Admin/GuruTendik.gender_f') ?></option>
                                 </select>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"><?= lang('Admin/GuruTendik.lbl_nuptk') ?></label>
+                                <input type="text" name="nuptk" id="nuptk" placeholder="<?= lang('Admin/GuruTendik.ph_nuptk') ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"><?= lang('Admin/GuruTendik.lbl_nik') ?> <span class="text-red-500">*</span></label>
+                                <input type="text" name="nik" id="nik" required placeholder="<?= lang('Admin/GuruTendik.ph_nik') ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Tempat Lahir</label>
+                                <input type="text" name="tempat_lahir" id="tempat_lahir" placeholder="Tempat Lahir" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Tanggal Lahir</label>
+                                <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Suku</label>
+                                <input type="text" name="suku" id="suku" placeholder="Contoh: Jawa, Sunda" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Gol. Darah</label>
+                                <select name="golongan_darah" id="golongan_darah" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                                    <option value="">Pilih Gol Darah</option>
+                                    <option value="A">A</option><option value="A+">A+</option><option value="B">B</option><option value="B+">B+</option><option value="AB">AB</option><option value="O">O</option><option value="O+">O+</option><option value="-">-</option>
+                                </select>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Status Pernikahan</label>
+                                <select name="status_marital" id="status_marital" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                                    <option value="">Pilih Status</option>
+                                    <option value="Belum Menikah">Belum Menikah</option>
+                                    <option value="Menikah">Menikah</option>                                    
+                                </select>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Nama Pasangan</label>
+                                <input type="text" name="nama_pasangan" id="nama_pasangan" placeholder="Nama Suami/Istri" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Jumlah Anak</label>
+                                <input type="number" name="jumlah_anak" id="jumlah_anak" placeholder="0" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-3 pb-3 border-b border-indigo-500 dark:border-indigo-600/50">
+                            <div class="w-8 h-8 rounded bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-sm">B</div>
+                            <h4 class="text-lg font-bold text-gray-800 dark:text-white">Data Kontak & Alamat</h4>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"><?= lang('Admin/GuruTendik.lbl_email') ?> <span class="text-red-500">*</span></label>
+                                <input type="email" name="email" id="email" required placeholder="<?= lang('Admin/GuruTendik.ph_email') ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"><?= lang('Admin/GuruTendik.lbl_phone') ?></label>
+                                <input type="text" name="phone" id="phone" placeholder="<?= lang('Admin/GuruTendik.ph_phone') ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">No. Kontak Darurat</label>
+                                <input type="text" name="no_darurat" id="no_darurat" placeholder="Nomor Darurat" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>
+                            <div class="md:col-span-2 space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Alamat KTP</label>
+                                <textarea name="alamat_ktp" id="alamat_ktp" rows="2" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50"></textarea>
+                            </div>
+                            <div class="md:col-span-2 space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Alamat Domisili</label>
+                                <textarea name="alamat_domisili" id="alamat_domisili" rows="2" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50"></textarea>
                             </div>
                         </div>
                     </div>
 
                     <div class="space-y-6">
                         <div class="flex items-center gap-3 pb-3 border-b border-blue-500 dark:border-blue-600/50">
-                            <div class="w-8 h-8 rounded bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">B</div>
+                            <div class="w-8 h-8 rounded bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">C</div>
                             <h4 class="text-lg font-bold text-gray-800 dark:text-white"><?= lang('Admin/GuruTendik.job_data') ?></h4>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-1">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"><?= lang('Admin/GuruTendik.lbl_main_role') ?> <span class="text-red-500">*</span></label>
-                                <select name="role" required class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50 transition-all shadow-sm appearance-none cursor-pointer">
+                                <select name="jabatan_id" id="jabatan_id" required class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50 transition-all shadow-sm appearance-none cursor-pointer">
                                     <option value=""><?= lang('Admin/GuruTendik.ph_role') ?></option>
-                                    <?php if(isset($jabatan_list)): ?>
-                                        <?php foreach($jabatan_list as $jabatan): ?>
-                                            <option value="<?= esc($jabatan['nama_jabatan']) ?>"><?= esc($jabatan['nama_jabatan']) ?></option>
+                                    <?php if (isset($jabatan_list)): ?>
+                                        <?php foreach ($jabatan_list as $jabatan): ?>
+                                            <option value="<?= esc($jabatan['id']) ?>"><?= esc($jabatan['nama_jabatan']) ?></option>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </select>
                             </div>
-                            
+
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Pendidikan Terakhir</label>
+                                <input type="text" name="pendidikan_terakhir" id="pendidikan_terakhir" placeholder="S1, S2, dll" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Jurusan/Prodi</label>
+                                <input type="text" name="jurusan_prodi" id="jurusan_prodi" placeholder="Misal: Pendidikan Agama" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">TMT <?= esc($nama_sekolah) ?></label>
+                                <input type="date" name="tmt_ad_durrah" id="tmt_ad_durrah" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
+                            </div>
                             <div class="space-y-1">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"><?= lang('Admin/GuruTendik.lbl_emp_status') ?></label>
-                                <select name="employment_status" class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50 transition-all shadow-sm appearance-none cursor-pointer">
+                                <select name="employment_status" id="employment_status" class="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50">
                                     <option value=""><?= lang('Admin/GuruTendik.ph_emp_status') ?></option>
-                                    <?php if(isset($status_list)): ?>
-                                        <?php foreach($status_list as $status): ?>
+                                    <?php if (isset($status_list)): ?>
+                                        <?php foreach ($status_list as $status): ?>
                                             <option value="<?= esc($status['nama_status']) ?>"><?= esc($status['nama_status']) ?></option>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </select>
                             </div>
-                            
+
                             <div class="md:col-span-2 space-y-1">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"><?= lang('Admin/GuruTendik.lbl_guidance_subj') ?></label>
-                                <select name="subject" class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50 transition-all shadow-sm appearance-none cursor-pointer">
+                                <select name="subject" id="subject" class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>]/50 transition-all shadow-sm appearance-none cursor-pointer">
                                     <option value="-"><?= lang('Admin/GuruTendik.ph_no_subj') ?></option>
                                     <?php if(isset($mapel_list)): ?>
                                         <?php foreach($mapel_list as $mapel): ?>
-                                            <option value="<?= esc($mapel['nama_mapel']) ?>"><?= esc($mapel['nama_mapel']) ?></option>
+                                            <option value="<?= esc($mapel['id']) ?>"><?= esc($mapel['nama_mapel']) ?></option>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </select>
@@ -382,29 +435,28 @@
                                         <?= lang('Admin/GuruTendik.no_image') ?>
                                     </div>
                                     <div class="flex-1">
-                                        <input type="file" name="photo" accept="image/*" onchange="previewPhoto(event)" class="block w-full text-sm text-gray-500 dark:text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 dark:file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 dark:hover:file:bg-emerald-500 cursor-pointer border border-gray-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 focus:outline-none transition-colors">
+                                        <input type="file" name="photo" accept="image/*" onchange="window.previewPhoto(event)" class="block w-full text-sm text-gray-500 dark:text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 dark:file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 dark:hover:file:bg-emerald-500 cursor-pointer border border-gray-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 focus:outline-none transition-colors">
                                         <p class="text-xs text-gray-500 dark:text-slate-500 mt-2"><?= lang('Admin/GuruTendik.photo_format_desc') ?></p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-6 border-t border-gray-100 dark:border-slate-700 sticky bottom-0 bg-white dark:bg-slate-800 z-10 pb-2 transition-colors">
                         <button type="button" onclick="closeAddModal()" class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-300 font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors shadow-sm outline-none">
                             <?= lang('Admin/GuruTendik.btn_cancel') ?>
                         </button>
-                        <button type="button" onclick="resetTeacherForm()" class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-amber-400 dark:border-amber-600/50 text-amber-600 dark:text-amber-500 font-bold rounded-xl hover:bg-amber-50 dark:hover:bg-slate-600 transition-colors shadow-sm outline-none">
+                        <button type="button" onclick="window.resetTeacherForm()" class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-amber-400 dark:border-amber-600/50 text-amber-600 dark:text-amber-500 font-bold rounded-xl hover:bg-amber-50 dark:hover:bg-slate-600 transition-colors shadow-sm outline-none">
                             <?= lang('Admin/GuruTendik.btn_reset_form') ?>
                         </button>
-                        <button type="submit" class="w-full px-4 py-3 bg-[<?= $color['warna_primary'] ?>]/90 hover:bg-[<?= $color['warna_primary'] ?>] text-white font-bold rounded-xl transition-all shadow-lg shadow-[<?= $color['warna_primary'] ?>]/20 flex items-center justify-center gap-2 outline-none">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button type="button" id="btnSubmitForm" onclick="window.submitForm()" class="w-full px-4 py-3 bg-[<?= $color['warna_primary'] ?>]/90 hover:bg-[<?= $color['warna_primary'] ?>] text-white font-bold rounded-xl transition-all shadow-lg shadow-[<?= $color['warna_primary'] ?>]/20 flex items-center justify-center gap-2 outline-none">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            <span id="btnSubmitText"><?= lang('Admin/GuruTendik.btn_save_emp') ?></span>
+                            <span><?= lang('Admin/GuruTendik.btn_save_emp') ?></span>
                         </button>
                     </div>
-
                 </form>
             </div>
         </div>
@@ -441,9 +493,23 @@
             </h5>
             <div class="space-y-3 text-sm">
                 <div class="flex justify-between items-start"><span class="text-gray-500 dark:text-slate-400">NIK</span><span id="drawerNik" class="font-medium text-gray-800 dark:text-slate-200 font-mono text-right">-</span></div>
-                <div class="flex justify-between items-start"><span class="text-gray-500 dark:text-slate-400"><?= lang('Admin/GuruTendik.drawer_dob') ?></span><span id="drawerBirth" class="font-medium text-gray-800 dark:text-slate-200 text-right">-</span></div>
+                <div class="flex justify-between items-start"><span class="text-gray-500 dark:text-slate-400">Jenis Kelamin</span><span id="drawerGender" class="font-medium text-gray-800 dark:text-slate-200 text-right">-</span></div>
+                <div class="flex justify-between items-start"><span class="text-gray-500 dark:text-slate-400"><?= lang('Admin/GuruTendik.drawer_dob') ?></span><span class="font-medium text-gray-800 dark:text-slate-200 text-right"><span id="drawerBirthPlace"></span><span id="drawerBirth"></span></span></div>
+                <div class="flex justify-between items-start"><span class="text-gray-500 dark:text-slate-400">Golongan Darah</span><span id="drawerBlood" class="font-medium text-gray-800 dark:text-slate-200 text-right">-</span></div>
                 <div class="flex justify-between items-start"><span class="text-gray-500 dark:text-slate-400">Email</span><span id="drawerEmail" class="font-medium text-gray-800 dark:text-slate-200 text-right break-all">-</span></div>
                 <div class="flex justify-between items-start"><span class="text-gray-500 dark:text-slate-400">No. HP</span><span id="drawerPhone" class="font-medium text-gray-800 dark:text-slate-200 text-right">-</span></div>
+                <div class="flex justify-between items-start"><span class="text-gray-500 dark:text-slate-400">Kontak Darurat</span><span id="drawerEmergency" class="font-medium text-gray-800 dark:text-slate-200 text-right">-</span></div>
+            </div>
+            
+            <div class="space-y-3 text-sm mt-4">
+                <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-xl">
+                    <p class="text-xs text-gray-500 dark:text-slate-400 mb-1">Alamat KTP</p>
+                    <p id="drawerAlamatKtp" class="text-sm font-medium text-gray-800 dark:text-slate-200">-</p>
+                </div>
+                <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-xl">
+                    <p class="text-xs text-gray-500 dark:text-slate-400 mb-1">Alamat Domisili</p>
+                    <p id="drawerAlamatDomisili" class="text-sm font-medium text-gray-800 dark:text-slate-200">-</p>
+                </div>
             </div>
         </div>
 
@@ -454,7 +520,9 @@
                 </svg> <?= lang('Admin/GuruTendik.drawer_emp') ?>
             </h5>
             <div class="space-y-3 text-sm">
-                <div class="flex justify-between"><span class="text-gray-500 dark:text-slate-400">Status</span><span id="drawerEmpStatus" class="font-medium text-gray-800 dark:text-slate-200">-</span></div>
+                <div class="flex justify-between"><span class="text-gray-500 dark:text-slate-400">Pendidikan Terakhir</span><span id="drawerPendidikan" class="font-medium text-gray-800 dark:text-slate-200">-</span></div>
+                <div class="flex justify-between"><span class="text-gray-500 dark:text-slate-400">Status Pegawai</span><span id="drawerEmpStatus" class="font-medium text-gray-800 dark:text-slate-200">-</span></div>
+                <div class="flex justify-between"><span class="text-gray-500 dark:text-slate-400">TMT Ad-Durrah</span><span id="drawerTmt" class="font-medium text-gray-800 dark:text-slate-200">-</span></div>
             </div>
         </div>
 
@@ -515,7 +583,8 @@
         js_bulk_del_conf: "<?= lang('Admin/GuruTendik.js_bulk_del_conf') ?: 'Hapus data terpilih?' ?>",
         js_bulk_del_desc: "<?= lang('Admin/GuruTendik.js_bulk_del_desc') ?: 'Data tidak bisa dikembalikan!' ?>",
         js_success: "<?= lang('Admin/GuruTendik.js_success') ?: 'Berhasil' ?>",
-        js_fail: "<?= lang('Admin/GuruTendik.js_fail') ?: 'Gagal' ?>"
+        js_fail: "<?= lang('Admin/GuruTendik.js_fail') ?: 'Gagal' ?>",
+        no_image: "<?= lang('Admin/GuruTendik.no_image') ?: 'Tidak ada foto' ?>"
     };
 </script>
 <script src="<?= base_url('assets/js/Admin/guru-tendik.js') ?>?v=<?= time() ?>"></script>

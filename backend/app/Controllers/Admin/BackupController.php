@@ -305,4 +305,198 @@ class BackupController extends AdminBaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'Terjadi kesalahan sistem backend: ' . $e->getMessage()]);
         }
     }
+    // ==========================================================
+    // MESIN AUTO BACKUP (DIPANGGIL OLEH CRONJOB CPANEL/SERVER)
+    // ==========================================================
+    public function runAutoBackup($secret_token = null)
+    {
+        // 1. Proteksi Keamanan (Agar tidak sembarang orang mengetik URL ini)
+        $mySecretToken = 'SMPIT-AdDurrah-Secure-Cron-2026'; // Ganti token ini sesuai selera
+        if ($secret_token !== $mySecretToken) {
+            return $this->response->setStatusCode(403)->setBody('Akses Ditolak: Token tidak valid.');
+        }
+
+        $db = \Config\Database::connect();
+        $settings = $db->table('backup_settings')->where('id', 1)->get()->getRowArray();
+
+        // 2. Cek apakah fitur Auto Backup diaktifkan
+        if (!$settings || empty($settings['auto_backup'])) {
+            return $this->response->setBody('Auto Backup sedang dinonaktifkan di pengaturan sistem.');
+        }
+
+        try {
+            // 3. Proses Backup (Full Database)
+            $tablesToBackup = $db->listTables();
+            $sql = "-- AUTO BACKUP FULL DATABASE\n";
+            $sql .= "-- Tanggal: " . date('Y-m-d H:i:s') . "\n\n";
+            $sql .= "SET FOREIGN_KEY_CHECKS=0;\n\n";
+
+            foreach ($tablesToBackup as $table) {
+                $query = $db->query("SHOW CREATE TABLE `$table`")->getRowArray();
+                $sql .= "DROP TABLE IF EXISTS `$table`;\n";
+                $sql .= $query['Create Table'] . ";\n\n";
+
+                $resultData = $db->query("SELECT * FROM `$table`")->getResultArray();
+                if (!empty($resultData)) {
+                    foreach ($resultData as $row) {
+                        $sql .= "INSERT INTO `$table` VALUES(";
+                        $values = [];
+                        foreach ($row as $value) {
+                            if (is_null($value)) {
+                                $values[] = "NULL";
+                            } else {
+                                $escaped = str_replace(['\\', "\0", "\n", "\r", "'", '"', "\x1a"], ['\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'], $value);
+                                $values[] = "'" . $escaped . "'";
+                            }
+                        }
+                        $sql .= implode(',', $values) . ");\n";
+                    }
+                    $sql .= "\n";
+                }
+            }
+            $sql .= "SET FOREIGN_KEY_CHECKS=1;\n";
+
+            // Simpan File
+            $filename = 'Auto_Full_' . date('Ymd_His') . '.sql';
+            file_put_contents($this->backupPath . $filename, $sql);
+
+            // 4. Logika Retensi (Hapus file lama sesuai pengaturan: 7, 30, atau 60 hari)
+            $retentionDays = isset($settings['retention_days']) ? (int)$settings['retention_days'] : 30;
+            $cutoffTime = time() - ($retentionDays * 86400); // 86400 detik = 1 hari
+            
+            helper('filesystem');
+            $files = get_filenames($this->backupPath);
+            $deletedCount = 0;
+
+            foreach ($files as $file) {
+                $filePath = $this->backupPath . $file;
+                // Jika file lebih tua dari batas retensi, hapus!
+                if (filemtime($filePath) < $cutoffTime) {
+                    unlink($filePath);
+                    $deletedCount++;
+                }
+            }
+
+            // (Opsional) 5. Kirim Email Notifikasi jika fitur notify_email = 1
+            // if ($settings['notify_email']) { ... logika kirim email ci4 ... }
+
+            return $this->response->setBody("CRON SUCCESS: Backup [$filename] berhasil dibuat. $deletedCount file lama dihapus (Retensi: $retentionDays hari).");
+
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(500)->setBody('CRON ERROR: ' . $e->getMessage());
+        }
+    }
+    // ==========================================================
+    // MESIN AUTO BACKUP (PSEUDO-CRON VIA LOGIN ADMIN)
+    // ==========================================================
+    public function runPseudoCron()
+    {
+        if (!$this->request->isAJAX()) return $this->response->setJSON(['status' => 'ignored']);
+
+        // Matikan syarat AJAX sebentar untuk mempermudah deteksi error jika diperlukan
+        // if (!$this->request->isAJAX()) return $this->response->setJSON(['status' => 'ignored']);
+
+        $db = \Config\Database::connect();
+        $settings = $db->table('backup_settings')->where('id', 1)->get()->getRowArray();
+        
+        // 1. Cek apakah fitur Auto Backup diaktifkan
+        if (!$settings || empty($settings['auto_backup'])) {
+            return $this->response->setJSON(['status' => 'failed', 'reason' => 'Auto backup di pengaturan berstatus OFF/0']);
+        }
+
+        // 2. Cek apakah sudah waktunya
+        $execTime = $settings['execution_time'] ?? '02:00:00';
+        $currentTime = date('H:i:s');
+        if ($currentTime < $execTime) {
+            return $this->response->setJSON([
+                'status' => 'failed', 
+                'reason' => "Belum waktunya. Sekarang jam $currentTime, jadwal di setting jam $execTime"
+            ]);
+        }
+
+        // 3. Cek apakah HARI INI sudah pernah dibackup otomatis?
+        $today = date('Ymd');
+        helper('filesystem');
+        $files = get_filenames($this->backupPath);
+        foreach ($files as $file) {
+            if (strpos($file, 'Auto_Full_' . $today) === 0) {
+                return $this->response->setJSON(['status' => 'failed', 'reason' => 'Backup hari ini sudah dilakukan sebelumnya']);
+            }
+        }
+
+        // 4. JIKA BELUM, LAKUKAN BACKUP SEKARANG!
+        try {
+            $tablesToBackup = $db->listTables();
+            $sql = "-- AUTO BACKUP FULL DATABASE (Pseudo-Cron)\n";
+            $sql .= "-- Tanggal: " . date('Y-m-d H:i:s') . "\n\n";
+            $sql .= "SET FOREIGN_KEY_CHECKS=0;\n\n";
+
+            foreach ($tablesToBackup as $table) {
+                $query = $db->query("SHOW CREATE TABLE `$table`")->getRowArray();
+                $sql .= "DROP TABLE IF EXISTS `$table`;\n";
+                $sql .= $query['Create Table'] . ";\n\n";
+
+                $resultData = $db->query("SELECT * FROM `$table`")->getResultArray();
+                if (!empty($resultData)) {
+                    foreach ($resultData as $row) {
+                        $sql .= "INSERT INTO `$table` VALUES(";
+                        $values = [];
+                        foreach ($row as $value) {
+                            if (is_null($value)) $values[] = "NULL";
+                            else {
+                                $escaped = str_replace(['\\', "\0", "\n", "\r", "'", '"', "\x1a"], ['\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'], $value);
+                                $values[] = "'" . $escaped . "'";
+                            }
+                        }
+                        $sql .= implode(',', $values) . ");\n";
+                    }
+                    $sql .= "\n";
+                }
+            }
+            $sql .= "SET FOREIGN_KEY_CHECKS=1;\n";
+
+            $filename = 'Auto_Full_' . date('Ymd_His') . '.sql';
+            file_put_contents($this->backupPath . $filename, $sql);
+
+            // 5. Logika Retensi (Hapus file lama agar disk tidak penuh)
+            $retentionDays = isset($settings['retention_days']) ? (int)$settings['retention_days'] : 30;
+            $cutoffTime = time() - ($retentionDays * 86400);
+            foreach ($files as $file) {
+                $filePath = $this->backupPath . $file;
+                if (filemtime($filePath) < $cutoffTime) {
+                    unlink($filePath);
+                }
+            }
+
+            // 6. KIRIM NOTIFIKASI KE NAVBAR ADMIN
+            if ($db->tableExists('notifikasi')) {
+                $db->table('notifikasi')->insert([
+                    'user_id'    => session()->get('id'),
+                    'judul'      => 'Auto Backup Berhasil',
+                    'pesan'      => 'Sistem telah mencadangkan database secara otomatis: ' . $filename,
+                    'tipe'       => 'success',
+                    'link'       => 'admin/backup',
+                    'is_read'    => 0,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+
+            return $this->response->setJSON(['status' => 'ok', 'notif_created' => true]);
+
+        } catch (\Exception $e) {
+            // Jika Gagal, kirim notifikasi Error!
+            if ($db->tableExists('notifikasi')) {
+                $db->table('notifikasi')->insert([
+                    'user_id'    => session()->get('id'),
+                    'judul'      => 'Auto Backup GAGAL',
+                    'pesan'      => 'Peringatan! Auto Backup gagal dieksekusi. Error: ' . substr($e->getMessage(), 0, 100),
+                    'tipe'       => 'error',
+                    'link'       => 'admin/backup',
+                    'is_read'    => 0,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+            return $this->response->setJSON(['status' => 'error']);
+        }
+    }
 }

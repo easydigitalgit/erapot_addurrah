@@ -12,12 +12,19 @@ class BankSoalController extends GuruMapelBaseController
         $db = \Config\Database::connect();
         $userId = session()->get('id');
 
-        // Ambil penugasan Guru untuk mendapatkan Mapel dan Tingkat
+        // 1. Ambil Identitas Guru & Tahun Ajaran Aktif
+        $dataGuru = $db->table('guru_tendik')->select('id')->where('user_id', $userId)->get()->getRowArray();
+        $guruId   = $dataGuru ? $dataGuru['id'] : 0;
+
+        $taAktif     = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        $id_ta_aktif = $taAktif ? $taAktif['id'] : 0;
+
+        // 2. Ambil penugasan Guru untuk mendapatkan Mapel dan Tingkat (Filter Tahun Aktif)
         $assignment = $db->table('guru_mapel gm')
             ->select('gm.mapel_id, m.nama_mapel, r.tingkat')
             ->join('mata_pelajaran m', 'm.id = gm.mapel_id', 'left')
             ->join('rombel r', 'r.id = gm.rombel_id', 'left')
-            ->where('gm.user_id', $userId)
+            ->where(['gm.guru_id' => $guruId, 'r.id_tahun_ajaran' => $id_ta_aktif])
             ->get()->getRowArray();
 
         $data = [

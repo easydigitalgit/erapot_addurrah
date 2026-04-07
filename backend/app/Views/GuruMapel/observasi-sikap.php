@@ -96,6 +96,7 @@
       </div>
      </div>
 
+     <?php if(has_permission('guru_sikap', 'create')): ?>
      <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
       <div class="mode-toggle bg-gray-100 dark:!bg-slate-800 p-1 rounded-xl flex items-center border border-gray-200 dark:!border-slate-700 transition-colors">
         <button class="active [&.active]:text-[<?= $color['warna_primary'] ?>] dark:[&.active]:!text-white dark:text-slate-400 px-4 py-2 font-bold rounded-lg transition-colors text-sm" onclick="switchMode('persiswa')">
@@ -109,6 +110,7 @@
        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" /></svg> <?= lang('GuruMapel/ObservasiSikap.btn_add_obs') ?> 
       </button>
      </div>
+     <?php endif; ?>
 
      <div class="bg-white dark:!bg-slate-800 rounded-2xl shadow-xl border border-gray-100 dark:!border-slate-700 overflow-hidden mb-8 transition-colors">
       <div class="overflow-x-auto custom-scrollbar">
@@ -299,6 +301,9 @@
   const csrfTokenName = "<?= csrf_token() ?>";
   const csrfTokenHash = "<?= csrf_hash() ?>";
 
+  // IMPLEMENTASI RBAC: Kunci Delete Modul Sikap & Karakter (guru_sikap)
+  const CAN_DELETE = <?= has_permission('guru_sikap', 'delete') ? 'true' : 'false' ?>;
+
   window.LANG = {
       empty_data: "<?= lang('GuruMapel/ObservasiSikap.js_empty_data') ?: 'Belum ada data observasi' ?>",
       advanced_act: "<?= lang('GuruMapel/ObservasiSikap.js_advanced_act') ?: 'Aksi Lanjutan' ?>",
@@ -308,7 +313,11 @@
       succ_saved: "<?= lang('GuruMapel/ObservasiSikap.js_succ_saved') ?: '✓ Observasi berhasil disimpan!' ?>",
       del_confirm: "<?= lang('GuruMapel/ObservasiSikap.js_del_confirm') ?: 'Yakin ingin menghapus catatan observasi ini?' ?>",
       succ_del: "<?= lang('GuruMapel/ObservasiSikap.js_succ_del') ?: '🗑️ Data observasi dihapus!' ?>"
-  };
+    };
+
+    const MSG_ERR_SAVE = "<?= lang('GuruMapel/ObservasiSikap.js_err_save') ?: 'Gagal menyimpan data' ?>";
+    const MSG_ERR_DEL = "<?= lang('GuruMapel/ObservasiSikap.js_err_delete') ?: 'Gagal menghapus data' ?>";
+    const MSG_ERR_NET = "<?= lang('GuruMapel/ObservasiSikap.js_err_network') ?: 'Terjadi kesalahan jaringan' ?>";
 </script>
-<script src="<?= base_url('assets/js/GuruMapel/observasi-sikap.js') ?>?v=<?= time() ?>"></script>
+<script src="<?= base_url('assets/js/GuruMapel/observasi-sikap.js') ?>"></script>
 <?= $this->endSection() ?>

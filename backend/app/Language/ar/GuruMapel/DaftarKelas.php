@@ -16,4 +16,8 @@ return [
     'btn_open_class'  => 'فتح الفصل',
     'empty_title'     => 'لم يتم العثور على فصول',
     'empty_desc'      => 'حاول تغيير عامل التصفية أو البحث.',
+
+    'filter_selesai'  => 'مكتمل', 
+    'filter_proses'   => 'قيد التقدم',  
+    'filter_belum'    => 'لم يبدأ',
 ];

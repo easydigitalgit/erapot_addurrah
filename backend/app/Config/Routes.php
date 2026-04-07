@@ -20,8 +20,11 @@ $routes->set404Override();
 // ====================================================================
 // 1. DEFAULT & AUTHENTICATION
 // ====================================================================
+// 1. PUBLIC ROUTES
 $routes->get('/', 'Auth\LoginController::index');
-$routes->get('/login', 'Auth\LoginController::index');
+$routes->get('login', 'Auth\LoginController::index');
+$routes->get('logout', 'Auth\LoginController::logout');
+$routes->get('validasi/rapor/(:any)', 'ValidationController::rapor/$1');
 $routes->post('/login/process', 'Auth\LoginController::process');
 $routes->get('/logout', 'Auth\LoginController::logout');
 $routes->post('/auth/lupa-password/proses', 'Auth\LoginController::prosesLupaPassword');
@@ -29,10 +32,13 @@ $routes->get('/reset-password/(:any)', 'Auth\LoginController::resetPasswordForm/
 $routes->post('/auth/lupa-password/update', 'Auth\LoginController::updatePasswordFromReset');
 $routes->post('auth/logincontroller/setRoleSession', 'Auth\LoginController::setRoleSession');
 
+// PERBAIKAN FATAL: Rute Radar dipindah ke zona Global/Netral
+$routes->get('api/check-rbac-update', 'Auth\LoginController::checkRbacUpdate');
+
 // ====================================================================
 // 2. ADMIN ROUTES
 // ====================================================================
-$routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'auth'], function ($routes) {
+$routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'role:admin'], function ($routes) {
 
     // -- Dashboard & Statistik --
     $routes->get('/', 'DashboardStatistikController::index');
@@ -47,6 +53,20 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'au
     $routes->post('akun-saya/update-personal', 'AkunSayaController::updatePersonal');
     $routes->post('akun-saya/update-preferences', 'AkunSayaController::updatePreferences');
     $routes->post('akun-saya/upload-avatar', 'AkunSayaController::uploadAvatar');
+
+    // -- Hak Akses & Role --
+    // PERBAIKAN: Tambahkan rute index dan bersihkan prefix Admin\ karena sudah di dalam grup
+    $routes->get('hak-akses', 'HakAksesController::index');
+    $routes->get('hak-akses/getRolePermissions/(:num)', 'HakAksesController::getRolePermissions/$1');
+    $routes->post('hak-akses/saveRolePermissions', 'HakAksesController::saveRolePermissions');
+    $routes->post('hak-akses/addRole', 'HakAksesController::addRole');
+    $routes->get('hak-akses/getAllAuditLogs', 'HakAksesController::getAllAuditLogs');
+
+    $routes->post('preview-rapor/lock/(:num)', 'PreviewRaporController::lockRaporSiswa/$1');
+    // ---> TAMBAHKAN RUTE INI UNTUK BUKA KUNCI <---
+    $routes->post('preview-rapor/unlock/(:num)', 'PreviewRaporController::unlockRaporSiswa/$1');
+
+    $routes->post('aturan-nilai/delete/(:num)', 'AturanNilaiController::deleteAturan/$1');
 
     $routes->get('profile-sekolah', 'ProfileSekolahController::index');
     $routes->post('profile-sekolah/update', 'ProfileSekolahController::update');
@@ -65,19 +85,11 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'au
         $routes->post('deactivate', 'UsersController::deactivate');
         $routes->post('bulk-delete', 'UsersController::bulkDelete');
         $routes->get('export', 'UsersController::export');
-        $routes->get('get-all', 'UsersController::get-all'); // Typo sebelumnya
+        $routes->get('get-all', 'UsersController::getAll'); // Typo sebelumnya
         $routes->post('force-logout', 'UsersController::forceLogout');
         $routes->post('update-inline-roles', 'UsersController::updateInlineRoles');
         $routes->get('getRoles/(:num)', 'UsersController::getUserRoles/$1');
-    });
-
-    // -- Hak Akses --
-    $routes->get('hak-akses', 'HakAksesController::index', ['filter' => 'permission:sistem,special']);
-    $routes->get('hak-akses/getRolePermissions/(:num)', 'HakAksesController::getRolePermissions/$1');
-    $routes->post('hak-akses/saveRolePermissions', 'HakAksesController::saveRolePermissions');
-    $routes->post('hak-akses/addRole', 'HakAksesController::addRole');
-
-    // -- Master Data: Rombel --
+    }); // -- Master Data: Rombel --
     $routes->get('tingkat-rombel', 'TingkatRombelController::index');
     $routes->group('rombel', function ($routes) {
         $routes->get('/', 'TingkatRombelController::index');
@@ -89,7 +101,10 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'au
         $routes->get('template', 'TingkatRombelController::downloadTemplate');
         $routes->post('import', 'TingkatRombelController::import');
 
-        // ---> API KELOLA SISWA DI DALAM ROMBEL (INI YANG SEBELUMNYA ERROR) <---
+        // ---> TAMBAHKAN RUTE MIGRASI DI SINI <---
+        $routes->post('migrate', 'TingkatRombelController::migrate');
+        $routes->post('migrateMassal', 'TingkatRombelController::migrateMassal'); // <--- TAMBAHKAN INI
+        // ---> API KELOLA SISWA DI DALAM ROMBEL <---
         $routes->get('searchUnassignedStudents', 'TingkatRombelController::searchUnassignedStudents');
         $routes->post('addStudentToRombel', 'TingkatRombelController::addStudentToRombel');
         $routes->post('removeStudentFromRombel', 'TingkatRombelController::removeStudentFromRombel');
@@ -101,6 +116,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'au
         $routes->get('/', 'SiswaController::index');
         $routes->get('get-all', 'SiswaController::getAll');
         $routes->get('get-rombel', 'SiswaController::getRombel');
+        $routes->get('generateNextNis', 'SiswaController::generateNextNis');
         $routes->post('store', 'SiswaController::store');
         $routes->post('update/(:num)', 'SiswaController::update/$1');
         $routes->delete('delete/(:num)', 'SiswaController::delete/$1');
@@ -122,6 +138,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'au
         $routes->post('import', 'GuruTendikController::import');
         $routes->get('template', 'GuruTendikController::downloadTemplate');
         $routes->post('bulk-delete', 'GuruTendikController::bulkDelete');
+        $routes->post('toggle-status/(:num)', 'GuruTendikController::toggleStatus/$1');
     });
 
     // -- Master Data: Orang Tua --
@@ -162,6 +179,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'au
         $routes->post('delete/(:num)', 'KurikulumController::delete/$1');
         $routes->get('template', 'KurikulumController::downloadTemplate');
         $routes->post('import', 'KurikulumController::import');
+        $routes->post('upload-dokumen', 'KurikulumController::uploadDokumen');
     });
 
     // -- Konfigurasi: Tahun Ajaran --
@@ -180,7 +198,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'au
     // -- Konfigurasi: Mapping Guru & Mapel --
     $routes->get('mapping-guru', 'MappingGuruController::index');
     $routes->post('mapping-guru/store', 'MappingGuruController::store');
-$routes->get('validasi-nilai/detail/(:num)', 'ValidasiNilaiController::getDetailRombel/$1');
+    $routes->get('validasi-nilai/detail/(:num)', 'ValidasiNilaiController::getDetailRombel/$1');
     $routes->group('mapping-mapel', function ($routes) {
         $routes->get('/', 'MappingMapelController::index');
         $routes->post('store', 'MappingMapelController::store');
@@ -242,27 +260,38 @@ $routes->get('validasi-nilai/detail/(:num)', 'ValidasiNilaiController::getDetail
     $routes->group('cetak-leger', function ($routes) {
         $routes->get('/', 'CetakLegerController::index');
         $routes->post('get-data', 'CetakLegerController::getData');
+        $routes->get('export-excel', 'CetakLegerController::exportExcel');
+    });
+
+    $routes->group('cetak-leger-ekskul', function ($routes) {
+        $routes->get('/', 'CetakLegerEkskulController::index');
+        $routes->post('get-data', 'CetakLegerEkskulController::getData');
+        $routes->get('export-excel', 'CetakLegerEkskulController::exportExcel');
     });
 
     $routes->group('cetak-rapor', function ($routes) {
         $routes->get('/', 'CetakRaporController::index');
         $routes->get('getSiswaByRombel', 'CetakRaporController::getSiswaByRombel');
+        $routes->get('getCatatanSiswa', 'CetakRaporController::getCatatanSiswa'); // <--- Route yang hilang
         $routes->get('printPDF/(:num)/(:segment)', 'CetakRaporController::printPDF/$1/$2');
         $routes->post('saveCatatanRapor', 'CetakRaporController::saveCatatanRapor');
+        $routes->post('uploadTtdKepsek', 'CetakRaporController::uploadTtdKepsek');
     });
 
-    $routes->group('preview-rapor', ['filter' => 'permission:rapor,view'], function ($routes) {
-        $routes->get('/', 'PreviewRaporController::index');
-        $routes->get('getSiswa', 'PreviewRaporController::getSiswa');
-        $routes->get('getDetailRapor/(:num)', 'PreviewRaporController::getDetailRapor/$1');
+
+
+    // -- Riwayat Jabatan Guru --
+    $routes->group('riwayat-guru', function($routes) {
+        $routes->get('/', 'RiwayatGuruController::index');
+        $routes->post('delete', 'RiwayatGuruController::delete');
     });
 
-    // -- Input Nilai (Admin Bypass) --
-    $routes->group('input-nilai-siswa', function ($routes) {
-        $routes->get('/', 'InputNilaiController::index');
-        $routes->get('get-siswa', 'InputNilaiController::getSiswaByKelas');
-        $routes->post('store', 'InputNilaiController::store');
-        $routes->get('export', 'InputNilaiController::export');
+
+    $routes->group('monitoring-nilai-siswa', function ($routes) {
+        $routes->get('/', 'MonitoringNilaiSiswaController::index');
+        $routes->get('get-siswa', 'MonitoringNilaiSiswaController::getSiswaByKelas');
+        $routes->post('store', 'MonitoringNilaiSiswaController::store');
+        $routes->get('export', 'MonitoringNilaiSiswaController::export');
     });
 
     // -- Sistem Backup --
@@ -272,16 +301,49 @@ $routes->get('validasi-nilai/detail/(:num)', 'ValidasiNilaiController::getDetail
         $routes->get('download/(:any)', 'BackupController::download/$1');
         $routes->post('delete', 'BackupController::delete');
         $routes->post('restore', 'BackupController::restore');
-        $routes->post('save-settings', 'BackupController::saveSettings');
+        $routes->post('save-settings', 'BackupController::saveSettings'); // <--- INI DIA SUMBER MASALAHNYA
+        $routes->get('cron/run-backup/(:any)', 'Admin\BackupController::runAutoBackup/$1');
+        $routes->get('run-pseudo-cron', 'BackupController::runPseudoCron');
     });
 
     $routes->get('migrate-data', 'MigrateUsers::index');
+
+    // -- Master Data: Lingkup Materi (LM) --
+    $routes->group('master-lm', function ($routes) {
+        $routes->get('/', 'MasterLmController::index');
+        $routes->get('get-data', 'MasterLmController::getData');
+        $routes->post('store', 'MasterLmController::store');
+        $routes->post('update', 'MasterLmController::update');
+        $routes->post('delete', 'MasterLmController::delete');
+
+        // FITUR EXCEL LM YANG SUDAH DIBERSIHKAN (HANYA LM, TIDAK ADA DKN)
+        $routes->get('export', 'MasterLmController::export');
+        $routes->get('export/(:segment)', 'MasterLmController::export/$1');
+        $routes->get('download-template/(:segment)', 'MasterLmController::downloadTemplate/$1');
+        $routes->post('import', 'MasterLmController::import');
+    });
+
+    // -- Master Data: Ekstrakurikuler --
+    $routes->group('master-ekskul', function ($routes) {
+        $routes->get('/', 'MasterEkskulController::index');
+        $routes->get('get-data', 'MasterEkskulController::getData');
+        $routes->post('store', 'MasterEkskulController::store');
+        $routes->post('update', 'MasterEkskulController::update');
+        $routes->post('delete', 'MasterEkskulController::delete');
+    });
+
+    // -- Tahfidz (Admin) --
+    $routes->get('tahfidz', 'TahfidzController::index');
+    $routes->group('tahfidz', function ($routes) {
+        $routes->get('get-data', 'TahfidzController::getData');
+        $routes->get('cetak-rapor/(:num)', 'TahfidzController::cetakRapor/$1');
+    });
 });
 
 // ====================================================================
 // 3. GURU MAPEL ROUTES
 // ====================================================================
-$routes->group('guru', ['namespace' => 'App\Controllers\GuruMapel', 'filter' => 'auth'], function ($routes) {
+$routes->group('guru', ['namespace' => 'App\Controllers\GuruMapel', 'filter' => 'role:guru'], function ($routes) {
     // -- Dashboard & Profil --
     $routes->get('dashboard', 'DashboardController::index');
     $routes->get('akun-saya', 'AkunSayaController::index');
@@ -297,18 +359,42 @@ $routes->group('guru', ['namespace' => 'App\Controllers\GuruMapel', 'filter' => 
     $routes->post('daftar-siswa/save-data', 'DaftarSiswaController::saveDataKomponen');
 
     // -- Penilaian Akademik --
-    // Nilai Harian
-    $routes->get('nilai-harian', 'NilaiHarianController::index');
-    $routes->get('get-students', 'NilaiHarianController::getStudents'); // Endpoint yg dicari Ajax Guru
-    $routes->post('save-nilai', 'NilaiHarianController::saveNilai');    // Endpoint yg dicari Ajax Guru
+    $routes->group('nilai-formatif', function ($routes) {
+        $routes->get('/', 'NilaiFormatifController::index');
+        $routes->get('get-students', 'NilaiFormatifController::getStudentsOnly');
+        $routes->get('get-grades', 'NilaiFormatifController::getGrades');
+        $routes->post('save-nilai', 'NilaiFormatifController::saveNilai');
+        $routes->get('template', 'NilaiFormatifController::downloadTemplate');
+        $routes->post('import', 'NilaiFormatifController::importExcel');
+        $routes->get('template-all', 'NilaiFormatifController::downloadTemplateAll');
+        $routes->post('import-all', 'NilaiFormatifController::importExcelAll');
 
+        // Rute Dinamis Baru
+        $routes->get('get-assignments', 'NilaiFormatifController::getAssignmentsByYear');
+        $routes->get('get-jumlah-lm', 'NilaiFormatifController::getJumlahLmDinamis');
+    });
     // Nilai Sumatif
     $routes->get('nilai-sumatif', 'NilaiSumatifController::index');
     $routes->get('nilai-sumatif/get-siswa', 'NilaiSumatifController::getNilaiSiswa');
     $routes->post('nilai-sumatif/save-draft', 'NilaiSumatifController::saveBulk');
     $routes->post('nilai-sumatif/update-status', 'NilaiSumatifController::updateStatus');
+    // Gunakan GET karena fetch() di JS mengambil data tanpa method POST
+    $routes->get('nilai-sumatif/getNilaiSiswa', 'NilaiSumatifController::getNilaiSiswa');
+    // RUTE NILAI KOLEKTIF (GURU)
+    // RUTE NILAI KOLEKTIF (GURU)
+    $routes->group('nilai-kolektif', function ($routes) {
+        $routes->get('/', 'NilaiKolektifController::index');
+        $routes->get('download', 'NilaiKolektifController::downloadTemplate');
+        $routes->post('import', 'NilaiKolektifController::importExcel');
+    });
 
-    // Penilaian Proyek
+    $routes->group('nilai-rapor', function ($routes) {
+        $routes->get('/', 'NilaiRaporController::index');
+        $routes->get('get-penugasan/(:num)', 'NilaiRaporController::getPenugasan/$1');
+        $routes->post('get-data', 'NilaiRaporController::getData');
+        $routes->post('sync', 'NilaiRaporController::syncNilai');
+    });
+
     $routes->get('proyek', 'ProyekController::index');
     $routes->post('proyek/simpanProyek', 'ProyekController::simpanProyek');
     $routes->get('proyek/getRubrik/(:num)', 'ProyekController::getRubrik/$1');
@@ -353,7 +439,7 @@ $routes->group('guru', ['namespace' => 'App\Controllers\GuruMapel', 'filter' => 
 // ====================================================================
 // 4. WALI KELAS ROUTES
 // ====================================================================
-$routes->group('wali', ['namespace' => 'App\Controllers\WaliKelas', 'filter' => 'auth'], function ($routes) {
+$routes->group('wali', ['namespace' => 'App\Controllers\WaliKelas', 'filter' => 'role:wali_kelas'], function ($routes) {
     // -- Dashboard / Ringkasan --
     $routes->get('ringkasan-kelas', 'RingkasanKelasController::index');
     $routes->get('daftar-siswa', 'DaftarSiswaController::index');
@@ -362,6 +448,7 @@ $routes->group('wali', ['namespace' => 'App\Controllers\WaliKelas', 'filter' => 
     $routes->get('absensi-kelas', 'AbsensiKelasController::index');
     $routes->get('absensi/get-data', 'AbsensiKelasController::getAbsensiData');
     $routes->post('absensi/save', 'AbsensiKelasController::saveAbsensi');
+    $routes->post('absensi/import', 'WaliKelas\AbsensiKelasController::importAbsensi');
 
     // -- Progres --
     $routes->get('progres-nilai', 'ProgresNilaiController::index');
@@ -384,41 +471,64 @@ $routes->group('wali', ['namespace' => 'App\Controllers\WaliKelas', 'filter' => 
     $routes->post('perlu-pembinaan/save', 'PerluPembinaanController::saveCatatan');
     $routes->get('validasi-catatan-guru', 'ValidasiCatatanGuruController::index');
 
-    // -- Preview Rapor --
+    // -- Preview Rapor (Wali Kelas) --
     $routes->get('preview-rapor', 'PreviewRaporController::index');
     $routes->get('preview-rapor/get-data/(:num)', 'PreviewRaporController::getDataRaporSiswa/$1');
+    $routes->get('preview-rapor/get-catatan', 'PreviewRaporController::getCatatanSiswa');
+    $routes->post('preview-rapor/save-catatan', 'PreviewRaporController::saveCatatanRapor');
+    $routes->get('preview-rapor/printPDF/(:num)/(:segment)', 'PreviewRaporController::printPDF/$1/$2');
 
-    // -- Akun Saya --
+    // --- RUTE AKUN SAYA (WALI KELAS) ---
     $routes->get('akun-saya', 'AkunSayaController::index');
-    $routes->post('akun-saya/update-personal', 'AkunSayaController::updatePersonal');
+
+    // Tambahkan 4 baris POST ini agar tombol-tombol simpan berfungsi:
+    $routes->post('akun-saya/update', 'AkunSayaController::updateProfile');
+    $routes->post('akun-saya/upload-avatar', 'AkunSayaController::uploadAvatar');
     $routes->post('akun-saya/update-password', 'AkunSayaController::updatePassword');
+    $routes->post('akun-saya/update-preferences', 'AkunSayaController::updatePreferences'); // <- Ini yang tadi dicari oleh sistem
+    $routes->get('preview-rapor/printPDF/(:num)/(:any)', 'PreviewRaporController::printPDF/$1/$2');
+    $routes->get('preview-rapor/cetak/(:num)', 'PreviewRaporController::cetak/$1');
+    $routes->post('preview-rapor/uploadTtdWali', 'PreviewRaporController::uploadTtdWali');
+
+    // -- Nilai Ekstrakurikuler (Wali Kelas) --
+    $routes->group('nilai-ekskul', function ($routes) {
+        $routes->get('/', 'NilaiEkskulController::index');
+        $routes->get('get-data', 'NilaiEkskulController::getData');
+        $routes->post('save', 'NilaiEkskulController::saveNilai');
+        $routes->post('delete', 'NilaiEkskulController::deleteNilai');
+    });
+
+    // -- Tahfidz (Wali Kelas) --
+    $routes->get('tahfidz', 'TahfidzController::index');
+    $routes->group('tahfidz', function ($routes) {
+        $routes->get('get-data', 'TahfidzController::getSiswaTahfidz');
+        $routes->post('save', 'TahfidzController::saveNilai');
+        $routes->get('cetak-rapor/(:num)', 'TahfidzController::cetakRapor/$1');
+    });
 });
 
 // ====================================================================
 // 5. GURU TAHFIDZ ROUTES
 // ====================================================================
-$routes->group('tahfidz', ['namespace' => 'App\Controllers\Tahfidz', 'filter' => 'auth'], function ($routes) {
+$routes->group('tahfidz', ['namespace' => 'App\Controllers\Tahfidz', 'filter' => 'role:guru_tahfidz'], function ($routes) {
     $routes->get('dashboard', 'DashboardController::index');
     $routes->get('dashboard/exportRekap', 'DashboardController::exportRekap');
 
     $routes->get('setoran', 'SetoranController::index');
-    $routes->get('setoran/get-siswa', 'SetoranController::getSiswaByKelas');
+
+    // PERBAIKAN: Arahkan URL 'get-siswa' ke fungsi 'getSiswa' di Controller
+    $routes->get('setoran/get-siswa', 'SetoranController::getSiswa');
+
     $routes->post('setoran/save', 'SetoranController::save');
 
     $routes->get('monitoring', 'MonitoringController::index');
-    $routes->get('monitoring/get-data', 'MonitoringController::getMonitoringData');
-    $routes->get('monitoring/get-riwayat', 'MonitoringController::getRiwayat');
+    $routes->get('monitoring/getData', 'MonitoringController::getData');
+    $routes->get('monitoring/getRiwayat', 'MonitoringController::getRiwayat');
 
     $routes->get('nilai-rapor', 'NilaiRaporController::index');
     $routes->get('nilai-rapor/get-siswa', 'NilaiRaporController::getSiswa');
     $routes->post('nilai-rapor/save', 'NilaiRaporController::save');
-
-    $routes->get('akun-saya', 'AkunSayaController::index');
-    $routes->post('akun-saya/update', 'AkunSayaController::updateProfile');
-
-    // Asumsi WaliKelas digunakan di sini juga? Mengikuti rute lama Anda
-    $routes->get('absensi/get-data', 'WaliKelas\AbsensiKelasController::getAbsensiData');
-    $routes->post('absensi/save', 'WaliKelas\AbsensiKelasController::saveAbsensi');
+    $routes->get('nilai-rapor/preview/(:num)', 'NilaiRaporController::preview/$1');
 
     // GURU TAHFIDZ: Akun Saya
     $routes->get('akun-saya', 'AkunSayaController::index');
@@ -426,22 +536,42 @@ $routes->group('tahfidz', ['namespace' => 'App\Controllers\Tahfidz', 'filter' =>
     $routes->post('akun-saya/upload-avatar', 'AkunSayaController::uploadAvatar');
     $routes->post('akun-saya/update-password', 'AkunSayaController::updatePassword');
     $routes->post('akun-saya/update-preferences', 'AkunSayaController::updatePreferences');
+
+    // ==========================================
+    // ROUTES UNTUK NILAI TEORI TAHFIDZ
+    // ==========================================
+    $routes->get('nilai-teori', 'NilaiTeoriController::index');
+    $routes->get('nilai-teori/get-siswa', 'NilaiTeoriController::getSiswa');
+    $routes->post('nilai-teori/save', 'NilaiTeoriController::save');
+    $routes->post('nilai-teori/importCsv', 'NilaiTeoriController::importCsv');
 });
 
 // ====================================================================
 // 6. ORANG TUA ROUTES
 // ====================================================================
-$routes->group('orangtua', ['namespace' => 'App\Controllers\OrangTua', 'filter' => 'auth'], function ($routes) {
+$routes->group('orangtua', ['namespace' => 'App\Controllers\OrangTua', 'filter' => 'role:orang_tua'], function ($routes) {
     $routes->get('dashboard', 'DashboardController::index');
     $routes->get('akademik', 'AkademikController::index');
     $routes->get('tahfidz', 'TahfidzController::index');
     $routes->get('kehadiran', 'KehadiranController::index');
+    // -- Rute Rapor (Unduh & Cek) --
+    $routes->get('get-history-ta', 'AkademikController::getHistoryTA');
+    $routes->get('rapor/cek-ketersediaan', 'AkademikController::cekKetersediaan');
+    $routes->get('rapor/download', 'AkademikController::downloadRapor');
+
+
+    // ---> TAMBAHKAN RUTE AKUN SAYA DI SINI <---
+    $routes->get('akun-saya', 'AkunSayaController::index');
+    $routes->post('akun-saya/updateProfile', 'AkunSayaController::updateProfile');
+    $routes->post('akun-saya/uploadAvatar', 'AkunSayaController::uploadAvatar');
+    $routes->post('akun-saya/updatePassword', 'AkunSayaController::updatePassword');
+    $routes->post('akun-saya/updatePreferences', 'AkunSayaController::updatePreferences');
 });
 
 // ====================================================================
-// 7. SISWA ROUTES
+// 6. SISWA ROUTES
 // ====================================================================
-$routes->group('siswa', ['namespace' => 'App\Controllers\Siswa', 'filter' => 'auth'], function ($routes) {
+$routes->group('siswa', ['namespace' => 'App\Controllers\Siswa', 'filter' => 'role:siswa'], function ($routes) {
     $routes->get('dashboard', 'DashboardController::index');
     $routes->post('upload-avatar', 'DashboardController::uploadAvatar');
 
@@ -452,7 +582,7 @@ $routes->group('siswa', ['namespace' => 'App\Controllers\Siswa', 'filter' => 'au
 });
 
 // ====================================================================
-// 8. NOTIFIKASI
+// 7. NOTIFIKASI
 // ====================================================================
 $routes->group('notifikasi', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'NotifikasiController::index');

@@ -23,17 +23,14 @@ return [
     'status' => 'Status',
     'configured_target' => 'Target terkonfigurasi',
     
-    // Filters
-    'all_years' => 'Semua Tahun',
-    'all_semesters' => 'Semua Semester',
-    'odd' => 'Ganjil',
-    'even' => 'Genap',
-    'all_levels_filter' => 'Semua Tingkat',
-    'all_status' => 'Semua Status',
-    'active' => 'Aktif',
-    'inactive' => 'Nonaktif',
-    'show_active_only' => 'Tampilkan target aktif saja',
-    'btn_reset_filter' => 'Reset Filter',
+    // ==================================================
+    // FIX MUTLAK: FILTERS (Kunci Disamakan dengan View)
+    // ==================================================
+    'filter_level' => 'Semua Tingkat',
+    'filter_semester' => 'Semua Semester',
+    'filter_status' => 'Semua Status',
+    'only_active' => 'Hanya Aktif',
+    'reset' => 'Reset Filter',
     
     // Table
     'th_level' => 'Tingkat',
@@ -67,7 +64,7 @@ return [
     'form_start_surah' => 'Mulai Surah',
     'form_end_surah' => 'Sampai Surah',
     'select_option' => 'Pilih...',
-    'select_juz' => 'Pilih Juz...',
+    'th_juz' => 'Pilih Juz', // Fix untuk form Tambah/Edit Target
     'select_surah' => 'Pilih Surah...',
     'btn_cancel' => 'Batal',
     'btn_save_target' => 'Simpan Target',

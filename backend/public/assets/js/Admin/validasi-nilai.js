@@ -2,18 +2,30 @@ let currentLockKelas = "";
 let currentLockRombelId = 0;
 
 // --- DRAWER DETAIL KELAS ---
-// --- DRAWER DETAIL KELAS ---
-window.showDetailValidasi = function(rombelId, kelas, wali) {
+window.showDetailValidasi = function(rombelId, kelas, wali, fotoProfil) {
   const drawer = document.getElementById("detailDrawer");
   const overlay = document.getElementById("detailDrawerOverlay");
   const header = document.getElementById("drawerHeader");
   const mapelList = document.getElementById("drawerMapelList");
 
+  // --- LOGIKA HYBRID AVATAR WALI KELAS ---
+  const inisialWali = wali && wali !== 'Belum Diatur' ? wali.substring(0, 2).toUpperCase() : 'U';
+  let avatarHtml = '';
+  
+  if (fotoProfil && fotoProfil !== 'null' && String(fotoProfil).trim() !== '') {
+      const cleanBaseUrl = (typeof window.BASE_URL !== 'undefined' ? window.BASE_URL : '').replace(/\/$/, '');
+      const cacheBuster = '?v=' + new Date().getTime();
+      const fotoUrl = `${cleanBaseUrl}/assets/uploads/avatars/${fotoProfil}${cacheBuster}`;
+      avatarHtml = `<img src="${fotoUrl}" class="w-full h-full object-cover" onerror="this.onerror=null; this.outerHTML='${inisialWali}';">`;
+  } else {
+      avatarHtml = inisialWali;
+  }
+
   // Reset isi laci
   header.innerHTML = `
     <div class="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800/50 shadow-sm">
-      <div class="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-inner">
-        ${kelas.substring(0,2).toUpperCase()}
+      <div class="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-inner overflow-hidden border-2 border-white/50">
+        ${avatarHtml}
       </div>
       <div class="flex-1 min-w-0">
         <p class="font-bold text-blue-900 dark:text-blue-400 truncate">Kelas ${kelas}</p>

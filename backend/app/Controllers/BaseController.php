@@ -26,7 +26,7 @@ abstract class BaseController extends Controller
      */
 
     // protected $session;
-    protected $helpers = ['akademik','form', 'url', 'sistem']; // Tambahkan nama file helper tanpa _helper
+    protected $helpers = ['akademik','form', 'url', 'sistem', 'rbac']; // Tambahkan nama file helper tanpa _helper
     
 
     /**
@@ -43,5 +43,19 @@ abstract class BaseController extends Controller
 
         // Preload any models, libraries, etc, here.
         // $this->session = service('session');
+        // ==============================================================
+        // MULAI PASTE DARI SINI: LOGIKA TRANSLATE (BAHASA)
+        // ==============================================================
+        $session = \Config\Services::session();
+        
+        if ($session->has('locale')) {
+            // Gunakan service('request') agar VS Code mengerti
+            service('request')->setLocale($session->get('locale'));
+        } else {
+            service('request')->setLocale('id'); 
+        }
+        // ==============================================================
+        // SELESAI PASTE
+        // ==============================================================
     }
 }

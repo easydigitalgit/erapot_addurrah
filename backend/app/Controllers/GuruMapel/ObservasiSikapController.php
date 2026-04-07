@@ -10,43 +10,52 @@ class ObservasiSikapController extends GuruMapelBaseController
         $db = \Config\Database::connect();
         $userId = session()->get('id');
 
-        // 1. Ambil Penugasan Kelas
+        // 1. Ambil Identitas Guru & Tahun Ajaran Aktif
+        $dataGuru = $db->table('guru_tendik')->select('id, nama_lengkap')->where('user_id', $userId)->get()->getRowArray();
+        $guruId   = $dataGuru ? $dataGuru['id'] : 0;
+
+        $taAktif     = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        $id_ta_aktif = $taAktif ? $taAktif['id'] : 0;
+
+        // 2. Ambil Penugasan Kelas (Filter Tahun Aktif)
         $penugasan = $db->table('guru_mapel gm')
             ->select('gm.rombel_id, gm.mapel_id, m.nama_mapel, r.nama_rombel')
             ->join('mata_pelajaran m', 'm.id = gm.mapel_id', 'left')
             ->join('rombel r', 'r.id = gm.rombel_id', 'left')
-            ->where('gm.user_id', $userId)
+            ->where(['gm.guru_id' => $guruId, 'r.id_tahun_ajaran' => $id_ta_aktif])
             ->get()->getRowArray();
 
         $rombel_id = $penugasan['rombel_id'] ?? 0;
         $mapel_id = $penugasan['mapel_id'] ?? 0;
 
-        // 2. Ambil Daftar Siswa untuk Modal Dropdown
+        // 3. Ambil Daftar Siswa untuk Modal Dropdown
         $siswa = [];
         if($rombel_id > 0){
             $siswa = $db->table('siswa')
-                ->where('rombel_id', $rombel_id)
-                ->where('status_siswa', 'Aktif')
+                ->where(['rombel_id' => $rombel_id, 'status_siswa' => 'Aktif'])
                 ->orderBy('nama_lengkap', 'ASC')
                 ->get()->getResultArray();
         }
 
-        // 3. Hitung Statistik Observasi
+        // 4. Hitung Statistik Observasi (Filter TA Aktif)
         $minggu_ini = $db->table('observasi_sikap')
-            ->where('guru_id', $userId)
-            ->where('rombel_id', $rombel_id)
+            ->where(['guru_id' => $guruId, 'rombel_id' => $rombel_id, 'mapel_id' => $mapel_id])
             ->where('YEARWEEK(tanggal, 1) = YEARWEEK(CURDATE(), 1)')
             ->countAllResults();
 
         $pembinaan = $db->table('observasi_sikap')
-            ->select('siswa_id')
-            ->where('guru_id', $userId)
-            ->where('rombel_id', $rombel_id)
-            ->where('skala', 'perlu-pembinaan')
-            ->distinct()
+            ->where(['guru_id' => $guruId, 'rombel_id' => $rombel_id, 'mapel_id' => $mapel_id, 'skala' => 'perlu-pembinaan'])
+            ->distinct()->select('siswa_id')
             ->countAllResults();
 
-        $dominanRow = $db->query("SELECT parameter_sikap, COUNT(*) as total FROM observasi_sikap WHERE guru_id = ? AND rombel_id = ? GROUP BY parameter_sikap ORDER BY total DESC LIMIT 1", [$userId, $rombel_id])->getRowArray();
+        $dominanRow = $db->table('observasi_sikap')
+            ->select('parameter_sikap, COUNT(*) as total')
+            ->where(['guru_id' => $guruId, 'rombel_id' => $rombel_id, 'mapel_id' => $mapel_id])
+            ->groupBy('parameter_sikap')
+            ->orderBy('total', 'DESC')
+            ->limit(1)
+            ->get()->getRowArray();
+        
         $dominan = $dominanRow ? str_replace('-', ' ', $dominanRow['parameter_sikap']) : '-';
 
         $data = [

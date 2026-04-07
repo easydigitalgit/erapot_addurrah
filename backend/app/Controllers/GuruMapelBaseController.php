@@ -13,41 +13,14 @@ class GuruMapelBaseController extends BaseController
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
-        // --- MANAJEMEN BAHASA KETAT (ANTI INGGRIS OTOMATIS) ---
-        $session = \Config\Services::session();
-        $userId = $session->get('id') ?? $session->get('user_id');
-        
-        // 1. Cek bahasa dari session
-        $locale = $session->get('bahasa');
+        $this->data['role_lang'] = 'Guru Mapel';
 
-        // 2. Jika session KOSONG, panggil paksa dari Database!
-        if (!$locale && $userId) {
-            $db = \Config\Database::connect();
-            $prefs = $db->table('user_preferences')->where('user_id', $userId)->get()->getRowArray();
-            
-            if ($prefs && !empty($prefs['bahasa'])) {
-                $locale = $prefs['bahasa'];
-                // Simpan ke session agar halaman lain tidak perlu query DB lagi
-                $session->set('bahasa', $locale); 
-            } else {
-                $locale = 'id'; // Bahasa Default jika database juga kosong
-            }
-        }
-
-        // 3. Terapkan bahasa ke seluruh sistem CodeIgniter
-        if ($locale) {
-            $this->request->setLocale($locale);
-            \Config\Services::language()->setLocale($locale);
-            config('App')->defaultLocale = $locale;
-        }
-        // -------------------------------------------------------
-
-        $this->data['sidebar_menu'] = $this->getSidebarMenu(); 
+        $this->data['sidebar_menu'] = $this->getSidebarMenu();
     }
 
     protected function getSidebarMenu()
     {
-        // 1. Submenu Kelas Mengajar (Hapus awalan GuruMapel/)
+        // 1. Submenu Kelas Mengajar
         $sub_kelas_mengajar = [
             ['url' => '/guru/daftar-kelas-mapel', 'label' => lang('Sidebar.daftar_kelas')],
             ['url' => '/guru/daftar-siswa', 'label' => lang('Sidebar.daftar_siswa')],
@@ -55,9 +28,10 @@ class GuruMapelBaseController extends BaseController
 
         // 2. Submenu Penilaian Akademik
         $sub_penilaian_akademik = [
-            ['url' => '/guru/nilai-harian', 'label' => lang('Sidebar.nilai_harian')],
+            ['url' => '/guru/nilai-kolektif', 'label' => lang('Sidebar.nilai_kolektif')],
+            ['url' => '/guru/nilai-formatif', 'label' => lang('Sidebar.nilai_formatif')],
             ['url' => '/guru/nilai-sumatif', 'label' => lang('Sidebar.nilai_sumatif')],
-            ['url' => '/guru/proyek', 'label' => lang('Sidebar.proyek')],
+            ['url' => '/guru/nilai-rapor', 'label' => lang('Sidebar.nilai_rapor')],
         ];
 
         // 3. Submenu Sikap & Karakter
@@ -114,21 +88,21 @@ class GuruMapelBaseController extends BaseController
     }
 
     protected function getColor()
-    {   
+    {
         $uri = service('uri');
         $currentSegment = 'dashboard';
         if ($uri->getTotalSegments() >= 2) {
             $currentSegment = $uri->getSegment(2);
         }
 
-        $nav_items = $navigations ?? $sidebar_menu ?? []; 
+        $nav_items = $navigations ?? $sidebar_menu ?? [];
 
         $sekolahData = function_exists('get_identitas_sekolah') ? get_identitas_sekolah() : [];
 
         $app_name       = 'Rapor Digital';
         $app_sub        = $sekolahData['nama_sekolah'] ?? 'Rapor Digital';
-        $warna_primary  = $sekolahData['warna_primary'] ?? '#1F7A4D'; 
-        $warna_secondary= $sekolahData['warna_secondary'] ?? '#E6F4EC'; 
+        $warna_primary  = $sekolahData['warna_primary'] ?? '#1F7A4D';
+        $warna_secondary = $sekolahData['warna_secondary'] ?? '#E6F4EC';
 
         return [
             'warna_primary' => $warna_primary,

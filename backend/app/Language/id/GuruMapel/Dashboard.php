@@ -7,14 +7,14 @@ return [
     'classes'               => 'Kelas',
     'total_students'        => 'Total Siswa',
     'students'              => 'Siswa',
-    
+
     'overall_progress'      => 'Progress Keseluruhan',
     'grades_filled'         => 'Nilai sudah diisi',
     'not_graded'            => 'Belum Dinilai',
     'from_total'            => 'Dari total',
     'average_grade'         => 'Rata-Rata Nilai',
     'all_classes_combined'  => 'Gabungan semua kelas',
-    
+
     'todays_schedule'       => 'Jadwal Mengajar Hari Ini',
     'classes_badge'         => 'KELAS',
     'no_schedule'           => 'Tidak ada jadwal mengajar hari ini.',
@@ -24,7 +24,7 @@ return [
     'status_upcoming'       => 'AKAN DATANG',
     'status_completed'      => 'SELESAI',
     'view_full_schedule'    => 'Lihat Jadwal Lengkap',
-    
+
     'notifications'         => 'Notifikasi',
     'incomplete_grades'     => 'Nilai Belum Lengkap',
     'students_not_graded'   => 'siswa belum dinilai sama sekali',
@@ -33,14 +33,14 @@ return [
     'students_no_projects'  => 'Siswa belum ada nilai proyek',
     'input_completed'       => 'Input Selesai',
     'all_grades_filled'     => 'Semua nilai siswa sudah terisi lengkap',
-    
+
     'grade_input_status'    => 'Status Input Nilai',
     'continue_input'        => 'LANJUTKAN INPUT',
-    'daily_grades'          => 'Nilai Harian',
+    'formatif_grades'          => 'Nilai Formatif',
     'summative_grades'      => 'Penilaian Sumatif',
     'project_grades'        => 'Proyek / Praktik',
     'of'                    => 'dari',
-    
+
     'teaching_classes'      => 'Kelas Mengajar',
     'view_all'              => 'LIHAT SEMUA',
     'no_classes'            => 'Belum ada kelas yang diampu.',
@@ -49,14 +49,31 @@ return [
     'active'                => 'AKTIF',
     'progress'              => 'Progress',
     'open_class'            => 'BUKA KELAS',
-    
+
     'avg_grade_per_class'   => 'Rata-Rata Nilai Per Kelas',
     'no_grades_input'       => 'Belum ada nilai diinput.',
-    'students_need_attention'=> 'Siswa Perlu Perhatian',
+    'students_need_attention' => 'Siswa Perlu Perhatian',
     'avg_below_70'          => 'Rata-rata Nilai < 70',
     'empty_projects_short'  => 'Proyek Kosong',
 
     // Kalender
-    'day_sun' => 'Minggu', 'day_mon' => 'Senin', 'day_tue' => 'Selasa', 'day_wed' => 'Rabu', 'day_thu' => 'Kamis', 'day_fri' => 'Jumat', 'day_sat' => 'Sabtu',
-    'month_jan' => 'Januari', 'month_feb' => 'Februari', 'month_mar' => 'Maret', 'month_apr' => 'April', 'month_may' => 'Mei', 'month_jun' => 'Juni', 'month_jul' => 'Juli', 'month_aug' => 'Agustus', 'month_sep' => 'September', 'month_oct' => 'Oktober', 'month_nov' => 'November', 'month_dec' => 'Desember'
+    'day_sun' => 'Minggu',
+    'day_mon' => 'Senin',
+    'day_tue' => 'Selasa',
+    'day_wed' => 'Rabu',
+    'day_thu' => 'Kamis',
+    'day_fri' => 'Jumat',
+    'day_sat' => 'Sabtu',
+    'month_jan' => 'Januari',
+    'month_feb' => 'Februari',
+    'month_mar' => 'Maret',
+    'month_apr' => 'April',
+    'month_may' => 'Mei',
+    'month_jun' => 'Juni',
+    'month_jul' => 'Juli',
+    'month_aug' => 'Agustus',
+    'month_sep' => 'September',
+    'month_oct' => 'Oktober',
+    'month_nov' => 'November',
+    'month_dec' => 'Desember'
 ];

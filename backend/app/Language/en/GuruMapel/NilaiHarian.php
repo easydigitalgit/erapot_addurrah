@@ -1,6 +1,6 @@
 <?php
 return [
-    'page_title'          => 'Daily Grades',
+    'page_title'          => 'Formatif Grades',
     'page_subtitle'       => 'Input and manage student daily grades quickly and accurately.',
     'info_subject'        => 'Subject',
     'info_class'          => 'Class & Study Group',

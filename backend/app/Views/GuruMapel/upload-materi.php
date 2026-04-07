@@ -71,6 +71,7 @@
       </div>
      </div>
 
+     <?php if(has_permission('guru_materi', 'create')): ?>
      <div class="card-soft bg-white dark:!bg-slate-800 border border-gray-100 dark:!border-slate-700 rounded-3xl p-6 md:p-8 shadow-sm mb-6 transition-colors">
       <h2 class="text-lg font-black text-gray-900 dark:!text-white uppercase tracking-wide mb-6 flex items-center gap-2 transition-colors">
        <svg class="w-5 h-5 text-[<?= $color['warna_primary'] ?>]" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" /></svg> <?= lang('GuruMapel/UploadMateri.form_title') ?>
@@ -158,6 +159,7 @@
        </div>
       </form>
      </div>
+     <?php endif; ?>
 
      <div class="card-soft bg-white dark:!bg-slate-800 border border-gray-100 dark:!border-slate-700 rounded-3xl p-6 md:p-8 shadow-sm mb-6 transition-colors">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4 border-b border-gray-100 dark:!border-slate-700 pb-4 transition-colors">
@@ -206,6 +208,9 @@
     const csrfTokenName = "<?= csrf_token() ?>";
     const csrfTokenHash = "<?= csrf_hash() ?>";
 
+    // IMPLEMENTASI RBAC: Kunci Delete Modul Materi
+    const CAN_DELETE = <?= has_permission('guru_materi', 'delete') ? 'true' : 'false' ?>;
+
     window.LANG = {
         pub_confirm: "<?= lang('GuruMapel/UploadMateri.js_pub_confirm') ?>",
         succ_pub: "<?= lang('GuruMapel/UploadMateri.js_succ_pub') ?>",
@@ -239,5 +244,5 @@
         ]
     };
 </script>
-<script src="<?= base_url('assets/js/GuruMapel/upload-materi.js') ?>?v=<?= time() ?>"></script>
+<script src="<?= base_url('assets/js/GuruMapel/upload-materi.js') ?>"></script>
 <?= $this->endSection() ?>
