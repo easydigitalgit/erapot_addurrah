@@ -194,8 +194,8 @@
                 if (!empty($sekolah['desa_nama'])) {
                     $nama_desa = $sekolah['desa_nama'];
                 } elseif (!empty($sekolah['desa_id'])) {
-                    $desa = $db->table('desa')->where('kode', $sekolah['desa_id'])->get()->getRowArray();
-                    $nama_desa = $desa ? $desa['nama'] : $sekolah['desa_id'];
+                    $desa = $db->table('desa')->where('id', $sekolah['desa_id'])->orWhere('kode', $sekolah['desa_id'])->get()->getRowArray();
+                    $nama_desa = $desa ? $desa['nama'] : '';
                 }
 
                 // 2. Cari Nama Kecamatan
@@ -203,8 +203,8 @@
                 if (!empty($sekolah['kecamatan_nama'])) {
                     $nama_kecamatan = $sekolah['kecamatan_nama'];
                 } elseif (!empty($sekolah['kecamatan'])) {
-                    $kecamatan = $db->table('kecamatan')->where('kode', $sekolah['kecamatan'])->get()->getRowArray();
-                    $nama_kecamatan = $kecamatan ? $kecamatan['nama'] : $sekolah['kecamatan'];
+                    $kecamatan = $db->table('kecamatan')->where('id', $sekolah['kecamatan'])->orWhere('kode', $sekolah['kecamatan'])->get()->getRowArray();
+                    $nama_kecamatan = $kecamatan ? $kecamatan['nama'] : '';
                 }
 
                 // 3. Cari Nama Kabupaten
@@ -212,8 +212,16 @@
                 if (!empty($sekolah['kabupaten_nama'])) {
                     $nama_kabupaten = $sekolah['kabupaten_nama'];
                 } elseif (!empty($sekolah['kabupaten'])) {
-                    $kabupaten = $db->table('kabupaten')->where('kode', $sekolah['kabupaten'])->get()->getRowArray();
-                    $nama_kabupaten = $kabupaten ? $kabupaten['nama'] : $sekolah['kabupaten'];
+                    $kabupaten = $db->table('kabupaten')->where('id', $sekolah['kabupaten'])->orWhere('kode', $sekolah['kabupaten'])->get()->getRowArray();
+                    $nama_kabupaten = $kabupaten ? $kabupaten['nama'] : '';
+                }
+
+                // 4. Cari Nama Provinsi
+                $nama_provinsi = '';
+                if (!empty($sekolah['provinsi'])) {
+                    $tbl_prov = $db->tableExists('propinsi') ? 'propinsi' : 'provinsi';
+                    $prov = $db->table($tbl_prov)->where('kode', $sekolah['provinsi'])->orWhere('id', $sekolah['provinsi'])->get()->getRowArray();
+                    if ($prov) $nama_provinsi = $prov['nama'];
                 }
 
                 // Pastikan jika nilai akhirnya masih berupa angka kode (gagal terjemah), kita kosongkan saja / default
@@ -222,10 +230,12 @@
                 if (is_numeric(str_replace('.', '', $nama_kabupaten))) $nama_kabupaten = 'Medan';
 
                 // Rangkai Alamat Lengkap
-                $alamat_sekolah_full = esc($sekolah['alamat'] ?? '-');
-                if (!empty($nama_desa)) $alamat_sekolah_full .= ', ' . esc($nama_desa);
-                if (!empty($nama_kecamatan)) $alamat_sekolah_full .= ', ' . esc($nama_kecamatan);
-                if (!empty($nama_kabupaten)) $alamat_sekolah_full .= ', ' . esc($nama_kabupaten);
+                $alamat_sekolah_full = esc(ucwords(strtolower($sekolah['alamat'] ?? '-')));
+                if (!empty($nama_desa)) $alamat_sekolah_full .= ', Kel/Desa ' . esc(ucwords(strtolower($nama_desa)));
+                if (!empty($nama_kecamatan)) $alamat_sekolah_full .= ', Kec. ' . esc(ucwords(strtolower($nama_kecamatan)));
+                if (!empty($nama_kabupaten)) $alamat_sekolah_full .= ', ' . esc(ucwords(strtolower($nama_kabupaten)));
+                if (!empty($nama_provinsi)) $alamat_sekolah_full .= ', ' . esc(ucwords(strtolower($nama_provinsi)));
+                if (!empty($sekolah['kode_pos'])) $alamat_sekolah_full .= ' ' . esc($sekolah['kode_pos']);
 
                 echo $alamat_sekolah_full;
                 ?>

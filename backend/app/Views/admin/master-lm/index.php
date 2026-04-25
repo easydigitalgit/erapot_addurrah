@@ -155,7 +155,7 @@ Master Lingkup Materi (LM) - Rapor Digital
 </div>
 
 <div id="formModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-[100] flex items-center justify-center p-4 overflow-y-auto">
-  <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-4xl my-auto transform scale-95 opacity-0 transition-all duration-300 flex flex-col" style="max-height: 90vh;" id="modalContent">
+  <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-[95%] lg:max-w-2xl xl:max-w-4xl my-auto transform scale-95 opacity-0 transition-all duration-300 flex flex-col" style="max-height: 95vh;" id="modalContent">
     <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 rounded-t-3xl">
       <div>
         <h3 class="text-xl font-bold text-slate-800 dark:text-white" id="modalTitle">Buat Template Deskripsi</h3>
@@ -170,7 +170,7 @@ Master Lingkup Materi (LM) - Rapor Digital
       <form id="lmForm" class="space-y-6">
         <input type="hidden" id="lm_id" name="id">
         
-        <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4">
           <div>
             <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Mata Pelajaran <span class="text-rose-500">*</span></label>
             <select name="mapel_id" id="mapel_id" required class="w-full p-2.5 border border-slate-200 dark:border-slate-600 rounded-xl outline-none focus:ring-2 focus:ring-dinamis dark:bg-slate-800 dark:text-white text-sm font-bold text-dinamis cursor-pointer">

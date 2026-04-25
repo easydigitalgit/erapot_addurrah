@@ -122,6 +122,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ro
         $routes->delete('delete/(:num)', 'SiswaController::delete/$1');
         $routes->get('template', 'SiswaController::downloadTemplate');
         $routes->post('import', 'SiswaController::import');
+        $routes->get('export', 'SiswaController::export');
         $routes->get('getKecamatan', 'SiswaController::getKecamatan');
         $routes->get('getKelurahan', 'SiswaController::getKelurahan');
     });
@@ -255,6 +256,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ro
     $routes->post('monitoring-input/send-notif', 'MonitoringInputController::sendNotification');
     $routes->get('validasi-nilai', 'ValidasiNilaiController::index');
     $routes->post('validasi-nilai/lockMassal', 'ValidasiNilaiController::lockMassal');
+    $routes->post('validasi-nilai/unlock', 'ValidasiNilaiController::unlock');
 
     // -- Cetak & Laporan --
     $routes->group('cetak-leger', function ($routes) {
@@ -336,6 +338,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ro
     $routes->get('tahfidz', 'TahfidzController::index');
     $routes->group('tahfidz', function ($routes) {
         $routes->get('get-data', 'TahfidzController::getData');
+        $routes->get('get-rombel-by-ta/(:num)', 'TahfidzController::getRombelByTA/$1');
         $routes->get('cetak-rapor/(:num)', 'TahfidzController::cetakRapor/$1');
     });
 });
@@ -448,7 +451,7 @@ $routes->group('wali', ['namespace' => 'App\Controllers\WaliKelas', 'filter' => 
     $routes->get('absensi-kelas', 'AbsensiKelasController::index');
     $routes->get('absensi/get-data', 'AbsensiKelasController::getAbsensiData');
     $routes->post('absensi/save', 'AbsensiKelasController::saveAbsensi');
-    $routes->post('absensi/import', 'WaliKelas\AbsensiKelasController::importAbsensi');
+    $routes->post('absensi/import', 'AbsensiKelasController::importAbsensi');
 
     // -- Progres --
     $routes->get('progres-nilai', 'ProgresNilaiController::index');
@@ -558,6 +561,10 @@ $routes->group('orangtua', ['namespace' => 'App\Controllers\OrangTua', 'filter' 
     $routes->get('get-history-ta', 'AkademikController::getHistoryTA');
     $routes->get('rapor/cek-ketersediaan', 'AkademikController::cekKetersediaan');
     $routes->get('rapor/download', 'AkademikController::downloadRapor');
+
+    // -- Rute Tahfidz (Unduh Rapor Juz) --
+    $routes->get('tahfidz/get-available-juz', 'TahfidzController::getAvailableJuz');
+    $routes->get('tahfidz/download-rapor/(:num)', 'TahfidzController::downloadRaporJuz/$1');
 
 
     // ---> TAMBAHKAN RUTE AKUN SAYA DI SINI <---

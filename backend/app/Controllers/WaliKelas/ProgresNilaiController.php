@@ -38,6 +38,18 @@ class ProgresNilaiController extends WaliKelasBaseController
 
             $rombel = $db->table('rombel')->where('wali_kelas_id', $guru['id'])->where('id_tahun_ajaran', $id_ta)->get()->getRowArray();
 
+            // PERBAIKAN: AUTO-RADAR (Jika di tahun aktif tidak ada, cari di tahun lain)
+            if (!$rombel) {
+                $rombel = $db->table('rombel')
+                             ->where('wali_kelas_id', $guru['id'])
+                             ->orderBy('id', 'DESC') // Ambil yang paling baru
+                             ->get()->getRowArray();
+                
+                if ($rombel) {
+                    // Beri tahu user bahwa data ini dari tahun ajaran yang berbeda jika perlu (opsional di Controller)
+                }
+            }
+
             if ($rombel) {
                 $ta_asli = $db->table('tahun_ajaran')->where('id', $rombel['id_tahun_ajaran'])->get()->getRowArray();
                 $rombel['semester'] = $ta_asli ? $ta_asli['semester'] : 'Ganjil';
@@ -54,13 +66,44 @@ class ProgresNilaiController extends WaliKelasBaseController
                 $siswaIds = array_column($siswaList, 'id');
 
                 $jadwalMapel = [];
-                if ($db->tableExists('jadwal_pelajaran') && $db->tableExists('mata_pelajaran')) {
-                    $jadwalMapel = $db->table('jadwal_pelajaran')
-                                      ->select('mata_pelajaran.id as mapel_id, mata_pelajaran.nama_mapel')
-                                      ->join('mata_pelajaran', 'mata_pelajaran.id = jadwal_pelajaran.mapel_id')
-                                      ->where('jadwal_pelajaran.rombel_id', $rombel['id'])
-                                      ->groupBy(['mata_pelajaran.id', 'mata_pelajaran.nama_mapel'])
-                                      ->get()->getResultArray();
+                // PERBAIKAN ANTI-GAGAL: Pencarian Mapel Tiga Lapis (Triple Fallback)
+                if ($db->tableExists('mata_pelajaran')) {
+                    // Lapis 1: Berdasarkan Kurikulum Rombel
+                    $kurikulum_id = $rombel['kurikulum_id'] ?? 0;
+                    if ($kurikulum_id > 0) {
+                        $jadwalMapel = $db->table('mata_pelajaran')
+                                          ->select('id as mapel_id, nama_mapel')
+                                          ->where('kurikulum_id', $kurikulum_id)
+                                          ->where('status', 'Aktif')
+                                          ->get()->getResultArray();
+                    }
+                                      
+                    // Lapis 2: Berdasarkan Jadwal Pelajaran jika Lapis 1 Kosong
+                    if (empty($jadwalMapel) && $db->tableExists('jadwal_pelajaran')) {
+                        $jadwalMapel = $db->table('jadwal_pelajaran')
+                                          ->select('mata_pelajaran.id as mapel_id, mata_pelajaran.nama_mapel')
+                                          ->join('mata_pelajaran', 'mata_pelajaran.id = jadwal_pelajaran.mapel_id')
+                                          ->where('jadwal_pelajaran.rombel_id', $rombel['id'])
+                                          ->groupBy(['mata_pelajaran.id', 'mata_pelajaran.nama_mapel'])
+                                          ->get()->getResultArray();
+                    }
+
+                    // Lapis 3: Berdasarkan Sisa-Sisa Nilai Existing jika Lapis 1 & 2 Kosong
+                    if (empty($jadwalMapel) && !empty($siswaIds) && $db->tableExists('nilai_sumatif')) {
+                        $existIds = $db->table('nilai_sumatif')
+                                       ->select('mapel_id')
+                                       ->whereIn('siswa_id', $siswaIds)
+                                       ->groupBy('mapel_id')
+                                       ->get()->getResultArray();
+                        
+                        if (!empty($existIds)) {
+                            $mapelIdsFound = array_column($existIds, 'mapel_id');
+                            $jadwalMapel = $db->table('mata_pelajaran')
+                                              ->select('id as mapel_id, nama_mapel')
+                                              ->whereIn('id', $mapelIdsFound)
+                                              ->get()->getResultArray();
+                        }
+                    }
                 }
 
                 // 4. INISIALISASI STRUKTUR ARRAY AGAR TIDAK ADA YANG HILANG

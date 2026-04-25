@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: <?= esc($sekolah['warna_primary'] ?? '#1F7A4D') ?>;
-            --secondary-color: <?= esc($sekolah['warna_secondary'] ?? '#E8F5E9') ?>;
+            --primary-color: <?= $sekolah['warna_primary'] ?>;
+            --secondary-color: <?= $sekolah['warna_secondary'] ?>;
             --text-color: #2D3436;
             --verified-color: #27AE60;
             --shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -91,7 +91,7 @@
 <div class="container">
     <div class="header">
         <div class="logo-box">
-             <img src="<?= base_url('uploads/logo/' . $sekolah['logo']) ?>" onerror="this.src='https://cdn-icons-png.flaticon.com/512/167/167707.png'" alt="Logo SMPIT AD DURRAH">
+             <img src="<?= base_url('uploads/logo/' . $sekolah['logo']) ?>" onerror="this.src='https://cdn-icons-png.flaticon.com/512/167/167707.png'" alt="Logo <?= esc($sekolah['nama_sekolah']) ?>">
         </div>
         <div class="status-badge">
             <i class="fas fa-check-circle mr-2"></i> &nbsp; LAPOR TERVERIFIKASI ASLI
@@ -101,7 +101,17 @@
     <div class="content">
         <div class="school-info">
             <div class="school-name"><?= esc($sekolah['nama_sekolah']) ?></div>
-            <div class="school-sub"><?= esc($sekolah['alamat']) ?></div>
+            <div class="school-sub">
+                <?php 
+                    $alamat_lengkap = [esc($sekolah['alamat'])];
+                    if(!empty($sekolah['kecamatan_nama'])) $alamat_lengkap[] = 'Kec. ' . esc($sekolah['kecamatan_nama']);
+                    if(!empty($sekolah['kabupaten_nama'])) $alamat_lengkap[] = esc($sekolah['kabupaten_nama']);
+                    if(!empty($sekolah['provinsi_nama'])) $alamat_lengkap[] = esc($sekolah['provinsi_nama']);
+                    if(!empty($sekolah['kode_pos'])) $alamat_lengkap[] = esc($sekolah['kode_pos']);
+                    
+                    echo implode(', ', array_filter($alamat_lengkap));
+                ?>
+            </div>
         </div>
 
         <div class="info-row">
@@ -127,8 +137,8 @@
     </div>
 
     <div class="footer">
-        <p>Sistem Rapor Digital SMPIT AD DURRAH</p>
-        <p><i class="fas fa-clock"></i> Verifikasi dilakukan pada: <?= $waktu ?> WIB</p>
+        <p>Sistem Rapor Digital <?= esc($sekolah['nama_sekolah']) ?></p>
+        <p><i class="fas fa-clock"></i> Verifikasi dilakukan pada: <?= $waktu ?></p>
     </div>
 </div>
 

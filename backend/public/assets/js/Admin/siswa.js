@@ -130,10 +130,14 @@ function applyFilters() {
     }
 
     let matchYear = true;
-    if (selectedYear !== "") {
-      const twoDigitYear = selectedYear.substring(2, 4);
-      const targetPattern = `.${twoDigitYear}.`;
-      matchYear = nis.includes(targetPattern);
+    if (selectedYear && selectedYear !== "") {
+      // Ambil dua digit tahun depan (misal "24" dari "2024/2025")
+      const yearParts = selectedYear.split('/');
+      const yearToMatch = yearParts[0].substring(2, 4); 
+      
+      // Pola NIS ustadz: XX.YEAR.XXXXX (misal 01.24.00001)
+      const targetPattern = `.${yearToMatch}.`;
+      matchYear = (s.nis || "").includes(targetPattern);
     }
 
     return matchSearch && matchLevel && matchStatus && matchYear;
@@ -220,15 +224,18 @@ function renderTable() {
       const textGender =
         jk === "L" ? "Laki-laki" : jk === "P" ? "Perempuan" : "-";
 
-      // LOGIKA WALI KELAS YANG AMAN
+      // 🚀 LOGIKA WALI KELAS (Mengambil data nama_wali_kelas hasil JOIN dari Controller)
       let displayWaliKelas = `<span class="text-gray-400 dark:text-slate-500 italic text-xs">${LANG.js_not_set || "Belum diatur"}</span>`;
-      if (student.guru_aman !== "") {
-        displayWaliKelas = `<div class="flex items-center justify-center gap-1.5 cursor-help" title="${student.guru_aman}">
+      
+      const namaWali = student.nama_wali_kelas || "";
+      
+      if (namaWali !== "" && namaWali !== "null") {
+        displayWaliKelas = `<div class="flex items-center justify-center gap-1.5 cursor-help" title="${namaWali}">
                                     <div class="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center text-[10px] font-bold shrink-0">
-                                        ${student.guru_aman.substring(0, 2).toUpperCase()}
+                                        ${namaWali.substring(0, 2).toUpperCase()}
                                     </div>
                                     <span class="text-sm font-medium text-gray-700 dark:text-slate-300 truncate max-w-[120px]">
-                                        ${student.guru_aman}
+                                        ${namaWali}
                                     </span>
                                 </div>`;
       }
@@ -476,10 +483,9 @@ window.editStudent = async function (id) {
   setVal("nik", student.nik);
   setVal("nama_lengkap", student.nama_lengkap);
 
-  // PERBAIKAN GENDER EDIT:
-  // Di editStudent
-  setVal("jenis_kelamin", student.jk_siswa);
-  setVal("status_siswa", student.stat_siswa);
+  // 🚀 PERBAIKAN AUTO-FILL: Gunakan variabel yang sudah dinormalisasi (aman)
+  setVal("jenis_kelamin", student.jk_aman);
+  setVal("status_siswa", student.status_aman);
 
   setVal("agama", student.agama);
   setVal("tempat_lahir", student.tempat_lahir);
@@ -546,8 +552,14 @@ window.editStudent = async function (id) {
 
   setVal("nama_wali", student.nama_wali);
   setVal("nik_wali", student.nik_wali);
+  setVal("tahun_lahir_wali", student.tahun_lahir_wali);
+  setVal("pendidikan_wali", student.pendidikan_wali);
   setVal("pekerjaan_wali", student.pekerjaan_wali);
+  setVal("penghasilan_wali", student.penghasilan_wali);
+  
   setVal("no_hp_ortu", student.no_hp_ortu);
+  setVal("email_ortu", student.email_ortu);
+  setVal("alamat_orangtua", student.alamat_orangtua);
 
   setVal("ekskul_1", student.ekskul_1);
   setVal("ekskul_2", student.ekskul_2);

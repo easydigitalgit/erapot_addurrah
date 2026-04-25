@@ -134,47 +134,7 @@
             <div class="header-text text-center">
                 <h1>LAPORAN HASIL CAPAIAN TAHFIDZ AL-QUR'AN</h1>
                 <h2><?= esc($sekolah['nama_sekolah'] ?? 'SMPIT AD DURRAH') ?></h2>
-                <p>
-                    <?php
-                    $db = \Config\Database::connect();
-                    $sekolahSet = $sekolah ?? [];
-
-                    // 1. Cari Nama Desa/Kelurahan
-                    $nama_desa = !empty($sekolahSet['desa_nama']) ? $sekolahSet['desa_nama'] : '';
-                    if (empty($nama_desa) && !empty($sekolahSet['desa_id'])) {
-                        $desa = $db->table('desa')->where('kode', $sekolahSet['desa_id'])->get()->getRowArray();
-                        $nama_desa = $desa ? $desa['nama'] : '';
-                    }
-
-                    // 2. Cari Nama Kecamatan
-                    $nama_kecamatan = !empty($sekolahSet['kecamatan_nama']) ? $sekolahSet['kecamatan_nama'] : '';
-                    if (empty($nama_kecamatan) && !empty($sekolahSet['kecamatan'])) {
-                        $kecamatan = $db->table('kecamatan')->where('kode', $sekolahSet['kecamatan'])->get()->getRowArray();
-                        $nama_kecamatan = $kecamatan ? $kecamatan['nama'] : '';
-                    }
-
-                    // 3. Cari Nama Kabupaten
-                    $nama_kabupaten = !empty($sekolahSet['kabupaten_nama']) ? $sekolahSet['kabupaten_nama'] : '';
-                    if (empty($nama_kabupaten) && !empty($sekolahSet['kabupaten'])) {
-                        $kabupaten = $db->table('kabupaten')->where('kode', $sekolahSet['kabupaten'])->get()->getRowArray();
-                        $nama_kabupaten = $kabupaten ? $kabupaten['nama'] : '';
-                    }
-
-                    // Pastikan jika nilai akhirnya masih berupa angka kode (gagal terjemah), kita kosongkan saja / default
-                    if (is_numeric(str_replace('.', '', $nama_desa))) $nama_desa = '';
-                    if (is_numeric(str_replace('.', '', $nama_kecamatan))) $nama_kecamatan = '';
-                    if (is_numeric(str_replace('.', '', $nama_kabupaten))) $nama_kabupaten = 'Medan';
-
-                    // Rangkai Alamat Lengkap
-                    $alamat_sekolah_full = esc($sekolahSet['alamat'] ?? '-');
-                    if (!empty($nama_desa)) $alamat_sekolah_full .= ', Kel. ' . esc($nama_desa);
-                    if (!empty($nama_kecamatan)) $alamat_sekolah_full .= ', Kec. ' . esc($nama_kecamatan);
-                    if (!empty($nama_kabupaten)) $alamat_sekolah_full .= ', ' . esc($nama_kabupaten);
-                    if (!empty($sekolahSet['kode_pos'])) $alamat_sekolah_full .= ' ' . esc($sekolahSet['kode_pos']);
-
-                    echo $alamat_sekolah_full;
-                    ?>
-                </p>
+                <p><?= esc($alamat_sekolah) ?></p>
             </div>
         </div>
 
@@ -185,7 +145,7 @@
                 <td width="40%" class="font-bold uppercase"><?= esc($siswa['nama_lengkap']) ?></td>
                 <td width="15%">Kelas</td>
                 <td width="2%">:</td>
-                <td><?= esc($siswa['tingkat']) ?> - <?= esc($siswa['nama_rombel']) ?></td>
+                <td><?= esc($siswa['tingkat'] ?? '-') ?> - <?= esc($siswa['nama_rombel'] ?? '-') ?></td>
             </tr>
             <tr>
                 <td>NIS/NISN</td>
@@ -344,25 +304,10 @@
                 <!-- KOLOM KANAN: PEMBINA TAHFIZ -->
                 <td style="width: 35%; text-align: center; vertical-align: top; border: none; padding: 0;">
                     <?php
-                    // 1. CEK LOKASI TANDA TANGAN
-                    $lokasi_ttd = 'Medan'; // Default
-                    if (!empty($sekolah['kabupaten_nama'])) {
-                        $lokasi_ttd = $sekolah['kabupaten_nama'];
-                    } elseif (!empty($sekolah['kabupaten'])) {
-                        $db = \Config\Database::connect();
-                        $kab = $db->table('kabupaten')->where('kode', $sekolah['kabupaten'])->get()->getRowArray();
-                        if ($kab) {
-                            $lokasi_ttd = $kab['nama'];
-                        }
-                    }
-                    if (is_numeric(str_replace('.', '', $lokasi_ttd))) {
-                        $lokasi_ttd = 'Medan';
-                    }
-
-                    // 2. AMBIL NAMA PEMBINA TAHFIZ
+                    // AMBIL NAMA PEMBINA TAHFIZ
                     $nama_pembina = $guru_tahfidz ?? '................................';
                     ?>
-                    <?= esc(ucwords(strtolower($lokasi_ttd))) ?>, <?= esc($tanggal_rapor ?? date('d F Y')) ?><br>
+                    <?= esc($lokasi_ttd) ?>, <?= esc($tanggal_rapor ?? date('d F Y')) ?><br>
                     Pembina Tahfiz
                     <br><br><br><br><br>
                     <strong style="text-decoration: underline;">( <?= esc($nama_pembina) ?> )</strong>

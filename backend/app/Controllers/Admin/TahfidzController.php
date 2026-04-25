@@ -68,7 +68,13 @@ class TahfidzController extends AdminBaseController
     {
         $this->data['title'] = 'Cetak Nilai Tahfizh';
         $this->data['color'] = $this->getColor();
-        $this->data['list_rombel'] = $this->rombelModel->orderBy('tingkat', 'ASC')->findAll();
+        // Ambil Tahun Ajaran untuk filter utama
+        $this->data['list_tahun_ajaran'] = $this->tahunAjaranModel->orderBy('tahun', 'DESC')->findAll();
+        // Inisialisasi awal list rombel (bisa dikosongkan atau ambil yang aktif saja)
+        $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        $id_ta_aktif = $ta_aktif ? $ta_aktif['id'] : 0;
+        $this->data['id_ta_aktif'] = $id_ta_aktif;
+        $this->data['list_rombel'] = $this->rombelModel->where('id_tahun_ajaran', $id_ta_aktif)->orderBy('tingkat', 'ASC')->findAll();
         
         return view('admin/tahfidz/index', $this->data);
     }
@@ -78,21 +84,31 @@ class TahfidzController extends AdminBaseController
         try {
             $rombel_id = request()->getGet('rombel');
             $juz_id    = request()->getGet('juz') ?? 30;
+            $id_ta_req = request()->getGet('id_ta');
             
-            // Ambil Tahun Ajaran Aktif
-            $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+            // Ambil Tahun Ajaran (Prioritas dari request, fallback ke Aktif)
+            if ($id_ta_req) {
+                $ta_aktif = $this->db->table('tahun_ajaran')->where('id', $id_ta_req)->get()->getRowArray();
+            } else {
+                $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+            }
+            
             $id_ta = $ta_aktif ? $ta_aktif['id'] : 0;
             $semester     = $ta_aktif ? $ta_aktif['semester'] : '';
+            $tgl_mulai = date('Y-m-d');
+            $tgl_akhir = date('Y-m-d');
 
-            // --- LOGIKA SEMESTER DARI GURU TAHFIZH ---
-            $tahun_str = explode('/', $ta_aktif['tahun'])[0]; 
-            if ($semester === 'Ganjil') {
-                $tgl_mulai = $tahun_str . '-07-01'; 
-                $tgl_akhir = $tahun_str . '-12-31'; 
-            } else {
-                $tahun_genap = (int)$tahun_str + 1; 
-                $tgl_mulai = $tahun_genap . '-01-01'; 
-                $tgl_akhir = $tahun_genap . '-06-30'; 
+            if ($ta_aktif && !empty($ta_aktif['tahun'])) {
+                // --- LOGIKA SEMESTER DARI GURU TAHFIZH ---
+                $tahun_str = explode('/', $ta_aktif['tahun'])[0]; 
+                if ($semester === 'Ganjil') {
+                    $tgl_mulai = $tahun_str . '-07-01'; 
+                    $tgl_akhir = $tahun_str . '-12-31'; 
+                } else {
+                    $tahun_genap = (int)$tahun_str + 1; 
+                    $tgl_mulai = $tahun_genap . '-01-01'; 
+                    $tgl_akhir = $tahun_genap . '-06-30'; 
+                }
             }
 
             // Ambil Mapping Surah untuk Juz ini
@@ -155,6 +171,18 @@ class TahfidzController extends AdminBaseController
         }
     }
 
+    public function getRombelByTA($id_ta)
+    {
+        try {
+            $rombels = $this->rombelModel->where('id_tahun_ajaran', $id_ta)
+                                         ->orderBy('tingkat', 'ASC')
+                                         ->findAll();
+            return response()->setJSON(['status' => 'success', 'data' => $rombels]);
+        } catch (\Exception $e) {
+            return response()->setStatusCode(500)->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
     private function calculateTaqdir($score)
     {
         $m = $this->getGradeMetrics($score);
@@ -176,18 +204,42 @@ class TahfidzController extends AdminBaseController
         }
     }
 
-    public function cetakRapor($siswa_id)
+    public function cetakRapor($siswa_id,$ta_id=0)
     {
-        $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        // AMBIL PARAMETER TA DARI URL (UNTUK MESIN WAKTU)
+        $id_ta_get = request()->getGet('ta')?? $ta_id;
+
+        if ($id_ta_get) {
+            $ta_aktif = $this->db->table('tahun_ajaran')->where('id', $id_ta_get)->get()->getRowArray();
+        } else {
+            $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        }
+
         $id_ta = $ta_aktif ? $ta_aktif['id'] : 0;
         $tahun_ajaran = $ta_aktif ? $ta_aktif['tahun'] : '';
         $semester     = $ta_aktif ? $ta_aktif['semester'] : '';
 
-        $siswa = $this->siswaModel
-            ->select('siswa.*, rombel.nama_rombel, rombel.tingkat, guru_tendik.nama_lengkap as wali_kelas')
-            ->join('rombel', 'rombel.id = siswa.rombel_id', 'left')
+        // SEARCH SISWA DENGAN LOGIKA HISTORIS (CARI KELAS DI TAHUN TERSEBUT)
+        $siswa = $this->db->table('siswa')
+            ->select('siswa.*, ar.rombel_id as hist_rombel_id, rombel.nama_rombel, rombel.tingkat, guru_tendik.nama_lengkap as wali_kelas')
+            ->join('anggota_rombel ar', "ar.siswa_id = siswa.id AND ar.tahun_ajaran_id = {$id_ta} AND ar.semester = '{$semester}'", 'left')
+            ->join('rombel', 'rombel.id = ar.rombel_id', 'left') // Join ke rombel historis
             ->join('guru_tendik', 'guru_tendik.id = rombel.wali_kelas_id', 'left')
-            ->find($siswa_id);
+            ->where('siswa.id', $siswa_id)
+            ->get()->getRowArray();
+
+        // Fallback jika tidak ditemukan di anggota_rombel (mungkin data baru/belum diproses)
+        if (!$siswa || empty($siswa['nama_rombel'])) {
+            $siswaCurrent = $this->siswaModel
+                ->select('siswa.*, rombel.nama_rombel, rombel.tingkat, guru_tendik.nama_lengkap as wali_kelas')
+                ->join('rombel', 'rombel.id = siswa.rombel_id', 'left')
+                ->join('guru_tendik', 'guru_tendik.id = rombel.wali_kelas_id', 'left')
+                ->find($siswa_id);
+            
+            if ($siswaCurrent) {
+                $siswa = array_merge($siswa ?: [], $siswaCurrent);
+            }
+        }
 
         if (!$siswa) return "Siswa tidak ditemukan.";
 
@@ -297,22 +349,57 @@ class TahfidzController extends AdminBaseController
             $setoranMap[$key] = $st['nilai'];
         }
 
+        // --- PROSES ALAMAT LENGKAP & CERDAS ROMAWI ---
+        $nama_desa = '';
+        if (!empty($sekolah['desa_id'])) {
+            $desa = $this->db->table('desa')->where('id', $sekolah['desa_id'])->orWhere('kode', $sekolah['desa_id'])->get()->getRowArray();
+            if ($desa) $nama_desa = $desa['nama'];
+        }
+        $nama_kecamatan = '';
+        if (!empty($sekolah['kecamatan'])) {
+            $kec = $this->db->table('kecamatan')->where('id', $sekolah['kecamatan'])->orWhere('kode', $sekolah['kecamatan'])->get()->getRowArray();
+            if ($kec) $nama_kecamatan = $kec['nama'];
+        }
+        $nama_kabupaten = '';
+        if (!empty($sekolah['kabupaten'])) {
+            $kab = $this->db->table('kabupaten')->where('id', $sekolah['kabupaten'])->orWhere('kode', $sekolah['kabupaten'])->get()->getRowArray();
+            if ($kab) $nama_kabupaten = $kab['nama'];
+        }
+        $nama_provinsi = '';
+        if (!empty($sekolah['provinsi'])) {
+            $tbl_prov = $this->db->tableExists('propinsi') ? 'propinsi' : 'provinsi';
+            $prov = $this->db->table($tbl_prov)->where('id', $sekolah['provinsi'])->orWhere('kode', $sekolah['provinsi'])->get()->getRowArray();
+            if ($prov) $nama_provinsi = $prov['nama'];
+        }
+
+        $alamat_full = $this->titleCaseWithRoman($sekolah['alamat'] ?? '-');
+        if (!empty($nama_desa)) $alamat_full .= ', Kel/Desa ' . $this->titleCaseWithRoman($nama_desa);
+        if (!empty($nama_kecamatan)) $alamat_full .= ', Kec. ' . $this->titleCaseWithRoman($nama_kecamatan);
+        if (!empty($nama_kabupaten)) $alamat_full .= ', ' . $this->titleCaseWithRoman($nama_kabupaten);
+        if (!empty($nama_provinsi)) $alamat_full .= ', ' . $this->titleCaseWithRoman($nama_provinsi);
+        if (!empty($sekolah['kode_pos'])) $alamat_full .= ' ' . esc($sekolah['kode_pos']);
+
+        // --- LOKASI TTD ---
+        $lokasi_ttd = $this->titleCaseWithRoman($nama_kabupaten ?: 'Medan');
+
         $data = [
-            'siswa'         => $siswa,
-            'sekolah'       => $sekolah,
-            'kepsek'        => $kepsek,
-            'nilai'         => $nilai,
-            'metrics_teori'   => $this->getGradeMetrics($nilai['nilai_teori'] ?? 0),
-            'metrics_setoran' => $this->getGradeMetrics($nilai['nilai_setoran'] ?? 0),
-            'surahList'     => $surahList,
-            'juz_info'      => $juz_info,
-            'setoranMap'    => $setoranMap,
-            'tahun_ajaran'  => $tahun_ajaran,
-            'semester'      => $semester,
-            'guru_tahfidz'  => $guruTahfidz ? $guruTahfidz['nama_lengkap'] : '-', 
-            'tanggal_rapor'   => date('d F Y'),
+            'siswa'            => $siswa,
+            'sekolah'          => $sekolah,
+            'alamat_sekolah'   => $alamat_full,
+            'lokasi_ttd'       => $lokasi_ttd,
+            'kepsek'           => $kepsek,
+            'nilai'            => $nilai,
+            'metrics_teori'    => $this->getGradeMetrics($nilai['nilai_teori'] ?? 0),
+            'metrics_setoran'  => $this->getGradeMetrics($nilai['nilai_setoran'] ?? 0),
+            'surahList'        => $surahList,
+            'juz_info'         => $juz_info,
+            'setoranMap'       => $setoranMap,
+            'tahun_ajaran'     => $tahun_ajaran,
+            'semester'         => $semester,
+            'guru_tahfidz'     => $guruTahfidz ? $guruTahfidz['nama_lengkap'] : '-', 
+            'tanggal_rapor'    => date('d F Y'),
             'watermark_base64' => $this->getWatermarkBase64($sekolah['nama_sekolah'] ?? ''),
-            'link_verifikasi' => base_url('validasi/rapor/' . strtr(rtrim(base64_encode($siswa_id . '|' . $id_ta . '|' . 'Tahfidz'), '='), '+/=', '-_,'))
+            'link_verifikasi'  => base_url('validasi/rapor/' . strtr(rtrim(base64_encode($siswa_id . '|' . $id_ta . '|' . 'Tahfidz'), '='), '+/=', '-_,'))
         ];
 
         // --- SISTEM WATERMARK GANDA (LOGIKA SAMA DENGAN CETAK RAPOR UTAMA) ---
@@ -353,6 +440,29 @@ class TahfidzController extends AdminBaseController
             ->setHeader('Content-Disposition', 'inline; filename="' . $filename . '"')
             ->setBody($mpdf->Output($filename, 'S'));
     }
+
+    /**
+     * Helper cerdas untuk menaruh format Title Case dengan tetap menjaga Angka Romawi tetap kapital.
+     * Contoh: "jalan sumarsono ii" -> "Jalan Sumarsono II"
+     */
+    private function titleCaseWithRoman($text)
+    {
+        if (empty($text)) return "";
+        
+        $words = explode(' ', strtolower($text));
+        $romans = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi', 'xii'];
+        
+        foreach ($words as &$word) {
+            if (in_array($word, $romans)) {
+                $word = strtoupper($word);
+            } else {
+                $word = ucwords($word);
+            }
+        }
+        
+        return implode(' ', $words);
+    }
+
     private function blendWithWhite($hex, $weight)
     {
         $hex = str_replace("#", "", $hex);

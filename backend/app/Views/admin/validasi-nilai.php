@@ -116,8 +116,9 @@
     </h3>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div>
-            <label class="block text-[11px] font-bold text-gray-600 dark:text-slate-400 uppercase tracking-wider mb-2 transition-colors"><?= lang('Admin/ValidasiNilai.level') ?></label>
+
+    <div>
+        <label class="block text-[11px] font-bold text-gray-600 dark:text-slate-400 uppercase tracking-wider mb-2 transition-colors"><?= lang('Admin/ValidasiNilai.level') ?></label>
             <select id="filterTingkat" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 text-gray-800 dark:text-white text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>] transition-colors appearance-none cursor-pointer outline-none shadow-sm">
                 <option value=""><?= lang('Admin/ValidasiNilai.all_levels') ?></option>
                 <?php foreach ($list_tingkat as $t): ?>

@@ -19,9 +19,12 @@ class SiswaController extends AdminBaseController
         // FITUR AUTO-FIX DATABASE: Menambahkan 3 kolom ekskul ke tabel siswa
         // ========================================================================
         $fieldsSiswa = $db->getFieldNames('siswa');
-        if (!in_array('ekskul_1', $fieldsSiswa)) $db->query("ALTER TABLE `siswa` ADD `ekskul_1` INT(11) NULL");
-        if (!in_array('ekskul_2', $fieldsSiswa)) $db->query("ALTER TABLE `siswa` ADD `ekskul_2` INT(11) NULL");
-        if (!in_array('ekskul_3', $fieldsSiswa)) $db->query("ALTER TABLE `siswa` ADD `ekskul_3` INT(11) NULL");
+        if (!in_array('ekskul_1', $fieldsSiswa))
+            $db->query("ALTER TABLE `siswa` ADD `ekskul_1` INT(11) NULL");
+        if (!in_array('ekskul_2', $fieldsSiswa))
+            $db->query("ALTER TABLE `siswa` ADD `ekskul_2` INT(11) NULL");
+        if (!in_array('ekskul_3', $fieldsSiswa))
+            $db->query("ALTER TABLE `siswa` ADD `ekskul_3` INT(11) NULL");
 
         // 1. OPTIMASI QUERY STATISTIK (Hanya 1x Query)
         $stats = $db->table('siswa')
@@ -54,26 +57,54 @@ class SiswaController extends AdminBaseController
         $ekskulList = $db->table('master_ekskul')->where('status', 'Aktif')->orderBy('nama_ekskul', 'ASC')->get()->getResultArray();
 
         $data = [
-            'user'            => 'Admin',
-            'navigations'     => $this->getSidebarMenu(),
-            'total_siswa'     => $stats['total_siswa'] ?? 0,
-            'total_alumni'    => $stats['total_alumni'] ?? 0,
-            'total_laki'      => $stats['total_laki'] ?? 0,
+            'user' => 'Admin',
+            'navigations' => $this->getSidebarMenu(),
+            'total_siswa' => $stats['total_siswa'] ?? 0,
+            'total_alumni' => $stats['total_alumni'] ?? 0,
+            'total_laki' => $stats['total_laki'] ?? 0,
             'total_perempuan' => $stats['total_perempuan'] ?? 0,
-            'tahun_ajaran'    => $tahunAjaran,
-            'tingkat_rombel'  => $tingkatRombel,
-            'ekskulList'      => $ekskulList, // Kirim ke View
-            'color'           => $this->getColor()
+            'tahun_ajaran' => $tahunAjaran,
+            'tingkat_rombel' => $tingkatRombel,
+            'ekskulList' => $ekskulList, // Kirim ke View
+            'color' => $this->getColor()
         ];
 
         return view('admin/siswa', $data);
     }
 
-    // --- API: AMBIL SEMUA DATA SISWA (JOIN ROMBEL) ---
+    // --- API: AMBIL SEMUA DATA SISWA (DENGAN SUNTIKAN WALI KELAS & MESIN WAKTU) ---
     public function getAll()
     {
-        $siswaModel = new SiswaModel();
-        $data = $siswaModel->getSiswaLengkap();
+        $db = \Config\Database::connect();
+        
+        // 1. Deteksi Tahun Ajaran Aktif
+        $ta_aktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        $ta_id = $ta_aktif ? $ta_aktif['id'] : 0;
+
+        // 2. Bangun Query Anti-Gaib (Konsolidasi Seluruh Data Santri & Ortu)
+        $builder = $db->table('siswa s');
+        $builder->select('
+            s.*, 
+            r.nama_rombel, 
+            r.tingkat, 
+            gt.nama_lengkap as nama_wali_kelas,
+            ow.nama_ayah, ow.nik_ayah, ow.tahun_lahir_ayah, ow.pendidikan_ayah, ow.pekerjaan_ayah, ow.penghasilan_ayah,
+            ow.nama_ibu, ow.nik_ibu, ow.tahun_lahir_ibu, ow.pendidikan_ibu, ow.pekerjaan_ibu, ow.penghasilan_ibu,
+            ow.nama_wali, ow.nik_wali, ow.tahun_lahir_wali, ow.pendidikan_wali, ow.pekerjaan_wali, ow.penghasilan_wali,
+            ow.no_hp_ortu, ow.email_ortu, ow.alamat_orangtua
+        ');
+
+        // 🚀 JOIN MESIN WAKTU (Ambil Rombel Tahun Ajaran Aktif)
+        $builder->join('anggota_rombel ar', "ar.siswa_id = s.id AND ar.tahun_ajaran_id = $ta_id", 'left');
+        $builder->join('rombel r', 'r.id = COALESCE(ar.rombel_id, s.rombel_id)', 'left');
+
+        // 🚀 JOIN GURU: Ambil nama lengkap wali kelas
+        $builder->join('guru_tendik gt', 'gt.id = r.wali_kelas_id', 'left');
+
+        // 🚀 JOIN ORTU: Ambil data orang tua/wali untuk modal edit
+        $builder->join('orangtua_wali ow', 'ow.siswa_id = s.id', 'left');
+
+        $data = $builder->get()->getResultArray();
         return $this->response->setJSON($data);
     }
 
@@ -96,14 +127,14 @@ class SiswaController extends AdminBaseController
         $db = \Config\Database::connect();
 
         $tglDiterima = $this->request->getPost('tgl_diterima') ?: date('Y-m-d');
-        $tahunMasuk  = date('y', strtotime($tglDiterima));
+        $tahunMasuk = date('y', strtotime($tglDiterima));
 
         // AUTO ANGKATAN & RESET
         $lastSiswa = $siswaModel->orderBy('id', 'DESC')->first();
         if ($lastSiswa && !empty($lastSiswa['nis']) && strpos($lastSiswa['nis'], '.') !== false) {
             $parts = explode('.', $lastSiswa['nis']);
-            $lastAngkatan = (int)$parts[0];
-            $lastTahun    = $parts[1];
+            $lastAngkatan = (int) $parts[0];
+            $lastTahun = $parts[1];
             $angkatanBaru = ($tahunMasuk > $lastTahun) ? $lastAngkatan + 1 : $lastAngkatan;
         } else {
             $angkatanBaru = 1;
@@ -111,16 +142,17 @@ class SiswaController extends AdminBaseController
 
         $prefixNis = sprintf("%02d", $angkatanBaru) . '.' . $tahunMasuk . '.';
         $cekUrutan = $siswaModel->like('nis', $prefixNis, 'after')->orderBy('nis', 'DESC')->first();
-        $nextUrut  = $cekUrutan ? ((int)explode('.', $cekUrutan['nis'])[2] + 1) : 1;
-        $nisFinal  = $prefixNis . sprintf("%05d", $nextUrut);
+        $nextUrut = $cekUrutan ? ((int) explode('.', $cekUrutan['nis'])[2] + 1) : 1;
+        $nisFinal = $prefixNis . sprintf("%05d", $nextUrut);
 
         $fileFoto = $this->request->getFile('photo');
         $namaFotoDB = null;
 
         // 1. UPLOAD FOTO KE FOLDER AVATARS
-        if ($fileFoto && $fileFoto->isValid() && ! $fileFoto->hasMoved()) {
+        if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
             $path = FCPATH . 'assets/uploads/avatars/';
-            if (!is_dir($path)) mkdir($path, 0777, true);
+            if (!is_dir($path))
+                mkdir($path, 0777, true);
 
             $newName = $fileFoto->getRandomName();
             $namaFotoDB = pathinfo($newName, PATHINFO_FILENAME) . '.webp';
@@ -144,56 +176,56 @@ class SiswaController extends AdminBaseController
 
         // KUMPULKAN SEMUA DATA SISWA
         $dataSiswa = [
-            'nis'                   => $nisFinal,
-            'nisn'                  => $getNull('nisn'),
-            'nik'                   => $getNull('nik'),
-            'nama_lengkap'          => $this->request->getPost('nama_lengkap'),
-            'jenis_kelamin'         => $getNull('jenis_kelamin'),
-            'tempat_lahir'          => $getNull('tempat_lahir'),
-            'tanggal_lahir'         => $getNull('tanggal_lahir'),
-            'agama'                 => $getNull('agama'),
-            'no_kk'                 => $getNull('no_kk'),
-            'no_registrasi_akta'    => $getNull('no_registrasi_akta'),
+            'nis' => $nisFinal,
+            'nisn' => $getNull('nisn'),
+            'nik' => $getNull('nik'),
+            'nama_lengkap' => $this->request->getPost('nama_lengkap'),
+            'jenis_kelamin' => $getNull('jenis_kelamin'),
+            'tempat_lahir' => $getNull('tempat_lahir'),
+            'tanggal_lahir' => $getNull('tanggal_lahir'),
+            'agama' => $getNull('agama'),
+            'no_kk' => $getNull('no_kk'),
+            'no_registrasi_akta' => $getNull('no_registrasi_akta'),
             'status_dalam_keluarga' => $getNull('status_dalam_keluarga'),
-            'anak_ke'               => $getNull('anak_ke'),
-            'jml_saudara_kandung'   => $getNull('jml_saudara_kandung'),
-            'kebutuhan_khusus'      => $getNull('kebutuhan_khusus'),
-            'berat_badan'           => $getNull('berat_badan'),
-            'tinggi_badan'          => $getNull('tinggi_badan'),
-            'lingkar_kepala'        => $getNull('lingkar_kepala'),
-            'alamat_siswa'          => $getNull('alamat_siswa'),
-            'rt'                    => $getNull('rt'),
-            'rw'                    => $getNull('rw'),
-            'dusun'                 => $getNull('dusun'),
-            'kelurahan'             => $getNull('kelurahan'),
-            'kecamatan'             => $getNull('kecamatan'),
-            'kode_pos'              => $getNull('kode_pos'),
-            'jenis_tinggal'         => $getNull('jenis_tinggal'),
-            'alat_transportasi'     => $getNull('alat_transportasi'),
-            'jarak_ke_sekolah'      => $getNull('jarak_ke_sekolah'),
-            'no_telp_rumah'         => $getNull('no_telp_rumah'),
-            'no_hp'                 => $getNull('no_hp'),
-            'email_siswa'           => $getNull('email_siswa'),
-            'asal_sekolah'          => $getNull('asal_sekolah'),
-            'skhun'                 => $getNull('skhun'),
-            'no_peserta_un'         => $getNull('no_peserta_un'),
-            'no_seri_ijazah'        => $getNull('no_seri_ijazah'),
-            'diterima_dikelas'      => $getNull('diterima_dikelas'),
-            'tgl_diterima'          => $tglDiterima,
-            'rombel_id'             => $getNull('rombel_id'),
-            'penerima_kps'          => $getNull('penerima_kps'),
-            'no_kps'                => $getNull('no_kps'),
-            'penerima_kip'          => $getNull('penerima_kip'),
-            'nomor_kip'             => $getNull('nomor_kip'),
-            'nama_di_kip'           => $getNull('nama_di_kip'),
-            'nomor_kks'             => $getNull('nomor_kks'),
-            'layak_pip'             => $getNull('layak_pip'),
-            'alasan_layak_pip'      => $getNull('alasan_layak_pip'),
-            'ekskul_1'              => $getNull('ekskul_1'),
-            'ekskul_2'              => $getNull('ekskul_2'),
-            'ekskul_3'              => $getNull('ekskul_3'),
-            'foto_siswa'            => $namaFotoDB,
-            'status_siswa'          => $this->request->getPost('status_siswa') ?: 'Aktif'
+            'anak_ke' => $getNull('anak_ke'),
+            'jml_saudara_kandung' => $getNull('jml_saudara_kandung'),
+            'kebutuhan_khusus' => $getNull('kebutuhan_khusus'),
+            'berat_badan' => $getNull('berat_badan'),
+            'tinggi_badan' => $getNull('tinggi_badan'),
+            'lingkar_kepala' => $getNull('lingkar_kepala'),
+            'alamat_siswa' => $getNull('alamat_siswa'),
+            'rt' => $getNull('rt'),
+            'rw' => $getNull('rw'),
+            'dusun' => $getNull('dusun'),
+            'kelurahan' => $getNull('kelurahan'),
+            'kecamatan' => $getNull('kecamatan'),
+            'kode_pos' => $getNull('kode_pos'),
+            'jenis_tinggal' => $getNull('jenis_tinggal'),
+            'alat_transportasi' => $getNull('alat_transportasi'),
+            'jarak_ke_sekolah' => $getNull('jarak_ke_sekolah'),
+            'no_telp_rumah' => $getNull('no_telp_rumah'),
+            'no_hp' => $getNull('no_hp'),
+            'email_siswa' => $getNull('email_siswa'),
+            'asal_sekolah' => $getNull('asal_sekolah'),
+            'skhun' => $getNull('skhun'),
+            'no_peserta_un' => $getNull('no_peserta_un'),
+            'no_seri_ijazah' => $getNull('no_seri_ijazah'),
+            'diterima_dikelas' => $getNull('diterima_dikelas'),
+            'tgl_diterima' => $tglDiterima,
+            'rombel_id' => $getNull('rombel_id'),
+            'penerima_kps' => $getNull('penerima_kps'),
+            'no_kps' => $getNull('no_kps'),
+            'penerima_kip' => $getNull('penerima_kip'),
+            'nomor_kip' => $getNull('nomor_kip'),
+            'nama_di_kip' => $getNull('nama_di_kip'),
+            'nomor_kks' => $getNull('nomor_kks'),
+            'layak_pip' => $getNull('layak_pip'),
+            'alasan_layak_pip' => $getNull('alasan_layak_pip'),
+            'ekskul_1' => $getNull('ekskul_1'),
+            'ekskul_2' => $getNull('ekskul_2'),
+            'ekskul_3' => $getNull('ekskul_3'),
+            'foto_siswa' => $namaFotoDB,
+            'status_siswa' => $this->request->getPost('status_siswa') ?: 'Aktif'
         ];
 
         // Validasi Ekskul Kembar
@@ -228,10 +260,10 @@ class SiswaController extends AdminBaseController
             }
 
             $userData = [
-                'username'    => $username,
-                'password'    => password_hash('12345678', PASSWORD_BCRYPT),
-                'role_id'     => 3,
-                'is_active'   => 1,
+                'username' => $username,
+                'password' => password_hash('12345678', PASSWORD_BCRYPT),
+                'role_id' => 3,
+                'is_active' => 1,
                 'foto_profil' => $namaFotoDB // <-- FOTO DISIMPAN DI SINI
             ];
 
@@ -254,9 +286,9 @@ class SiswaController extends AdminBaseController
                 $userIdOrtu = $existingUserOrtu['id'];
             } else {
                 $ortuAccount = [
-                    'username'  => $usernameOrtu,
-                    'password'  => password_hash('12345678', PASSWORD_BCRYPT),
-                    'role_id'   => 4,
+                    'username' => $usernameOrtu,
+                    'password' => password_hash('12345678', PASSWORD_BCRYPT),
+                    'role_id' => 4,
                     'is_active' => 1
                 ];
                 if (!$db->table('users')->insert($ortuAccount)) {
@@ -266,30 +298,30 @@ class SiswaController extends AdminBaseController
             }
 
             $dataOrtu = [
-                'nama_ayah'        => $getNull('nama_ayah') ?: '-',
-                'nik_ayah'         => $getNull('nik_ayah'),
+                'nama_ayah' => $getNull('nama_ayah') ?: '-',
+                'nik_ayah' => $getNull('nik_ayah'),
                 'tahun_lahir_ayah' => $getNull('tahun_lahir_ayah'),
-                'pendidikan_ayah'  => $getNull('pendidikan_ayah'),
-                'pekerjaan_ayah'   => $getNull('pekerjaan_ayah') ?: '-',
+                'pendidikan_ayah' => $getNull('pendidikan_ayah'),
+                'pekerjaan_ayah' => $getNull('pekerjaan_ayah') ?: '-',
                 'penghasilan_ayah' => $getNull('penghasilan_ayah'),
 
-                'nama_ibu'         => $getNull('nama_ibu') ?: '-',
-                'nik_ibu'          => $getNull('nik_ibu'),
-                'tahun_lahir_ibu'  => $getNull('tahun_lahir_ibu'),
-                'pendidikan_ibu'   => $getNull('pendidikan_ibu'),
-                'pekerjaan_ibu'    => $getNull('pekerjaan_ibu') ?: '-',
-                'penghasilan_ibu'  => $getNull('penghasilan_ibu'),
+                'nama_ibu' => $getNull('nama_ibu') ?: '-',
+                'nik_ibu' => $getNull('nik_ibu'),
+                'tahun_lahir_ibu' => $getNull('tahun_lahir_ibu'),
+                'pendidikan_ibu' => $getNull('pendidikan_ibu'),
+                'pekerjaan_ibu' => $getNull('pekerjaan_ibu') ?: '-',
+                'penghasilan_ibu' => $getNull('penghasilan_ibu'),
 
-                'nama_wali'        => $getNull('nama_wali') ?: '-',
-                'nik_wali'         => $getNull('nik_wali'),
+                'nama_wali' => $getNull('nama_wali') ?: '-',
+                'nik_wali' => $getNull('nik_wali'),
                 'tahun_lahir_wali' => $getNull('tahun_lahir_wali'),
-                'pendidikan_wali'  => $getNull('pendidikan_wali'),
-                'pekerjaan_wali'   => $getNull('pekerjaan_wali') ?: '-',
+                'pendidikan_wali' => $getNull('pendidikan_wali'),
+                'pekerjaan_wali' => $getNull('pekerjaan_wali') ?: '-',
                 'penghasilan_wali' => $getNull('penghasilan_wali'),
 
-                'no_hp_ortu'       => $hpOrtu,
-                'email_ortu'       => $getNull('email_ortu'),
-                'alamat_orangtua'  => $getNull('alamat_orangtua')
+                'no_hp_ortu' => $hpOrtu,
+                'email_ortu' => $getNull('email_ortu'),
+                'alamat_orangtua' => $getNull('alamat_orangtua')
             ];
 
             $cekOrtuDB = $db->table('orangtua_wali')->where('user_id', $userIdOrtu)->get()->getRowArray();
@@ -298,12 +330,13 @@ class SiswaController extends AdminBaseController
                 $dataOrtu['siswa_id'] = $siswaId;
                 if (!empty($dataOrtu['email_ortu'])) {
                     $cekEmail = $db->table('orangtua_wali')->where('email_ortu', $dataOrtu['email_ortu'])->where('id !=', $cekOrtuDB['id'])->countAllResults();
-                    if ($cekEmail > 0) unset($dataOrtu['email_ortu']);
+                    if ($cekEmail > 0)
+                        unset($dataOrtu['email_ortu']);
                 }
                 $db->table('orangtua_wali')->where('id', $cekOrtuDB['id'])->update($dataOrtu);
             } else {
                 $dataOrtu['siswa_id'] = $siswaId;
-                $dataOrtu['user_id']  = $userIdOrtu;
+                $dataOrtu['user_id'] = $userIdOrtu;
                 if (!empty($dataOrtu['email_ortu']) && $db->table('orangtua_wali')->where('email_ortu', $dataOrtu['email_ortu'])->countAllResults() > 0) {
                     $dataOrtu['email_ortu'] = null;
                 }
@@ -327,7 +360,8 @@ class SiswaController extends AdminBaseController
         $db = \Config\Database::connect();
 
         $siswaLama = $siswaModel->find($id);
-        if (!$siswaLama) return $this->response->setJSON(['status' => 'error', 'message' => 'Data tidak ditemukan.']);
+        if (!$siswaLama)
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Data tidak ditemukan.']);
 
         $getNull = function ($key) {
             $val = $this->request->getPost($key);
@@ -335,55 +369,55 @@ class SiswaController extends AdminBaseController
         };
 
         $dataSiswa = [
-            'nis'                   => $this->request->getPost('nis'),
-            'nisn'                  => $getNull('nisn'),
-            'nik'                   => $getNull('nik'),
-            'nama_lengkap'          => $this->request->getPost('nama_lengkap'),
-            'jenis_kelamin'         => $getNull('jenis_kelamin'),
-            'tempat_lahir'          => $getNull('tempat_lahir'),
-            'tanggal_lahir'         => $getNull('tanggal_lahir'),
-            'agama'                 => $getNull('agama'),
-            'no_kk'                 => $getNull('no_kk'),
-            'no_registrasi_akta'    => $getNull('no_registrasi_akta'),
+            'nis' => $this->request->getPost('nis'),
+            'nisn' => $getNull('nisn'),
+            'nik' => $getNull('nik'),
+            'nama_lengkap' => $this->request->getPost('nama_lengkap'),
+            'jenis_kelamin' => $getNull('jenis_kelamin'),
+            'tempat_lahir' => $getNull('tempat_lahir'),
+            'tanggal_lahir' => $getNull('tanggal_lahir'),
+            'agama' => $getNull('agama'),
+            'no_kk' => $getNull('no_kk'),
+            'no_registrasi_akta' => $getNull('no_registrasi_akta'),
             'status_dalam_keluarga' => $getNull('status_dalam_keluarga'),
-            'anak_ke'               => $getNull('anak_ke'),
-            'jml_saudara_kandung'   => $getNull('jml_saudara_kandung'),
-            'kebutuhan_khusus'      => $getNull('kebutuhan_khusus'),
-            'berat_badan'           => $getNull('berat_badan'),
-            'tinggi_badan'          => $getNull('tinggi_badan'),
-            'lingkar_kepala'        => $getNull('lingkar_kepala'),
-            'alamat_siswa'          => $getNull('alamat_siswa'),
-            'rt'                    => $getNull('rt'),
-            'rw'                    => $getNull('rw'),
-            'dusun'                 => $getNull('dusun'),
-            'kelurahan'             => $getNull('kelurahan'),
-            'kecamatan'             => $getNull('kecamatan'),
-            'kode_pos'              => $getNull('kode_pos'),
-            'jenis_tinggal'         => $getNull('jenis_tinggal'),
-            'alat_transportasi'     => $getNull('alat_transportasi'),
-            'jarak_ke_sekolah'      => $getNull('jarak_ke_sekolah'),
-            'no_telp_rumah'         => $getNull('no_telp_rumah'),
-            'no_hp'                 => $getNull('no_hp'),
-            'email_siswa'           => $getNull('email_siswa'),
-            'asal_sekolah'          => $getNull('asal_sekolah'),
-            'skhun'                 => $getNull('skhun'),
-            'no_peserta_un'         => $getNull('no_peserta_un'),
-            'no_seri_ijazah'        => $getNull('no_seri_ijazah'),
-            'diterima_dikelas'      => $getNull('diterima_dikelas'),
-            'tgl_diterima'          => $getNull('tgl_diterima'),
-            'rombel_id'             => $getNull('rombel_id'),
-            'penerima_kps'          => $getNull('penerima_kps'),
-            'no_kps'                => $getNull('no_kps'),
-            'penerima_kip'          => $getNull('penerima_kip'),
-            'nomor_kip'             => $getNull('nomor_kip'),
-            'nama_di_kip'           => $getNull('nama_di_kip'),
-            'nomor_kks'             => $getNull('nomor_kks'),
-            'layak_pip'             => $getNull('layak_pip'),
-            'alasan_layak_pip'      => $getNull('alasan_layak_pip'),
-            'ekskul_1'              => $getNull('ekskul_1'),
-            'ekskul_2'              => $getNull('ekskul_2'),
-            'ekskul_3'              => $getNull('ekskul_3'),
-            'status_siswa'          => $this->request->getPost('status_siswa') ?: 'Aktif'
+            'anak_ke' => $getNull('anak_ke'),
+            'jml_saudara_kandung' => $getNull('jml_saudara_kandung'),
+            'kebutuhan_khusus' => $getNull('kebutuhan_khusus'),
+            'berat_badan' => $getNull('berat_badan'),
+            'tinggi_badan' => $getNull('tinggi_badan'),
+            'lingkar_kepala' => $getNull('lingkar_kepala'),
+            'alamat_siswa' => $getNull('alamat_siswa'),
+            'rt' => $getNull('rt'),
+            'rw' => $getNull('rw'),
+            'dusun' => $getNull('dusun'),
+            'kelurahan' => $getNull('kelurahan'),
+            'kecamatan' => $getNull('kecamatan'),
+            'kode_pos' => $getNull('kode_pos'),
+            'jenis_tinggal' => $getNull('jenis_tinggal'),
+            'alat_transportasi' => $getNull('alat_transportasi'),
+            'jarak_ke_sekolah' => $getNull('jarak_ke_sekolah'),
+            'no_telp_rumah' => $getNull('no_telp_rumah'),
+            'no_hp' => $getNull('no_hp'),
+            'email_siswa' => $getNull('email_siswa'),
+            'asal_sekolah' => $getNull('asal_sekolah'),
+            'skhun' => $getNull('skhun'),
+            'no_peserta_un' => $getNull('no_peserta_un'),
+            'no_seri_ijazah' => $getNull('no_seri_ijazah'),
+            'diterima_dikelas' => $getNull('diterima_dikelas'),
+            'tgl_diterima' => $getNull('tgl_diterima'),
+            'rombel_id' => $getNull('rombel_id'),
+            'penerima_kps' => $getNull('penerima_kps'),
+            'no_kps' => $getNull('no_kps'),
+            'penerima_kip' => $getNull('penerima_kip'),
+            'nomor_kip' => $getNull('nomor_kip'),
+            'nama_di_kip' => $getNull('nama_di_kip'),
+            'nomor_kks' => $getNull('nomor_kks'),
+            'layak_pip' => $getNull('layak_pip'),
+            'alasan_layak_pip' => $getNull('alasan_layak_pip'),
+            'ekskul_1' => $getNull('ekskul_1'),
+            'ekskul_2' => $getNull('ekskul_2'),
+            'ekskul_3' => $getNull('ekskul_3'),
+            'status_siswa' => $this->request->getPost('status_siswa') ?: 'Aktif'
         ];
 
         // Validasi Ekskul Kembar
@@ -416,9 +450,10 @@ class SiswaController extends AdminBaseController
         $namaFotoDB = $userLama['foto_profil'] ?? null;
 
         // 1. UPDATE FOTO KE FOLDER AVATARS
-        if ($fileFoto && $fileFoto->isValid() && ! $fileFoto->hasMoved()) {
+        if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
             $path = FCPATH . 'assets/uploads/avatars/';
-            if (!is_dir($path)) mkdir($path, 0777, true);
+            if (!is_dir($path))
+                mkdir($path, 0777, true);
 
             if (!empty($namaFotoDB) && file_exists($path . $namaFotoDB)) {
                 unlink($path . $namaFotoDB);
@@ -461,30 +496,30 @@ class SiswaController extends AdminBaseController
 
             $hpOrtu = $this->request->getPost('no_hp_ortu');
             $dataOrtu = [
-                'nama_ayah'        => $getNull('nama_ayah') ?: '-',
-                'nik_ayah'         => $getNull('nik_ayah'),
+                'nama_ayah' => $getNull('nama_ayah') ?: '-',
+                'nik_ayah' => $getNull('nik_ayah'),
                 'tahun_lahir_ayah' => $getNull('tahun_lahir_ayah'),
-                'pendidikan_ayah'  => $getNull('pendidikan_ayah'),
-                'pekerjaan_ayah'   => $getNull('pekerjaan_ayah') ?: '-',
+                'pendidikan_ayah' => $getNull('pendidikan_ayah'),
+                'pekerjaan_ayah' => $getNull('pekerjaan_ayah') ?: '-',
                 'penghasilan_ayah' => $getNull('penghasilan_ayah'),
 
-                'nama_ibu'         => $getNull('nama_ibu') ?: '-',
-                'nik_ibu'          => $getNull('nik_ibu'),
-                'tahun_lahir_ibu'  => $getNull('tahun_lahir_ibu'),
-                'pendidikan_ibu'   => $getNull('pendidikan_ibu'),
-                'pekerjaan_ibu'    => $getNull('pekerjaan_ibu') ?: '-',
-                'penghasilan_ibu'  => $getNull('penghasilan_ibu'),
+                'nama_ibu' => $getNull('nama_ibu') ?: '-',
+                'nik_ibu' => $getNull('nik_ibu'),
+                'tahun_lahir_ibu' => $getNull('tahun_lahir_ibu'),
+                'pendidikan_ibu' => $getNull('pendidikan_ibu'),
+                'pekerjaan_ibu' => $getNull('pekerjaan_ibu') ?: '-',
+                'penghasilan_ibu' => $getNull('penghasilan_ibu'),
 
-                'nama_wali'        => $getNull('nama_wali') ?: '-',
-                'nik_wali'         => $getNull('nik_wali'),
+                'nama_wali' => $getNull('nama_wali') ?: '-',
+                'nik_wali' => $getNull('nik_wali'),
                 'tahun_lahir_wali' => $getNull('tahun_lahir_wali'),
-                'pendidikan_wali'  => $getNull('pendidikan_wali'),
-                'pekerjaan_wali'   => $getNull('pekerjaan_wali') ?: '-',
+                'pendidikan_wali' => $getNull('pendidikan_wali'),
+                'pekerjaan_wali' => $getNull('pekerjaan_wali') ?: '-',
                 'penghasilan_wali' => $getNull('penghasilan_wali'),
 
-                'no_hp_ortu'       => $hpOrtu,
-                'email_ortu'       => $getNull('email_ortu'),
-                'alamat_orangtua'  => $getNull('alamat_orangtua')
+                'no_hp_ortu' => $hpOrtu,
+                'email_ortu' => $getNull('email_ortu'),
+                'alamat_orangtua' => $getNull('alamat_orangtua')
             ];
 
             $cekOrtu = $db->table('orangtua_wali')->where('siswa_id', $id)->get()->getRowArray();
@@ -492,7 +527,8 @@ class SiswaController extends AdminBaseController
             if ($cekOrtu) {
                 if (!empty($dataOrtu['email_ortu'])) {
                     $cekEmail = $db->table('orangtua_wali')->where('email_ortu', $dataOrtu['email_ortu'])->where('id !=', $cekOrtu['id'])->countAllResults();
-                    if ($cekEmail > 0) unset($dataOrtu['email_ortu']);
+                    if ($cekEmail > 0)
+                        unset($dataOrtu['email_ortu']);
                 }
                 $db->table('orangtua_wali')->where('siswa_id', $id)->update($dataOrtu);
             } else {
@@ -527,7 +563,92 @@ class SiswaController extends AdminBaseController
         }
     }
 
-    public function delete($id)
+    public function export()
+    {
+        $db = \Config\Database::connect();
+        
+        // 1. Ambil Tahun Ajaran Aktif
+        $ta_aktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        $ta_id = $ta_aktif ? $ta_aktif['id'] : 0;
+
+        // 2. Tarik Data Santri Lengkap dengan Rombelnya
+        $builder = $db->table('siswa s');
+        $builder->select('s.*, r.nama_rombel, r.tingkat');
+        $builder->join('anggota_rombel ar', "ar.siswa_id = s.id AND ar.tahun_ajaran_id = $ta_id", 'left');
+        $builder->join('rombel r', 'r.id = COALESCE(ar.rombel_id, s.rombel_id)', 'left');
+        $builder->orderBy('r.tingkat', 'ASC');
+        $builder->orderBy('r.nama_rombel', 'ASC');
+        $builder->orderBy('s.nama_lengkap', 'ASC');
+        
+        $dataSiswa = $builder->get()->getResultArray();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Data Siswa');
+
+        // 3. Susun Header
+        $headers = [
+            'No',
+            'Nama Lengkap',
+            'NIS',
+            'NISN',
+            'Jenis Kelamin',
+            'Tempat Lahir',
+            'Tanggal Lahir',
+            'Kelas Saat Ini',
+            'Agama',
+            'Status Siswa',
+            'Alamat',
+            'Asal Sekolah',
+            'Diterima di Kelas',
+            'Tgl Diterima'
+        ];
+
+        $col = 'A';
+        foreach ($headers as $header) {
+            $sheet->setCellValue($col . '1', $header);
+            $sheet->getStyle($col . '1')->getFont()->setBold(true);
+            $sheet->getStyle($col . '1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFEFEFEF');
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+            $col++;
+        }
+
+        // 4. Isi Data Asli dari Database
+        $row = 2;
+        $no = 1;
+        foreach ($dataSiswa as $siswa) {
+            $sheet->setCellValue('A' . $row, $no++);
+            $sheet->setCellValue('B' . $row, $siswa['nama_lengkap']);
+            $sheet->setCellValueExplicit('C' . $row, $siswa['nis'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValueExplicit('D' . $row, $siswa['nisn'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('E' . $row, $siswa['jenis_kelamin']);
+            $sheet->setCellValue('F' . $row, $siswa['tempat_lahir']);
+            $sheet->setCellValue('G' . $row, $siswa['tanggal_lahir']);
+            
+            $kelas = ($siswa['tingkat'] && $siswa['nama_rombel']) ? $siswa['tingkat'] . ' ' . $siswa['nama_rombel'] : '-';
+            $sheet->setCellValue('H' . $row, $kelas);
+            
+            $sheet->setCellValue('I' . $row, $siswa['agama']);
+            $sheet->setCellValue('J' . $row, $siswa['status_siswa']);
+            $sheet->setCellValue('K' . $row, $siswa['alamat_siswa']);
+            $sheet->setCellValue('L' . $row, $siswa['asal_sekolah']);
+            $sheet->setCellValue('M' . $row, $siswa['diterima_dikelas']);
+            $sheet->setCellValue('N' . $row, $siswa['tgl_diterima']);
+            $row++;
+        }
+
+        $filename = 'Export_Data_Siswa_' . date('Y-m-d_His') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
+    }
+
+function delete($id)
     {
         $db = \Config\Database::connect();
         $siswaModel = new SiswaModel();
@@ -587,35 +708,8 @@ class SiswaController extends AdminBaseController
             $col++;
         }
 
-        $siswaModel = new \App\Models\Admin\SiswaModel();
-        $dataSiswa = $siswaModel->orderBy('nama_lengkap', 'ASC')->findAll();
-
-        $row = 2;
-        foreach ($dataSiswa as $siswa) {
-            $sheet->setCellValue('A' . $row, $siswa['id']);
-            $sheet->setCellValue('B' . $row, $siswa['nama_lengkap']);
-
-            $sheet->setCellValueExplicit('C' . $row, $siswa['nis'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValueExplicit('D' . $row, $siswa['nisn'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-
-            $sheet->setCellValue('E' . $row, $siswa['email_siswa']);
-            $sheet->setCellValue('F' . $row, $siswa['jenis_kelamin']);
-            $sheet->setCellValue('G' . $row, $siswa['tempat_lahir']);
-            $sheet->setCellValue('H' . $row, $siswa['tanggal_lahir']);
-            $sheet->setCellValue('I' . $row, $siswa['agama']);
-            $sheet->setCellValue('J' . $row, $siswa['anak_ke']);
-            $sheet->setCellValue('K' . $row, $siswa['status_dalam_keluarga']);
-            $sheet->setCellValue('L' . $row, $siswa['alamat_siswa']);
-
-            $sheet->setCellValueExplicit('M' . $row, $siswa['no_telp_rumah'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-
-            $sheet->setCellValue('N' . $row, $siswa['asal_sekolah']);
-            $sheet->setCellValue('O' . $row, $siswa['diterima_dikelas']);
-            $sheet->setCellValue('P' . $row, $siswa['tgl_diterima']);
-            $sheet->setCellValue('Q' . $row, $siswa['status_siswa']);
-
-            $row++;
-        }
+        // --- KODINGAN BOCOR (Dihapus agar template bersih tanpa data asli) ---
+        // dataSiswa dihilangkan di sini...
 
         if (empty($dataSiswa)) {
             $sheet->setCellValue('A2', '');
@@ -652,7 +746,8 @@ class SiswaController extends AdminBaseController
     {
         ini_set('memory_limit', '2048M');
         ini_set('max_execution_time', '600');
-        if (ob_get_length()) ob_clean();
+        if (ob_get_length())
+            ob_clean();
 
         if (empty($_FILES)) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'File ditolak server.']);
@@ -705,7 +800,8 @@ class SiswaController extends AdminBaseController
                 'jarak_ke_sekolah' => 'VARCHAR(50) NULL'
             ];
             foreach ($newColumnsSiswa as $col => $type) {
-                if (!in_array($col, $fieldsSiswa)) $db->query("ALTER TABLE `siswa` ADD COLUMN `$col` $type");
+                if (!in_array($col, $fieldsSiswa))
+                    $db->query("ALTER TABLE `siswa` ADD COLUMN `$col` $type");
             }
 
             $fieldsOrtu = $db->getFieldNames('orangtua_wali');
@@ -724,7 +820,8 @@ class SiswaController extends AdminBaseController
                 'nik_wali' => 'VARCHAR(50) NULL'
             ];
             foreach ($newColumnsOrtu as $col => $type) {
-                if (!in_array($col, $fieldsOrtu)) $db->query("ALTER TABLE `orangtua_wali` ADD COLUMN `$col` $type");
+                if (!in_array($col, $fieldsOrtu))
+                    $db->query("ALTER TABLE `orangtua_wali` ADD COLUMN `$col` $type");
             }
         } catch (\Exception $e) {
         }
@@ -748,7 +845,7 @@ class SiswaController extends AdminBaseController
 
             $getInt = function ($val) {
                 $val = preg_replace('/[^0-9]/', '', explode('.', trim($val))[0]);
-                return (empty($val) && $val !== '0') ? null : (int)$val;
+                return (empty($val) && $val !== '0') ? null : (int) $val;
             };
 
             foreach ($spreadsheet->getAllSheets() as $worksheet) {
@@ -756,10 +853,12 @@ class SiswaController extends AdminBaseController
 
                 foreach ($sheet as $idx => $row) {
                     $noUrut = trim($row['A'] ?? '');
-                    if (!is_numeric($noUrut)) continue;
+                    if (!is_numeric($noUrut))
+                        continue;
 
                     $namaLengkap = trim($row['B'] ?? '');
-                    if (empty($namaLengkap)) continue;
+                    if (empty($namaLengkap))
+                        continue;
 
                     $nisRaw = trim($row['C'] ?? '');
                     $nisFinal = empty($nisRaw) ? null : substr($nisRaw, 0, 20);
@@ -786,49 +885,49 @@ class SiswaController extends AdminBaseController
                     }
 
                     $dataSiswa = [
-                        'nama_lengkap'          => substr($namaLengkap, 0, 100),
-                        'nis'                   => $nisFinal,
-                        'nisn'                  => $nisnFinal,
-                        'jenis_kelamin'         => (strtoupper(trim($row['D'] ?? '')) == 'P') ? 'P' : 'L',
-                        'tempat_lahir'          => substr(trim($row['F'] ?? ''), 0, 50),
-                        'tanggal_lahir'         => $tglLahir,
-                        'nik'                   => $nikFinal,
-                        'agama'                 => substr(trim($row['I'] ?? 'Islam'), 0, 20),
-                        'alamat_siswa'          => trim($row['J'] ?? ''),
-                        'rt'                    => substr(trim($row['K'] ?? ''), 0, 10),
-                        'rw'                    => substr(trim($row['L'] ?? ''), 0, 10),
-                        'dusun'                 => substr(trim($row['M'] ?? ''), 0, 100),
-                        'kelurahan'             => substr(trim($row['N'] ?? ''), 0, 100),
-                        'kecamatan'             => substr(trim($row['O'] ?? ''), 0, 100),
-                        'kode_pos'              => substr(trim($row['P'] ?? ''), 0, 20),
-                        'jenis_tinggal'         => substr(trim($row['Q'] ?? ''), 0, 100),
-                        'alat_transportasi'     => substr(trim($row['R'] ?? ''), 0, 100),
-                        'no_telp_rumah'         => substr(trim($row['S'] ?? ''), 0, 50),
-                        'no_hp'                 => substr(preg_replace('/\.0$/', '', trim($row['T'] ?? '')), 0, 50),
-                        'email_siswa'           => $emailFinal,
-                        'skhun'                 => substr(trim($row['V'] ?? ''), 0, 100),
-                        'penerima_kps'          => (strtolower(trim($row['W'] ?? '')) == 'ya') ? 'Ya' : 'Tidak',
-                        'no_kps'                => substr(trim($row['X'] ?? ''), 0, 100),
-                        'rombel_id'             => $rombelId,
-                        'no_peserta_un'         => substr(trim($row['AR'] ?? ''), 0, 100),
-                        'no_seri_ijazah'        => substr(trim($row['AS'] ?? ''), 0, 100),
-                        'penerima_kip'          => (strtolower(trim($row['AT'] ?? '')) == 'ya') ? 'Ya' : 'Tidak',
-                        'nomor_kip'             => substr(trim($row['AU'] ?? ''), 0, 100),
-                        'nama_di_kip'           => substr(trim($row['AV'] ?? ''), 0, 150),
-                        'nomor_kks'             => substr(trim($row['AW'] ?? ''), 0, 100),
-                        'no_registrasi_akta'    => substr(trim($row['AX'] ?? ''), 0, 100),
-                        'layak_pip'             => (strtolower(trim($row['BB'] ?? '')) == 'ya') ? 'Ya' : 'Tidak',
-                        'alasan_layak_pip'      => substr(trim($row['BC'] ?? ''), 0, 255),
-                        'kebutuhan_khusus'      => substr(trim($row['BD'] ?? 'Tidak ada'), 0, 100),
-                        'asal_sekolah'          => substr(trim($row['BE'] ?? ''), 0, 100),
-                        'anak_ke'               => $getInt($row['BF'] ?? ''),
-                        'no_kk'                 => substr(preg_replace('/\.0$/', '', trim($row['BI'] ?? '')), 0, 50),
-                        'berat_badan'           => $getInt($row['BJ'] ?? ''),
-                        'tinggi_badan'          => $getInt($row['BK'] ?? ''),
-                        'lingkar_kepala'        => $getInt($row['BL'] ?? ''),
-                        'jml_saudara_kandung'   => $getInt($row['BM'] ?? ''),
-                        'jarak_ke_sekolah'      => substr(trim($row['BN'] ?? ''), 0, 50),
-                        'status_siswa'          => 'Aktif'
+                        'nama_lengkap' => substr($namaLengkap, 0, 100),
+                        'nis' => $nisFinal,
+                        'nisn' => $nisnFinal,
+                        'jenis_kelamin' => (strtoupper(trim($row['D'] ?? '')) == 'P') ? 'P' : 'L',
+                        'tempat_lahir' => substr(trim($row['F'] ?? ''), 0, 50),
+                        'tanggal_lahir' => $tglLahir,
+                        'nik' => $nikFinal,
+                        'agama' => substr(trim($row['I'] ?? 'Islam'), 0, 20),
+                        'alamat_siswa' => trim($row['J'] ?? ''),
+                        'rt' => substr(trim($row['K'] ?? ''), 0, 10),
+                        'rw' => substr(trim($row['L'] ?? ''), 0, 10),
+                        'dusun' => substr(trim($row['M'] ?? ''), 0, 100),
+                        'kelurahan' => substr(trim($row['N'] ?? ''), 0, 100),
+                        'kecamatan' => substr(trim($row['O'] ?? ''), 0, 100),
+                        'kode_pos' => substr(trim($row['P'] ?? ''), 0, 20),
+                        'jenis_tinggal' => substr(trim($row['Q'] ?? ''), 0, 100),
+                        'alat_transportasi' => substr(trim($row['R'] ?? ''), 0, 100),
+                        'no_telp_rumah' => substr(trim($row['S'] ?? ''), 0, 50),
+                        'no_hp' => substr(preg_replace('/\.0$/', '', trim($row['T'] ?? '')), 0, 50),
+                        'email_siswa' => $emailFinal,
+                        'skhun' => substr(trim($row['V'] ?? ''), 0, 100),
+                        'penerima_kps' => (strtolower(trim($row['W'] ?? '')) == 'ya') ? 'Ya' : 'Tidak',
+                        'no_kps' => substr(trim($row['X'] ?? ''), 0, 100),
+                        'rombel_id' => $rombelId,
+                        'no_peserta_un' => substr(trim($row['AR'] ?? ''), 0, 100),
+                        'no_seri_ijazah' => substr(trim($row['AS'] ?? ''), 0, 100),
+                        'penerima_kip' => (strtolower(trim($row['AT'] ?? '')) == 'ya') ? 'Ya' : 'Tidak',
+                        'nomor_kip' => substr(trim($row['AU'] ?? ''), 0, 100),
+                        'nama_di_kip' => substr(trim($row['AV'] ?? ''), 0, 150),
+                        'nomor_kks' => substr(trim($row['AW'] ?? ''), 0, 100),
+                        'no_registrasi_akta' => substr(trim($row['AX'] ?? ''), 0, 100),
+                        'layak_pip' => (strtolower(trim($row['BB'] ?? '')) == 'ya') ? 'Ya' : 'Tidak',
+                        'alasan_layak_pip' => substr(trim($row['BC'] ?? ''), 0, 255),
+                        'kebutuhan_khusus' => substr(trim($row['BD'] ?? 'Tidak ada'), 0, 100),
+                        'asal_sekolah' => substr(trim($row['BE'] ?? ''), 0, 100),
+                        'anak_ke' => $getInt($row['BF'] ?? ''),
+                        'no_kk' => substr(preg_replace('/\.0$/', '', trim($row['BI'] ?? '')), 0, 50),
+                        'berat_badan' => $getInt($row['BJ'] ?? ''),
+                        'tinggi_badan' => $getInt($row['BK'] ?? ''),
+                        'lingkar_kepala' => $getInt($row['BL'] ?? ''),
+                        'jml_saudara_kandung' => $getInt($row['BM'] ?? ''),
+                        'jarak_ke_sekolah' => substr(trim($row['BN'] ?? ''), 0, 50),
+                        'status_siswa' => 'Aktif'
                     ];
 
                     try {
@@ -861,8 +960,10 @@ class SiswaController extends AdminBaseController
                             }
 
                             if (!empty($dataUpdate)) {
-                                if (isset($dataUpdate['nisn']) && $db->table('siswa')->where('nisn', $dataUpdate['nisn'])->where('id !=', $existing['id'])->countAllResults() > 0) unset($dataUpdate['nisn']);
-                                if (isset($dataUpdate['email_siswa']) && $db->table('siswa')->where('email_siswa', $dataUpdate['email_siswa'])->where('id !=', $existing['id'])->countAllResults() > 0) unset($dataUpdate['email_siswa']);
+                                if (isset($dataUpdate['nisn']) && $db->table('siswa')->where('nisn', $dataUpdate['nisn'])->where('id !=', $existing['id'])->countAllResults() > 0)
+                                    unset($dataUpdate['nisn']);
+                                if (isset($dataUpdate['email_siswa']) && $db->table('siswa')->where('email_siswa', $dataUpdate['email_siswa'])->where('id !=', $existing['id'])->countAllResults() > 0)
+                                    unset($dataUpdate['email_siswa']);
 
                                 if (!empty($dataUpdate)) {
                                     if (!$db->table('siswa')->where('id', $existing['id'])->update($dataUpdate)) {
@@ -873,8 +974,10 @@ class SiswaController extends AdminBaseController
                             $siswaIdForOrtu = $existing['id'];
                             $countUpdate++;
                         } else {
-                            if (!empty($dataSiswa['nisn']) && $db->table('siswa')->where('nisn', $dataSiswa['nisn'])->countAllResults() > 0) $dataSiswa['nisn'] = null;
-                            if (!empty($dataSiswa['email_siswa']) && $db->table('siswa')->where('email_siswa', $dataSiswa['email_siswa'])->countAllResults() > 0) $dataSiswa['email_siswa'] = null;
+                            if (!empty($dataSiswa['nisn']) && $db->table('siswa')->where('nisn', $dataSiswa['nisn'])->countAllResults() > 0)
+                                $dataSiswa['nisn'] = null;
+                            if (!empty($dataSiswa['email_siswa']) && $db->table('siswa')->where('email_siswa', $dataSiswa['email_siswa'])->countAllResults() > 0)
+                                $dataSiswa['email_siswa'] = null;
 
                             $username = !empty($dataSiswa['nisn']) ? $dataSiswa['nisn'] : (!empty($dataSiswa['nis']) ? $dataSiswa['nis'] : 'siswa' . time() . $idx);
                             if ($db->table('users')->where('username', substr($username, 0, 50))->countAllResults() > 0) {
@@ -882,50 +985,55 @@ class SiswaController extends AdminBaseController
                             }
 
                             $userData = [
-                                'username'  => substr($username, 0, 50),
-                                'password'  => password_hash('12345678', PASSWORD_BCRYPT),
-                                'role_id'   => 3,
+                                'username' => substr($username, 0, 50),
+                                'password' => password_hash('12345678', PASSWORD_BCRYPT),
+                                'role_id' => 3,
                                 'is_active' => 1
                             ];
-                            if (!empty($dataSiswa['email_siswa'])) $userData['email'] = $dataSiswa['email_siswa'];
+                            if (!empty($dataSiswa['email_siswa']))
+                                $userData['email'] = $dataSiswa['email_siswa'];
 
-                            if (!$db->table('users')->insert($userData)) throw new \Exception("Insert User: " . ($db->error()['message'] ?? ''));
+                            if (!$db->table('users')->insert($userData))
+                                throw new \Exception("Insert User: " . ($db->error()['message'] ?? ''));
                             $dataSiswa['user_id'] = $db->insertID();
 
-                            if (!$db->table('siswa')->insert($dataSiswa)) throw new \Exception("Insert Siswa: " . ($db->error()['message'] ?? ''));
+                            if (!$db->table('siswa')->insert($dataSiswa))
+                                throw new \Exception("Insert Siswa: " . ($db->error()['message'] ?? ''));
                             $siswaIdForOrtu = $db->insertID();
                             $countInsert++;
                         }
 
                         $dataOrtuExcel = [
-                            'siswa_id'         => $siswaIdForOrtu,
-                            'nama_ayah'        => substr(trim($row['Y'] ?? ''), 0, 100),
+                            'siswa_id' => $siswaIdForOrtu,
+                            'nama_ayah' => substr(trim($row['Y'] ?? ''), 0, 100),
                             'tahun_lahir_ayah' => substr(trim($row['Z'] ?? ''), 0, 10),
-                            'pendidikan_ayah'  => substr(trim($row['AA'] ?? ''), 0, 100),
-                            'pekerjaan_ayah'   => substr(trim($row['AB'] ?? ''), 0, 50),
+                            'pendidikan_ayah' => substr(trim($row['AA'] ?? ''), 0, 100),
+                            'pekerjaan_ayah' => substr(trim($row['AB'] ?? ''), 0, 50),
                             'penghasilan_ayah' => substr(trim($row['AC'] ?? ''), 0, 100),
-                            'nik_ayah'         => substr(preg_replace('/\.0$/', '', trim($row['AD'] ?? '')), 0, 50),
-                            'nama_ibu'         => substr(trim($row['AE'] ?? ''), 0, 100),
-                            'tahun_lahir_ibu'  => substr(trim($row['AF'] ?? ''), 0, 10),
-                            'pendidikan_ibu'   => substr(trim($row['AG'] ?? ''), 0, 100),
-                            'pekerjaan_ibu'    => substr(trim($row['AH'] ?? ''), 0, 50),
-                            'penghasilan_ibu'  => substr(trim($row['AI'] ?? ''), 0, 100),
-                            'nik_ibu'          => substr(preg_replace('/\.0$/', '', trim($row['AJ'] ?? '')), 0, 50),
-                            'nama_wali'        => substr(trim($row['AK'] ?? ''), 0, 100),
+                            'nik_ayah' => substr(preg_replace('/\.0$/', '', trim($row['AD'] ?? '')), 0, 50),
+                            'nama_ibu' => substr(trim($row['AE'] ?? ''), 0, 100),
+                            'tahun_lahir_ibu' => substr(trim($row['AF'] ?? ''), 0, 10),
+                            'pendidikan_ibu' => substr(trim($row['AG'] ?? ''), 0, 100),
+                            'pekerjaan_ibu' => substr(trim($row['AH'] ?? ''), 0, 50),
+                            'penghasilan_ibu' => substr(trim($row['AI'] ?? ''), 0, 100),
+                            'nik_ibu' => substr(preg_replace('/\.0$/', '', trim($row['AJ'] ?? '')), 0, 50),
+                            'nama_wali' => substr(trim($row['AK'] ?? ''), 0, 100),
                             'tahun_lahir_wali' => substr(trim($row['AL'] ?? ''), 0, 10),
-                            'pendidikan_wali'  => substr(trim($row['AM'] ?? ''), 0, 100),
-                            'pekerjaan_wali'   => substr(trim($row['AN'] ?? ''), 0, 50),
+                            'pendidikan_wali' => substr(trim($row['AM'] ?? ''), 0, 100),
+                            'pekerjaan_wali' => substr(trim($row['AN'] ?? ''), 0, 50),
                             'penghasilan_wali' => substr(trim($row['AO'] ?? ''), 0, 100),
-                            'nik_wali'         => substr(preg_replace('/\.0$/', '', trim($row['AP'] ?? '')), 0, 50)
+                            'nik_wali' => substr(preg_replace('/\.0$/', '', trim($row['AP'] ?? '')), 0, 50)
                         ];
 
                         $ortuExist = $db->table('orangtua_wali')->where('siswa_id', $siswaIdForOrtu)->get()->getRowArray();
                         if ($ortuExist) {
                             $dataOrtuUpdate = [];
                             foreach ($dataOrtuExcel as $key => $val) {
-                                if (empty($ortuExist[$key]) && !empty($val)) $dataOrtuUpdate[$key] = $val;
+                                if (empty($ortuExist[$key]) && !empty($val))
+                                    $dataOrtuUpdate[$key] = $val;
                             }
-                            if (!empty($dataOrtuUpdate)) $db->table('orangtua_wali')->where('siswa_id', $siswaIdForOrtu)->update($dataOrtuUpdate);
+                            if (!empty($dataOrtuUpdate))
+                                $db->table('orangtua_wali')->where('siswa_id', $siswaIdForOrtu)->update($dataOrtuUpdate);
                         } else {
                             $db->table('orangtua_wali')->insert($dataOrtuExcel);
                         }
@@ -947,7 +1055,8 @@ class SiswaController extends AdminBaseController
             $db->transCommit();
             return $this->response->setJSON(['status' => 'success', 'message' => "Import Dapodik Sukses! $countInsert Baru, $countUpdate Diperbarui (NIS diizinkan kembar)."]);
         } catch (\Throwable $e) {
-            if (isset($db)) $db->transRollback();
+            if (isset($db))
+                $db->transRollback();
             return $this->response->setJSON(['status' => 'error', 'message' => 'Fatal Error: ' . $e->getMessage()]);
         }
     }
@@ -987,14 +1096,14 @@ class SiswaController extends AdminBaseController
 
         // Ambil tanggal dari frontend (jika diubah), jika kosong pakai hari ini
         $tglDiterima = $this->request->getGet('tgl_diterima') ?: date('Y-m-d');
-        $tahunMasuk  = date('y', strtotime($tglDiterima));
+        $tahunMasuk = date('y', strtotime($tglDiterima));
 
         // Logika meracik NIS yang sama persis dengan fungsi store()
         $lastSiswa = $siswaModel->orderBy('id', 'DESC')->first();
         if ($lastSiswa && !empty($lastSiswa['nis']) && strpos($lastSiswa['nis'], '.') !== false) {
             $parts = explode('.', $lastSiswa['nis']);
-            $lastAngkatan = (int)$parts[0];
-            $lastTahun    = $parts[1];
+            $lastAngkatan = (int) $parts[0];
+            $lastTahun = $parts[1];
             $angkatanBaru = ($tahunMasuk > $lastTahun) ? $lastAngkatan + 1 : $lastAngkatan;
         } else {
             $angkatanBaru = 1;
@@ -1002,8 +1111,8 @@ class SiswaController extends AdminBaseController
 
         $prefixNis = sprintf("%02d", $angkatanBaru) . '.' . $tahunMasuk . '.';
         $cekUrutan = $siswaModel->like('nis', $prefixNis, 'after')->orderBy('nis', 'DESC')->first();
-        $nextUrut  = $cekUrutan ? ((int)explode('.', $cekUrutan['nis'])[2] + 1) : 1;
-        $nisFinal  = $prefixNis . sprintf("%05d", $nextUrut);
+        $nextUrut = $cekUrutan ? ((int) explode('.', $cekUrutan['nis'])[2] + 1) : 1;
+        $nisFinal = $prefixNis . sprintf("%05d", $nextUrut);
 
         return $this->response->setJSON([
             'status' => 'success',

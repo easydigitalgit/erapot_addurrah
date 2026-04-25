@@ -108,7 +108,7 @@
                         <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/20 backdrop-blur-md border border-emerald-400/30 text-emerald-50 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
                             <span class="relative flex h-2 w-2">
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-50"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                             </span>
                             <?= lang('OrangTua/AkunSaya.status_active') ?? 'AKTIF' ?>
                         </span>
@@ -356,7 +356,7 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-1"><?= lang('Admin/Akun.old_pass') ?? 'Password Lama' ?></label>
                     <div class="relative">
-                        <input type="password" id="oldPassword" class="w-full pl-4 pr-12 py-2 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?? '#1F7A4D' ?>] outline-none transition-all" required>
+                        <input type="password" id="oldPassword" class="w-full pl-4 pr-12 py-2.5 border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-[var(--warna-primary)] outline-none transition-all shadow-sm" required>
                         <button type="button" class="toggle-password absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10 transition-colors" tabindex="-1">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
@@ -369,7 +369,7 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-1"><?= lang('Admin/Akun.new_pass') ?? 'Password Baru' ?></label>
                     <div class="relative">
-                        <input type="password" id="newPassword" class="w-full pl-4 pr-12 py-2 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?? '#1F7A4D' ?>] outline-none transition-all" required>
+                        <input type="password" id="newPassword" class="w-full pl-4 pr-12 py-2.5 border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-[var(--warna-primary)] outline-none transition-all shadow-sm" required>
                         <button type="button" class="toggle-password absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10 transition-colors" tabindex="-1">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
@@ -377,13 +377,13 @@
                             </svg>
                         </button>
                     </div>
-                    <p class="text-xs text-gray-500 mt-1"><?= lang('Admin/Akun.pass_min_char') ?? 'Minimal 8 karakter' ?></p>
+                    <p class="text-xs text-gray-500 dark:text-slate-400 mt-1.5"><?= lang('Admin/Akun.pass_min_char') ?? 'Minimal 8 karakter' ?></p>
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-1"><?= lang('Admin/Akun.conf_new_pass') ?? 'Konfirmasi Password' ?></label>
                     <div class="relative">
-                        <input type="password" id="confirmPassword" class="w-full pl-4 pr-12 py-2 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?? '#1F7A4D' ?>] outline-none transition-all" required>
+                        <input type="password" id="confirmPassword" class="w-full pl-4 pr-12 py-2.5 border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-[var(--warna-primary)] outline-none transition-all shadow-sm" required>
                         <button type="button" class="toggle-password absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10 transition-colors" tabindex="-1">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
@@ -430,21 +430,21 @@
 
     document.addEventListener('DOMContentLoaded', () => {
 
-        // --- TOGGLE PASSWORD VISIBILITY (INJEKSI BARU) ---
+        // --- TOGGLE PASSWORD VISIBILITY (INJEKSI JS BARU) ---
         const togglePasswordBtns = document.querySelectorAll('.toggle-password');
         togglePasswordBtns.forEach(btn => {
             btn.addEventListener('click', function() {
                 const input = this.previousElementSibling;
                 if (input.type === 'password') {
                     input.type = 'text';
-                    // Mata disilang
+                    // Ubah icon jadi mata disilang (Eye-slash)
                     this.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
                     </svg>`;
                     this.classList.add('text-gray-700', 'dark:text-gray-200');
                 } else {
                     input.type = 'password';
-                    // Mata normal
+                    // Ubah icon kembali ke mata normal (Eye)
                     this.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -453,7 +453,6 @@
                 }
             });
         });
-        // ------------------------------------------------
 
         // 1. UPDATE DATA PRIBADI (INFO PROFIL)
         const personalForm = document.getElementById('personalInfoForm');
@@ -471,6 +470,7 @@
                 const csrfTokenMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
                 if (csrfTokenMeta) formData.append('csrf_test_name', csrfTokenMeta.content);
 
+                // URL DIKEMBALIKAN KE ASLINYA: updateProfile
                 fetch(`${BASE_URL}/orangtua/akun-saya/updateProfile`, {
                         method: 'POST',
                         body: formData,
@@ -526,6 +526,7 @@
                     didOpen: () => Swal.showLoading()
                 });
 
+                // URL DIKEMBALIKAN KE ASLINYA: uploadAvatar
                 fetch(`${BASE_URL}/orangtua/akun-saya/uploadAvatar`, {
                         method: 'POST',
                         body: formData,
@@ -594,6 +595,7 @@
                 const csrfTokenMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
                 if (csrfTokenMeta) formData.append('csrf_test_name', csrfTokenMeta.content);
 
+                // URL DIKEMBALIKAN KE ASLINYA: updatePassword
                 fetch(`${BASE_URL}/orangtua/akun-saya/updatePassword`, {
                         method: 'POST',
                         body: formData,
@@ -665,6 +667,7 @@
         const csrfTokenMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
         if (csrfTokenMeta) formData.append('csrf_test_name', csrfTokenMeta.content);
 
+        // URL DIKEMBALIKAN KE ASLINYA: updatePreferences
         fetch(`${BASE_URL}/orangtua/akun-saya/updatePreferences`, {
                 method: 'POST',
                 body: formData,

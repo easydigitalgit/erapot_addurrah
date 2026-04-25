@@ -452,7 +452,7 @@
 </div>
 
 <div id="modalInputRapor" class="fixed inset-0 z-[100000] hidden overflow-y-auto bg-gray-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-xl mx-auto border border-transparent dark:border-slate-700 transition-colors transform overflow-hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-[90%] sm:max-w-lg mx-auto border border-transparent dark:border-slate-700 transition-colors transform overflow-hidden">
         <div class="bg-[<?= $color['warna_primary'] ?>] px-6 py-5 flex justify-between items-center text-white">
             <h3 class="font-bold text-lg flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -508,7 +508,7 @@
 
 <div id="modalPreviewKertas" class="fixed inset-0 z-[100000] hidden flex items-center justify-center p-4 transition-opacity no-print">
     <div class="modal-overlay absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onclick="closePreviewKertas()"></div>
-    <div class="relative bg-gray-200 dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-5xl mx-auto overflow-hidden flex flex-col h-[90vh] transform scale-95 transition-all duration-300" id="modalPreviewContent">
+    <div class="relative bg-gray-200 dark:bg-slate-900 rounded-3xl shadow-2xl w-[95vw] lg:max-w-4xl xl:max-w-5xl mx-auto overflow-hidden flex flex-col h-[95vh] transform scale-95 transition-all duration-300" id="modalPreviewContent">
 
         <div class="bg-white dark:bg-slate-800 px-6 py-4 flex justify-between items-center border-b border-gray-300 dark:border-slate-700 shadow-sm z-10">
             <div>

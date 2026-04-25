@@ -174,11 +174,24 @@
             </tr>
             <tr>
                 <td></td><td>a. Di kelas</td><td>:</td>
-                <td>VII (Tujuh)</td>
+                <td><?= $siswa['diterima_dikelas'] ?? '-' ?></td>
             </tr>
             <tr>
                 <td></td><td>b. Pada tanggal</td><td>:</td>
-                <td>15 Juli 2023</td>
+                <td>
+                    <?php 
+                        if (!empty($siswa['tgl_diterima']) && $siswa['tgl_diterima'] != '0000-00-00') {
+                            $bulan = [
+                                '01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April', '05' => 'Mei', '06' => 'Juni',
+                                '07' => 'Juli', '08' => 'Agustus', '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+                            ];
+                            $split = explode('-', $siswa['tgl_diterima']);
+                            echo (isset($split[2]) ? $split[2] : '') . ' ' . ($bulan[$split[1] ?? ''] ?? '') . ' ' . ($split[0] ?? '');
+                        } else {
+                            echo '-';
+                        }
+                    ?>
+                </td>
             </tr>
             <tr>
                 <td>8.</td><td>Nama Orang Tua</td><td></td><td></td>

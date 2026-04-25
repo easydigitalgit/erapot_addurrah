@@ -30,17 +30,15 @@ class TahfidzController extends OrangTuaBaseController
 
         // 2. CARI DATA ANAK (Murni & Bersih, langsung panggil foto_siswa dan foto_profil)
         $anak = $db->table('siswa')
-                   ->select('siswa.id, siswa.nama_lengkap, siswa.nis, rombel.nama_rombel as kelas, rombel.tingkat, rombel.semester as rombel_semester, users.foto_profil, siswa.foto_siswa')
-                   ->join('rombel', 'rombel.id = siswa.rombel_id', 'left')
-                   ->join('users', 'users.id = siswa.user_id', 'left')
-                   ->where('siswa.id', $siswaId)
-                   ->get()->getRowArray();
+                    ->select('siswa.*, rombel.nama_rombel as kelas, users.foto_profil')
+                    ->join('rombel', 'rombel.id = siswa.rombel_id')
+                    ->join('users', 'users.id = siswa.user_id', 'left')
+                    ->where('siswa.id', $orangTua['siswa_id'])
+                    ->get()->getRowArray();
 
         if ($anak) {
-            // --- LOGIKA HYBRID AVATAR ---
             $fotoProfil = $anak['foto_profil'] ?? '';
             $fotoSiswa  = $anak['foto_siswa'] ?? '';
-            // Prioritaskan foto_profil, kalau kosong baru pakai foto_siswa
             $anak['foto_fix'] = !empty($fotoProfil) ? $fotoProfil : (!empty($fotoSiswa) ? $fotoSiswa : null);
         }
 
@@ -133,5 +131,113 @@ class TahfidzController extends OrangTuaBaseController
         ];
 
         return view('OrangTua/tahfidz', $data);
+    }
+
+    public function getAvailableJuz()
+    {
+        $db = \Config\Database::connect();
+        $userId = session()->get('user_id') ?? session()->get('id');
+        $orangTua = $db->table('orangtua_wali')->where('user_id', $userId)->get()->getRowArray();
+        
+        if (!$orangTua || empty($orangTua['siswa_id'])) return $this->response->setJSON(['status' => 'error']);
+
+        $listJuz = $db->table('setoran_tahfidz')
+                      ->select('ref_juz.id, ref_juz.nama_juz')
+                      ->join('ref_juz', 'ref_juz.id = setoran_tahfidz.juz_id')
+                      ->where('siswa_id', $orangTua['siswa_id'])
+                      ->groupBy('ref_juz.id')
+                      ->get()->getResultArray();
+
+        return $this->response->setJSON(['status' => 'success', 'data' => $listJuz]);
+    }
+
+    public function downloadRaporJuz($juzId)
+    {
+        $db = \Config\Database::connect();
+        $userId = session()->get('user_id') ?? session()->get('id');
+
+        // 1. DATA ORANG TUA & ANAK
+        $orangTua = $db->table('orangtua_wali')->where('user_id', $userId)->get()->getRowArray();
+        if (!$orangTua || empty($orangTua['siswa_id'])) {
+            return "Maaf, data anak tidak ditemukan.";
+        }
+        $siswaId = $orangTua['siswa_id'];
+
+        $siswa = $db->table('siswa')
+                    ->select('siswa.*, rombel.nama_rombel, rombel.tingkat, users.foto_profil, users.username as wali_username, wali.nama_lengkap as wali_kelas, wali.nuptk as wali_nuptk, wali.ttd_digital as wali_ttd')
+                    ->join('rombel', 'rombel.id = siswa.rombel_id', 'left')
+                    ->join('users', 'users.id = siswa.user_id', 'left')
+                    ->join('guru_tendik as wali', 'wali.id = rombel.guru_id', 'left')
+                    ->where('siswa.id', $siswaId)
+                    ->get()->getRowArray();
+
+        // 2. DATA JUZ & SEKOLAH
+        $juz = $db->table('ref_juz')->where('id', $juzId)->get()->getRowArray();
+        $sekolah = $db->table('sekolah')->get()->getRowArray();
+        if (!$juz || !$sekolah) return "Data tidak valid.";
+
+        $kepsek = $db->table('guru_tendik')->where('jabatan', 'Kepala Sekolah')->get()->getRowArray();
+        $tahun_ajaran = session()->get('tahun_ajaran') ?? '2023/2024';
+        $semester = session()->get('semester') ?? 'Ganjil';
+
+        // 3. DATA SETORAN TAHFIDZ (KHUSUS JUZ INI)
+        $setoran = $db->table('setoran_tahfidz')
+                      ->select('setoran_tahfidz.*, ref_surah.nama_surah')
+                      ->join('ref_surah', 'ref_surah.id = setoran_tahfidz.surah_id', 'left')
+                      ->where('siswa_id', $siswaId)
+                      ->where('juz_id', $juzId)
+                      ->orderBy('tanggal', 'ASC')
+                      ->get()->getResultArray();
+
+        // 4. STATISTIK & PREDIKAT
+        $totalNilai = 0;
+        foreach ($setoran as $s) {
+            $totalNilai += (float)($s['nilai'] ?? 0);
+        }
+        $avg = count($setoran) > 0 ? round($totalNilai / count($setoran), 1) : 0;
+        
+        $predikat = '-';
+        if ($avg >= 90) $predikat = 'MUMTAZ (Sangat Lancar)';
+        elseif ($avg >= 80) $predikat = 'JAYYID JIDDAN (Lancar)';
+        elseif ($avg >= 70) $predikat = 'JAYYID (Cukup)';
+        elseif ($avg >= 60) $predikat = 'MAQBUL (Kurang)';
+
+        $statistik = [
+            'rata_nilai'    => $avg,
+            'predikat_umum' => $predikat
+        ];
+
+        // 5. KEAMANAN: WATERMARK & QR CODE
+        $watermark_svg = base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500"><text x="50%" y="50%" font-family="Arial" font-size="40" fill="rgba(0,0,0,0.03)" text-anchor="middle" dominant-baseline="middle" transform="rotate(-45 250 250)">RAPOR TAHFIDZ DIGITAL - PROPER SMPIT</text></svg>');
+        $token_validasi = md5($siswaId . $juzId . 'TAHFIDZ_RAPOR');
+        $link_verifikasi = base_url('validasi/rapor/' . $token_validasi);
+
+        // Paket Data
+        $data = [
+            'siswa'           => $siswa,
+            'sekolah'         => $sekolah,
+            'juz'             => $juz,
+            'setoran'         => $setoran,
+            'statistik'       => $statistik,
+            'kepsek'          => $kepsek,
+            'tahun_ajaran'    => $tahun_ajaran,
+            'semester'        => $semester,
+            'color'           => ['warna_primary' => $sekolah['warna_primary'] ?? '#10b981', 'warna_secondary' => $sekolah['warna_secondary'] ?? '#ecfdf5'],
+            'logo_path'       => FCPATH . 'uploads/logo/' . ($sekolah['logo'] ?? 'none.png'),
+            'watermark_svg'   => $watermark_svg,
+            'link_verifikasi' => $link_verifikasi
+        ];
+
+        // RENDER PDF
+        $html = view('admin/print/rapor_tahfidz_per_juz', $data);
+        $dompdf = \Config\Services::dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        $namaFile = "Rapor_Tahfidz_" . str_replace(' ', '_', $siswa['nama_lengkap']) . "_" . str_replace(' ', '_', $juz['nama_juz']) . ".pdf";
+        return $this->response->setHeader('Content-Type', 'application/pdf')
+                              ->setBody($dompdf->output())
+                              ->download($namaFile, null);
     }
 }

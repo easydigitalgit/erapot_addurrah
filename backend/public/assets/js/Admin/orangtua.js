@@ -50,21 +50,45 @@ function loadTableData() {
 
     const params = new URLSearchParams({ keyword, relation, class: kelas, status });
 
-    fetch(`${BASE_URL}admin/orangtua/fetchData?${params.toString()}`, {
+    fetch(`${BASE_URL}admin/orangtua/fetchData`, {
         headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })
     .then(response => response.json())
     .then(res => {
-        if (res.status === 'success') {
-            parentsData = res.data.map(p => {
-                if (p.user_id === null || p.user_id === '0' || !p.user_id) {
+        if (res.status === 'success' && Array.isArray(res.data)) {
+            // 1. Proses & Normalisasi Seluruh Data
+            const allMapped = res.data.map(p => {
+                // Tentukan Status Akun (Penting untuk filter!)
+                if (!p.user_id || p.user_id === null || p.user_id === '0') {
                     p.status_akun = 'Belum Aktivasi';
                 } else {
-                    p.status_akun = (p.is_active == 1) ? 'Aktif' : 'Nonaktif';
+                    p.status_akun = (parseInt(p.is_active) === 1) ? 'Aktif' : 'Nonaktif';
                 }
                 p.no_hp_ortu = (p.no_hp_ortu && p.no_hp_ortu !== 'null') ? p.no_hp_ortu : '-';
                 p.email_ortu = (p.email_ortu && p.email_ortu !== 'null') ? p.email_ortu : '-';
                 return p;
+            });
+
+            // 🚀 2. SUNTIKAN FILTER MULTI-LAYER (Pencarian, Kelas, Hubungan, Status)
+            parentsData = allMapped.filter(p => {
+                const sKeyword = keyword.toLowerCase();
+                const matchKeyword = keyword === '' || 
+                                    (p.nama_ayah && p.nama_ayah.toLowerCase().includes(sKeyword)) ||
+                                    (p.nama_ibu && p.nama_ibu.toLowerCase().includes(sKeyword)) ||
+                                    (p.nama_wali && p.nama_wali.toLowerCase().includes(sKeyword)) ||
+                                    (p.nama_siswa && p.nama_siswa.toLowerCase().includes(sKeyword)) ||
+                                    (p.nis && String(p.nis).includes(sKeyword));
+                
+                const matchRelation = relation === '' || 
+                                     (relation === 'Ayah' && p.nama_ayah && p.nama_ayah !== '-') ||
+                                     (relation === 'Ibu' && p.nama_ibu && p.nama_ibu !== '-') ||
+                                     (relation === 'Wali' && p.nama_wali && p.nama_wali !== '-');
+                
+                const matchClass = kelas === '' || (p.tingkat && String(p.tingkat) === String(kelas));
+                
+                const matchStatus = status === '' || p.status_akun === status;
+
+                return matchKeyword && matchRelation && matchClass && matchStatus;
             });
 
             currentPage = 1; 
@@ -73,7 +97,7 @@ function loadTableData() {
             const countEl = document.getElementById('totalData');
             if(countEl) countEl.innerText = parentsData.length;
         } else {
-            if(tbody) tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-red-500">${LANG.js_failed_load}</td></tr>`;
+            throw new Error(res.message || "Format data tidak valid");
         }
     })
     .catch(err => {

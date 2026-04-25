@@ -226,12 +226,17 @@ class AkunSayaController extends OrangTuaBaseController
         $db = \Config\Database::connect();
         $user = $db->table('users')->where('id', $userId)->get()->getRowArray();
         
-        $dbPasswordField = $user['password_hash'] ?? $user['password'] ?? '';
+        $dbPasswordField = $user['password'] ?? '';
 
         if (!password_verify($oldPass, $dbPasswordField) && $oldPass !== $dbPasswordField) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Password lama salah.', 'token' => csrf_hash()]);
         }
-        $db->table('users')->where('id', $userId)->update(['password_hash' => password_hash($newPass, PASSWORD_DEFAULT)]);
+        
+        // PERBAIKAN: Mengubah kunci array menjadi 'password' sesuai struktur database
+        $db->table('users')->where('id', $userId)->update([
+            'password' => password_hash($newPass, PASSWORD_DEFAULT)
+        ]);
+        
         return $this->response->setJSON(['status' => 'success', 'message' => 'Password berhasil diperbarui.', 'token' => csrf_hash()]);
     }
 

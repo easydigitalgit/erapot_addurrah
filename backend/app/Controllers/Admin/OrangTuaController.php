@@ -66,24 +66,25 @@ class OrangTuaController extends AdminBaseController
     }
 
     // --- TAMBAHKAN FUNCTION INI DI PALING BAWAH KELAS ---
-    // Method untuk handle Filter AJAX
+    // --- API: AMBIL DATA ORANG TUA (LOGIKA AMAN UNTUK FILTER JS) ---
     public function fetchData()
     {
-        if (!$this->request->isAJAX()) {
-            return $this->response->setStatusCode(404);
+        if (!$this->request->isAJAX()) return $this->response->setStatusCode(404);
+
+        try {
+            // Ambil semua data tanpa parameter agar tidak crash dengan PHP 8.2
+            $data = $this->orangTuaModel->getParentsComplete();
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data'   => $data
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Gagal mengambil data: ' . $e->getMessage()
+            ]);
         }
-
-        $keyword  = $this->request->getGet('keyword');
-        $relation = $this->request->getGet('relation');
-        $kelas    = $this->request->getGet('class'); // Sesuai nama param di JS
-        $status   = $this->request->getGet('status');
-
-        $data = $this->orangTuaModel->getParentsComplete($keyword, $relation, $kelas, $status);
-
-        return $this->response->setJSON([
-            'status' => 'success',
-            'data' => $data
-        ]);
     }
 
    public function store()
@@ -374,24 +375,18 @@ class OrangTuaController extends AdminBaseController
             $col++;
         }
 
-        $ortuModel = new \App\Models\Admin\OrangTuaModel();
-        $dataOrtu = $ortuModel->findAll();
-
-        $row = 2;
-        foreach ($dataOrtu as $ortu) {
-            $sheet->setCellValue('A' . $row, $ortu['id']);
-            $sheet->setCellValue('B' . $row, $ortu['siswa_id']);
-            $sheet->setCellValue('C' . $row, $ortu['nama_ayah']);
-            $sheet->setCellValue('D' . $row, $ortu['pekerjaan_ayah']);
-            $sheet->setCellValue('E' . $row, $ortu['nama_ibu']);
-            $sheet->setCellValue('F' . $row, $ortu['pekerjaan_ibu']);
-            $sheet->setCellValue('G' . $row, $ortu['nama_wali']);
-            $sheet->setCellValue('H' . $row, $ortu['pekerjaan_wali']);
-            $sheet->setCellValue('I' . $row, $ortu['email_ortu']);
-            $sheet->setCellValueExplicit('J' . $row, $ortu['no_hp_ortu'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('K' . $row, $ortu['alamat_orangtua']);
-            $row++;
-        }
+        // --- PEMbersihan Template: Data Contoh (DUMMY) ---
+        $sheet->setCellValue('A2', ''); // Kosongkan ID untuk data baru
+        $sheet->setCellValue('B2', '8'); // Contoh ID Siswa
+        $sheet->setCellValue('C2', 'Budi Santoso');
+        $sheet->setCellValue('D2', 'Wiraswasta');
+        $sheet->setCellValue('E2', 'Siti Aminah');
+        $sheet->setCellValue('F2', 'Ibu Rumah Tangga');
+        $sheet->setCellValue('G2', '-');
+        $sheet->setCellValue('H2', '-');
+        $sheet->setCellValue('I2', 'budi.santoso@email.com');
+        $sheet->setCellValueExplicit('J2', '081234567890', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValue('K2', 'Jl. Kebahagiaan No. 7, Jakarta');
 
         $filename = 'Data_OrangTua_' . date('Y-m-d') . '.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

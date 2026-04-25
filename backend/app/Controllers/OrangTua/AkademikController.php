@@ -139,12 +139,13 @@ class AkademikController extends OrangTuaBaseController
                 $ekskul = $qEkskul->get()->getResultArray();
             }
 
-            // 6. AMBIL CATATAN WALI KELAS (Menggunakan tahun_ajaran berupa Teks Varchar)
+            // 6. AMBIL CATATAN WALI KELAS (Dinamis: Teks atau ID)
             if ($db->tableExists('catatan_rapor')) {
+                $fCatTA = $db->fieldExists('tahun_ajaran_id', 'catatan_rapor') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+                $vCatTA = ($fCatTA === 'tahun_ajaran_id') ? $tahun_ajaran_id : $tahun_ajaran_teks;
+                
                 $catatan_wali = $db->table('catatan_rapor')
-                                   ->where('siswa_id', $anak['id'])
-                                   ->where('semester', $semester_aktif)
-                                   ->where('tahun_ajaran', $tahun_ajaran_teks)
+                                   ->where(['siswa_id' => $anak['id'], 'semester' => $semester_aktif, $fCatTA => $vCatTA])
                                    ->get()->getRowArray();
             }
         }
@@ -216,10 +217,61 @@ class AkademikController extends OrangTuaBaseController
             $semester = $ta_aktif ? $ta_aktif['semester'] : $semester;
         }
 
-        // 1. Logika Cek Ketersediaan Sederhana (Sesuai Struktur Tabel Ustadz)
-        // Tabel validasi_nilai ustadz hanya mendukung pengecekan per Rombel.
+        // =====================================================================
+        // LOGIKA RADAR ALUMNI: CEK APAKAH SANTRI SUDAH LULUS KELAS 9
+        // =====================================================================
+        $ta_diminta = $db->table('tahun_ajaran')->where('id', $ta_id)->get()->getRowArray();
+        $tahun_diminta = $ta_diminta ? $ta_diminta['tahun'] : '';
+
+        // Cari riwayat kelulusan Kelas 9 (Join via anggota_rombel karena catatan_rapor tidak simpan rombel_id)
+        $fTA_CR = $db->fieldExists('tahun_ajaran_id', 'catatan_rapor') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+        
+        $kelulusan = $db->table('catatan_rapor cr')
+                        ->select('ta.tahun as tahun_lulus')
+                        ->join('tahun_ajaran ta', ($fTA_CR === 'tahun_ajaran_id' ? 'ta.id = cr.tahun_ajaran_id' : 'ta.tahun = cr.tahun_ajaran'))
+                        ->join('anggota_rombel ar', 'ar.siswa_id = cr.siswa_id AND ar.tahun_ajaran_id = ta.id', 'left')
+                        ->join('rombel r', 'r.id = ar.rombel_id', 'left')
+                        ->where('cr.siswa_id', $siswa['id'])
+                        ->where('r.tingkat', 9)
+                        ->like('cr.status_kenaikan', 'LULUS')
+                        ->orderBy('ta.tahun', 'DESC')
+                        ->get()->getRowArray();
+
+        if ($kelulusan && $tahun_diminta > $kelulusan['tahun_lulus']) {
+            return $this->response->setJSON([
+                'status' => 'error', 
+                'message' => "Mohon maaf, ananda sudah dinyatakan LULUS/ALUMNI pada T.A {$kelulusan['tahun_lulus']}. Dokumen rapor periode {$tahun_diminta} sudah tidak tersedia."
+            ]);
+        }
+        // =====================================================================
+
+        // =====================================================================
+        // 1. DETEKSI POSISI KELAS DINAMIS (Penting untuk Radar Masa Depan)
+        // =====================================================================
+        // Kita cari: Di tahun yang diminta orang tua, ananda terdaftar di kelas mana?
+        $fArTA = $db->fieldExists('tahun_ajaran_id', 'anggota_rombel') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+        $vArTA = ($fArTA === 'tahun_ajaran_id') ? $ta_id : ($ta_diminta['tahun'] ?? '');
+
+        $posisi = $db->table('anggota_rombel ar')
+                     ->select('ar.rombel_id, r.nama_rombel, r.tingkat')
+                     ->join('rombel r', 'r.id = ar.rombel_id')
+                     ->where('ar.siswa_id', $siswa['id'])
+                     ->where('ar.' . $fArTA, $vArTA)
+                     ->where('ar.semester', $semester)
+                     ->get()->getRowArray();
+
+        if (!$posisi) {
+            return $this->response->setJSON([
+                'status' => 'error', 
+                'message' => "Ananda belum terdaftar di Rombel/Kelas manapun pada periode T.A {$tahun_diminta} Semester {$semester}. Data belum tersedia."
+            ]);
+        }
+        // =====================================================================
+
+        // 2. Logika Cek Ketersediaan Sederhana (Sesuai Struktur Tabel Ustadz)
+        // Gunakan rombel_id dari posisi ananda di tahun tersebut!
         $validasi = $db->table('validasi_nilai')
-                        ->where('rombel_id', $siswa['rombel_id'])
+                        ->where('rombel_id', $posisi['rombel_id'])
                         ->where('is_locked', 1)
                         ->get()->getRowArray();
 
@@ -266,6 +318,46 @@ class AkademikController extends OrangTuaBaseController
         $kategori = $this->request->getGet('tipe') ?? 'Akhir Semester'; 
         $semester = $this->request->getGet('semester') ?? 'Ganjil';
 
+        // =====================================================================
+        // PROTEKSI DOWNLOAD ALUMNI (Sama dengan cek ketersediaan)
+        // =====================================================================
+        $ta_req = $db->table('tahun_ajaran')->where('id', $ta_id)->get()->getRowArray();
+        if ($ta_req) {
+            $fTA_CR = $db->fieldExists('tahun_ajaran_id', 'catatan_rapor') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+            $kelulusan = $db->table('catatan_rapor cr')
+                ->select('ta.tahun as tahun_lulus')
+                ->join('tahun_ajaran ta', ($fTA_CR === 'tahun_ajaran_id' ? 'ta.id = cr.tahun_ajaran_id' : 'ta.tahun = cr.tahun_ajaran'))
+                ->join('anggota_rombel ar', 'ar.siswa_id = cr.siswa_id AND ar.tahun_ajaran_id = ta.id', 'left')
+                ->join('rombel r', 'r.id = ar.rombel_id', 'left')
+                ->where('cr.siswa_id', $ortu['siswa_id'])
+                ->where('r.tingkat', 9)
+                ->like('cr.status_kenaikan', 'LULUS')
+                ->orderBy('ta.tahun', 'DESC')
+                ->get()->getRowArray();
+
+            if ($kelulusan && $ta_req['tahun'] > $kelulusan['tahun_lulus']) {
+                die("Akses Gagal: Ananda sudah dinyatakan LULUS/ALUMNI pada T.A {$kelulusan['tahun_lulus']}. Anda tidak dapat mengunduh rapor periode {$ta_req['tahun']}.");
+            }
+        }
+        // =====================================================================
+
+        // =====================================================================
+        // 1. DETEKSI POSISI KELAS DINAMIS (Radar Masa Depan)
+        // =====================================================================
+        $fArTA = $db->fieldExists('tahun_ajaran_id', 'anggota_rombel') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+        $vArTA = ($fArTA === 'tahun_ajaran_id') ? $ta_id : ($ta_req['tahun'] ?? '');
+
+        $posisi = $db->table('anggota_rombel ar')
+                     ->where('ar.siswa_id', $ortu['siswa_id'])
+                     ->where('ar.' . $fArTA, $vArTA)
+                     ->where('ar.semester', $semester)
+                     ->get()->getRowArray();
+
+        if (!$posisi) {
+            die("Akses Ditolak: Ananda belum terdaftar di Rombel manapun pada T.A {$ta_req['tahun']} Semester {$semester}.");
+        }
+        // =====================================================================
+        
         return $this->generateRaporPDF($ortu['siswa_id'], $ta_id, $kategori, $semester);
     }
 
@@ -289,9 +381,13 @@ class AkademikController extends OrangTuaBaseController
         $semester     = $requested_semester ?? ($ta_aktif ? $ta_aktif['semester'] : 'Ganjil');
 
         // 1. Ambil Data Siswa (Join Lengkap seperti Admin)
+        // Cek dulu kolom TA di anggota_rombel
+        $fArTA = $db->fieldExists('tahun_ajaran_id', 'anggota_rombel') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+        $vArTA = ($fArTA === 'tahun_ajaran_id') ? $ta_id : $tahun_ajaran;
+
         $siswa = $db->table('siswa')
             ->select('siswa.*, ar.rombel_id as ar_rombel_id, rombel.nama_rombel, rombel.tingkat, guru_tendik.nama_lengkap as wali_kelas, guru_tendik.nuptk as wali_nuptk, guru_tendik.id as wali_id, guru_tendik.ttd_digital as wali_ttd, ortu.nama_ayah, ortu.nama_ibu, ortu.nama_wali, ortu.alamat_orangtua, ortu.pekerjaan_ayah, ortu.pekerjaan_ibu')
-            ->join('anggota_rombel ar', "ar.siswa_id = siswa.id AND ar.tahun_ajaran_id = {$ta_id} AND ar.semester = '{$semester}'", 'left')
+            ->join('anggota_rombel ar', "ar.siswa_id = siswa.id AND ar.{$fArTA} = '{$vArTA}' AND ar.semester = '{$semester}'", 'left')
             ->join('rombel', 'rombel.id = COALESCE(ar.rombel_id, siswa.rombel_id)', 'left')
             ->join('guru_tendik', 'guru_tendik.id = rombel.wali_kelas_id', 'left')
             ->join('orangtua_wali ortu', 'ortu.siswa_id = siswa.id', 'left')
@@ -349,9 +445,12 @@ class AkademikController extends OrangTuaBaseController
             if (!$is_dikecualikan) $filtered_jadwal[] = $m;
         }
 
-        // Ambil data nilai_rapor sebagai acuan utama
+        // Ambil data nilai_rapor sebagai acuan utama (Dinamis: ID atau Teks)
+        $fTA_NR = $db->fieldExists('tahun_ajaran_id', 'nilai_rapor') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+        $vTA_NR = ($fTA_NR === 'tahun_ajaran_id') ? $ta_id : $tahun_ajaran;
+
         $nilai_db = $db->table('nilai_rapor')
-            ->where(['siswa_id' => $siswa_id, 'tahun_ajaran_id' => $ta_id, 'kategori' => $kategori])
+            ->where(['siswa_id' => $siswa_id, $fTA_NR => $vTA_NR, 'kategori' => $kategori])
             ->get()->getResultArray();
         
         $mapNilai = [];
@@ -366,7 +465,7 @@ class AkademikController extends OrangTuaBaseController
                 $nr = $mapNilai[$m['id']];
                 $n_akhir = $nr['nilai_akhir'] !== null ? round($nr['nilai_akhir']) : '-';
                 $pred = $nr['predikat'] ?? '-';
-                $desc = $this->getDeskripsiDinamis($siswa_id, $m['id'], $ta_id, $semester, $siswa['tingkat'], $kategori, $nama_siswa_format, $nr['nilai_akhir']);
+        $desc = $this->getDeskripsiDinamis($siswa_id, $m['id'], $ta_id, $semester, $siswa['tingkat'], $kategori, $nama_siswa_format, $nr['nilai_akhir']);
             }
             $nilaiAkademik[] = [
                 'nama_mapel'  => $m['nama_mapel'],
@@ -395,14 +494,24 @@ class AkademikController extends OrangTuaBaseController
         $is_naik       = '';
 
         if ($kategori === 'Akhir Semester') {
-            $catatan_naik = $db->table('catatan_walikelas')->where(['siswa_id' => $siswa['id'], 'tahun_ajaran_id' => $ta_id, 'semester' => $semester])->get()->getRowArray();
+            // FIX: Gunakan Field TA Dinamis agar tidak error Unknown Column
+            $fKepTTA = $db->fieldExists('tahun_ajaran_id', 'catatan_rapor') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+            $vKepTTA = ($fKepTTA === 'tahun_ajaran_id') ? $ta_id : $tahun_ajaran;
+            
+            $catatan_naik = $db->table('catatan_rapor')->where(['siswa_id' => $siswa['id'], $fKepTTA => $vKepTTA, 'semester' => $semester])->get()->getRowArray();
             if ($catatan_naik) {
-                $is_naik = $catatan_naik['is_naik'];
+                // Gunakan field 'status_kenaikan' dan deteksi kata LULUS
+                $sk = strtoupper($catatan_naik['status_kenaikan'] ?? '');
+                $is_lulus = (strpos($sk, 'LULUS') !== false);
+                
                 if ($siswa['tingkat'] == 9 || $siswa['tingkat'] == 'IX') {
-                    $keputusanText = ($is_naik == 1) ? 'LULUS' : 'TIDAK LULUS';
+                    $keputusanText = $is_lulus ? 'LULUS' : 'TIDAK LULUS';
+                    $is_naik = $is_lulus ? 1 : 0;
                 } else {
+                    $is_naik_kelas = (strpos($sk, 'NAIK') !== false);
                     $next_tingkat = (int)$siswa['tingkat'] + 1;
-                    $keputusanText = ($is_naik == 1) ? "Naik ke Kelas {$next_tingkat}" : "Tinggal di Kelas {$siswa['tingkat']}";
+                    $keputusanText = $is_naik_kelas ? "Naik ke Kelas {$next_tingkat}" : "Tinggal di Kelas {$siswa['tingkat']}";
+                    $is_naik = $is_naik_kelas ? 1 : 0;
                 }
             }
         }

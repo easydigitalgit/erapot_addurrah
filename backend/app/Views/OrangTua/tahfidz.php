@@ -102,7 +102,6 @@
             <div class="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-3xl flex items-center gap-4 shadow-xl">
                 <div class="w-14 h-14 rounded-full bg-white text-dinamis flex items-center justify-center font-black text-xl shadow-inner flex-shrink-0 overflow-hidden border-2 border-white/20">
                     <?php 
-                        // Logika Hybrid Avatar Langsung di View
                         $inisial = !empty($anak['nama_lengkap']) ? strtoupper(substr($anak['nama_lengkap'], 0, 2)) : 'U';
                         $fotoFinal = $anak['foto_fix'] ?? '';
                     ?>
@@ -110,7 +109,7 @@
                     <?php if($fotoFinal !== ''): ?>
                         <?php $cacheBuster = '?v=' . time(); ?>
                         <img src="<?= base_url('assets/uploads/avatars/' . $fotoFinal) . $cacheBuster ?>" 
-                             alt="Foto Anak" 
+                             alt="Foto Ananda" 
                              class="w-full h-full object-cover"
                              onerror="this.onerror=function(){ this.outerHTML='<span class=\'text-dinamis\'><?= $inisial ?></span>'; }; this.src='<?= base_url('uploads/siswa/' . $fotoFinal) . $cacheBuster ?>';">
                     <?php else: ?>
@@ -149,11 +148,18 @@
         <?php endif; ?>
     </div>
 
-    <div class="flex justify-center md:justify-start mb-8 stagger-item" style="animation-delay: 80ms;">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 stagger-item" style="animation-delay: 80ms;">
         <div class="bg-white dark:bg-slate-800 rounded-xl p-1.5 flex shadow-sm border border-slate-200 dark:border-slate-700">
             <a href="?semester=Ganjil" class="px-5 py-2 rounded-lg <?= $semester_aktif === 'Ganjil' ? 'bg-[var(--warna-primary)] text-white' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700' ?> text-xs font-bold transition-colors">Semester Ganjil</a>
             <a href="?semester=Genap" class="px-5 py-2 rounded-lg <?= $semester_aktif === 'Genap' ? 'bg-[var(--warna-primary)] text-white' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700' ?> text-xs font-bold transition-colors">Semester Genap</a>
         </div>
+
+        <button onclick="openModalUnduhTahfidz()" class="w-full md:w-auto px-6 py-3 bg-white dark:bg-slate-800 border-2 border-dinamis/20 hover:border-dinamis text-dinamis rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-lg active:scale-95 group">
+             <div class="w-8 h-8 rounded-lg bg-dinamis-light text-dinamis flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+             </div>
+             Unduh Rapor Tahfidz
+        </button>
     </div>
 
     <?php if(empty($setoran)): ?>
@@ -357,6 +363,104 @@
         if (noResult) {
             noResult.style.display = visibleCount === 0 ? "block" : "none";
         }
+    }
+
+    // Fungsi Popup Unduh Rapor Tahfidz per Juz (Premium Version)
+    function openModalUnduhTahfidz() {
+        const pColor = '<?= $color['warna_primary'] ?? '#10b981' ?>';
+        const logoUrl = '<?= base_url('uploads/logo/' . ($sekolah['logo'] ?? 'none.png')) ?>';
+
+        Swal.fire({
+            title: 'Persiapan Undah',
+            html: `
+                <div class="flex flex-col items-center gap-4 py-4">
+                    <img src="${logoUrl}" class="w-16 h-16 object-contain mb-2 animate-bounce">
+                    <div class="space-y-1 text-center">
+                        <p class="text-sm text-slate-500">Mencari riwayat hafalan ananda...</p>
+                        <div class="flex gap-1 justify-center">
+                            <span class="w-2 h-2 rounded-full bg-dinamis animate-pulse"></span>
+                            <span class="w-2 h-2 rounded-full bg-dinamis animate-pulse" style="animation-delay: 0.2s"></span>
+                            <span class="w-2 h-2 rounded-full bg-dinamis animate-pulse" style="animation-delay: 0.4s"></span>
+                        </div>
+                    </div>
+                </div>
+            `,
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                // Ambil daftar Juz secara dinamis
+                fetch('<?= base_url('orangtua/tahfidz/get-available-juz') ?>')
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status === 'success' && result.data.length > 0) {
+                            let options = {};
+                            result.data.forEach(item => {
+                                options[item.id] = item.nama_juz;
+                            });
+
+                            Swal.fire({
+                                title: '<span class="text-xl font-bold">Unduh Rapor Tahfidz</span>',
+                                html: `
+                                    <div class="text-center mb-6">
+                                        <div class="w-20 h-20 bg-dinamis-light rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                            <svg class="w-10 h-10 text-dinamis" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18 18.247 18.477 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                                        </div>
+                                        <p class="text-slate-500 text-sm px-4">Silakan pilih Juz yang ingin ustadz unduh laporannya.</p>
+                                    </div>
+                                `,
+                                input: 'select',
+                                inputOptions: options,
+                                inputPlaceholder: '-- Pilih Juz Hafalan --',
+                                showCancelButton: true,
+                                confirmButtonText: 'Mulai Unduh',
+                                confirmButtonColor: pColor,
+                                cancelButtonText: 'Batal',
+                                customClass: {
+                                    input: 'rounded-xl border-slate-200 text-sm focus:ring-0 focus:border-dinamis',
+                                    confirmButton: 'rounded-xl px-8 font-bold',
+                                    cancelButton: 'rounded-xl px-8 font-medium'
+                                },
+                                inputValidator: (value) => {
+                                    if (!value) {
+                                        return 'Pilih Juz-nya dulu ya ustadz!';
+                                    }
+                                }
+                            }).then((res) => {
+                                if (res.isConfirmed) {
+                                    window.open('<?= base_url('orangtua/tahfidz/download-rapor') ?>/' + res.value, '_blank');
+                                }
+                            });
+                        } else {
+                            // Kondisi Jika TIDAK ADA PROGRES/SETORAN
+                            Swal.fire({
+                                title: '<span class="text-xl font-bold">Belum Ada Progres</span>',
+                                html: `
+                                    <div class="text-center py-4">
+                                        <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                            <svg class="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        </div>
+                                        <h4 class="font-bold text-slate-800 mb-2">Opss! Data Belum Tersedia</h4>
+                                        <p class="text-sm text-slate-500 px-6 leading-relaxed">
+                                            Mohon maaf ustadz, saat ini sistem belum mencatat riwayat setoran hafalan (Ziyadah/Murojaah) untuk ananda. 
+                                            <br><br>
+                                            <span class="text-dinamis font-medium">Saran:</span> Silakan koordinasi dengan <b>Ustadz Pembimbing Tahfidz</b> untuk sinkronisasi data setoran terbaru.
+                                        </p>
+                                    </div>
+                                `,
+                                confirmButtonText: 'Tutup Saja',
+                                confirmButtonColor: pColor,
+                                customClass: {
+                                    confirmButton: 'rounded-xl px-10'
+                                }
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        Swal.fire({ icon: 'error', title: 'Kesalahan', text: 'Gagal terhubung ke sistem.' });
+                    });
+            }
+        });
     }
 </script>
 <?= $this->endSection() ?>

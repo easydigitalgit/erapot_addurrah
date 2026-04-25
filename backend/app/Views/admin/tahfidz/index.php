@@ -72,7 +72,17 @@ Cetak Nilai Tahfizh - Admin
 
 <!-- Filters -->
 <div class="bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700 p-6 shadow-sm transition-colors mb-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+            <label class="block text-[11px] font-black text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-2 transition-colors">Pilih Tahun Ajaran</label>
+            <select id="filterTA" class="w-full px-5 py-3.5 border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-900/50 text-gray-800 dark:text-white rounded-2xl focus:ring-2 focus:ring-emerald-500 transition-all outline-none cursor-pointer appearance-none font-bold">
+                <?php foreach($list_tahun_ajaran as $ta): ?>
+                    <option value="<?= $ta['id'] ?>" <?= $ta['id'] == $id_ta_aktif ? 'selected' : '' ?>>
+                        T.A <?= esc($ta['tahun']) ?> - <?= esc($ta['semester']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
         <div>
             <label class="block text-[11px] font-black text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-2 transition-colors">Pilih Rombongan Belajar</label>
             <select id="filterRombel" class="w-full px-5 py-3.5 border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-900/50 text-gray-800 dark:text-white rounded-2xl focus:ring-2 focus:ring-emerald-500 transition-all outline-none cursor-pointer appearance-none font-bold">
@@ -116,10 +126,37 @@ Cetak Nilai Tahfizh - Admin
 </div>
 
 <script>
+    document.getElementById('filterTA').addEventListener('change', function() {
+        const id_ta = this.value;
+        const rombelSelect = document.getElementById('filterRombel');
+        
+        rombelSelect.innerHTML = '<option value="">-- Memuat Kelas... --</option>';
+        
+        fetch(`<?= base_url('admin/tahfidz/get-rombel-by-ta') ?>/${id_ta}`)
+            .then(res => res.json())
+            .then(res => {
+                let html = '<option value="">-- Pilih Kelas --</option>';
+                if (res.status === 'success') {
+                    res.data.forEach(r => {
+                        html += `<option value="${r.id}">Kelas ${r.tingkat} - ${r.nama_rombel}</option>`;
+                    });
+                }
+                rombelSelect.innerHTML = html;
+                // Kosongkan tabel saat TA berubah karena rombel belum dipilih
+                document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="7" class="p-20 text-center text-gray-400">Silakan pilih kelas untuk menampilkan data...</td></tr>';
+                // Reset statistik
+                document.getElementById('statTotalSiswa').textContent = '0';
+                document.getElementById('statAvgNAT').textContent = '0.0';
+                document.getElementById('statAvgNHAS').textContent = '0.0';
+                document.getElementById('statAvgGlobal').textContent = '0.0';
+            });
+    });
+
     document.getElementById('filterRombel').addEventListener('change', loadData);
     document.getElementById('filterJuz').addEventListener('change', loadData);
 
     function loadData() {
+        const id_ta = document.getElementById('filterTA').value;
         const rombel = document.getElementById('filterRombel').value;
         const juz = document.getElementById('filterJuz').value;
         const tbody = document.getElementById('studentTableBody');
@@ -128,11 +165,11 @@ Cetak Nilai Tahfizh - Admin
 
         tbody.innerHTML = '<tr><td colspan="7" class="p-20 text-center text-gray-500"><div class="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-500 mx-auto mb-4"></div>Memproses data...</td></tr>';
         
-        fetch(`<?= base_url('admin/tahfidz/get-data') ?>?rombel=${rombel}&juz=${juz}`)
+        fetch(`<?= base_url('admin/tahfidz/get-data') ?>?rombel=${rombel}&juz=${juz}&id_ta=${id_ta}`)
             .then(res => res.json())
             .then(res => {
                 if (res.status === 'success') {
-                    renderTable(res.data);
+                    renderTable(res.data, id_ta);
                     calculateStats(res.data);
                 }
             });
@@ -152,7 +189,7 @@ Cetak Nilai Tahfizh - Admin
         document.getElementById('statAvgGlobal').textContent = avgGlobal.toFixed(1);
     }
 
-    function renderTable(data) {
+    function renderTable(data, id_ta) {
         const tbody = document.getElementById('studentTableBody');
         const juz = document.getElementById('filterJuz').value;
         if (data.length === 0) {
@@ -187,7 +224,7 @@ Cetak Nilai Tahfizh - Admin
                         </span>
                     </td>
                     <td class="p-5 text-center">
-                        <button onclick="openIframePreview('<?= base_url('admin/tahfidz/cetak-rapor') ?>/${s.id}?juz=${juz}', '${s.nama_lengkap}')" class="p-2.5 bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all shadow-sm group" title="Cetak Standar">
+                        <button onclick="openIframePreview('<?= base_url('admin/tahfidz/cetak-rapor') ?>/${s.id}?juz=${juz}&ta=${id_ta}', '${s.nama_lengkap}')" class="p-2.5 bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all shadow-sm group" title="Cetak Standar">
                              <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                         </button>
                     </td>

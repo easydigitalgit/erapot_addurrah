@@ -163,8 +163,9 @@ class TahfidzController extends WaliKelasBaseController
     }
 
     public function cetakRapor($siswa_id)
-    {
+    {	
+		$id_ta_get = request()->getGet('ta');
         $adminTahfidz = new \App\Controllers\Admin\TahfidzController();
-        return $adminTahfidz->cetakRapor($siswa_id);
+        return $adminTahfidz->cetakRapor($siswa_id,$id_ta_get);
     }
 }

@@ -37,6 +37,12 @@
                 </svg>
                 <?= lang('Admin/Siswa.add_student') ?>
             </button>
+            <button onclick="window.location.href='<?= base_url('admin/siswa/export') ?>'" class="px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-300 font-medium rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 shadow-sm outline-none">
+                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span class="hidden sm:inline">Ekspor Excel</span>
+            </button>
             <button onclick="showImportModal()" class="px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-300 font-medium rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 shadow-sm outline-none">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -560,7 +566,15 @@
                             <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.current_rombel') ?></label><select name="rombel_id" id="rombel_id" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white">
                                     <option value=""><?= lang('Admin/Siswa.not_in_class') ?></option>
                                 </select></div>
-                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.accepted_in_class') ?></label><input type="text" id="diterima_dikelas" name="diterima_dikelas" placeholder="<?= lang('Admin/Siswa.example_7') ?>" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-400"></div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.accepted_in_class') ?></label>
+                                <select id="diterima_dikelas" name="diterima_dikelas" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white">
+                                    <option value=""><?= lang('Admin/Siswa.select') ?></option>
+                                    <option value="VII">VII</option>
+                                    <option value="VIII">VIII</option>
+                                    <option value="IX">IX</option>
+                                </select>
+                            </div>
                             <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.accepted_date') ?></label><input type="date" id="tgl_diterima" name="tgl_diterima" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none color-scheme-dark text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-400"></div>
 
                             <div class="md:col-span-3"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.origin_school_sd') ?></label><input type="text" id="asal_sekolah" name="asal_sekolah" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-400"></div>

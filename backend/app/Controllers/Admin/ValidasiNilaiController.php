@@ -37,8 +37,20 @@ class ValidasiNilaiController extends AdminBaseController
         $fieldTahunAjaran = $this->db->fieldExists('tahun_ajaran_id', 'guru_mapel') ? 'tahun_ajaran_id' : 'tahun_ajaran';
         $nilaiTaField = $fieldTahunAjaran == 'tahun_ajaran_id' ? $ta_id : $tahun_ajaran;
 
-        $list_tingkat = $this->db->table('rombel')->select('tingkat')->distinct()->orderBy('tingkat', 'ASC')->get()->getResultArray();
-        $list_rombel  = $this->rombelModel->orderBy('nama_rombel', 'ASC')->findAll();
+        // 🚀 KUNCI DAFTAR TINGKAT & ROMBEL HANYA UNTUK TAHUN AJARAN INI
+        $list_tingkat = $this->db->table('rombel')
+            ->select('tingkat')
+            ->where('id_tahun_ajaran', $ta_id) // SUNTIKAN ANTI BOCOR TAHUN
+            ->distinct()
+            ->orderBy('tingkat', 'ASC')
+            ->get()->getResultArray();
+            
+        $list_rombel  = $this->rombelModel
+            ->where('id_tahun_ajaran', $ta_id) // SUNTIKAN ANTI BOCOR TAHUN
+            ->orderBy('tingkat', 'ASC')
+            ->orderBy('nama_rombel', 'ASC')
+            ->findAll();
+            
         $list_wali    = $this->db->table('guru_tendik')->select('id, nama_lengkap')->orderBy('nama_lengkap', 'ASC')->get()->getResultArray();
 
         $f_tingkat = $this->request->getGet('tingkat');
@@ -49,8 +61,9 @@ class ValidasiNilaiController extends AdminBaseController
         $builder = $this->db->table('rombel r')
             ->select('r.id, r.nama_rombel, r.tingkat, g.nama_lengkap as wali_kelas, u.foto_profil, v.is_locked, v.locked_at')
             ->join('guru_tendik g', 'g.id = r.wali_kelas_id', 'left')
-            ->join('users u', 'u.id = g.user_id', 'left') // JOIN KE TABEL USERS UNTUK FOTO
+            ->join('users u', 'u.id = g.user_id', 'left')
             ->join('validasi_nilai v', 'v.rombel_id = r.id', 'left')
+            ->where('r.id_tahun_ajaran', $ta_id) // 🚀 SUNTIKAN ANTI BOCOR TAHUN
             ->orderBy('r.tingkat', 'ASC')
             ->orderBy('r.nama_rombel', 'ASC');
 
@@ -152,6 +165,9 @@ class ValidasiNilaiController extends AdminBaseController
             'user'        => 'Admin',
             'navigations' => $this->getSidebarMenu(),
             'color'       => $this->getColor(),
+            'tahun_ajaran_list' => $this->db->table('tahun_ajaran')->orderBy('id', 'DESC')->get()->getResultArray(), // 🚀 TAMBAHAN
+            'ta_terpilih' => $ta_id, // 🚀 TAMBAHAN
+            'fTA'         => $this->db->fieldExists('tahun', 'tahun_ajaran') ? 'tahun' : 'tahun_ajaran', // 🚀 TAMBAHAN
             'list_tingkat'=> $list_tingkat,
             'list_rombel' => $list_rombel,
             'list_wali'   => $list_wali,
@@ -173,7 +189,13 @@ class ValidasiNilaiController extends AdminBaseController
     {
         if (!$this->request->isAJAX()) return $this->response->setStatusCode(404);
 
-        $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        // 🚀 TANGKAP TA DARI URL (AGAR BISA PINDAH TAHUN)
+        $id_ta_get = $this->request->getGet('ta');
+        if ($id_ta_get) {
+            $ta_aktif = $this->db->table('tahun_ajaran')->where('id', $id_ta_get)->get()->getRowArray();
+        } else {
+            $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        }
         $tahun_ajaran = $ta_aktif ? $ta_aktif['tahun'] : '2025/2026';
         $semester     = $ta_aktif ? $ta_aktif['semester'] : 'Genap';
         $ta_id        = $ta_aktif ? $ta_aktif['id'] : null;
@@ -257,7 +279,9 @@ class ValidasiNilaiController extends AdminBaseController
                 return $this->response->setJSON(['status' => 'error', 'message' => 'ID Kelas tidak ditemukan.']);
             }
 
-            $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+            // 🚀 BACA TAHUN AJARAN LANGSUNG DARI ROMBELNYA!
+            $rombelInfo = $this->db->table('rombel')->where('id', $rombel_id)->get()->getRowArray();
+            $ta_aktif = $this->db->table('tahun_ajaran')->where('id', $rombelInfo['id_tahun_ajaran'])->get()->getRowArray();
             $tahun_ajaran = $ta_aktif ? $ta_aktif['tahun'] : '2025/2026';
             $semester     = $ta_aktif ? $ta_aktif['semester'] : 'Genap';
             $ta_id        = $ta_aktif ? $ta_aktif['id'] : null;
@@ -349,7 +373,13 @@ class ValidasiNilaiController extends AdminBaseController
     {
         if (!$this->request->isAJAX()) return $this->response->setStatusCode(404);
 
-        $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        // 🚀 TANGKAP TA DARI JS AGAR TIDAK MENGUNCI TAHUN YANG SALAH
+        $id_ta_get = $this->request->getGet('ta') ?: $this->request->getPost('ta');
+        if ($id_ta_get) {
+            $ta_aktif = $this->db->table('tahun_ajaran')->where('id', $id_ta_get)->get()->getRowArray();
+        } else {
+            $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        }
         $tahun_ajaran = $ta_aktif ? $ta_aktif['tahun'] : '2025/2026';
         $semester     = $ta_aktif ? $ta_aktif['semester'] : 'Genap';
         $ta_id        = $ta_aktif ? $ta_aktif['id'] : null;
@@ -359,7 +389,8 @@ class ValidasiNilaiController extends AdminBaseController
         $fieldTahunAjaran = $this->db->fieldExists('tahun_ajaran_id', 'guru_mapel') ? 'tahun_ajaran_id' : 'tahun_ajaran';
         $nilaiTaField = $fieldTahunAjaran == 'tahun_ajaran_id' ? $ta_id : $tahun_ajaran;
 
-        $rombels = $this->db->table('rombel')->get()->getResultArray();
+        // 🚀 KUNCI HANYA ROMBEL DI TAHUN INI SAJA!
+        $rombels = $this->db->table('rombel')->where('id_tahun_ajaran', $ta_id)->get()->getResultArray();
         $lockedCount = 0;
         $skippedCount = 0;
 
