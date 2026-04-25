@@ -53,7 +53,7 @@ Vagrantfile
 
 backend/writable/logs/*
 !backend/writable/logs/index.html
-
+/writable/logs/log-*
 */writable/session/*
 !*/writable/session/index.html
 
