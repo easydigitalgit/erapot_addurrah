@@ -32,8 +32,8 @@ jobs:
 
       - name: Install NPM & Build
         run: |
-          npm install
-          npm run build
+          #npm install
+          #npm run build
 
       # 3. Deployment menggunakan Rsync
       - name: Deploy to VPS via Rsync
