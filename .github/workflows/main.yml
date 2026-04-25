@@ -1,0 +1,81 @@
+name: Deploy to vps
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 1. Setup PHP & Composer (Build di Runner)
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4' # Sesuaikan dengan versi PHP Anda
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql
+          coverage: none
+
+      - name: Install Composer Dependencies
+        run: composer install --no-interaction --optimize-autoloader --no-dev
+
+      # 2. Setup Node.js & Build Frontend (Build di Runner)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '24' # Sesuaikan versi Node
+
+      - name: Install NPM & Build
+        run: |
+          #npm install
+          #npm run build
+
+      # 3. Deployment menggunakan Rsync
+      - name: Deploy to VPS via Rsync
+        uses: Burnett01/rsync-deployments@5.2.1
+        with:
+          switches: -avzr 
+          path: ./
+          remote_path: ${{ secrets.DIRECTORY }}
+          remote_host: ${{ secrets.HOST }}
+          remote_user: ${{ secrets.USER }}
+          remote_key: ${{ secrets.PRIVATE_KEY }}
+          remote_port: ${{ secrets.PORT }}
+          # List file/folder yang TIDAK ingin di-overwrite di server (PENTING)
+          exclude: |
+            .git/
+            .github/
+            .env
+            writable/
+            node_modules/
+            tests/
+            phpunit.xml
+
+      # 4. Post-Deployment (Clear Cache & Migrasi)
+      - name: Post-Deployment Commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ${{ secrets.DIRECTORY }}
+            
+            # Maintenance mode (opsional)
+            # php spark down
+
+            # Jalankan optimasi CI4
+            php spark cache:clear
+            # php spark migrate --all
+            
+            # Pastikan permission folder writable tetap benar
+            chmod -R 775 writable/
+            
+            # php spark up
+            echo "✅ Rsync Deployment Sukses!"
