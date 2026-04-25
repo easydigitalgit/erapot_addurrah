@@ -166,13 +166,35 @@ class NilaiRaporController extends GuruMapelBaseController
             ->orderBy('s.nama_lengkap', 'ASC')
             ->get()->getResultArray();
 
-        $formatifs = $db->table('nilai_formatif')
-            ->where(['mapel_id' => $mapel_id, 'tahun_ajaran_id' => $ta_id, 'kategori' => $kategori])
-            ->get()->getResultArray();
+        $qFormatif = $db->table('nilai_formatif')
+            ->where('mapel_id', $mapel_id)
+            ->where('tahun_ajaran_id', $ta_id);
 
-        $sumatifs = $db->table('nilai_sumatif')
-            ->where(['mapel_id' => $mapel_id, 'tahun_ajaran_id' => $ta_id, 'kategori' => $kategori])
-            ->get()->getResultArray();
+        if ($db->fieldExists('kategori', 'nilai_formatif')) {
+            $qFormatif->groupStart()
+                ->where('kategori', $kategori)
+                ->orWhere('kategori', $kategori === 'Tengah Semester' ? 'Tengah' : 'Akhir')
+                ->orWhere('kategori', '')
+                ->orWhere('kategori', null)
+                ->groupEnd();
+        }
+
+        $formatifs = $qFormatif->get()->getResultArray();
+
+        $qSumatif = $db->table('nilai_sumatif')
+            ->where('mapel_id', $mapel_id)
+            ->where('tahun_ajaran_id', $ta_id);
+
+        if ($db->fieldExists('kategori', 'nilai_sumatif')) {
+            $qSumatif->groupStart()
+                ->where('kategori', $kategori)
+                ->orWhere('kategori', $kategori === 'Tengah Semester' ? 'Tengah' : 'Akhir')
+                ->orWhere('kategori', '')
+                ->orWhere('kategori', null)
+                ->groupEnd();
+        }
+
+        $sumatifs = $qSumatif->get()->getResultArray();
 
         // Deteksi Progres Dinamis Kelas Ini
         $pembagi = $this->_getPembagiDinamis($formatifs);
@@ -359,13 +381,36 @@ class NilaiRaporController extends GuruMapelBaseController
         $jumlah_disinkron = 0;
 
         try {
-            $all_formatif = $db->table('nilai_formatif')
-                ->where(['mapel_id' => $mapel_id, 'tahun_ajaran_id' => $ta_id, 'rombel_id' => $rombel_id, 'kategori' => $kategori])
-                ->get()->getResultArray();
+            $qAllFormatif = $db->table('nilai_formatif')
+                ->where('mapel_id', $mapel_id)
+                ->where('tahun_ajaran_id', $ta_id)
+                ->where('rombel_id', $rombel_id);
 
-            $all_sumatif = $db->table('nilai_sumatif')
-                ->where(['mapel_id' => $mapel_id, 'tahun_ajaran_id' => $ta_id, 'kategori' => $kategori])
-                ->get()->getResultArray();
+            if ($db->fieldExists('kategori', 'nilai_formatif')) {
+                $qAllFormatif->groupStart()
+                    ->where('kategori', $kategori)
+                    ->orWhere('kategori', $kategoriDB)
+                    ->orWhere('kategori', '')
+                    ->orWhere('kategori', null)
+                    ->groupEnd();
+            }
+
+            $all_formatif = $qAllFormatif->get()->getResultArray();
+
+            $qAllSumatif = $db->table('nilai_sumatif')
+                ->where('mapel_id', $mapel_id)
+                ->where('tahun_ajaran_id', $ta_id);
+
+            if ($db->fieldExists('kategori', 'nilai_sumatif')) {
+                $qAllSumatif->groupStart()
+                    ->where('kategori', $kategori)
+                    ->orWhere('kategori', $kategoriDB)
+                    ->orWhere('kategori', '')
+                    ->orWhere('kategori', null)
+                    ->groupEnd();
+            }
+
+            $all_sumatif = $qAllSumatif->get()->getResultArray();
 
             // Deteksi Progres Dinamis
             $pembagi = $this->_getPembagiDinamis($all_formatif);
