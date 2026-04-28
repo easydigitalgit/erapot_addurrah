@@ -20,6 +20,7 @@ class MataPelajaranModel extends Model
         'kelompok', 
         'kurikulum_id', 
         'jp_minggu', 
+        'nomor_urut',
         'status'
     ];
 

@@ -333,7 +333,7 @@ class CetakRaporController extends AdminBaseController
         if ($this->db->tableExists('jadwal_pelajaran')) {
             $fTA_Jadwal = $this->db->fieldExists('id_tahun_ajaran', 'jadwal_pelajaran') ? 'id_tahun_ajaran' : 'tahun_ajaran_id';
             $jp = $this->db->table('jadwal_pelajaran jp')
-                ->select('m.id, m.nama_mapel, m.kkm')
+                ->select('m.id, m.nama_mapel, m.kkm, m.nomor_urut')
                 ->join('mata_pelajaran m', 'CONVERT(m.id USING utf8mb4) COLLATE utf8mb4_general_ci = CONVERT(jp.mapel_id USING utf8mb4) COLLATE utf8mb4_general_ci', 'left', false)
                 ->where('jp.rombel_id', $siswa['rombel_id'])
                 ->where('jp.' . $fTA_Jadwal, $ta_id)
@@ -346,7 +346,7 @@ class CetakRaporController extends AdminBaseController
         if ($this->db->tableExists('guru_mapel')) {
             $fTA_GM = $this->db->fieldExists('tahun_ajaran_id', 'guru_mapel') ? 'tahun_ajaran_id' : 'tahun_ajaran';
             $gm = $this->db->table('guru_mapel gm')
-                ->select('m.id, m.nama_mapel, m.kkm')
+                ->select('m.id, m.nama_mapel, m.kkm, m.nomor_urut')
                 ->join('mata_pelajaran m', 'CONVERT(m.id USING utf8mb4) COLLATE utf8mb4_general_ci = CONVERT(gm.mapel_id USING utf8mb4) COLLATE utf8mb4_general_ci', 'left', false)
                 ->where('gm.rombel_id', $siswa['rombel_id'])
                 ->where('gm.' . $fTA_GM, ($fTA_GM === 'tahun_ajaran_id' ? $ta_id : $tahun_ajaran))
@@ -364,7 +364,7 @@ class CetakRaporController extends AdminBaseController
         }
 
         $nilai_db = $this->db->table('nilai_rapor nr')
-            ->select('nr.*, m.nama_mapel, m.kkm')
+            ->select('nr.*, m.nama_mapel, m.kkm, m.nomor_urut')
             ->join('mata_pelajaran m', 'CONVERT(m.id USING utf8mb4) COLLATE utf8mb4_general_ci = CONVERT(nr.mapel_id USING utf8mb4) COLLATE utf8mb4_general_ci', 'left', false)
             ->where('nr.siswa_id', $siswa_id)
             ->where('nr.tahun_ajaran_id', $ta_id)
@@ -378,7 +378,8 @@ class CetakRaporController extends AdminBaseController
                 $jadwal_mapel[$nr['mapel_id']] = [
                     'id'         => $nr['mapel_id'],
                     'nama_mapel' => $nr['nama_mapel'],
-                    'kkm'        => $nr['kkm']
+                    'kkm'        => $nr['kkm'],
+                    'nomor_urut' => $nr['nomor_urut']
                 ];
             }
         }
@@ -404,6 +405,9 @@ class CetakRaporController extends AdminBaseController
 
         $jadwal_mapel = $filtered_jadwal;
         usort($jadwal_mapel, function ($a, $b) {
+            $noA = (int)($a['nomor_urut'] ?? 0);
+            $noB = (int)($b['nomor_urut'] ?? 0);
+            if ($noA !== $noB) return $noA <=> $noB;
             return strcmp($a['nama_mapel'], $b['nama_mapel']);
         });
 

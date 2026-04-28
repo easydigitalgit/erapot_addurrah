@@ -242,7 +242,7 @@
                     Kepala Sekolah,
                     <div style="height: 120px; position: relative; margin-top: 5px; margin-bottom: 5px;">
                         <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
-                            <img src="<?= base_url('assets/uploads/ttd/' . $kepsek['ttd_digital']) ?>" style="height: 100px;">
+                            <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="height: 100px;">
                         <?php else: ?>
                             <br><br><br><br><br>
                         <?php endif; ?>
@@ -380,7 +380,7 @@
                     Kepala Sekolah,
                     <div style="height: 120px; position: relative; margin-top: 5px; margin-bottom: 5px;">
                         <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
-                            <img src="<?= base_url('assets/uploads/ttd/' . $kepsek['ttd_digital']) ?>" style="height: 100px;">
+                            <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="height: 100px;">
                         <?php else: ?>
                             <br><br><br><br><br>
                         <?php endif; ?>

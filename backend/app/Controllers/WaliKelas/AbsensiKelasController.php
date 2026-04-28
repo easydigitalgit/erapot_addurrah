@@ -246,14 +246,13 @@ class AbsensiKelasController extends WaliKelasBaseController
         $delimiter = strpos($firstLine, ';') !== false ? ';' : ',';
         rewind($handle);
 
-        $header = [];
         $dateColumns = [];
 
         while (($row = fgetcsv($handle, 1000, $delimiter)) !== FALSE) {
             foreach ($row as $index => $colName) {
-                $colName = preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', trim($colName));
-                if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $colName)) {
-                    $dateColumns[$index] = $colName;
+                $normalizedDate = $this->normalizeImportedDateHeader($colName);
+                if ($normalizedDate !== null) {
+                    $dateColumns[$index] = $normalizedDate;
                 }
             }
             if (!empty($dateColumns)) break;
@@ -261,7 +260,7 @@ class AbsensiKelasController extends WaliKelasBaseController
 
         if (empty($dateColumns)) {
             fclose($handle);
-            return $this->response->setJSON(['success' => false, 'message' => 'Format kolom tanggal YYYY-MM-DD tidak ditemukan.']);
+            return $this->response->setJSON(['success' => false, 'message' => 'Format kolom tanggal YYYY-MM-DD atau DD/MM/YYYY tidak ditemukan.']);
         }
 
         $jumlah_diupdate = 0;
@@ -335,6 +334,25 @@ class AbsensiKelasController extends WaliKelasBaseController
             $db->transRollback();
             return $this->response->setJSON(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
         }
+    }
+
+    private function normalizeImportedDateHeader($value): ?string
+    {
+        $value = preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', trim((string) $value));
+        $value = ltrim($value, "'");
+
+        $formats = ['Y-m-d', 'd/m/Y'];
+        foreach ($formats as $format) {
+            $date = \DateTime::createFromFormat('!' . $format, $value);
+            $errors = \DateTime::getLastErrors();
+            $hasErrors = ($errors['warning_count'] ?? 0) > 0 || ($errors['error_count'] ?? 0) > 0;
+
+            if ($date instanceof \DateTime && !$hasErrors && $date->format($format) === $value) {
+                return $date->format('Y-m-d');
+            }
+        }
+
+        return null;
     }
 
     // FUNGSI SINKRONISASI REKAP ABSENSI YANG SUDAH DIPERBAIKI

@@ -59,7 +59,7 @@ Mapping Guru Mapel - Rapor Digital SMPIT Ad Durrah
         </div>
       </div>
       <p class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Total Guru</p>
-      <h3 class="text-2xl font-bold text-gray-800 dark:text-white"><?= number_format($stats['total_guru'] ?? 0) ?></h3>
+      <h3 id="stat-total-guru" class="text-2xl font-bold text-gray-800 dark:text-white"><?= number_format($stats['total_guru'] ?? 0) ?></h3>
     </div>
     <div class="stat-card bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
       <div class="flex items-center gap-3 mb-2">
@@ -68,7 +68,7 @@ Mapping Guru Mapel - Rapor Digital SMPIT Ad Durrah
         </div>
       </div>
       <p class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Total Mata Pelajaran</p>
-      <h3 class="text-2xl font-bold text-gray-800 dark:text-white"><?= number_format($stats['total_mapel'] ?? 0) ?></h3>
+      <h3 id="stat-total-mapel" class="text-2xl font-bold text-gray-800 dark:text-white"><?= number_format($stats['total_mapel'] ?? 0) ?></h3>
     </div>
     <div class="stat-card bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
       <div class="flex items-center gap-3 mb-2">
@@ -77,7 +77,7 @@ Mapping Guru Mapel - Rapor Digital SMPIT Ad Durrah
         </div>
       </div>
       <p class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Mapping Aktif</p>
-      <h3 class="text-2xl font-bold text-emerald-600 dark:text-emerald-400"><?= number_format($stats['total_mapping'] ?? 0) ?></h3>
+      <h3 id="stat-mapping-aktif" class="text-2xl font-bold text-emerald-600 dark:text-emerald-400"><?= number_format($stats['total_mapping'] ?? 0) ?></h3>
     </div>
     <div class="stat-card bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
       <div class="flex items-center gap-3 mb-2">
@@ -86,7 +86,7 @@ Mapping Guru Mapel - Rapor Digital SMPIT Ad Durrah
         </div>
       </div>
       <p class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Rombel Kosong</p>
-      <h3 class="text-2xl font-bold text-amber-600 dark:text-amber-400"><?= number_format($stats['empty_rombel'] ?? 0) ?></h3>
+      <h3 id="stat-rombel-kosong" class="text-2xl font-bold text-amber-600 dark:text-amber-400"><?= number_format($stats['empty_rombel'] ?? 0) ?></h3>
     </div>
   </div>
 
@@ -142,11 +142,15 @@ Mapping Guru Mapel - Rapor Digital SMPIT Ad Durrah
         <input type="text" id="searchInput" placeholder="Cari nama guru, NIK, mapel..." class="w-full px-4 py-2 text-sm bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>] transition-colors shadow-sm outline-none">
       </div>
     </div>
-    <div class="mt-4 flex items-center gap-3">
+    <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
       <label class="flex items-center gap-2 cursor-pointer">
         <input type="checkbox" id="toggleActiveOnly" class="w-4 h-4 text-[<?= $color['warna_primary'] ?>] rounded border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 focus:ring-[<?= $color['warna_primary'] ?>] cursor-pointer" checked>
         <span class="text-sm font-bold text-gray-700 dark:text-slate-300">Tampilkan Hanya Yang Aktif</span>
       </label>
+      <button onclick="resetFilters()" class="text-xs font-bold text-gray-500 hover:text-[<?= $color['warna_primary'] ?>] transition-colors flex items-center gap-1.5 outline-none">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+        Reset Semua Filter
+      </button>
     </div>
   </div>
 

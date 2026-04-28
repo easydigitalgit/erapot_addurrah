@@ -102,6 +102,9 @@ function populateMapel() {
                 <span class="font-bold text-gray-800 dark:text-slate-200">${mapel.hours}</span>
             </td>
             <td class="px-6 py-4 text-center">
+                <span class="px-2 py-1 bg-gray-100 dark:bg-slate-600 text-gray-700 dark:text-slate-300 rounded text-xs font-bold">${mapel.nomor_urut || 0}</span>
+            </td>
+            <td class="px-6 py-4 text-center">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-colors shadow-sm ${mapel.status === 'Aktif' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50' : 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/50'}">
                     ${mapel.status === 'Aktif' ? textObj.js_status_active : textObj.js_status_inactive}
                 </span>
@@ -157,6 +160,7 @@ window.showEditMapelModal = (id) => {
     setValue('edit_group', mapel.group);
     setValue('edit_curriculum', mapel.curriculum_id); 
     setValue('edit_hours', mapel.hours);
+    setValue('edit_nomor_urut', mapel.nomor_urut || 0);
     
     document.getElementById('editMapelModal').classList.remove('hidden');
 };

@@ -918,7 +918,11 @@ function createExcelHTML(isTemplate) {
 
     // Render Headers (Dates)
     dateList.forEach(dateStr => {
-        html += `<td class="hdr" style="width: 80px;">${dateStr}</td>`;
+        const headerValue = isTemplate ? `&#39;${dateStr}` : dateStr;
+        const headerStyle = isTemplate
+            ? `width: 80px; mso-number-format:'\\@';`
+            : `width: 80px;`;
+        html += `<td class="hdr" style="${headerStyle}">${headerValue}</td>`;
     });
 
     if (!isTemplate) {

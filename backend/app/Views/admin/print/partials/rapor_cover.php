@@ -4,7 +4,7 @@
     $garudaPath = FCPATH . 'assets/images/garuda-500.png';
     if (file_exists($garudaPath)):
     ?>
-        <img src="<?= base_url('assets/images/garuda-500.png') ?>" width="130" style="margin-bottom: 30px;" alt="Garuda">
+        <img src="<?= FCPATH . 'assets/images/garuda-500.png' ?>" width="130" style="margin-bottom: 30px;" alt="Garuda">
     <?php else: ?>
         <div style="height: 130px; margin-bottom: 30px;"></div>
     <?php endif; ?>

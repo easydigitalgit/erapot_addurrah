@@ -129,6 +129,29 @@ function populateTable() {
         `;
     }).join('');
     renderPagination();
+    updateStats(); // Update angka statistik di atas
+}
+
+// --- FUNGSI UPDATE STATISTIK DINAMIS ---
+function updateStats() {
+    // 1. Total Guru (Unik)
+    const uniqueGurus = new Set(filteredData.map(item => item.teacher_id));
+    const statGuru = document.getElementById('stat-total-guru');
+    if (statGuru) statGuru.textContent = uniqueGurus.size.toLocaleString();
+
+    // 2. Total Mapel (Unik)
+    const uniqueMapels = new Set(filteredData.map(item => item.mapel_id));
+    const statMapel = document.getElementById('stat-total-mapel');
+    if (statMapel) statMapel.textContent = uniqueMapels.size.toLocaleString();
+
+    // 3. Mapping Aktif
+    const activeMappings = filteredData.filter(item => item.status === 'active').length;
+    const statMapping = document.getElementById('stat-mapping-aktif');
+    if (statMapping) statMapping.textContent = activeMappings.toLocaleString();
+
+    // 4. Rombel Kosong (Hanya akurat jika tidak ada filter lain yang aktif)
+    // Untuk Rombel Kosong, kita tetap pakai data dari server atau biarkan saja jika difilter.
+    // Namun agar konsisten dengan "view", kita biarkan saja dia tetap dari server jika ada filter aktif.
 }
 
 // --- FUNGSI RENDER TOMBOL PAGINATION ---
@@ -177,7 +200,6 @@ window.changePage = function(page) {
 };
 
 function applyFilters() {
-    const tahun = document.getElementById('filterTahun') ? document.getElementById('filterTahun').value : '';
     const level = document.getElementById('filterLevel') ? document.getElementById('filterLevel').value : '';
     const rombelId = document.getElementById('filterRombel') ? document.getElementById('filterRombel').value : ''; 
     const mapelId = document.getElementById('filterMapel') ? document.getElementById('filterMapel').value : '';   
@@ -186,8 +208,7 @@ function applyFilters() {
     const activeOnly = document.getElementById('toggleActiveOnly') ? document.getElementById('toggleActiveOnly').checked : false;
 
     filteredData = mappingData.filter(item => {
-        const matchTahun = !tahun || (item.tahunAjaran && item.tahunAjaran.includes(tahun)) || (item.tahunAjaran && tahun.includes(item.tahunAjaran));
-        
+        // Hapus matchTahun karena data sudah difilter oleh server berdasarkan Tahun Terpilih (Page Reload)
         const matchLevel = !level || item.level === level;
         const matchRombel = !rombelId || item.rombel_id == rombelId;
         const matchMapel = !mapelId || item.mapel_id == mapelId;
@@ -201,14 +222,26 @@ function applyFilters() {
 
         const matchActive = !activeOnly || item.status === 'active';
 
-        currentPage = 1; // <-- TAMBAHKAN BARIS INI: Reset ke halaman 1 setiap kali filter diubah
-        return matchTahun && matchLevel && matchRombel && matchMapel && matchGuru && matchSearch && matchActive;
+        return matchLevel && matchRombel && matchMapel && matchGuru && matchSearch && matchActive;
     });
 
+    currentPage = 1; 
     populateTable();
 }
 
-['filterTahun', 'filterLevel', 'filterRombel', 'filterMapel', 'filterGuru'].forEach(id => {
+window.resetFilters = function() {
+    const filters = ['filterLevel', 'filterRombel', 'filterMapel', 'filterGuru', 'searchInput'];
+    filters.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    const cb = document.getElementById('toggleActiveOnly');
+    if (cb) cb.checked = true;
+    
+    applyFilters();
+};
+
+['filterLevel', 'filterRombel', 'filterMapel', 'filterGuru'].forEach(id => {
     if(document.getElementById(id)) document.getElementById(id).addEventListener('change', applyFilters);
 });
 if(document.getElementById('searchInput')) document.getElementById('searchInput').addEventListener('input', applyFilters);

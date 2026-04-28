@@ -23,6 +23,7 @@ return [
     'th_curriculum'          => 'Kurikulum',
     'th_kkm'                 => 'KKM',
     'th_hours'               => 'Jam',
+    'th_no_urut'            => 'No. Urut',
     'th_status'              => 'Status',
     'th_action'              => 'Aksi',
     
@@ -48,6 +49,8 @@ return [
     'lbl_curriculum'         => 'Kurikulum',
     'ph_select_curr'         => 'Pilih Kurikulum',
     'lbl_hours_per_week'     => 'Jam Per Pekan',
+    'lbl_no_urut'            => 'No. Urut Rapor',
+    'ph_no_urut'             => 'Urutan tampil di rapor',
     'btn_cancel'             => 'Batal',
     'btn_save_data'          => 'Simpan Data',
     'btn_save_changes'       => 'Simpan Perubahan',

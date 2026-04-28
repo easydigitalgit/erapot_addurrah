@@ -320,7 +320,7 @@
 
                     <div style="height: 80px;" align="center">
                         <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
-                            <img src="<?= base_url('assets/uploads/ttd/' . $kepsek['ttd_digital']) ?>" style="height: 80px;">
+                            <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="height: 80px;">
                         <?php else: ?>
                             <br><br><br><br>
                         <?php endif; ?>

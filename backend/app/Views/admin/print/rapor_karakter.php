@@ -385,7 +385,7 @@
                     Wali Kelas
                     <div style="height: 60px;" align="center">
                         <?php if (!empty($siswa['wali_ttd']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'])): ?>
-                            <img src="<?= base_url('assets/uploads/ttd/' . $siswa['wali_ttd']) ?>" style="height: 60px;">
+                            <img src="<?= FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'] ?>" style="height: 60px;">
                         <?php else: ?>
                             <br><br><br>
                         <?php endif; ?>
@@ -400,7 +400,7 @@
 
                     <div class="ttd-box" style="margin: 0 auto; height: 70px;">
                         <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
-                            <img src="<?= base_url('assets/uploads/ttd/' . $kepsek['ttd_digital']) ?>" style="max-height: 70px; position: absolute; left: 50%; transform: translateX(-50%);" alt="TTD">
+                            <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="max-height: 70px; position: absolute; left: 50%; transform: translateX(-50%);" alt="TTD">
                         <?php else: ?>
                             <br><br><br>
                         <?php endif; ?>

@@ -148,7 +148,7 @@
                 Wali Kelas
                 <div style="height: 60px;" align="center">
                     <?php if (!empty($siswa['wali_ttd']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'])): ?>
-                        <img src="<?= base_url('assets/uploads/ttd/' . $siswa['wali_ttd']) ?>" style="height: 60px;">
+                        <img src="<?= FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'] ?>" style="height: 60px;">
                     <?php else: ?>
                         <br><br><br>
                     <?php endif; ?>
@@ -165,7 +165,7 @@
                 Mengetahui,<br>Kepala Sekolah
                 <div style="height: 70px;" align="center">
                     <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
-                        <img src="<?= base_url('assets/uploads/ttd/' . $kepsek['ttd_digital']) ?>" style="height: 70px;">
+                        <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="height: 70px;">
                     <?php else: ?>
                         <br><br><br>
                     <?php endif; ?>

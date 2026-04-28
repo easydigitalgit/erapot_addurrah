@@ -269,7 +269,7 @@
                     <?php
                     $foto_path = FCPATH . 'uploads/siswa/' . ($siswa['foto_siswa'] ?? 'none.jpg');
                     if (file_exists($foto_path) && !is_dir($foto_path) && !empty($siswa['foto_siswa']) && $siswa['foto_siswa'] !== 'null'): ?>
-                        <img src="<?= base_url('uploads/siswa/' . $siswa['foto_siswa']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                        <img src="<?= FCPATH . 'uploads/siswa/' . $siswa['foto_siswa'] ?>" style="width: 100%; height: 100%; object-fit: cover;">
                     <?php else: ?>
                         <div style="padding-top: 40px; font-size: 10pt; color: #000;">PAS FOTO<br>3 x 4</div>
                     <?php endif; ?>
@@ -283,7 +283,7 @@
 
                 <div style="height: 80px;" align="center">
                     <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
-                        <img src="<?= base_url('assets/uploads/ttd/' . $kepsek['ttd_digital']) ?>" style="height: 80px;">
+                        <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="height: 80px;">
                     <?php else: ?>
                         <br><br><br><br>
                     <?php endif; ?>
@@ -529,7 +529,7 @@
 
                     <div style="height: 60px;" align="center">
                         <?php if (!empty($siswa['wali_ttd']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'])): ?>
-                            <img src="<?= base_url('assets/uploads/ttd/' . $siswa['wali_ttd']) ?>" style="height: 60px;">
+                            <img src="<?= FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'] ?>" style="height: 60px;">
                         <?php else: ?>
                             <br><br><br>
                         <?php endif; ?>
@@ -545,7 +545,7 @@
 
                     <div style="height: 70px;" align="center">
                         <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
-                            <img src="<?= base_url('assets/uploads/ttd/' . $kepsek['ttd_digital']) ?>" style="height: 70px;">
+                            <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="height: 70px;">
                         <?php else: ?>
                             <br><br><br>
                         <?php endif; ?>

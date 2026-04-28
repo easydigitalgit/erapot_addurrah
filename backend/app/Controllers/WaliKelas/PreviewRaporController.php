@@ -235,7 +235,7 @@ class PreviewRaporController extends WaliKelasBaseController
         if ($db->tableExists('jadwal_pelajaran')) {
             $fTA_Jadwal = $db->fieldExists('tahun_ajaran_id', 'jadwal_pelajaran') ? 'tahun_ajaran_id' : ($db->fieldExists('id_tahun_ajaran', 'jadwal_pelajaran') ? 'id_tahun_ajaran' : 'tahun_ajaran');
             $jp = $db->table('jadwal_pelajaran jp')
-                ->select('m.id, m.nama_mapel, m.kkm')
+                ->select('m.id, m.nama_mapel, m.kkm, m.nomor_urut')
                 ->join('mata_pelajaran m', 'CONVERT(m.id USING utf8mb4) COLLATE utf8mb4_general_ci = CONVERT(jp.mapel_id USING utf8mb4) COLLATE utf8mb4_general_ci', 'left', false)
                 ->where('jp.rombel_id', $rombelData['id'])
                 ->where('jp.' . $fTA_Jadwal, $ta_id)
@@ -247,7 +247,7 @@ class PreviewRaporController extends WaliKelasBaseController
         if ($db->tableExists('guru_mapel')) {
             $fTA_GM = $db->fieldExists('tahun_ajaran_id', 'guru_mapel') ? 'tahun_ajaran_id' : 'tahun_ajaran';
             $gm = $db->table('guru_mapel gm')
-                ->select('m.id, m.nama_mapel, m.kkm')
+                ->select('m.id, m.nama_mapel, m.kkm, m.nomor_urut')
                 ->join('mata_pelajaran m', 'CONVERT(m.id USING utf8mb4) COLLATE utf8mb4_general_ci = CONVERT(gm.mapel_id USING utf8mb4) COLLATE utf8mb4_general_ci', 'left', false)
                 ->where('gm.rombel_id', $rombelData['id'])
                 ->where('gm.' . $fTA_GM, $ta_id) // Admin menggunakan ID
@@ -261,7 +261,7 @@ class PreviewRaporController extends WaliKelasBaseController
         if ($db->tableExists('nilai_rapor')) {
             $fTA_NR = $db->fieldExists('tahun_ajaran_id', 'nilai_rapor') ? 'tahun_ajaran_id' : 'tahun_ajaran';
             $nilai_db = $db->table('nilai_rapor nr')
-                ->select('nr.*, m.nama_mapel, m.kkm')
+                ->select('nr.*, m.nama_mapel, m.kkm, m.nomor_urut')
                 ->join('mata_pelajaran m', 'm.id = nr.mapel_id', 'left')
                 ->where([
                     'nr.siswa_id' => $siswa_id, 
@@ -272,7 +272,7 @@ class PreviewRaporController extends WaliKelasBaseController
             foreach ($nilai_db as $nr) {
                 $mapNilai[$nr['mapel_id']] = $nr;
                 if (!isset($jadwal_mapel[$nr['mapel_id']]) && !empty($nr['nama_mapel'])) {
-                    $jadwal_mapel[$nr['mapel_id']] = ['id' => $nr['mapel_id'], 'nama_mapel' => $nr['nama_mapel'], 'kkm' => $nr['kkm']];
+                    $jadwal_mapel[$nr['mapel_id']] = ['id' => $nr['mapel_id'], 'nama_mapel' => $nr['nama_mapel'], 'kkm' => $nr['kkm'], 'nomor_urut' => $nr['nomor_urut']];
                 }
             }
         }
@@ -283,9 +283,9 @@ class PreviewRaporController extends WaliKelasBaseController
             foreach ($all_m as $m) { if (!empty($m['id'])) $jadwal_mapel[$m['id']] = $m; }
         }
 
-        // e. FILTER EXCLUDE (Mengecualikan Mapel Tahfidz/Tahsin)
+        // e. FILTER EXCLUDE (Mengecualikan Mapel Tahfidz/Tahsin/BPI)
         $filtered_jadwal = [];
-        $kata_kunci_kecuali = ['tahfidz', 'tahfiz', 'tahsin'];
+        $kata_kunci_kecuali = ['tahfidz', 'tahfiz', 'tahsin', 'bpi'];
         foreach ($jadwal_mapel as $m) {
             $nama_mapel_lower = strtolower($m['nama_mapel']);
             $is_dikecualikan = false;
@@ -293,7 +293,12 @@ class PreviewRaporController extends WaliKelasBaseController
             if (!$is_dikecualikan) { $filtered_jadwal[] = $m; }
         }
         $jadwal_mapel = $filtered_jadwal;
-        usort($jadwal_mapel, function ($a, $b) { return strcmp($a['nama_mapel'], $b['nama_mapel']); });
+        usort($jadwal_mapel, function ($a, $b) { 
+            $noA = (int)($a['nomor_urut'] ?? 0);
+            $noB = (int)($b['nomor_urut'] ?? 0);
+            if ($noA !== $noB) return $noA <=> $noB;
+            return strcmp($a['nama_mapel'], $b['nama_mapel']); 
+        });
 
         // ======================================================================
         // 5. RAKIT DATA NILAI AKADEMIK & DESKRIPSI (DARI LM TERAKHIR - SYNC ADMIN)

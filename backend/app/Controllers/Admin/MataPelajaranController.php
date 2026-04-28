@@ -61,6 +61,7 @@ class MataPelajaranController extends AdminBaseController
                 'curriculum'    => $namaKurikulum,
                 'curriculum_id' => $row['kurikulum_id'],
                 'hours'         => $row['jp_minggu'],
+                'nomor_urut'    => $row['nomor_urut'],
                 'status'        => $row['status']
             ];
         }, $rawMapel);
@@ -87,6 +88,7 @@ class MataPelajaranController extends AdminBaseController
                 'nama_mapel'   => $this->request->getPost('mapel_name'),
                 'kelompok'     => $this->request->getPost('group'),
                 'jp_minggu'    => $this->request->getPost('hours'),
+                'nomor_urut'   => $this->request->getPost('nomor_urut') ?? 0,
                 'kurikulum_id' => $this->request->getPost('curriculum'),
                 'status'       => 'Aktif'
             ];
@@ -120,6 +122,7 @@ class MataPelajaranController extends AdminBaseController
                 'nama_mapel'   => $this->request->getPost('edit_mapel_name'),
                 'kelompok'     => $this->request->getPost('edit_group'),
                 'jp_minggu'    => $this->request->getPost('edit_hours'),
+                'nomor_urut'   => $this->request->getPost('edit_nomor_urut') ?? 0,
                 'kurikulum_id' => $this->request->getPost('edit_curriculum')
             ];
 
@@ -173,7 +176,8 @@ class MataPelajaranController extends AdminBaseController
             'Nama Mata Pelajaran (Wajib)', 
             'Kelompok (Umum / Keislaman / Lokal)', 
             'ID Kurikulum (1=K13, 2=Merdeka)', 
-            'Jam Per Minggu (Angka)'
+            'Jam Per Minggu (Angka)',
+            'Nomor Urut (Angka)'
         ];
 
         $col = 'A';
@@ -226,6 +230,7 @@ class MataPelajaranController extends AdminBaseController
                     'kelompok'     => trim($row['C'] ?? 'Umum'),
                     'kurikulum_id' => trim($row['D'] ?? '2'),
                     'jp_minggu'    => trim($row['E'] ?? '2'),
+                    'nomor_urut'   => trim($row['F'] ?? '0'),
                     'status'       => 'Aktif'
                 ];
 
