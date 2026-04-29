@@ -446,7 +446,36 @@ window.resetForm = function () {
   }
   if (preview)
     preview.innerHTML = `<svg class="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>`;
+
+  // Kembalikan NIS ke mode readonly
+  const nisInput = document.getElementById("nis");
+  if (nisInput) {
+    nisInput.readOnly = true;
+    nisInput.classList.remove("bg-white", "dark:bg-slate-700", "cursor-text");
+    nisInput.classList.add("bg-emerald-50", "dark:bg-emerald-900/20", "cursor-not-allowed");
+  }
 };
+
+window.unlockNis = function() {
+    const nisInput = document.getElementById("nis");
+    if (!nisInput) return;
+
+    Swal.fire({
+        title: 'Buka Kunci NIS?',
+        text: 'NIS digenerate otomatis oleh sistem. Mengubah NIS secara manual dapat menyebabkan ketidaksinkronan data jika tidak hati-hati.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Saya Mengerti',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            nisInput.readOnly = false;
+            nisInput.classList.remove("bg-emerald-50", "dark:bg-emerald-900/20", "cursor-not-allowed");
+            nisInput.classList.add("bg-white", "dark:bg-slate-700", "cursor-text");
+            nisInput.focus();
+        }
+    });
+}
 
 window.editStudent = async function (id) {
   const student = students.find((s) => s.id == id);

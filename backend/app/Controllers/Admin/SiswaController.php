@@ -240,6 +240,9 @@ class SiswaController extends AdminBaseController
         if (!empty($dataSiswa['nik']) && $siswaModel->where('nik', $dataSiswa['nik'])->countAllResults() > 0) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'NIK tersebut sudah terdaftar pada siswa lain!']);
         }
+        if (!empty($dataSiswa['nis']) && $siswaModel->where('nis', $dataSiswa['nis'])->countAllResults() > 0) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'NIS tersebut sudah terdaftar pada siswa lain!']);
+        }
         // FITUR BARU: CEK NOMOR HP SISWA KEMBAR
         if (!empty($dataSiswa['no_hp'])) {
             $cekHpSiswa = $siswaModel->where('no_hp', $dataSiswa['no_hp'])->first();
@@ -431,6 +434,9 @@ class SiswaController extends AdminBaseController
         }
         if (!empty($dataSiswa['nik']) && $siswaModel->where('nik', $dataSiswa['nik'])->where('id !=', $id)->countAllResults() > 0) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'NIK tersebut sudah dipakai siswa lain.']);
+        }
+        if (!empty($dataSiswa['nis']) && $siswaModel->where('nis', $dataSiswa['nis'])->where('id !=', $id)->countAllResults() > 0) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'NIS tersebut sudah dipakai siswa lain.']);
         }
         // FITUR BARU: CEK NOMOR HP SISWA KEMBAR SAAT EDIT
         if (!empty($dataSiswa['no_hp'])) {
@@ -760,11 +766,7 @@ function delete($id)
 
         $db = \Config\Database::connect();
 
-        try {
-            $db->query("ALTER TABLE `siswa` DROP INDEX `nis`");
-        } catch (\Exception $e) {
-            // Abaikan jika index sudah terhapus
-        }
+        // Proteksi Index: Tidak lagi menghapus index NIS
 
         try {
             $fieldsSiswa = $db->getFieldNames('siswa');
@@ -842,6 +844,7 @@ function delete($id)
 
             $countInsert = 0;
             $countUpdate = 0;
+            $errors = []; // Tampung error duplikasi
 
             $getInt = function ($val) {
                 $val = preg_replace('/[^0-9]/', '', explode('.', trim($val))[0]);
@@ -960,24 +963,29 @@ function delete($id)
                             }
 
                             if (!empty($dataUpdate)) {
-                                if (isset($dataUpdate['nisn']) && $db->table('siswa')->where('nisn', $dataUpdate['nisn'])->where('id !=', $existing['id'])->countAllResults() > 0)
-                                    unset($dataUpdate['nisn']);
-                                if (isset($dataUpdate['email_siswa']) && $db->table('siswa')->where('email_siswa', $dataUpdate['email_siswa'])->where('id !=', $existing['id'])->countAllResults() > 0)
-                                    unset($dataUpdate['email_siswa']);
-
-                                if (!empty($dataUpdate)) {
-                                    if (!$db->table('siswa')->where('id', $existing['id'])->update($dataUpdate)) {
-                                        throw new \Exception("DB Update Siswa Error: " . ($db->error()['message'] ?? ''));
-                                    }
+                                if (!$db->table('siswa')->where('id', $existing['id'])->update($dataUpdate)) {
+                                    throw new \Exception("DB Update Siswa Error: " . ($db->error()['message'] ?? ''));
                                 }
                             }
                             $siswaIdForOrtu = $existing['id'];
                             $countUpdate++;
                         } else {
-                            if (!empty($dataSiswa['nisn']) && $db->table('siswa')->where('nisn', $dataSiswa['nisn'])->countAllResults() > 0)
-                                $dataSiswa['nisn'] = null;
-                            if (!empty($dataSiswa['email_siswa']) && $db->table('siswa')->where('email_siswa', $dataSiswa['email_siswa'])->countAllResults() > 0)
-                                $dataSiswa['email_siswa'] = null;
+                            // VALIDASI STRICT SEBELUM INSERT
+                            $conflict = null;
+                            if (!empty($nisnFinal)) {
+                                $conflict = $db->table('siswa')->where('nisn', $nisnFinal)->get()->getRowArray();
+                                if ($conflict) $errors[] = "Baris $idx: NISN <b>$nisnFinal</b> sudah digunakan oleh <b>{$conflict['nama_lengkap']}</b>";
+                            }
+                            if (!$conflict && !empty($nikFinal)) {
+                                $conflict = $db->table('siswa')->where('nik', $nikFinal)->get()->getRowArray();
+                                if ($conflict) $errors[] = "Baris $idx: NIK <b>$nikFinal</b> sudah digunakan oleh <b>{$conflict['nama_lengkap']}</b>";
+                            }
+                            if (!$conflict && !empty($nisFinal)) {
+                                $conflict = $db->table('siswa')->where('nis', $nisFinal)->get()->getRowArray();
+                                if ($conflict) $errors[] = "Baris $idx: NIS <b>$nisFinal</b> sudah digunakan oleh <b>{$conflict['nama_lengkap']}</b>";
+                            }
+
+                            if ($conflict) continue; // Lewati baris ini jika ada konflik
 
                             $username = !empty($dataSiswa['nisn']) ? $dataSiswa['nisn'] : (!empty($dataSiswa['nis']) ? $dataSiswa['nis'] : 'siswa' . time() . $idx);
                             if ($db->table('users')->where('username', substr($username, 0, 50))->countAllResults() > 0) {
@@ -1047,13 +1055,16 @@ function delete($id)
                 }
             }
 
-            if ($db->transStatus() === false) {
+            if (!empty($errors)) {
                 $db->transRollback();
-                return $this->response->setJSON(['status' => 'error', 'message' => 'Transaksi database dibatalkan.']);
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => '<b>Ditemukan duplikasi data!</b> Import dibatalkan untuk menjaga integritas.<br><br><ul><li>' . implode('</li><li>', $errors) . '</li></ul>'
+                ]);
             }
 
             $db->transCommit();
-            return $this->response->setJSON(['status' => 'success', 'message' => "Import Dapodik Sukses! $countInsert Baru, $countUpdate Diperbarui (NIS diizinkan kembar)."]);
+            return $this->response->setJSON(['status' => 'success', 'message' => "Import Dapodik Sukses! $countInsert Siswa Baru ditambahkan, $countUpdate Data Siswa diperbarui."]);
         } catch (\Throwable $e) {
             if (isset($db))
                 $db->transRollback();

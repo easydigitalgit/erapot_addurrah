@@ -488,7 +488,17 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 text-sm">
                             <div class="md:col-span-2 lg:col-span-2">
                                 <label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.nis_auto') ?></label>
-                                <input type="text" id="nis" name="nis" readonly placeholder="<?= lang('Admin/Siswa.nis_placeholder') ?>" class="w-full px-3 py-2 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 rounded-lg outline-none cursor-not-allowed font-mono text-emerald-700 dark:text-emerald-400 font-bold">
+                                <div class="relative group">
+                                    <input type="text" id="nis" name="nis" readonly placeholder="<?= lang('Admin/Siswa.nis_placeholder') ?>" 
+                                        class="w-full pl-3 pr-10 py-2 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 rounded-lg outline-none cursor-not-allowed font-mono text-emerald-700 dark:text-emerald-400 font-bold transition-all">
+                                    <button type="button" id="btnUnlockNis" onclick="unlockNis()" 
+                                        class="absolute right-2 top-1.5 p-1 text-emerald-600 hover:bg-emerald-100 dark:hover:bg-emerald-800/50 rounded-md transition-colors shadow-sm" 
+                                        title="Ubah NIS Manual">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                             <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.nisn') ?></label><input type="text" id="nisn" name="nisn" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-400"></div>
                             <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.student_nik') ?> <span class="text-red-500">*</span></label><input type="text" id="nik" name="nik" required class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-400"></div>

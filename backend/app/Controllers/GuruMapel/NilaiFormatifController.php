@@ -457,11 +457,6 @@ class NilaiFormatifController extends GuruMapelBaseController
         if ($db->fieldExists('status_siswa', 'siswa')) $builder->where('s.status_siswa', 'Aktif');
         $siswas = $builder->orderBy('s.nama_lengkap', 'ASC')->get()->getResultArray();
 
-        // 👇 TIGA BARIS DI BAWAH INI HARUS DIHAPUS KARENA INI KODE LAMA 👇
-        $builder = $db->table('siswa')->where('rombel_id', $rombel_id);
-        if ($db->fieldExists('status_siswa', 'siswa')) $builder->where('status_siswa', 'Aktif');
-        $siswas = $builder->orderBy('nama_lengkap', 'ASC')->get()->getResultArray();
-
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Template Nilai Formatif');
@@ -557,7 +552,16 @@ class NilaiFormatifController extends GuruMapelBaseController
 
             $berhasilDisimpan = 0;
 
-            $siswas = $db->table('siswa')->where('rombel_id', $rombel_id)->get()->getResultArray();
+            $ta_data = $db->table('tahun_ajaran')->where('id', $tahun_ajaran_id)->get()->getRowArray();
+            $semester = $ta_data ? $ta_data['semester'] : 'Ganjil';
+
+            $siswas = $db->table('anggota_rombel ar')
+                        ->select('s.id, s.nis, s.nama_lengkap')
+                        ->join('siswa s', 's.id = ar.siswa_id')
+                        ->where('ar.rombel_id', $rombel_id)
+                        ->where('ar.tahun_ajaran_id', $tahun_ajaran_id)
+                        ->where('ar.semester', $semester)
+                        ->get()->getResultArray();
             $nisToId = [];
             foreach ($siswas as $s) {
                 $nisToId[$s['nis']] = $s['id'];
@@ -803,7 +807,13 @@ class NilaiFormatifController extends GuruMapelBaseController
 
             $berhasilDisimpan = 0;
 
-            $siswas = $db->table('siswa')->where('rombel_id', $rombel_id)->get()->getResultArray();
+            $siswas = $db->table('anggota_rombel ar')
+                        ->select('s.id, s.nis, s.nama_lengkap')
+                        ->join('siswa s', 's.id = ar.siswa_id')
+                        ->where('ar.rombel_id', $rombel_id)
+                        ->where('ar.tahun_ajaran_id', $tahun_ajaran_id)
+                        ->where('ar.semester', $semester)
+                        ->get()->getResultArray();
             $nisToId = [];
             foreach ($siswas as $s) {
                 $nisToId[$s['nis']] = $s['id'];

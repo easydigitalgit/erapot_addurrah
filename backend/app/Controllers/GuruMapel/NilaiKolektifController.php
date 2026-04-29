@@ -315,7 +315,15 @@ class NilaiKolektifController extends GuruMapelBaseController
                 $nis = trim((string)$sheet->getCell('B' . $row)->getValue());
                 if (empty($nis)) continue;
 
-                $siswa = $this->db->table('siswa')->where('nis', $nis)->where('rombel_id', $rombel_id)->get()->getRowArray();
+                $siswa = $this->db->table('anggota_rombel ar')
+                    ->select('s.id, s.nis, s.nama_lengkap')
+                    ->join('siswa s', 's.id = ar.siswa_id')
+                    ->where('s.nis', $nis)
+                    ->where('ar.rombel_id', $rombel_id)
+                    ->where('ar.tahun_ajaran_id', $tahun_ajaran_id)
+                    ->where('ar.semester', $semester)
+                    ->get()->getRowArray();
+
                 if (!$siswa) continue;
                 $siswa_id = $siswa['id'];
 
