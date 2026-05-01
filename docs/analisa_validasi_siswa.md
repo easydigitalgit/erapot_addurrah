@@ -37,7 +37,16 @@ Berdasarkan audit kode pada `SiswaController.php`, ditemukan bahwa sistem saat i
 2.  **Import Preview**: Menambahkan tahap "Preview" sebelum import benar-benar dilakukan, yang akan menampilkan baris mana saja yang bermasalah (duplikat).
 
 ---
-## Kesimpulan
-Sistem saat ini "membiarkan" data kotor masuk agar proses import terlihat lancar, namun hal ini merusak integritas data di jangka panjang (seperti kasus nilai Muhammad Afkhar yang tertukar). Perbaikan harus dilakukan dari level Database hingga UI.
+## Update 30 April 2026: Relaksasi Validasi No. HP Orang Tua
 
-*Dokumen ini dibuat untuk dipelajari sebelum implementasi.*
+### Masalah
+Satu orang tua seringkali memiliki lebih dari satu anak (kakak-beradik) di sekolah yang sama. Sistem saat ini cenderung menimpa record di `orangtua_wali` jika nomor HP yang sama digunakan kembali, karena sistem mencoba mencari record berdasarkan `user_id` (akun login).
+
+### Rencana Perubahan
+1.  **Shared Account**: Mengizinkan beberapa siswa berbagi satu akun orang tua (`user_id` yang sama di tabel `users`).
+2.  **Unique Records per Student**: Setiap siswa tetap memiliki record unik di tabel `orangtua_wali` (berdasarkan `siswa_id`), meskipun `user_id` dan `no_hp_ortu` sama dengan siswa lain.
+3.  **Removal of Uniqueness Checks**: Menghapus validasi `email_ortu` unik di level backend controller yang menghambat proses penyimpanan jika email sudah terdaftar.
+
+### Implementasi pada `SiswaController.php`
+-   Ubah `store()`: Selalu gunakan `insert` untuk `orangtua_wali`.
+-   Ubah `update()`: Pastikan `user_id` diperbarui jika nomor HP ortu diubah ke nomor yang sudah terdaftar di sistem.

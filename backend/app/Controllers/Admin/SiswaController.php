@@ -327,25 +327,13 @@ class SiswaController extends AdminBaseController
                 'alamat_orangtua' => $getNull('alamat_orangtua')
             ];
 
-            $cekOrtuDB = $db->table('orangtua_wali')->where('user_id', $userIdOrtu)->get()->getRowArray();
+            // LOGIKA BARU: Selalu insert record baru di orangtua_wali untuk tiap siswa baru
+            // Meskipun user_id (akun login) yang sama digunakan (misal: kakak-beradik)
+            $dataOrtu['siswa_id'] = $siswaId;
+            $dataOrtu['user_id']  = $userIdOrtu;
 
-            if ($cekOrtuDB) {
-                $dataOrtu['siswa_id'] = $siswaId;
-                if (!empty($dataOrtu['email_ortu'])) {
-                    $cekEmail = $db->table('orangtua_wali')->where('email_ortu', $dataOrtu['email_ortu'])->where('id !=', $cekOrtuDB['id'])->countAllResults();
-                    if ($cekEmail > 0)
-                        unset($dataOrtu['email_ortu']);
-                }
-                $db->table('orangtua_wali')->where('id', $cekOrtuDB['id'])->update($dataOrtu);
-            } else {
-                $dataOrtu['siswa_id'] = $siswaId;
-                $dataOrtu['user_id'] = $userIdOrtu;
-                if (!empty($dataOrtu['email_ortu']) && $db->table('orangtua_wali')->where('email_ortu', $dataOrtu['email_ortu'])->countAllResults() > 0) {
-                    $dataOrtu['email_ortu'] = null;
-                }
-                if (!$db->table('orangtua_wali')->insert($dataOrtu)) {
-                    throw new \Exception('Gagal menyimpan profil Wali. ' . ($db->error()['message'] ?? ''));
-                }
+            if (!$db->table('orangtua_wali')->insert($dataOrtu)) {
+                throw new \Exception('Gagal menyimpan profil Wali. ' . ($db->error()['message'] ?? ''));
             }
 
             $db->transCommit();
@@ -530,34 +518,28 @@ class SiswaController extends AdminBaseController
 
             $cekOrtu = $db->table('orangtua_wali')->where('siswa_id', $id)->get()->getRowArray();
 
+            // Cari atau buat akun user untuk orang tua berdasarkan nomor HP (username)
+            $usernameOrtu = !empty($hpOrtu) ? $hpOrtu : 'W' . $dataSiswa['nis'];
+            $existingUserOrtu = $db->table('users')->where('username', $usernameOrtu)->get()->getRowArray();
+            
+            if ($existingUserOrtu) {
+                $userIdOrtu = $existingUserOrtu['id'];
+            } else {
+                $db->table('users')->insert([
+                    'username' => $usernameOrtu,
+                    'password' => password_hash('12345678', PASSWORD_BCRYPT),
+                    'role_id' => 4,
+                    'is_active' => 1
+                ]);
+                $userIdOrtu = $db->insertID();
+            }
+
+            $dataOrtu['user_id'] = $userIdOrtu;
+
             if ($cekOrtu) {
-                if (!empty($dataOrtu['email_ortu'])) {
-                    $cekEmail = $db->table('orangtua_wali')->where('email_ortu', $dataOrtu['email_ortu'])->where('id !=', $cekOrtu['id'])->countAllResults();
-                    if ($cekEmail > 0)
-                        unset($dataOrtu['email_ortu']);
-                }
                 $db->table('orangtua_wali')->where('siswa_id', $id)->update($dataOrtu);
             } else {
-                $usernameOrtu = !empty($hpOrtu) ? $hpOrtu : 'W' . $dataSiswa['nis'];
-                $existingUserOrtu = $db->table('users')->where('username', $usernameOrtu)->get()->getRowArray();
-                if ($existingUserOrtu) {
-                    $userIdOrtu = $existingUserOrtu['id'];
-                } else {
-                    $db->table('users')->insert([
-                        'username' => $usernameOrtu,
-                        'password' => password_hash('12345678', PASSWORD_BCRYPT),
-                        'role_id' => 4,
-                        'is_active' => 1
-                    ]);
-                    $userIdOrtu = $db->insertID();
-                }
-
                 $dataOrtu['siswa_id'] = $id;
-                $dataOrtu['user_id'] = $userIdOrtu;
-
-                if (!empty($dataOrtu['email_ortu']) && $db->table('orangtua_wali')->where('email_ortu', $dataOrtu['email_ortu'])->countAllResults() > 0) {
-                    $dataOrtu['email_ortu'] = null;
-                }
                 $db->table('orangtua_wali')->insert($dataOrtu);
             }
 
