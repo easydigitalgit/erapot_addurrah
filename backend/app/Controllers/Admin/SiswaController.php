@@ -872,6 +872,9 @@ function delete($id)
             $countUpdate = 0;
             $errors = []; // Tampung error duplikasi
 
+            // --- 🚀 PERSIAPAN MESIN WAKTU ---
+            $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+
             $getInt = function ($val) {
                 $val = preg_replace('/[^0-9]/', '', explode('.', trim($val))[0]);
                 return (empty($val) && $val !== '0') ? null : (int) $val;
@@ -993,6 +996,22 @@ function delete($id)
                                     throw new \Exception("DB Update Siswa Error: " . ($db->error()['message'] ?? ''));
                                 }
                             }
+
+                            // --- 🚀 SUNTIKAN MESIN WAKTU (Sinkronisasi saat Import Update) ---
+                            if ($taAktif && !empty($dataSiswa['rombel_id'])) {
+                                $cekAR = $db->table('anggota_rombel')->where(['siswa_id' => $existing['id'], 'tahun_ajaran_id' => $taAktif['id']])->get()->getRowArray();
+                                if ($cekAR) {
+                                    $db->table('anggota_rombel')->where('id', $cekAR['id'])->update(['rombel_id' => $dataSiswa['rombel_id'], 'semester' => $taAktif['semester']]);
+                                } else {
+                                    $db->table('anggota_rombel')->insert([
+                                        'siswa_id' => $existing['id'],
+                                        'rombel_id' => $dataSiswa['rombel_id'],
+                                        'tahun_ajaran_id' => $taAktif['id'],
+                                        'semester' => $taAktif['semester']
+                                    ]);
+                                }
+                            }
+
                             $siswaIdForOrtu = $existing['id'];
                             $countUpdate++;
                         } else {
@@ -1034,6 +1053,17 @@ function delete($id)
                             if (!$db->table('siswa')->insert($dataSiswa))
                                 throw new \Exception("Insert Siswa: " . ($db->error()['message'] ?? ''));
                             $siswaIdForOrtu = $db->insertID();
+
+                            // --- 🚀 SUNTIKAN MESIN WAKTU (Sinkronisasi saat Import Baru) ---
+                            if ($taAktif && !empty($dataSiswa['rombel_id'])) {
+                                $db->table('anggota_rombel')->insert([
+                                    'siswa_id' => $siswaIdForOrtu,
+                                    'rombel_id' => $dataSiswa['rombel_id'],
+                                    'tahun_ajaran_id' => $taAktif['id'],
+                                    'semester' => $taAktif['semester']
+                                ]);
+                            }
+
                             $countInsert++;
                         }
 
