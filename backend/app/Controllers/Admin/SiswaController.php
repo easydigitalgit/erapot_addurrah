@@ -280,6 +280,19 @@ class SiswaController extends AdminBaseController
             }
             $siswaId = $siswaModel->getInsertID();
 
+            // --- 🚀 SUNTIKAN MESIN WAKTU (Sinkronisasi Rombel) ---
+            if (!empty($dataSiswa['rombel_id'])) {
+                $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+                if ($taAktif) {
+                    $db->table('anggota_rombel')->insert([
+                        'siswa_id'        => $siswaId,
+                        'rombel_id'       => $dataSiswa['rombel_id'],
+                        'tahun_ajaran_id' => $taAktif['id'],
+                        'semester'        => $taAktif['semester']
+                    ]);
+                }
+            }
+
             $hpOrtu = $this->request->getPost('no_hp_ortu');
             $usernameOrtu = !empty($hpOrtu) ? $hpOrtu : 'W' . $dataSiswa['nis'];
 
@@ -481,6 +494,37 @@ class SiswaController extends AdminBaseController
         try {
             if (!$siswaModel->update($id, $dataSiswa)) {
                 throw new \Exception('Gagal update data profil siswa. ' . ($db->error()['message'] ?? ''));
+            }
+
+            // --- 🚀 SUNTIKAN MESIN WAKTU (Sinkronisasi Rombel saat Update) ---
+            $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+            if ($taAktif) {
+                $cekMesinWaktu = $db->table('anggota_rombel')
+                    ->where('siswa_id', $id)
+                    ->where('tahun_ajaran_id', $taAktif['id'])
+                    ->get()->getRowArray();
+
+                if (!empty($dataSiswa['rombel_id'])) {
+                    if ($cekMesinWaktu) {
+                        // Jika sudah ada, update rombel-nya
+                        $db->table('anggota_rombel')
+                            ->where('id', $cekMesinWaktu['id'])
+                            ->update(['rombel_id' => $dataSiswa['rombel_id'], 'semester' => $taAktif['semester']]);
+                    } else {
+                        // Jika belum ada, buat baru
+                        $db->table('anggota_rombel')->insert([
+                            'siswa_id'        => $id,
+                            'rombel_id'       => $dataSiswa['rombel_id'],
+                            'tahun_ajaran_id' => $taAktif['id'],
+                            'semester'        => $taAktif['semester']
+                        ]);
+                    }
+                } else {
+                    // Jika rombel_id di-null-kan, hapus dari mesin waktu tahun ini
+                    if ($cekMesinWaktu) {
+                        $db->table('anggota_rombel')->where('id', $cekMesinWaktu['id'])->delete();
+                    }
+                }
             }
 
             // 2. UPDATE FOTO DI TABEL USERS
