@@ -170,7 +170,7 @@ class MonitoringNilaiSiswaController extends AdminBaseController
     {
         $db = \Config\Database::connect();
 
-        $kategoriDB = (stripos($kategori, 'tengah') !== false) ? 'Tengah' : 'Akhir';
+        $kategoriDB = (stripos($kategori, 'tengah') !== false) ? 'Tengah Semester' : 'Akhir Semester';
 
         $taData = $db->table('tahun_ajaran')->where('id', $ta_id)->get()->getRowArray();
         if (!$taData) return ['is_tahfidz' => false, 'jumlah_lm' => 0, 'data' => []];

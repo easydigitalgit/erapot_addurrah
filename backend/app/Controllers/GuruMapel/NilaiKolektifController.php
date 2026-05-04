@@ -283,7 +283,7 @@ class NilaiKolektifController extends GuruMapelBaseController
             $mapel_id = $mapel['id'];
 
             $kategori_semester = (stripos($strJenis, 'tengah') !== false) ? 'Tengah Semester' : 'Akhir Semester';
-            $kategori_db       = (stripos($strJenis, 'tengah') !== false) ? 'Tengah' : 'Akhir';
+            $kategori_db       = (stripos($strJenis, 'tengah') !== false) ? 'Tengah Semester' : 'Akhir Semester';
 
             $colMap = [];
             for ($c = 4; $c <= $highestColumnIndex; $c++) {
@@ -453,11 +453,7 @@ class NilaiKolektifController extends GuruMapelBaseController
         ]);
 
         if ($this->db->fieldExists('kategori', 'nilai_formatif')) {
-            $qCek->groupStart()
-                ->where('kategori', $kategoriDB)
-                ->orWhere('kategori', '')
-                ->orWhere('kategori', null)
-                ->groupEnd();
+            $qCek->where('kategori', $kategoriDB);
         }
 
         $exist = $qCek->get()->getRowArray();

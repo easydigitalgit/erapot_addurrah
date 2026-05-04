@@ -237,7 +237,7 @@ class NilaiFormatifController extends GuruMapelBaseController
             $mapel_id         = (int)$this->request->getGet('mapel_id');
             $tahun_ajaran_id  = (int)$this->request->getGet('tahun_ajaran_id');
             $kategori         = $this->request->getGet('kategori') ?: 'Akhir Semester';
-            $kategoriDB       = (stripos($kategori, 'tengah') !== false) ? 'Tengah' : 'Akhir';
+            $kategoriDB       = (stripos($kategori, 'tengah') !== false) ? 'Tengah Semester' : 'Akhir Semester';
 
             $ta_data = $db->table('tahun_ajaran')->where('id', $tahun_ajaran_id)->get()->getRowArray();
             $semester = $ta_data ? $ta_data['semester'] : 'Ganjil';
@@ -258,12 +258,7 @@ class NilaiFormatifController extends GuruMapelBaseController
 
                 // Mencegah nilai tidak terbaca jika kategori di DB blank/kosong (Toleransi Error DB)
                 if ($db->fieldExists('kategori', 'nilai_formatif')) {
-                    $bFormatif->groupStart()
-                        ->where('kategori', $kategoriDB)
-                        ->orWhere('kategori', $kategori)
-                        ->orWhere('kategori', '')
-                        ->orWhere('kategori', null)
-                        ->groupEnd();
+                    $bFormatif->where('kategori', $kategoriDB);
                 }
 
                 $nilais = $bFormatif->get()->getResultArray();
@@ -519,7 +514,7 @@ class NilaiFormatifController extends GuruMapelBaseController
             $rombel_id = (int)$this->request->getPost('rombel_id');
             $jenis     = $this->request->getPost('jenis_penilaian');
             $kategori  = $this->request->getPost('kategori');
-            $kategori_db = (stripos($kategori, 'tengah') !== false) ? 'Tengah' : 'Akhir';
+            $kategori_db = (stripos($kategori, 'tengah') !== false) ? 'Tengah Semester' : 'Akhir Semester';
             $pertemuan = (int)$this->request->getPost('pertemuan');
             $tahun_ajaran_id = (int)$this->request->getPost('tahun_ajaran_id');
             $kkm       = (int)$this->request->getPost('kkm') ?: 75;
