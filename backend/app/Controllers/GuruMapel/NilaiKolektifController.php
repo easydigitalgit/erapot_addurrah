@@ -282,8 +282,8 @@ class NilaiKolektifController extends GuruMapelBaseController
             if (!$mapel) return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal membaca Mata Pelajaran dari Excel.']);
             $mapel_id = $mapel['id'];
 
-            $kategori_semester = (strpos($strJenis, 'tengah') !== false) ? 'Tengah Semester' : 'Akhir Semester';
-            $kategori_db       = (strpos($strJenis, 'tengah') !== false) ? 'Tengah' : 'Akhir';
+            $kategori_semester = (stripos($strJenis, 'tengah') !== false) ? 'Tengah Semester' : 'Akhir Semester';
+            $kategori_db       = (stripos($strJenis, 'tengah') !== false) ? 'Tengah' : 'Akhir';
 
             $colMap = [];
             for ($c = 4; $c <= $highestColumnIndex; $c++) {
@@ -475,6 +475,7 @@ class NilaiKolektifController extends GuruMapelBaseController
         }
 
         if ($exist) {
+            $dataSimpan['status_simpan'] = 'draft'; // Pastikan status tetap draft jika diupdate via kolektif
             $this->db->table('nilai_formatif')->where('id', $exist['id'])->update($dataSimpan);
         } else {
             $dataSimpan['siswa_id']          = $siswa_id;

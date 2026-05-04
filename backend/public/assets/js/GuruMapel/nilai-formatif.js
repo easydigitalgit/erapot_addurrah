@@ -151,8 +151,11 @@ async function updatePertemuanOptions() {
 }
 
 async function loadStudents() {
+    const taEl = document.getElementById("tahunAjaran");
+    const taId = taEl ? taEl.value : "";
+
     try {
-        const response = await fetch(`${URL_GET_STUDENTS}?rombel_id=${ACTIVE_ROMBEL_ID}`, {
+        const response = await fetch(`${URL_GET_STUDENTS}?rombel_id=${ACTIVE_ROMBEL_ID}&ta_id=${taId}`, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         });
         const result = await response.json();
