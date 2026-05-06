@@ -33,6 +33,28 @@ class TahfidzController extends WaliKelasBaseController
         $this->data['rombel'] = $rombel;
         $this->data['surahList'] = $this->db->table('ref_surah')->where('no_surah >=', 78)->orderBy('no_surah', 'ASC')->get()->getResultArray();
         
+        // --- TANGGAL RAPOR UNTUK FILTER ---
+        $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        $tanggal_rapor_raw = $ta_aktif ? ($ta_aktif['tanggal_rapor'] ?? date('Y-m-d')) : date('Y-m-d');
+        $tanggal_rapor_ymd = date('Y-m-d');
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggal_rapor_raw)) {
+            $tanggal_rapor_ymd = $tanggal_rapor_raw;
+        } else {
+            $bulanIndo = [
+                'Januari' => '01', 'Februari' => '02', 'Maret' => '03', 'April' => '04',
+                'Mei' => '05', 'Juni' => '06', 'Juli' => '07', 'Agustus' => '08',
+                'September' => '09', 'Oktober' => '10', 'November' => '11', 'Desember' => '12'
+            ];
+            $parts = explode(' ', trim($tanggal_rapor_raw));
+            if (count($parts) >= 3) {
+                $d = str_pad($parts[0], 2, '0', STR_PAD_LEFT);
+                $m = $bulanIndo[ucfirst(strtolower($parts[1]))] ?? '01';
+                $y = $parts[2];
+                $tanggal_rapor_ymd = "$y-$m-$d";
+            }
+        }
+        $this->data['tanggal_rapor'] = $tanggal_rapor_ymd;
+
         return view('WaliKelas/tahfidz/index', $this->data);
     }
 

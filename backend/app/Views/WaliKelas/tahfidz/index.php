@@ -29,13 +29,19 @@ Input Nilai Tahfidz - Wali Kelas
 <?= $this->section('content') ?>
 <div class="card mb-6 bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700 p-6 shadow-sm transition-colors">
     <div class="flex flex-col md:flex-row justify-between items-center gap-5">
-        <div class="w-full md:w-1/3">
-            <label class="block text-[11px] font-bold text-gray-600 dark:text-slate-400 uppercase tracking-wider mb-2 transition-colors">Filter Berdasarkan Juz</label>
-            <select id="filterJuz" class="w-full px-4 py-3 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-emerald-500 transition-colors outline-none cursor-pointer shadow-sm">
-                <?php for($j=1; $j<=30; $j++): ?>
-                    <option value="<?= $j ?>" <?= $j == 30 ? 'selected' : '' ?>>Juz <?= $j ?></option>
-                <?php endfor; ?>
-            </select>
+        <div class="w-full md:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-[11px] font-bold text-gray-600 dark:text-slate-400 uppercase tracking-wider mb-2 transition-colors">Filter Berdasarkan Juz</label>
+                <select id="filterJuz" class="w-full px-4 py-3 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-emerald-500 transition-colors outline-none cursor-pointer shadow-sm">
+                    <?php for($j=1; $j<=30; $j++): ?>
+                        <option value="<?= $j ?>" <?= $j == 30 ? 'selected' : '' ?>>Juz <?= $j ?></option>
+                    <?php endfor; ?>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[11px] font-bold text-gray-600 dark:text-slate-400 uppercase tracking-wider mb-2 transition-colors">Tanggal Cetak Rapor</label>
+                <input type="date" id="filterTglRapor" class="w-full px-4 py-3 border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-emerald-500 transition-colors outline-none cursor-pointer shadow-sm" value="<?= esc($tanggal_rapor) ?>">
+            </div>
         </div>
         <div class="text-right">
             <p class="text-xs text-gray-500 dark:text-slate-400 italic">* Data nilai diinput oleh Guru Tahfizh</p>
@@ -118,7 +124,7 @@ Input Nilai Tahfidz - Wali Kelas
                         </span>
                     </td>
                     <td class="p-4 text-center">
-                        <button type="button" onclick="openIframePreview('<?= base_url('wali/tahfidz/cetak-rapor') ?>/${s.id}?juz=${juz}', '${s.nama_lengkap}')" class="p-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl hover:bg-emerald-100 transition-all border border-emerald-100 dark:border-emerald-800/50 shadow-sm" title="Cetak Rapor">
+                        <button type="button" onclick="cetakSiswa('${s.id}', '${s.nama_lengkap.replace(/'/g, "\\'")}')" class="p-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl hover:bg-emerald-100 transition-all border border-emerald-100 dark:border-emerald-800/50 shadow-sm" title="Cetak Rapor">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                         </button>
                     </td>
@@ -129,6 +135,13 @@ Input Nilai Tahfidz - Wali Kelas
     }
 
 
+
+    function cetakSiswa(id, nama) {
+        const juz = document.getElementById('filterJuz').value;
+        const tgl = document.getElementById('filterTglRapor').value;
+        const url = `<?= base_url('wali/tahfidz/cetak-rapor') ?>/${id}?juz=${juz}&tgl_rapor=${tgl}`;
+        openIframePreview(url, nama);
+    }
 
     function openIframePreview(url, studentName) {
         const modal = document.getElementById('modalPreviewKertas');

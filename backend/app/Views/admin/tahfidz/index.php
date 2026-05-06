@@ -72,7 +72,7 @@ Cetak Nilai Tahfizh - Admin
 
 <!-- Filters -->
 <div class="bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700 p-6 shadow-sm transition-colors mb-8">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
             <label class="block text-[11px] font-black text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-2 transition-colors">Pilih Tahun Ajaran</label>
             <select id="filterTA" class="w-full px-5 py-3.5 border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-900/50 text-gray-800 dark:text-white rounded-2xl focus:ring-2 focus:ring-emerald-500 transition-all outline-none cursor-pointer appearance-none font-bold">
@@ -99,6 +99,10 @@ Cetak Nilai Tahfizh - Admin
                     <option value="<?= $j ?>" <?= $j == 30 ? 'selected' : '' ?>>Juz <?= $j ?></option>
                 <?php endfor; ?>
             </select>
+        </div>
+        <div>
+            <label class="block text-[11px] font-black text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-2 transition-colors">Tanggal Cetak Rapor</label>
+            <input type="date" id="filterTglRapor" class="w-full px-5 py-3.5 border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-900/50 text-gray-800 dark:text-white rounded-2xl focus:ring-2 focus:ring-emerald-500 transition-all outline-none cursor-pointer font-bold" value="<?= esc($tanggal_rapor) ?>">
         </div>
     </div>
 </div>
@@ -224,7 +228,7 @@ Cetak Nilai Tahfizh - Admin
                         </span>
                     </td>
                     <td class="p-5 text-center">
-                        <button onclick="openIframePreview('<?= base_url('admin/tahfidz/cetak-rapor') ?>/${s.id}?juz=${juz}&ta=${id_ta}', '${s.nama_lengkap}')" class="p-2.5 bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all shadow-sm group" title="Cetak Standar">
+                        <button onclick="cetakSiswa('${s.id}', '${s.nama_lengkap.replace(/'/g, "\\'")}')" class="p-2.5 bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all shadow-sm group" title="Cetak Standar">
                              <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                         </button>
                     </td>
@@ -232,6 +236,14 @@ Cetak Nilai Tahfizh - Admin
             `;
         });
         tbody.innerHTML = html;
+    }
+
+    function cetakSiswa(id, nama) {
+        const juz = document.getElementById('filterJuz').value;
+        const ta = document.getElementById('filterTA').value;
+        const tgl = document.getElementById('filterTglRapor').value;
+        const url = `<?= base_url('admin/tahfidz/cetak-rapor') ?>/${id}?juz=${juz}&ta=${ta}&tgl_rapor=${tgl}`;
+        openIframePreview(url, nama);
     }
 
     function openIframePreview(url, studentName) {

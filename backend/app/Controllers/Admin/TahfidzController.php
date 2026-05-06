@@ -76,6 +76,27 @@ class TahfidzController extends AdminBaseController
         $this->data['id_ta_aktif'] = $id_ta_aktif;
         $this->data['list_rombel'] = $this->rombelModel->where('id_tahun_ajaran', $id_ta_aktif)->orderBy('tingkat', 'ASC')->findAll();
         
+        // --- TANGGAL RAPOR UNTUK FILTER ---
+        $tanggal_rapor_raw = $ta_aktif ? ($ta_aktif['tanggal_rapor'] ?? date('Y-m-d')) : date('Y-m-d');
+        $tanggal_rapor_ymd = date('Y-m-d');
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggal_rapor_raw)) {
+            $tanggal_rapor_ymd = $tanggal_rapor_raw;
+        } else {
+            $bulanIndo = [
+                'Januari' => '01', 'Februari' => '02', 'Maret' => '03', 'April' => '04',
+                'Mei' => '05', 'Juni' => '06', 'Juli' => '07', 'Agustus' => '08',
+                'September' => '09', 'Oktober' => '10', 'November' => '11', 'Desember' => '12'
+            ];
+            $parts = explode(' ', trim($tanggal_rapor_raw));
+            if (count($parts) >= 3) {
+                $d = str_pad($parts[0], 2, '0', STR_PAD_LEFT);
+                $m = $bulanIndo[ucfirst(strtolower($parts[1]))] ?? '01';
+                $y = $parts[2];
+                $tanggal_rapor_ymd = "$y-$m-$d";
+            }
+        }
+        $this->data['tanggal_rapor'] = $tanggal_rapor_ymd;
+
         return view('admin/tahfidz/index', $this->data);
     }
 
@@ -382,6 +403,21 @@ class TahfidzController extends AdminBaseController
         // --- LOKASI TTD ---
         $lokasi_ttd = $this->titleCaseWithRoman($nama_kabupaten ?: 'Medan');
 
+        // --- FORMAT TANGGAL CETAK ---
+        $tglReq = request()->getGet('tgl_rapor') ?? date('Y-m-d');
+        $tanggal_rapor_cetak = $tglReq;
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $tglReq)) {
+            $bulanIndo = [
+                '01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April',
+                '05' => 'Mei', '06' => 'Juni', '07' => 'Juli', '08' => 'Agustus',
+                '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+            ];
+            $split = explode('-', $tglReq);
+            if (count($split) === 3 && isset($bulanIndo[$split[1]])) {
+                $tanggal_rapor_cetak = $split[2] . ' ' . $bulanIndo[$split[1]] . ' ' . $split[0];
+            }
+        }
+
         $data = [
             'siswa'            => $siswa,
             'sekolah'          => $sekolah,
@@ -397,7 +433,7 @@ class TahfidzController extends AdminBaseController
             'tahun_ajaran'     => $tahun_ajaran,
             'semester'         => $semester,
             'guru_tahfidz'     => $guruTahfidz ? $guruTahfidz['nama_lengkap'] : '-', 
-            'tanggal_rapor'    => date('d F Y'),
+            'tanggal_rapor'    => $tanggal_rapor_cetak,
             'watermark_base64' => $this->getWatermarkBase64($sekolah['nama_sekolah'] ?? ''),
             'link_verifikasi'  => base_url('validasi/rapor/' . strtr(rtrim(base64_encode($siswa_id . '|' . $id_ta . '|' . 'Tahfidz'), '='), '+/=', '-_,'))
         ];

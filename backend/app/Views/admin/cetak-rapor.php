@@ -87,7 +87,7 @@
                 <?= lang('Admin/CetakRapor.filter_title') ?>
             </h3>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                 <div>
                     <label class="block text-[11px] font-bold text-gray-600 dark:text-slate-400 uppercase tracking-wider mb-2"><?= lang('Admin/CetakRapor.filter_year') ?> / <?= lang('Admin/CetakRapor.filter_semester') ?></label>
                     <select id="selectTA" class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 text-gray-900 dark:text-white font-bold rounded-xl focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>] transition-all cursor-pointer shadow-sm border-l-4" style="border-left-color: <?= $color['warna_primary'] ?>;" onchange="window.location.href = window.location.pathname + '?ta=' + this.value">
@@ -119,6 +119,11 @@
                         <option value="Tengah Semester">Tengah Semester (PTS / STS)</option>
                     </select>
                 </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-600 dark:text-slate-400 uppercase tracking-wider mb-2">Tanggal Cetak Rapor</label>
+                    <input type="date" id="tglRapor" class="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 text-gray-900 dark:text-white font-bold rounded-xl focus:outline-none focus:ring-2 focus:ring-[<?= $color['warna_primary'] ?>] transition-all cursor-pointer shadow-sm border-l-4" style="border-left-color: <?= $color['warna_primary'] ?>;" value="<?= esc($tanggal_rapor) ?>">
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5 pb-6 border-b border-gray-100 dark:border-slate-700">
@@ -130,7 +135,6 @@
                 </div>
                 <div class="hidden">
                     <input type="hidden" id="tempatRapor" value="<?= esc($tempat_rapor) ?>">
-                    <input type="hidden" id="tglRapor" value="<?= esc($tanggal_rapor) ?>">
                 </div>
             </div>
 
