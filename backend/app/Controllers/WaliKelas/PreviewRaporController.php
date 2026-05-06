@@ -88,6 +88,25 @@ class PreviewRaporController extends WaliKelasBaseController
             ->join('kabupaten k', 'CONVERT(k.kode USING utf8mb4) COLLATE utf8mb4_general_ci = CONVERT(s.kabupaten USING utf8mb4) COLLATE utf8mb4_general_ci', 'left', false)
             ->get()->getRowArray();
 
+        $tanggal_rapor_raw = $ta_record ? ($ta_record['tanggal_rapor'] ?? date('Y-m-d')) : date('Y-m-d');
+        $tanggal_rapor_ymd = date('Y-m-d');
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggal_rapor_raw)) {
+            $tanggal_rapor_ymd = $tanggal_rapor_raw;
+        } else {
+            $bulanIndo = [
+                'Januari' => '01', 'Februari' => '02', 'Maret' => '03', 'April' => '04',
+                'Mei' => '05', 'Juni' => '06', 'Juli' => '07', 'Agustus' => '08',
+                'September' => '09', 'Oktober' => '10', 'November' => '11', 'Desember' => '12'
+            ];
+            $parts = explode(' ', trim($tanggal_rapor_raw));
+            if (count($parts) >= 3) {
+                $d = str_pad($parts[0], 2, '0', STR_PAD_LEFT);
+                $m = $bulanIndo[ucfirst(strtolower($parts[1]))] ?? '01';
+                $y = $parts[2];
+                $tanggal_rapor_ymd = "$y-$m-$d";
+            }
+        }
+
         $data = [
             'title'        => 'Cetak Rapor Kelas',
             'user'         => session()->get('nama_lengkap') ?? 'Wali Kelas',
@@ -101,7 +120,7 @@ class PreviewRaporController extends WaliKelasBaseController
             'tahun_ajaran' => $tahun_ajaran, 
             'semester'     => $semester,
             'list_ta'      => $list_ta, 
-            'tanggal_rapor' => $ta_record ? ($ta_record['tanggal_rapor'] ?? date('d F Y')) : date('d F Y'),
+            'tanggal_rapor' => $tanggal_rapor_ymd,
             'tempat_rapor'  => $sekolah ? ($sekolah['kabupaten_nama'] ?? 'Surakarta') : 'Surakarta',
             'wali_kelas'   => $guru ? $guru['nama_lengkap'] : 'Nama Wali Kelas',
             'guru'         => $guru,
@@ -504,6 +523,20 @@ class PreviewRaporController extends WaliKelasBaseController
                   <text x="50%" y="50%" font-family="Arial" font-size="8" fill="' . $wm_color . '" text-anchor="middle" dominant-baseline="middle">' . $wm_text . '</text>
                 </svg>';
 
+        $tglRaporRaw = $this->request->getGet('tgl_rapor') ?? date('Y-m-d');
+        $tanggal_rapor_cetak = $tglRaporRaw;
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $tglRaporRaw)) {
+            $bulanIndo = [
+                '01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April',
+                '05' => 'Mei', '06' => 'Juni', '07' => 'Juli', '08' => 'Agustus',
+                '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+            ];
+            $split = explode('-', $tglRaporRaw);
+            if (count($split) === 3 && isset($bulanIndo[$split[1]])) {
+                $tanggal_rapor_cetak = $split[2] . ' ' . $bulanIndo[$split[1]] . ' ' . $split[0];
+            }
+        }
+
         $data = [
             'siswa'           => $siswa,
             'nilai'           => $nilai,
@@ -521,7 +554,7 @@ class PreviewRaporController extends WaliKelasBaseController
             'tahun_ajaran'    => $tahun_ajaran,
             'semester'        => $semester,
             'kategori'        => $kategori,
-            'tanggal_rapor'   => $this->request->getGet('tgl_rapor') ?? date('d F Y'),
+            'tanggal_rapor'   => $tanggal_rapor_cetak,
             'tempat_rapor'    => $this->request->getGet('tempat') ?? 'Surakarta',
             'id_ta_aktif'     => $ta_id,
             'link_verifikasi' => base_url('validasi/rapor/' . strtr(rtrim(base64_encode($siswa_id . '|' . $ta_id . '|' . str_replace(' ', '_', $kategori)), '='), '+/=', '-_,')),

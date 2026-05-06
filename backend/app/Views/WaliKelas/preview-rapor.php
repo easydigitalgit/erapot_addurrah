@@ -113,7 +113,7 @@
                 Pengaturan Rapor
             </h3>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 mb-6">
                 <div>
                     <label class="block text-[11px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-2">Kelas Anda</label> 
                     <div class="w-full px-4 py-3.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-slate-200 font-black rounded-xl flex items-center justify-between cursor-not-allowed select-none border-l-4 border-l-tema">
@@ -123,7 +123,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-2">Tahun Ajaran / Semester</label> 
+                    <label class="block text-[11px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-2">TA / Semester</label> 
                     <select id="selectTA" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white font-black rounded-xl focus-tema transition-all cursor-pointer shadow-sm outline-none border-l-4 border-l-emerald-500" onchange="window.location.href = window.location.pathname + '?ta=' + this.value">
                         <?php foreach($list_ta as $ta): ?>
                             <?php 
@@ -143,6 +143,11 @@
                         <option value="Tengah Semester">Tengah Semester (PTS / STS)</option>
                     </select>
                 </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-2">Tanggal Cetak Rapor</label> 
+                    <input type="date" id="tglRapor" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white font-black rounded-xl focus-tema transition-all cursor-pointer shadow-sm outline-none border-l-4 border-l-amber-500" value="<?= esc($tanggal_rapor) ?>">
+                </div>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6 pb-6 border-b border-gray-100 dark:border-slate-700">
@@ -157,7 +162,6 @@
                 </div>
                 <div class="hidden">
                     <input type="hidden" id="tempatRapor" value="<?= esc($tempat_rapor) ?>">
-                    <input type="hidden" id="tglRapor" value="<?= esc($tanggal_rapor) ?>">
                 </div>
             </div>
 
