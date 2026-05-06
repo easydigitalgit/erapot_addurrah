@@ -299,7 +299,6 @@
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
                                             </button>
                                         <?php endif; ?>
-
                                         <?php if (has_permission('wali_kelas', 'update')): ?>
                                             <button onclick="openEditModal('<?= $s['id'] ?>', this)" class="p-1.5 text-gray-400 hover:text-white bg-gray-50 dark:bg-slate-700 hover:bg-emerald-500 rounded-md transition-all shadow-sm" title="<?= lang('WaliKelas/DaftarSiswa.tooltip_edit') ?>">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
@@ -436,6 +435,42 @@
                     </button>
                 <?php endif; ?>
                 <button onclick="closeProfileModal()" class="flex-1 py-3 px-4 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-gray-200 transition-all"><?= lang('WaliKelas/DaftarSiswa.btn_cancel') ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="raporModal" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4">
+    <div class="modal-overlay absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onclick="closeRaporModal()"></div>
+    <div class="relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col transform scale-95 transition-all">
+        <div class="bg-tema p-5 text-white flex items-center justify-between">
+            <h2 class="text-lg font-bold"><?= lang('WaliKelas/DaftarSiswa.modal_rapor_title') ?></h2>
+            <button onclick="closeRaporModal()" class="p-1.5 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-6 bg-gray-50/50 dark:bg-slate-900/50 custom-scrollbar">
+            <div class="bg-white dark:bg-slate-800 max-w-3xl mx-auto shadow-sm border border-gray-200 dark:border-slate-700 rounded-xl p-8 lg:p-12">
+                <div class="text-center mb-8 pb-6 border-b-4 border-gray-800 dark:border-slate-500">
+                    <h3 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-widest mb-1"><?= lang('WaliKelas/DaftarSiswa.rapor_header_1') ?></h3>
+                    <p class="text-sm font-bold text-gray-600 dark:text-slate-400 uppercase tracking-widest"><?= esc($nama_sekolah ?? 'SMPIT Ad Durrah') ?></p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 text-sm mb-8 bg-gray-50 dark:bg-slate-900/50 p-4 rounded-lg font-mono">
+                    <div><span class="text-gray-500 block text-xs"><?= lang('WaliKelas/DaftarSiswa.rapor_stu_name') ?></span><strong class="text-base text-gray-800 dark:text-white" id="raporStudentName">-</strong></div>
+                    <div><span class="text-gray-500 block text-xs"><?= lang('WaliKelas/DaftarSiswa.rapor_stu_nis') ?></span><strong class="text-base text-gray-800 dark:text-white" id="raporStudentNIS">-</strong></div>
+                </div>
+
+                <div class="mb-8">
+                    <h4 class="font-bold text-gray-800 dark:text-white mb-3 text-lg bg-tema-light dark:bg-slate-700 px-3 py-1 border-l-4 border-tema"><?= lang('WaliKelas/DaftarSiswa.rapor_sec_a') ?></h4>
+                    <p class="text-sm text-gray-700 dark:text-slate-300 italic border border-dashed border-gray-300 dark:border-slate-600 p-4 rounded-lg" id="raporCatatan">-</p>
+                </div>
+
+                <div class="mb-8">
+                    <h4 class="font-bold text-gray-800 dark:text-white mb-3 text-lg bg-tema-light dark:bg-slate-700 px-3 py-1 border-l-4 border-tema"><?= lang('WaliKelas/DaftarSiswa.rapor_sec_b') ?></h4>
+                    <div id="raporNilaiContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -613,7 +648,7 @@
                     </div>
 
                     <!-- EKSTRAKURIKULER -->
-                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-amber-100 dark:border-amber-800/50">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-amber-100 dark:border-emerald-800/50">
                         <h4 class="text-md font-bold text-amber-600 dark:text-amber-400 border-b border-amber-100 dark:border-amber-800/50 pb-2 mb-4">Pengaturan Ekstrakurikuler</h4>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                             <?php for($i=1; $i<=3; $i++): ?>
@@ -654,40 +689,6 @@
                         <button type="submit" id="btnSubmit" class="px-8 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 cursor-pointer outline-none"><?= lang('Admin/Siswa.btn_update') ?></button>
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="raporModal" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4">
-    <div class="modal-overlay absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onclick="closeRaporModal()"></div>
-    <div class="relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col transform scale-95 transition-all">
-        <div class="bg-tema p-5 text-white flex items-center justify-between">
-            <h2 class="text-lg font-bold"><?= lang('WaliKelas/DaftarSiswa.modal_rapor_title') ?></h2>
-            <button onclick="closeRaporModal()" class="p-1.5 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
-        </div>
-        <div class="flex-1 overflow-y-auto p-6 bg-gray-50/50 dark:bg-slate-900/50 custom-scrollbar">
-            <div class="bg-white dark:bg-slate-800 max-w-3xl mx-auto shadow-sm border border-gray-200 dark:border-slate-700 rounded-xl p-8 lg:p-12">
-                <div class="text-center mb-8 pb-6 border-b-4 border-gray-800 dark:border-slate-500">
-                    <h3 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-widest mb-1"><?= lang('WaliKelas/DaftarSiswa.rapor_header_1') ?></h3>
-                    <p class="text-sm font-bold text-gray-600 dark:text-slate-400 uppercase tracking-widest"><?= esc($nama_sekolah ?? 'SMPIT Ad Durrah') ?></p>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 text-sm mb-8 bg-gray-50 dark:bg-slate-900/50 p-4 rounded-lg font-mono">
-                    <div><span class="text-gray-500 block text-xs"><?= lang('WaliKelas/DaftarSiswa.rapor_stu_name') ?></span><strong class="text-base text-gray-800 dark:text-white" id="raporStudentName">-</strong></div>
-                    <div><span class="text-gray-500 block text-xs"><?= lang('WaliKelas/DaftarSiswa.rapor_stu_nis') ?></span><strong class="text-base text-gray-800 dark:text-white" id="raporStudentNIS">-</strong></div>
-                </div>
-
-                <div class="mb-8">
-                    <h4 class="font-bold text-gray-800 dark:text-white mb-3 text-lg bg-tema-light dark:bg-slate-700 px-3 py-1 border-l-4 border-tema"><?= lang('WaliKelas/DaftarSiswa.rapor_sec_a') ?></h4>
-                    <p class="text-sm text-gray-700 dark:text-slate-300 italic border border-dashed border-gray-300 dark:border-slate-600 p-4 rounded-lg" id="raporCatatan">-</p>
-                </div>
-
-                <div class="mb-8">
-                    <h4 class="font-bold text-gray-800 dark:text-white mb-3 text-lg bg-tema-light dark:bg-slate-700 px-3 py-1 border-l-4 border-tema"><?= lang('WaliKelas/DaftarSiswa.rapor_sec_b') ?></h4>
-                    <div id="raporNilaiContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    </div>
-                </div>
             </div>
         </div>
     </div>
