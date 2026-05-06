@@ -52,6 +52,7 @@ return [
     'badge_no_notes'          => 'Tidak ada',
     'tooltip_profile'         => 'Lihat Profil',
     'tooltip_note'            => 'Beri Catatan',
+    'tooltip_edit'            => 'Edit Biodata Siswa',
     'tooltip_report'          => 'Preview Rapor',
     
     // Footer Table

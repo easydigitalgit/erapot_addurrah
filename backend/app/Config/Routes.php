@@ -446,6 +446,8 @@ $routes->group('wali', ['namespace' => 'App\Controllers\WaliKelas', 'filter' => 
     // -- Dashboard / Ringkasan --
     $routes->get('ringkasan-kelas', 'RingkasanKelasController::index');
     $routes->get('daftar-siswa', 'DaftarSiswaController::index');
+    $routes->get('daftar-siswa/get-detail/(:num)', 'DaftarSiswaController::getDetail/$1');
+    $routes->post('daftar-siswa/update/(:num)', 'DaftarSiswaController::update/$1');
 
     // -- Absensi --
     $routes->get('absensi-kelas', 'AbsensiKelasController::index');

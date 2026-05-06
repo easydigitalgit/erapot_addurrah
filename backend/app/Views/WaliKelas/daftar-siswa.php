@@ -24,6 +24,11 @@
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--warna-primary) 20%, transparent);
     }
 
+    .hover-bg-tema:hover {
+        background-color: var(--warna-primary) !important;
+        color: white !important;
+    }
+
     /* Dark Mode Overrides */
     html.dark .text-tema { color: color-mix(in srgb, var(--warna-primary) 80%, white) !important; }
     html.dark .bg-tema-light { background-color: rgba(255, 255, 255, 0.05) !important; }
@@ -291,11 +296,17 @@
 
                                         <?php if (has_permission('wali_kelas', 'create')): ?>
                                             <button onclick="openNoteModal('<?= $s['id'] ?>', '<?= addslashes($s['nama_lengkap']) ?>')" class="p-1.5 text-gray-400 hover:text-white bg-gray-50 dark:bg-slate-700 hover:bg-amber-500 rounded-md transition-all shadow-sm" title="<?= lang('WaliKelas/DaftarSiswa.tooltip_note') ?>">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                                            </button>
+                                        <?php endif; ?>
+
+                                        <?php if (has_permission('wali_kelas', 'update')): ?>
+                                            <button onclick="openEditModal('<?= $s['id'] ?>', this)" class="p-1.5 text-gray-400 hover:text-white bg-gray-50 dark:bg-slate-700 hover:bg-emerald-500 rounded-md transition-all shadow-sm" title="<?= lang('WaliKelas/DaftarSiswa.tooltip_edit') ?>">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                                             </button>
                                         <?php endif; ?>
 
-                                        <button onclick="openRaporModal(<?= $jsonSiswa ?>)" class="p-1.5 text-gray-400 hover:text-white bg-gray-50 dark:bg-slate-700 hover:bg-tema rounded-md transition-all shadow-sm" title="<?= lang('WaliKelas/DaftarSiswa.tooltip_report') ?>">
+                                        <button onclick="openRaporModal(<?= $jsonSiswa ?>)" class="p-1.5 text-gray-400 hover:text-white bg-gray-50 dark:bg-slate-700 hover-bg-tema rounded-md transition-all shadow-sm" title="<?= lang('WaliKelas/DaftarSiswa.tooltip_report') ?>">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                         </button>
                                     </div>
@@ -417,15 +428,232 @@
                 </div>
             </div>
 
-            <div class="mt-6 pt-6 border-t border-gray-100 dark:border-slate-700">
-                <h4 class="font-bold text-gray-800 dark:text-slate-100 mb-3 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                    <?= lang('WaliKelas/DaftarSiswa.prof_special_note') ?>
-                </h4>
-                <div class="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/50 rounded-xl p-4 relative">
-                    <span id="prof_tipe_catatan" class="absolute -top-3 left-4 bg-amber-200 dark:bg-amber-800 text-amber-800 dark:text-amber-200 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">-</span>
-                    <p id="prof_isi_catatan" class="text-sm text-gray-700 dark:text-slate-300 italic pt-1"><?= lang('WaliKelas/DaftarSiswa.prof_no_note') ?></p>
+            <div class="mt-6 pt-6 border-t border-gray-100 dark:border-slate-700 flex gap-3">
+                <?php if (has_permission('wali_kelas', 'update')): ?>
+                    <button id="btnOpenEdit" class="flex-1 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                        Edit Biodata Siswa
+                    </button>
+                <?php endif; ?>
+                <button onclick="closeProfileModal()" class="flex-1 py-3 px-4 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-gray-200 transition-all"><?= lang('WaliKelas/DaftarSiswa.btn_cancel') ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDIT BIODATA LENGKAP -->
+<div id="addModal" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeAddModal()"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none lg:left-64">
+        <div class="relative w-full bg-white dark:bg-slate-800 rounded-2xl shadow-2xl flex flex-col max-h-[95vh] pointer-events-auto border border-transparent dark:border-slate-700 transition-colors duration-300" style="max-width: 1100px;">
+
+            <div class="p-5 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between bg-white dark:bg-slate-800 rounded-t-2xl z-20 flex-shrink-0 transition-colors">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white"><?= lang('Admin/Siswa.js_edit_student') ?></h3>
+                    <p class="text-sm text-gray-500 dark:text-slate-400 mt-1"><?= lang('Admin/Siswa.form_subtitle') ?></p>
                 </div>
+                <button type="button" onclick="closeAddModal()" class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-full transition-colors cursor-pointer text-gray-500 dark:text-slate-400 outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-6 relative z-10 custom-scrollbar bg-gray-50/50 dark:bg-slate-900/50">
+                <form id="addStudentForm" onsubmit="handleSubmit(event)" class="space-y-6" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="id" id="edit_id">
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-emerald-100 dark:border-emerald-800/50">
+                        <h4 class="text-md font-bold text-emerald-600 dark:text-emerald-400 border-b border-emerald-100 dark:border-emerald-800/50 pb-2 mb-4"><?= lang('Admin/Siswa.section_a') ?></h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 text-sm">
+                            <div class="md:col-span-2 lg:col-span-2">
+                                <label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.nis_auto') ?></label>
+                                <div class="relative group">
+                                    <input type="text" id="nis" name="nis" readonly 
+                                        class="w-full pl-3 pr-10 py-2 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 rounded-lg outline-none cursor-not-allowed font-mono text-emerald-700 dark:text-emerald-400 font-bold transition-all">
+                                </div>
+                            </div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.nisn') ?></label><input type="text" id="nisn" name="nisn" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.student_nik') ?> <span class="text-red-500">*</span></label><input type="text" id="nik" name="nik" required class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.full_name') ?> <span class="text-red-500">*</span></label><input type="text" id="nama_lengkap" name="nama_lengkap" required class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.table_gender') ?></label><select id="jenis_kelamin" name="jenis_kelamin" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white">
+                                    <option value="L"><?= lang('Admin/Siswa.male') ?></option>
+                                    <option value="P"><?= lang('Admin/Siswa.female') ?></option>
+                                </select></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.religion') ?></label><select id="agama" name="agama" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white">
+                                    <option value="Islam"><?= lang('Admin/Siswa.religion_islam') ?></option>
+                                    <option value="Kristen"><?= lang('Admin/Siswa.religion_christian') ?></option>
+                                    <option value="Katolik"><?= lang('Admin/Siswa.religion_catholic') ?></option>
+                                    <option value="Hindu"><?= lang('Admin/Siswa.religion_hindu') ?></option>
+                                    <option value="Buddha"><?= lang('Admin/Siswa.religion_buddha') ?></option>
+                                </select></div>
+
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.birth_place') ?></label><input type="text" id="tempat_lahir" name="tempat_lahir" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.birth_date') ?></label><input type="date" id="tanggal_lahir" name="tanggal_lahir" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.kk_number') ?></label><input type="text" id="no_kk" name="no_kk" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.birth_cert_number') ?></label><input type="text" id="no_registrasi_akta" name="no_registrasi_akta" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
+                        <h4 class="text-md font-bold text-pink-600 dark:text-pink-400 border-b border-pink-100 dark:border-pink-800/50 pb-2 mb-4"><?= lang('Admin/Siswa.section_b') ?></h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.family_status') ?></label><input type="text" id="status_dalam_keluarga" name="status_dalam_keluarga" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.child_order') ?></label><input type="number" id="anak_ke" name="anak_ke" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.sibling_count') ?></label><input type="number" id="jml_saudara_kandung" name="jml_saudara_kandung" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.special_needs') ?></label><input type="text" id="kebutuhan_khusus" name="kebutuhan_khusus" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.weight') ?></label><input type="number" id="berat_badan" name="berat_badan" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.height') ?></label><input type="number" id="tinggi_badan" name="tinggi_badan" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.head_circumference') ?></label><input type="number" id="lingkar_kepala" name="lingkar_kepala" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.distance_km') ?></label><input type="text" id="jarak_ke_sekolah" name="jarak_ke_sekolah" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
+                        <h4 class="text-md font-bold text-blue-600 dark:text-blue-400 border-b border-blue-100 dark:border-blue-800/50 pb-2 mb-4"><?= lang('Admin/Siswa.section_c') ?></h4>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                            <div class="md:col-span-4"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.street_address') ?></label><textarea id="alamat_siswa" name="alamat_siswa" rows="2" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none resize-none text-gray-800 dark:text-white"></textarea></div>
+
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.district') ?></label><input type="text" id="kecamatan" name="kecamatan" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.village') ?></label><input type="text" id="kelurahan" name="kelurahan" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.hamlet') ?></label><input type="text" id="dusun" name="dusun" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.rt') ?></label><input type="text" id="rt" name="rt" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-center text-gray-800 dark:text-white"></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.rw') ?></label><input type="text" id="rw" name="rw" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-center text-gray-800 dark:text-white"></div>
+
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.postal_code') ?></label><input type="text" id="kode_pos" name="kode_pos" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.residence_type') ?></label><input type="text" id="jenis_tinggal" name="jenis_tinggal" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.transport_tool') ?></label><input type="text" id="alat_transportasi" name="alat_transportasi" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.student_phone') ?></label><input type="text" id="no_hp" name="no_hp" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.student_email') ?></label><input type="email" id="email_siswa" name="email_siswa" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-purple-100 dark:border-purple-800/50">
+                        <h4 class="text-md font-bold text-purple-600 dark:text-purple-400 border-b border-purple-100 dark:border-purple-800/50 pb-2 mb-4"><?= lang('Admin/Siswa.section_d') ?></h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.accepted_in_class') ?></label>
+                                <select id="diterima_dikelas" name="diterima_dikelas" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white">
+                                    <option value=""><?= lang('Admin/Siswa.select') ?></option>
+                                    <option value="VII">VII</option>
+                                    <option value="VIII">VIII</option>
+                                    <option value="IX">IX</option>
+                                </select>
+                            </div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.accepted_date') ?></label><input type="date" id="tgl_diterima" name="tgl_diterima" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div class="md:col-span-1"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.origin_school_sd') ?></label><input type="text" id="asal_sekolah" name="asal_sekolah" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.skhun') ?></label><input type="text" id="skhun" name="skhun" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.un_number') ?></label><input type="text" id="no_peserta_un" name="no_peserta_un" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.ijazah_number') ?></label><input type="text" id="no_seri_ijazah" name="no_seri_ijazah" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
+                        <h4 class="text-md font-bold text-indigo-600 dark:text-indigo-400 border-b border-indigo-100 dark:border-indigo-800/50 pb-2 mb-4"><?= lang('Admin/Siswa.section_f') ?></h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest"><?= lang('Admin/Siswa.father_data') ?></p>
+                                <div class="grid grid-cols-1 gap-4">
+                                    <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.full_name') ?></label><input type="text" id="nama_ayah" name="nama_ayah" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.nik') ?></label><input type="text" id="nik_ayah" name="nik_ayah" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                                        <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.birth_year') ?></label><input type="number" id="tahun_lahir_ayah" name="tahun_lahir_ayah" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.education') ?></label><select id="pendidikan_ayah" name="pendidikan_ayah" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white">
+                                                <option value=""><?= lang('Admin/Siswa.select') ?></option>
+                                                <option value="SD">SD</option>
+                                                <option value="SMP">SMP</option>
+                                                <option value="SMA">SMA</option>
+                                                <option value="S1">S1</option>
+                                                <option value="S2">S2</option>
+                                            </select></div>
+                                        <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.occupation') ?></label><input type="text" id="pekerjaan_ayah" name="pekerjaan_ayah" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest"><?= lang('Admin/Siswa.mother_data') ?></p>
+                                <div class="grid grid-cols-1 gap-4">
+                                    <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.full_name') ?></label><input type="text" id="nama_ibu" name="nama_ibu" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.nik') ?></label><input type="text" id="nik_ibu" name="nik_ibu" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                                        <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.birth_year') ?></label><input type="number" id="tahun_lahir_ibu" name="tahun_lahir_ibu" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.education') ?></label><select id="pendidikan_ibu" name="pendidikan_ibu" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white">
+                                                <option value=""><?= lang('Admin/Siswa.select') ?></option>
+                                                <option value="SD">SD</option>
+                                                <option value="SMP">SMP</option>
+                                                <option value="SMA">SMA</option>
+                                                <option value="S1">S1</option>
+                                                <option value="S2">S2</option>
+                                            </select></div>
+                                        <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.occupation') ?></label><input type="text" id="pekerjaan_ibu" name="pekerjaan_ibu" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-gray-100 dark:border-slate-700">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4"><?= lang('Admin/Siswa.parent_contact_address') ?></p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.parent_phone') ?> <span class="text-red-500">*</span></label><input type="text" id="no_hp_ortu" name="no_hp_ortu" required class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                                <div><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.parent_email') ?></label><input type="email" id="email_ortu" name="email_ortu" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white"></div>
+                                <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.parent_address') ?></label><textarea id="alamat_orangtua" name="alamat_orangtua" rows="2" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none resize-none text-gray-800 dark:text-white"></textarea></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EKSTRAKURIKULER -->
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-amber-100 dark:border-amber-800/50">
+                        <h4 class="text-md font-bold text-amber-600 dark:text-amber-400 border-b border-amber-100 dark:border-amber-800/50 pb-2 mb-4">Pengaturan Ekstrakurikuler</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <?php for($i=1; $i<=3; $i++): ?>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1">Ekskul <?= $i ?></label>
+                                <select name="ekskul_<?= $i ?>" id="ekskul_<?= $i ?>" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white">
+                                    <option value="">-- Pilih Ekskul --</option>
+                                    <?php foreach($ekskulList as $eks): ?>
+                                        <option value="<?= $eks['id'] ?>"><?= esc($eks['nama_ekskul']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <?php endfor; ?>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
+                        <h4 class="text-md font-bold text-gray-600 dark:text-slate-400 border-b border-gray-100 dark:border-slate-700 pb-2 mb-4"><?= lang('Admin/Siswa.section_g') ?></h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.student_active_status') ?></label>
+                                <select id="status_siswa" name="status_siswa" class="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white">
+                                    <option value="Aktif"><?= lang('Admin/Siswa.active') ?></option>
+                                    <option value="Lulus"><?= lang('Admin/Siswa.graduated') ?></option>
+                                    <option value="Pindah"><?= lang('Admin/Siswa.moved') ?></option>
+                                    <option value="Keluar"><?= lang('Admin/Siswa.dropped_out') ?></option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1"><?= lang('Admin/Siswa.student_photo') ?></label>
+                                <input type="file" name="photo" id="photo" accept="image/*" class="w-full px-3 py-1.5 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none text-gray-800 dark:text-white file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3 pt-4 sticky bottom-0 bg-white dark:bg-slate-800 py-4 border-t border-gray-100 dark:border-slate-700 transition-colors z-30">
+                        <button type="button" onclick="closeAddModal()" class="px-6 py-2.5 border border-gray-300 dark:border-slate-600 text-gray-600 dark:text-slate-300 font-bold rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors cursor-pointer outline-none"><?= lang('Admin/Siswa.cancel') ?></button>
+                        <button type="submit" id="btnSubmit" class="px-8 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 cursor-pointer outline-none"><?= lang('Admin/Siswa.btn_update') ?></button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
