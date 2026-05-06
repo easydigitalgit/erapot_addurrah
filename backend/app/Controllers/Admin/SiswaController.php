@@ -244,15 +244,15 @@ class SiswaController extends AdminBaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'NIS tersebut sudah terdaftar pada siswa lain!']);
         }
         // FITUR BARU: CEK NOMOR HP SISWA KEMBAR
-        if (!empty($dataSiswa['no_hp'])) {
-            $cekHpSiswa = $siswaModel->where('no_hp', $dataSiswa['no_hp'])->first();
-            if ($cekHpSiswa) {
-                return $this->response->setJSON([
-                    'status' => 'error',
-                    'message' => 'Gagal! Nomor HP Siswa ini sudah terdaftar pada: <b>' . $cekHpSiswa['nama_lengkap'] . '</b>'
-                ]);
-            }
-        }
+        // if (!empty($dataSiswa['no_hp'])) {
+        //     $cekHpSiswa = $siswaModel->where('no_hp', $dataSiswa['no_hp'])->first();
+        //     if ($cekHpSiswa) {
+        //         return $this->response->setJSON([
+        //             'status' => 'error',
+        //             'message' => 'Gagal! Nomor HP Siswa ini sudah terdaftar pada: <b>' . $cekHpSiswa['nama_lengkap'] . '</b>'
+        //         ]);
+        //     }
+        // }
 
         $db->transBegin();
 
@@ -440,15 +440,15 @@ class SiswaController extends AdminBaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'NIS tersebut sudah dipakai siswa lain.']);
         }
         // FITUR BARU: CEK NOMOR HP SISWA KEMBAR SAAT EDIT
-        if (!empty($dataSiswa['no_hp'])) {
-            $cekHpSiswa = $siswaModel->where('no_hp', $dataSiswa['no_hp'])->where('id !=', $id)->first();
-            if ($cekHpSiswa) {
-                return $this->response->setJSON([
-                    'status' => 'error',
-                    'message' => 'Gagal! Nomor HP Siswa ini sudah terdaftar pada: <b>' . $cekHpSiswa['nama_lengkap'] . '</b>'
-                ]);
-            }
-        }
+        // if (!empty($dataSiswa['no_hp'])) {
+        //     $cekHpSiswa = $siswaModel->where('no_hp', $dataSiswa['no_hp'])->where('id !=', $id)->first();
+        //     if ($cekHpSiswa) {
+        //         return $this->response->setJSON([
+        //             'status' => 'error',
+        //             'message' => 'Gagal! Nomor HP Siswa ini sudah terdaftar pada: <b>' . $cekHpSiswa['nama_lengkap'] . '</b>'
+        //         ]);
+        //     }
+        // }
 
         // ... (kode $dataSiswa di atasnya) ...
 
