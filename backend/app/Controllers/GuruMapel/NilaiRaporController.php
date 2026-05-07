@@ -107,11 +107,15 @@ class NilaiRaporController extends GuruMapelBaseController
         foreach ($formatifs as $f) {
             $jenis = strtoupper(trim($f['jenis_penilaian'] ?? ''));
             $pert = (int)($f['pertemuan'] ?? 0);
+            $nilai = (float)($f['nilai_angka'] ?? 0);
 
-            if (strpos($jenis, 'UH') !== false || strpos($jenis, 'ULANGAN') !== false) {
-                if ($pert > $max_uh_pert) $max_uh_pert = $pert;
-            } else {
-                if ($pert > $max_nh_pert) $max_nh_pert = $pert;
+            // SMART CLEANER: Hanya hitung sebagai progres jika ada nilai > 0
+            if ($nilai > 0) {
+                if (strpos($jenis, 'UH') !== false || strpos($jenis, 'ULANGAN') !== false) {
+                    if ($pert > $max_uh_pert) $max_uh_pert = $pert;
+                } else {
+                    if ($pert > $max_nh_pert) $max_nh_pert = $pert;
+                }
             }
         }
 
@@ -168,7 +172,8 @@ class NilaiRaporController extends GuruMapelBaseController
 
         $qFormatif = $db->table('nilai_formatif')
             ->where('mapel_id', $mapel_id)
-            ->where('tahun_ajaran_id', $ta_id);
+            ->where('tahun_ajaran_id', $ta_id)
+            ->where('rombel_id', $rombel_id);
 
         if ($db->fieldExists('kategori', 'nilai_formatif')) {
             $qFormatif->groupStart()
