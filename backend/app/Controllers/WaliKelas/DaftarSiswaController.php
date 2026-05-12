@@ -76,18 +76,26 @@ class DaftarSiswaController extends WaliKelasBaseController
                     // --- BATCH QUERY OPTIMIZATION ---
 
                     // A. Batch Absensi
+                    // A. Batch Absensi (Rekap Semester)
                     $absenMap = [];
-                    if ($db->tableExists('absensi_harian')) {
-                        $absenData = $db->table('absensi_harian')
-                            ->select('siswa_id, status, COUNT(*) as jumlah')
+                    if ($db->tableExists('rekap_absensi')) {
+                        $fTA_R = $db->fieldExists('tahun_ajaran_id', 'rekap_absensi') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+                        $absenData = $db->table('rekap_absensi')
                             ->whereIn('siswa_id', $siswaIds)
-                            ->where('rombel_id', $rombel['id'])
-                            ->groupBy(['siswa_id', 'status'])
+                            ->where($fTA_R, ($fTA_R === 'tahun_ajaran_id' ? $id_ta : $tahun_ajaran))
+                            ->where('semester', $semester)
                             ->get()->getResultArray();
                         
                         foreach ($absenData as $ad) {
-                            $absenMap[$ad['siswa_id']][$ad['status']] = $ad['jumlah'];
+                            $absenMap[$ad['siswa_id']] = [
+                                'Hadir' => $ad['hadir'] ?? 0,
+                                'Sakit' => $ad['sakit'] ?? 0,
+                                'Izin'  => $ad['izin'] ?? 0,
+                                'Alpa'  => $ad['alpha'] ?? 0
+                            ];
                         }
+                    }
+
 
                         // Statistik Kehadiran Hari Ini
                         $hari_ini = date('Y-m-d');

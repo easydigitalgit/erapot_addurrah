@@ -496,19 +496,22 @@ class CetakRaporController extends AdminBaseController
         $alpha = 0;
         $rombelId = $siswa['rombel_id'] ?? 0;
 
-        if ($this->db->tableExists('absensi_harian')) {
+        $rekap = null;
+        if ($this->db->tableExists('rekap_absensi')) {
+            $fieldRekapTA = $this->db->fieldExists('tahun_ajaran_id', 'rekap_absensi') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+            $rekap = $this->db->table('rekap_absensi')->where(['siswa_id' => $siswa_id, $fieldRekapTA => ($fieldRekapTA === 'tahun_ajaran_id' ? $ta_id : $tahun_ajaran), 'semester' => $semester])->get()->getRowArray();
+        }
+
+        if ($rekap) {
+            $sakit = $rekap['sakit'] ?? 0;
+            $izin  = $rekap['izin'] ?? 0;
+            $alpha = $rekap['alpha'] ?? 0;
+        } else if ($this->db->tableExists('absensi_harian')) {
             $sakit = $this->db->table('absensi_harian')->where(['siswa_id' => $siswa_id, 'rombel_id' => $rombelId, 'status' => 'Sakit'])->countAllResults();
             $izin  = $this->db->table('absensi_harian')->where(['siswa_id' => $siswa_id, 'rombel_id' => $rombelId, 'status' => 'Izin'])->countAllResults();
             $alpha = $this->db->table('absensi_harian')->where(['siswa_id' => $siswa_id, 'rombel_id' => $rombelId, 'status' => 'Alpha'])->countAllResults();
-        } elseif ($this->db->tableExists('rekap_absensi')) {
-            $fieldRekapTA = $this->db->fieldExists('tahun_ajaran_id', 'rekap_absensi') ? 'tahun_ajaran_id' : 'tahun_ajaran';
-            $rekap = $this->db->table('rekap_absensi')->where(['siswa_id' => $siswa_id, $fieldRekapTA => ($fieldRekapTA === 'tahun_ajaran_id' ? $ta_id : $tahun_ajaran), 'semester' => $semester])->get()->getRowArray();
-            if ($rekap) {
-                $sakit = $rekap['sakit'] ?? 0;
-                $izin  = $rekap['izin'] ?? 0;
-                $alpha = $rekap['alpha'] ?? 0;
-            }
         }
+
         $absen = ['sakit' => $sakit, 'izin' => $izin, 'alpha' => $alpha];
 
         $ekskul = [];

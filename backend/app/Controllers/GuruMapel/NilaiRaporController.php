@@ -179,8 +179,6 @@ class NilaiRaporController extends GuruMapelBaseController
             $qFormatif->groupStart()
                 ->where('kategori', $kategori)
                 ->orWhere('kategori', $kategori === 'Tengah Semester' ? 'Tengah' : 'Akhir')
-                ->orWhere('kategori', '')
-                ->orWhere('kategori', null)
                 ->groupEnd();
         }
 
@@ -395,8 +393,6 @@ class NilaiRaporController extends GuruMapelBaseController
                 $qAllFormatif->groupStart()
                     ->where('kategori', $kategori)
                     ->orWhere('kategori', $kategoriDB)
-                    ->orWhere('kategori', '')
-                    ->orWhere('kategori', null)
                     ->groupEnd();
             }
 
@@ -410,8 +406,6 @@ class NilaiRaporController extends GuruMapelBaseController
                 $qAllSumatif->groupStart()
                     ->where('kategori', $kategori)
                     ->orWhere('kategori', $kategoriDB)
-                    ->orWhere('kategori', '')
-                    ->orWhere('kategori', null)
                     ->groupEnd();
             }
 

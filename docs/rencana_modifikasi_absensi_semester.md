@@ -43,6 +43,24 @@ Dokumen ini menjelaskan rencana untuk menyederhanakan proses absensi siswa oleh 
 4.  **Integrasi Fitur**: Mengupdate logika import/export dan template CSV.
 5.  **Verifikasi**: Memastikan data yang diinput tampil dengan benar di Preview Rapor.
 
-## Dampak Data
-> [!WARNING]
-> Data absensi harian yang sudah ada di tabel `absensi_harian` tidak akan lagi digunakan dalam tampilan utama Papan Absensi yang baru. Wali kelas disarankan untuk melakukan rekap manual jika ingin memindahkan data dari harian ke total semester sebelum fitur ini diaktifkan sepenuhnya.
+## Dampak Data & Integrasi Sistem
+> [!IMPORTANT]
+> Dengan perubahan ini, sumber data utama (Source of Truth) untuk absensi bergeser sepenuhnya ke tabel `rekap_absensi`.
+
+### Perubahan Pengambilan Data (Data Retrieval)
+1. **Prioritas Utama**: Semua modul pencetakan rapor dan dashboard harus memprioritaskan pengambilan data dari tabel `rekap_absensi` berdasarkan `tahun_ajaran_id` dan `semester`.
+2. **Penghentian Fallback**: Penggunaan tabel `absensi_harian` sebagai sumber data harus dihentikan secara bertahap atau hanya dijadikan referensi sejarah (History). Fitur cetak rapor tidak boleh lagi mengambil data dari `absensi_harian` jika data di `rekap_absensi` sudah tersedia.
+
+### Modul yang Terintegrasi (Cross-Module Sync)
+Fitur-fitur berikut juga harus disesuaikan untuk mengikuti skema data baru ini:
+- **Admin -> Cetak Rapor**: Mengubah logika pengambilan data agar memprioritaskan `rekap_absensi` sebelum mengecek `absensi_harian`.
+- **Wali Kelas -> Preview Rapor**: (Sudah disesuaikan) Mengambil data rekap berdasarkan semester yang aktif.
+- **Wali Murid -> Dashboard & Akademik**: Menambahkan filter semester pada query `rekap_absensi` agar data yang ditampilkan presisi.
+
+## Langkah Implementasi (Lanjutan)
+1.  **Analisis & Persiapan**: Memastikan struktur tabel `rekap_absensi` sudah sesuai.
+2.  **Modifikasi Backend**: Mengubah API endpoint untuk mendukung pengambilan dan penyimpanan data semester.
+3.  **Pembaruan UI**: Mengubah tampilan dashboard absensi agar lebih fokus pada total semester.
+4.  **Sinkronisasi Modul Rapor**: Memperbarui `CetakRaporController` (Admin) dan `AkademikController` (Orang Tua) agar konsisten menggunakan data rekap.
+5.  **Verifikasi Akhir**: Memastikan data yang diinput tampil dengan benar di Preview Rapor (Wali Kelas), Cetak Rapor (Admin), dan Portal Orang Tua.
+

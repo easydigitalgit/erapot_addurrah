@@ -519,9 +519,14 @@ class AkademikController extends OrangTuaBaseController
         $absen = ['sakit' => 0, 'izin' => 0, 'alpha' => 0];
         if ($db->tableExists('rekap_absensi')) {
             $fAbsenTA = $db->fieldExists('tahun_ajaran_id', 'rekap_absensi') ? 'tahun_ajaran_id' : 'tahun_ajaran';
-            $rekap = $db->table('rekap_absensi')->where(['siswa_id' => $siswa_id, $fAbsenTA => ($fAbsenTA === 'tahun_ajaran_id' ? $ta_id : $tahun_ajaran)])->get()->getRowArray();
+            $rekap = $db->table('rekap_absensi')->where([
+                'siswa_id' => $siswa_id, 
+                $fAbsenTA => ($fAbsenTA === 'tahun_ajaran_id' ? $ta_id : $tahun_ajaran),
+                'semester' => $semester
+            ])->get()->getRowArray();
             if ($rekap) $absen = ['sakit' => $rekap['sakit'] ?? 0, 'izin' => $rekap['izin'] ?? 0, 'alpha' => $rekap['alpha'] ?? 0];
         }
+
 
         $ekskul = [];
         if ($db->tableExists('nilai_ekskul')) {

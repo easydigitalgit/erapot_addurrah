@@ -373,7 +373,7 @@ class NilaiFormatifController extends GuruMapelBaseController
                 if ($db->fieldExists('kategori', 'nilai_formatif')) $payload['kategori'] = $kategori_db;
                 if ($db->fieldExists('nilai_keterampilan', 'nilai_formatif')) $payload['nilai_keterampilan'] = 0;
 
-                // KUNCI PERBAIKAN: RESET QUERY BUILDER DI DALAM PERULANGAN
+                // KUNCI PERBAIKAN: RESET QUERY BUILDER & HANDLE DUPLIKAT (KATEGORI KOSONG)
                 $dbTable = $db->table('nilai_formatif');
                 $qCek = $dbTable->where([
                     'siswa_id' => (int)$siswa_id,
@@ -393,12 +393,29 @@ class NilaiFormatifController extends GuruMapelBaseController
                         ->groupEnd();
                 }
 
-                $cek = $qCek->get()->getRowArray();
+                $listCek = $qCek->get()->getResultArray();
 
-                if ($cek) {
-                    $db->table('nilai_formatif')->where('id', $cek['id'])->update($payload);
+                if (!empty($listCek)) {
+                    // Cari yang kategorinya paling cocok (prioritas yang sudah ada kategori)
+                    $targetId = $listCek[0]['id'];
+                    foreach ($listCek as $row) {
+                        if ($row['kategori'] === $kategori_db || $row['kategori'] === $kategori) {
+                            $targetId = $row['id'];
+                            break;
+                        }
+                    }
+
+                    // Update data terpilih
+                    $db->table('nilai_formatif')->where('id', $targetId)->update($payload);
+
+                    // Hapus duplikat lainnya (jika ada)
+                    foreach ($listCek as $row) {
+                        if ($row['id'] != $targetId) {
+                            $db->table('nilai_formatif')->where('id', $row['id'])->delete();
+                        }
+                    }
                 } else {
-                    if ($data->nilai !== "" || $keterangan !== "") {
+                    if ($nilai_angka !== null || $keterangan !== "") {
                         $db->table('nilai_formatif')->insert($payload);
                     }
                 }
@@ -613,7 +630,7 @@ class NilaiFormatifController extends GuruMapelBaseController
                     if ($db->fieldExists('kategori', 'nilai_formatif')) $payload['kategori'] = $kategori_db;
                     if ($db->fieldExists('nilai_keterampilan', 'nilai_formatif')) $payload['nilai_keterampilan'] = 0;
 
-                    // RESET BUILDER AGAR TIDAK NUMPUK
+                    // RESET BUILDER AGAR TIDAK NUMPUK & HANDLE DUPLIKAT
                     $dbTable = $db->table('nilai_formatif');
                     $qCek = $dbTable->where([
                         'siswa_id' => (int)$siswa_id,
@@ -632,10 +649,23 @@ class NilaiFormatifController extends GuruMapelBaseController
                             ->groupEnd();
                     }
 
-                    $cek = $qCek->get()->getRowArray();
+                    $listCek = $qCek->get()->getResultArray();
 
-                    if ($cek) {
-                        $db->table('nilai_formatif')->where('id', $cek['id'])->update($payload);
+                    if (!empty($listCek)) {
+                        $targetId = $listCek[0]['id'];
+                        foreach ($listCek as $row) {
+                            if ($row['kategori'] === $kategori_db || $row['kategori'] === $kategori) {
+                                $targetId = $row['id'];
+                                break;
+                            }
+                        }
+                        $db->table('nilai_formatif')->where('id', $targetId)->update($payload);
+                        // Hapus duplikat lainnya
+                        foreach ($listCek as $row) {
+                            if ($row['id'] != $targetId) {
+                                $db->table('nilai_formatif')->where('id', $row['id'])->delete();
+                            }
+                        }
                     } else {
                         $db->table('nilai_formatif')->insert($payload);
                     }
@@ -868,7 +898,7 @@ class NilaiFormatifController extends GuruMapelBaseController
                     if ($db->fieldExists('kategori', 'nilai_formatif')) $payload['kategori'] = $kategori_db;
                     if ($db->fieldExists('nilai_keterampilan', 'nilai_formatif')) $payload['nilai_keterampilan'] = 0;
 
-                    // RESET BUILDER AGAR TIDAK NUMPUK
+                    // RESET BUILDER AGAR TIDAK NUMPUK & HANDLE DUPLIKAT
                     $dbTable = $db->table('nilai_formatif');
                     $qCek = $dbTable->where([
                         'siswa_id' => (int)$siswa_id,
@@ -888,10 +918,23 @@ class NilaiFormatifController extends GuruMapelBaseController
                             ->groupEnd();
                     }
 
-                    $cek = $qCek->get()->getRowArray();
+                    $listCek = $qCek->get()->getResultArray();
 
-                    if ($cek) {
-                        $db->table('nilai_formatif')->where('id', $cek['id'])->update($payload);
+                    if (!empty($listCek)) {
+                        $targetId = $listCek[0]['id'];
+                        foreach ($listCek as $row) {
+                            if ($row['kategori'] === $kategori_db || $row['kategori'] === $kategori) {
+                                $targetId = $row['id'];
+                                break;
+                            }
+                        }
+                        $db->table('nilai_formatif')->where('id', $targetId)->update($payload);
+                        // Hapus duplikat lainnya
+                        foreach ($listCek as $row) {
+                            if ($row['id'] != $targetId) {
+                                $db->table('nilai_formatif')->where('id', $row['id'])->delete();
+                            }
+                        }
                     } else {
                         $db->table('nilai_formatif')->insert($payload);
                     }

@@ -51,36 +51,33 @@ class KehadiranController extends OrangTuaBaseController
             if ($ta) $tahun_ajaran_active = $ta['id'];
         }
 
-        if ($anak && $db->tableExists('absensi_harian')) {
-            // Hitung Total Hari Sekolah Berjalan (Hari di mana rombel ini diabsen)
-            $totalHariSekolah = $db->table('absensi_harian')
-                                   ->where('rombel_id', $anak['rombel_id'])
-                                   ->selectCount('DISTINCT(tanggal)', 'total')
-                                   ->get()->getRowArray();
-            $statistik['total_hari_sekolah'] = $totalHariSekolah['total'] ?? 0;
+        if ($anak && $db->tableExists('rekap_absensi')) {
+            $fTA = $db->fieldExists('tahun_ajaran_id', 'rekap_absensi') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+            $ta_rec = $db->table('tahun_ajaran')->where('id', $tahun_ajaran_active)->get()->getRowArray();
+            $vTA = ($fTA === 'tahun_ajaran_id') ? $tahun_ajaran_active : ($ta_rec ? $ta_rec['tahun'] : '');
+            $smt = $ta_rec ? $ta_rec['semester'] : 'Ganjil';
 
-            // Hitung Rekap Semesteran Secara Real-time
-            $rekapReal = $db->table('absensi_harian')
-                            ->where('siswa_id', $anak['id'])
-                            ->select("SUM(status = 'Hadir') as hadir, SUM(status = 'Sakit') as sakit, SUM(status = 'Izin') as izin, SUM(status = 'Alpha') as alpha")
-                            ->get()->getRowArray();
+            $rekap = $db->table('rekap_absensi')
+                        ->where(['siswa_id' => $anak['id'], $fTA => $vTA, 'semester' => $smt])
+                        ->get()->getRowArray();
 
-            if ($rekapReal) {
-                $absen['sakit'] = (int)($rekapReal['sakit'] ?? 0);
-                $absen['izin']  = (int)($rekapReal['izin']  ?? 0);
-                $absen['alpha'] = (int)($rekapReal['alpha'] ?? 0);
+            if ($rekap) {
+                $absen['sakit'] = (int)($rekap['sakit'] ?? 0);
+                $absen['izin']  = (int)($rekap['izin'] ?? 0);
+                $absen['alpha'] = (int)($rekap['alpha'] ?? 0);
+                $hadir_val      = (int)($rekap['hadir'] ?? 0);
                 
-                $statistik['total_hadir'] = (int)($rekapReal['hadir'] ?? 0);
+                $statistik['total_hadir'] = $hadir_val;
                 $statistik['total_absen'] = $absen['sakit'] + $absen['izin'] + $absen['alpha'];
+                $total_efektif = $statistik['total_hadir'] + $statistik['total_absen'];
+                $statistik['total_hari_sekolah'] = $total_efektif;
                 
-                // Jika hari sekolah belum ada data, gunakan jumlah hadir + absen sebagai pembagi alternatif
-                $pembagi = max($statistik['total_hari_sekolah'], ($statistik['total_hadir'] + $statistik['total_absen']));
-                if ($pembagi > 0) {
-                    $statistik['persentase'] = round(($statistik['total_hadir'] / $pembagi) * 100, 1);
-                    $statistik['total_hari_sekolah'] = $pembagi; // Sinkronkan jika data hari sekolah lebih kecil
+                if ($total_efektif > 0) {
+                    $statistik['persentase'] = round(($hadir_val / $total_efektif) * 100, 1);
                 }
             }
         }
+
 
         // 4. LOGIKA KALENDER HARIAN DARI DATABASE
         $kalender = [];
