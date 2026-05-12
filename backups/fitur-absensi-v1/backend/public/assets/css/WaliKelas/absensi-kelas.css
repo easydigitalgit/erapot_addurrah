@@ -1,0 +1,168 @@
+    body {
+      box-sizing: border-box;
+    }
+    * {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+    .app-wrapper {
+      height: 100%;
+      width: 100%;
+    }
+    .sidebar-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+      background: #d1d5db;
+      border-radius: 4px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+      background: #9ca3af;
+    }
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
+      opacity: 0;
+    }
+    .accordion-content.open {
+      max-height: 500px;
+      opacity: 1;
+    }
+    .accordion-arrow {
+      transition: transform 0.3s ease;
+    }
+    .accordion-arrow.open {
+      transform: rotate(180deg);
+    }
+    .active-menu {
+      background: #E6F4EC;
+      color: #1F7A4D;
+      border-left: 3px solid #1F7A4D;
+    }
+    .card-hover {
+      transition: all 0.2s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(31, 122, 77, 0.1);
+    }
+    .chart-bar {
+      height: 200px;
+      position: relative;
+    }
+    .progress-bar {
+      height: 8px;
+      background: #f3f4f6;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+    .subject-card {
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+    }
+    .subject-card:hover {
+      border-color: #10b981;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+    }
+    .trend-up {
+      color: #10b981;
+    }
+    .trend-down {
+      color: #dc2626;
+    }
+    .trend-stable {
+      color: #f59e0b;
+    }
+    .tab-active {
+      background: #E6F4EC;
+      color: #1F7A4D;
+      border-bottom: 2px solid #1F7A4D;
+    }
+    .tab-inactive {
+      color: #9ca3af;
+      border-bottom: 2px solid transparent;
+    }
+    .tooltip-hover {
+      position: relative;
+    }
+    .tooltip-text {
+      visibility: hidden;
+      background-color: #1f2937;
+      color: white;
+      text-align: center;
+      padding: 6px 12px;
+      border-radius: 6px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .tooltip-hover:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+    .chart-container {
+      position: relative;
+      height: 250px;
+      margin-bottom: 2rem;
+    }
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      height: 100%;
+      gap: 8px;
+      padding: 20px 0;
+    }
+    .bar-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .bar {
+      width: 100%;
+      background: linear-gradient(to top, #10b981, #6ee7b7);
+      border-radius: 4px 4px 0 0;
+      transition: all 0.3s ease;
+      position: relative;
+      min-height: 4px;
+    }
+    .bar:hover {
+      filter: brightness(0.9);
+    }
+    .bar-label {
+      font-size: 11px;
+      text-align: center;
+      font-weight: 500;
+      color: #6b7280;
+      word-break: break-word;
+      width: 100%;
+    }
+    .bar-value {
+      font-size: 12px;
+      font-weight: 600;
+      color: #1f2937;
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
