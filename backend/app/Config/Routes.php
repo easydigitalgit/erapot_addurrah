@@ -454,6 +454,7 @@ $routes->group('wali', ['namespace' => 'App\Controllers\WaliKelas', 'filter' => 
     $routes->get('absensi/get-data', 'AbsensiKelasController::getAbsensiData');
     $routes->post('absensi/save', 'AbsensiKelasController::saveAbsensi');
     $routes->post('absensi/import', 'AbsensiKelasController::importAbsensi');
+    $routes->get('absensi/downloadTemplate', 'AbsensiKelasController::downloadTemplate');
 
     // -- Progres --
     $routes->get('progres-nilai', 'ProgresNilaiController::index');

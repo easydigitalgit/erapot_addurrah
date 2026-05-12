@@ -389,35 +389,34 @@ class PreviewRaporController extends WaliKelasBaseController
         }
 
         // =========================================================================
-        // 7. MESIN PENGHITUNG ABSENSI OTOMATIS (SYNC ADMIN)
+        // 7. MESIN PENGHITUNG ABSENSI SEMESTER (PRIORITAS REKAP)
         // =========================================================================
-        $sakit = 0; $izin = 0; $alpha = 0;
+        $sakit = 0; $izin = 0; $alpha = 0; $hadir = 0;
         $rombelId = $siswa['rombel_id'] ?? 0;
 
-        if ($db->tableExists('absensi_harian')) {
+        $fTA_Rekap = $db->fieldExists('tahun_ajaran_id', 'rekap_absensi') ? 'tahun_ajaran_id' : 'tahun_ajaran';
+        $val_ta_rekap = ($fTA_Rekap === 'tahun_ajaran_id') ? $ta_id : $tahun_ajaran;
+        
+        $rekap = $db->table('rekap_absensi')->where([
+            'siswa_id' => $siswa_id, 
+            $fTA_Rekap => $val_ta_rekap, 
+            'semester' => $semester
+        ])->get()->getRowArray();
+
+        if ($rekap) {
+            $hadir = $rekap['hadir'] ?? 0;
+            $sakit = $rekap['sakit'] ?? 0;
+            $izin  = $rekap['izin'] ?? 0;
+            $alpha = $rekap['alpha'] ?? 0;
+        } else if ($db->tableExists('absensi_harian')) {
+            // Fallback ke harian jika rekap belum ada sama sekali
+            $hadir = $db->table('absensi_harian')->where(['siswa_id' => $siswa_id, 'rombel_id' => $rombelId, 'status' => 'Hadir'])->countAllResults();
             $sakit = $db->table('absensi_harian')->where(['siswa_id' => $siswa_id, 'rombel_id' => $rombelId, 'status' => 'Sakit'])->countAllResults();
             $izin  = $db->table('absensi_harian')->where(['siswa_id' => $siswa_id, 'rombel_id' => $rombelId, 'status' => 'Izin'])->countAllResults();
             $alpha = $db->table('absensi_harian')->where(['siswa_id' => $siswa_id, 'rombel_id' => $rombelId, 'status' => 'Alpha'])->countAllResults();
-        } elseif ($db->tableExists('rekap_absensi')) {
-            $fTA_Rekap = $db->fieldExists('tahun_ajaran_id', 'rekap_absensi') ? 'tahun_ajaran_id' : 'tahun_ajaran';
-            $val_ta_rekap = ($fTA_Rekap === 'tahun_ajaran_id') ? $ta_id : $tahun_ajaran;
-            $rekap = $db->table('rekap_absensi')->where(['siswa_id' => $siswa_id, $fTA_Rekap => $val_ta_rekap, 'semester' => $semester])->get()->getRowArray();
-            if ($rekap) {
-                $sakit = $rekap['sakit'] ?? 0;
-                $izin  = $rekap['izin'] ?? 0;
-                $alpha = $rekap['alpha'] ?? 0;
-            }
-        } elseif ($db->tableExists('absensi_siswa')) {
-            $fTA_AbsSiswa = $db->fieldExists('tahun_ajaran_id', 'absensi_siswa') ? 'tahun_ajaran_id' : 'tahun_ajaran';
-            $val_ta_abs = ($fTA_AbsSiswa === 'tahun_ajaran_id') ? $ta_id : $tahun_ajaran; // Admin Sync
-            $qAbsen = $db->table('absensi_siswa')->where(['siswa_id' => $siswa_id, $fTA_AbsSiswa => $val_ta_abs, 'semester' => $semester])->get()->getRowArray();
-            if ($qAbsen) {
-                $sakit = $qAbsen['sakit'] ?? 0;
-                $izin  = $qAbsen['izin'] ?? 0;
-                $alpha = $qAbsen['alpha'] ?? 0;
-            }
         }
-        $absen = ['sakit' => $sakit, 'izin' => $izin, 'alpha' => $alpha];
+        
+        $absen = ['hadir' => $hadir, 'sakit' => $sakit, 'izin' => $izin, 'alpha' => $alpha];
 
         // =========================================================================
         // 8. EKSKUL & TAHFIDZ (SYNC ADMIN)

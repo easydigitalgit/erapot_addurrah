@@ -96,10 +96,38 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div id="mainContent" class="min-h-[70vh] w-full">
-  <div class="flex flex-col items-center justify-center py-32">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-4 mb-4 border-tema"></div>
-    <span class="font-bold text-lg text-tema tracking-wider animate-pulse"><?= lang('WaliKelas/Absensi.js_preparing_recap') ?></span>
+<div id="mainContent" class="min-h-[70vh] w-full px-4 sm:px-6">
+  <!-- Filter Section -->
+  <div class="mb-8 flex flex-wrap items-center gap-4 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700">
+    <div class="flex-1 min-w-[200px]">
+      <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest mb-2">Tahun Ajaran</label>
+      <select id="filterTA" onchange="loadAbsensiFromDB()" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm font-bold focus-tema transition-all">
+        <?php foreach($tahun_ajaran_list as $ta): ?>
+          <option value="<?= $ta['id'] ?>" <?= ($ta_aktif && $ta['id'] == $ta_aktif['id']) ? 'selected' : '' ?>>
+            <?= esc($ta['tahun']) ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="flex-1 min-w-[200px]">
+      <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest mb-2">Semester</label>
+      <select id="filterSemester" onchange="loadAbsensiFromDB()" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm font-bold focus-tema transition-all">
+        <option value="Ganjil" <?= ($ta_aktif && $ta_aktif['semester'] == 'Ganjil') ? 'selected' : '' ?>>Ganjil</option>
+        <option value="Genap" <?= ($ta_aktif && $ta_aktif['semester'] == 'Genap') ? 'selected' : '' ?>>Genap</option>
+      </select>
+    </div>
+    <div class="flex items-end h-full pt-6">
+        <button onclick="loadAbsensiFromDB()" class="p-2.5 rounded-xl bg-tema-light text-tema hover:bg-tema hover:text-white transition-all shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </button>
+    </div>
+  </div>
+
+  <div id="absensiContainer">
+    <div class="flex flex-col items-center justify-center py-32">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-4 mb-4 border-tema"></div>
+      <span class="font-bold text-lg text-tema tracking-wider animate-pulse"><?= lang('WaliKelas/Absensi.js_preparing_recap') ?></span>
+    </div>
   </div>
 </div>
 <?= $this->endSection() ?>

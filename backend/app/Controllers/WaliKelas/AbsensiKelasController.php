@@ -31,15 +31,23 @@ class AbsensiKelasController extends WaliKelasBaseController
             $nama_rombel = $rombel_info['nama_rombel'];
         }
 
+        // Ambil data filter Tahun Ajaran
+        $tahun_ajaran_list = $db->table('tahun_ajaran')->orderBy('tahun', 'DESC')->get()->getResultArray();
+        
+        // Ambil TA Aktif sebagai default
+        $ta_aktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+
         $data = [
-            'title'             => 'Absensi Kelas Harian',
+            'title'             => 'Absensi Kelas Semester',
             'user'              => session()->get('nama_lengkap') ?? 'Wali Kelas',
             'namaLengkap'       => session()->get('nama_lengkap') ?? session()->get('username') ?? 'Wali Kelas',
             'nama_sekolah'      => $nama_sekolah,
             'nama_rombel'       => $nama_rombel,
             'is_wali_kelas_sah' => ($rombel_info !== null),
             'navigations'       => $this->getSidebarMenu(),
-            'color'             => $color
+            'color'             => $color,
+            'tahun_ajaran_list' => $tahun_ajaran_list,
+            'ta_aktif'          => $ta_aktif
         ];
 
         return view('WaliKelas/absensi-kelas', $data);
@@ -78,20 +86,18 @@ class AbsensiKelasController extends WaliKelasBaseController
     {
         try {
             $rombel_info = $this->getRombelInfoWaliKelas();
-
             if (!$rombel_info) {
-                return $this->response->setJSON(['students' => [], 'attendance' => []]);
+                return $this->response->setJSON(['students' => [], 'rekap' => []]);
             }
 
             $rombel_id = $rombel_info['id'];
-            $id_ta = $rombel_info['id_tahun_ajaran'];
             $db = \Config\Database::connect();
 
-            // 1. Ambil info semester dari TA aktif
-            $ta_aktif = $db->table('tahun_ajaran')->where('id', $id_ta)->get()->getRowArray();
-            $semester = $ta_aktif ? $ta_aktif['semester'] : 'Ganjil';
+            // Ambil filter dari request (jika ada)
+            $id_ta = $this->request->getGet('id_ta') ?: $rombel_info['id_tahun_ajaran'];
+            $semester = $this->request->getGet('semester') ?: 'Ganjil';
 
-            // 2. MENGGUNAKAN MESIN WAKTU UNTUK MENGAMBIL DAFTAR ABSENSI
+            // 1. Ambil daftar siswa di rombel untuk TA tersebut
             $students = $db->table('anggota_rombel ar')
                 ->select('siswa.id, siswa.nama_lengkap, siswa.nisn, siswa.nis, siswa.foto_siswa, users.foto_profil')
                 ->join('siswa', 'siswa.id = ar.siswa_id')
@@ -103,46 +109,40 @@ class AbsensiKelasController extends WaliKelasBaseController
                 ->orderBy('siswa.nama_lengkap', 'ASC')
                 ->get()->getResultArray();
 
-            // PERBAIKAN: Tidak menggunakan tahun_ajaran_id di absensi_harian
-            $absensiRecords = $db->table('absensi_harian')
-                ->where('rombel_id', $rombel_id)
-                ->orderBy('tanggal', 'ASC')
+            // 2. Ambil data rekap dari tabel rekap_absensi
+            $rekapRecords = $db->table('rekap_absensi')
+                ->where('tahun_ajaran_id', $id_ta)
+                ->where('semester', $semester)
                 ->get()->getResultArray();
 
-            $attendanceMap = [];
-            foreach ($absensiRecords as $absen) {
-                $tanggal = $absen['tanggal'];
-                if (!isset($attendanceMap[$tanggal])) {
-                    $attendanceMap[$tanggal] = ['date' => $tanggal, 'records' => []];
-                }
-
-                $kode = 'A';
-                if ($absen['status'] === 'Hadir') $kode = 'H';
-                elseif ($absen['status'] === 'Sakit') $kode = 'S';
-                elseif ($absen['status'] === 'Izin') $kode = 'I';
-                elseif ($absen['status'] === 'Alpha') $kode = 'A';
-
-                $attendanceMap[$tanggal]['records'][$absen['siswa_id']] = $kode;
+            $rekapMap = [];
+            foreach ($rekapRecords as $r) {
+                $rekapMap[$r['siswa_id']] = [
+                    'hadir' => $r['hadir'],
+                    'sakit' => $r['sakit'],
+                    'izin'  => $r['izin'],
+                    'alpha' => $r['alpha']
+                ];
             }
 
             $studentList = [];
             foreach ($students as $s) {
-                // Evaluasi fallback foto di backend (Prioritas: users.foto_profil -> siswa.foto_siswa)
-                $foto_profil = $s['foto_profil'] ?? '';
-                $foto_siswa  = $s['foto_siswa'] ?? '';
-                $foto_final  = !empty($foto_profil) ? $foto_profil : $foto_siswa;
-            
+                $foto_final = !empty($s['foto_profil']) ? $s['foto_profil'] : $s['foto_siswa'];
+                
+                $rekap = $rekapMap[$s['id']] ?? ['hadir' => 0, 'sakit' => 0, 'izin' => 0, 'alpha' => 0];
+
                 $studentList[] = [
                     'id'       => $s['id'],
                     'name'     => $s['nama_lengkap'], 
                     'nisn'     => $s['nisn'] ?? $s['nis'] ?? '-',
-                    'foto_fix' => $foto_final // Kita tetap pakai nama 'foto_fix' agar JS tidak error
+                    'foto_fix' => $foto_final,
+                    'rekap'    => $rekap
                 ];
             }
 
             return $this->response->setJSON([
-                'students'   => $studentList,
-                'attendance' => array_values($attendanceMap)
+                'students' => $studentList,
+                'filter'   => ['id_ta' => $id_ta, 'semester' => $semester]
             ]);
         } catch (\Throwable $e) {
             return $this->response->setJSON(['error' => 'DB Error: ' . $e->getMessage()])->setStatusCode(500);
@@ -152,71 +152,45 @@ class AbsensiKelasController extends WaliKelasBaseController
     public function saveAbsensi()
     {
         $json = $this->request->getJSON();
-        $tanggal = $json->date;
-        $records = $json->records;
+        $id_ta = $json->id_ta;
+        $semester = $json->semester;
+        $records = $json->records; // Array of [siswa_id => [hadir, sakit, izin, alpha]]
 
         $rombel_info = $this->getRombelInfoWaliKelas();
-
         if (!$rombel_info) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Akses ditolak! Anda belum ditetapkan sebagai Wali Kelas.'
-            ]);
-        }
-
-        $rombel_id = $rombel_info['id'];
-        $id_ta = $rombel_info['id_tahun_ajaran'];
-
-        date_default_timezone_set('Asia/Jakarta');
-        if ($tanggal > date('Y-m-d')) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Tidak dapat mengisi absensi untuk tanggal di masa depan.']);
+            return $this->response->setJSON(['success' => false, 'message' => 'Akses ditolak!']);
         }
 
         $db = \Config\Database::connect();
         $db->transBegin();
 
         try {
-            $siswa_ids_updated = [];
-
-            foreach ($records as $siswa_id => $statusKode) {
-                $statusDb = 'Alpha';
-                if ($statusKode === 'H') $statusDb = 'Hadir';
-                elseif ($statusKode === 'S') $statusDb = 'Sakit';
-                elseif ($statusKode === 'I') $statusDb = 'Izin';
-                elseif ($statusKode === 'A') $statusDb = 'Alpha';
-
-                // PERBAIKAN: Tidak menggunakan tahun_ajaran_id di absensi_harian
-                $existing = $db->table('absensi_harian')->where([
-                    'siswa_id'  => $siswa_id,
-                    'rombel_id' => $rombel_id,
-                    'tanggal'   => $tanggal
+            foreach ($records as $siswa_id => $data) {
+                $existing = $db->table('rekap_absensi')->where([
+                    'siswa_id'        => $siswa_id,
+                    'tahun_ajaran_id' => $id_ta,
+                    'semester'        => $semester
                 ])->get()->getRowArray();
 
-                if ($existing) {
-                    if ($existing['status'] !== $statusDb) {
-                        $db->table('absensi_harian')->where('id', $existing['id'])->update(['status' => $statusDb]);
-                        $siswa_ids_updated[] = $siswa_id;
-                    }
-                } else {
-                    $db->table('absensi_harian')->insert([
-                        'siswa_id'  => $siswa_id,
-                        'rombel_id' => $rombel_id,
-                        'tanggal'   => $tanggal,
-                        'status'    => $statusDb
-                    ]);
-                    $siswa_ids_updated[] = $siswa_id;
-                }
-            }
+                $updateData = [
+                    'hadir' => $data->hadir ?? 0,
+                    'sakit' => $data->sakit ?? 0,
+                    'izin'  => $data->izin ?? 0,
+                    'alpha' => $data->alpha ?? 0
+                ];
 
-            // AUTO SYNC KE TABEL REKAP_ABSENSI
-            if (!empty($siswa_ids_updated) && $db->tableExists('rekap_absensi')) {
-                foreach (array_unique($siswa_ids_updated) as $sid) {
-                    $this->syncRekapAbsensi($db, $sid, $rombel_id, $id_ta);
+                if ($existing) {
+                    $db->table('rekap_absensi')->where('id', $existing['id'])->update($updateData);
+                } else {
+                    $updateData['siswa_id'] = $siswa_id;
+                    $updateData['tahun_ajaran_id'] = $id_ta;
+                    $updateData['semester'] = $semester;
+                    $db->table('rekap_absensi')->insert($updateData);
                 }
             }
 
             $db->transCommit();
-            return $this->response->setJSON(['success' => true, 'message' => 'Data absensi berhasil disimpan!']);
+            return $this->response->setJSON(['success' => true, 'message' => 'Data absensi semester berhasil disimpan!']);
         } catch (\Throwable $e) {
             $db->transRollback();
             return $this->response->setJSON(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
@@ -226,114 +200,92 @@ class AbsensiKelasController extends WaliKelasBaseController
     public function importAbsensi()
     {
         $file = $this->request->getFile('file_csv');
-        $rombel_info = $this->getRombelInfoWaliKelas();
+        $id_ta = $this->request->getPost('id_ta');
+        $semester = $this->request->getPost('semester');
 
-        if (!$rombel_info) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Akses ditolak!']);
-        }
-
-        $rombel_id = $rombel_info['id'];
-        $id_ta = $rombel_info['id_tahun_ajaran'];
-
-        if (!$file || !$file->isValid() || strtolower($file->getExtension()) !== 'csv') {
-            return $this->response->setJSON(['success' => false, 'message' => 'Harap unggah file CSV.']);
+        if (!$file || !$file->isValid()) {
+            return $this->response->setJSON(['success' => false, 'message' => 'File tidak valid.']);
         }
 
         $db = \Config\Database::connect();
         $handle = fopen($file->getTempName(), "r");
-
-        $firstLine = fgets($handle);
-        $delimiter = strpos($firstLine, ';') !== false ? ';' : ',';
-        rewind($handle);
-
-        $dateColumns = [];
-
-        while (($row = fgetcsv($handle, 1000, $delimiter)) !== FALSE) {
-            foreach ($row as $index => $colName) {
-                $normalizedDate = $this->normalizeImportedDateHeader($colName);
-                if ($normalizedDate !== null) {
-                    $dateColumns[$index] = $normalizedDate;
-                }
-            }
-            if (!empty($dateColumns)) break;
-        }
-
-        if (empty($dateColumns)) {
-            fclose($handle);
-            return $this->response->setJSON(['success' => false, 'message' => 'Format kolom tanggal YYYY-MM-DD atau DD/MM/YYYY tidak ditemukan.']);
-        }
-
-        $jumlah_diupdate = 0;
-        date_default_timezone_set('Asia/Jakarta');
-        $hari_ini = date('Y-m-d');
+        
+        // Skip header
+        fgetcsv($handle, 1000, ",");
 
         $db->transBegin();
-        $siswa_ids_updated = [];
-
         try {
-            while (($data = fgetcsv($handle, 1000, $delimiter)) !== FALSE) {
-                $nisn = preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', trim($data[0]));
-                if (empty($nisn) || strtolower($nisn) == 'nisn') continue;
+            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                $nisn = trim($data[0]);
+                if (empty($nisn)) continue;
 
-                $siswa = $db->table('siswa')->select('id')->where('nisn', $nisn)->get()->getRowArray();
+                $siswa = $db->table('siswa')->where('nisn', $nisn)->get()->getRowArray();
                 if (!$siswa) continue;
 
-                $siswa_id = $siswa['id'];
+                $rekap = [
+                    'hadir' => (int)$data[2],
+                    'sakit' => (int)$data[3],
+                    'izin'  => (int)$data[4],
+                    'alpha' => (int)$data[5],
+                ];
 
-                foreach ($dateColumns as $index => $tanggal) {
-                    if (!isset($data[$index])) continue;
-                    if ($tanggal > $hari_ini) continue;
+                $existing = $db->table('rekap_absensi')->where([
+                    'siswa_id' => $siswa['id'],
+                    'tahun_ajaran_id' => $id_ta,
+                    'semester' => $semester
+                ])->get()->getRowArray();
 
-                    $statusRaw = strtoupper(trim($data[$index]));
-                    $statusDb = null;
-
-                    if (in_array($statusRaw, ['H', 'HADIR', 'HADIR '])) $statusDb = 'Hadir';
-                    elseif (in_array($statusRaw, ['S', 'SAKIT'])) $statusDb = 'Sakit';
-                    elseif (in_array($statusRaw, ['I', 'IZIN', 'IJIN'])) $statusDb = 'Izin';
-                    elseif (in_array($statusRaw, ['A', 'ALPHA', 'ALPA'])) $statusDb = 'Alpha';
-
-                    if ($statusDb !== null) {
-                        // PERBAIKAN: Tidak menggunakan tahun_ajaran_id di absensi_harian
-                        $existing = $db->table('absensi_harian')->where([
-                            'siswa_id'  => $siswa_id,
-                            'rombel_id' => $rombel_id,
-                            'tanggal'   => $tanggal
-                        ])->get()->getRowArray();
-
-                        if ($existing) {
-                            if ($existing['status'] !== $statusDb) {
-                                $db->table('absensi_harian')->where('id', $existing['id'])->update(['status' => $statusDb]);
-                                $jumlah_diupdate++;
-                                $siswa_ids_updated[] = $siswa_id;
-                            }
-                        } else {
-                            $db->table('absensi_harian')->insert([
-                                'siswa_id'  => $siswa_id,
-                                'rombel_id' => $rombel_id,
-                                'tanggal'   => $tanggal,
-                                'status'    => $statusDb
-                            ]);
-                            $jumlah_diupdate++;
-                            $siswa_ids_updated[] = $siswa_id;
-                        }
-                    }
+                if ($existing) {
+                    $db->table('rekap_absensi')->where('id', $existing['id'])->update($rekap);
+                } else {
+                    $rekap['siswa_id'] = $siswa['id'];
+                    $rekap['tahun_ajaran_id'] = $id_ta;
+                    $rekap['semester'] = $semester;
+                    $db->table('rekap_absensi')->insert($rekap);
                 }
             }
-
-            if (!empty($siswa_ids_updated) && $db->tableExists('rekap_absensi')) {
-                foreach (array_unique($siswa_ids_updated) as $sid) {
-                    $this->syncRekapAbsensi($db, $sid, $rombel_id, $id_ta);
-                }
-            }
-
-            fclose($handle);
             $db->transCommit();
-            return $this->response->setJSON(['success' => true, 'message' => "Impor Selesai! $jumlah_diupdate data absensi berhasil diproses."]);
-        } catch (\Throwable $e) {
             fclose($handle);
+            return $this->response->setJSON(['success' => true, 'message' => 'Import absensi berhasil!']);
+        } catch (\Throwable $e) {
             $db->transRollback();
-            return $this->response->setJSON(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+            fclose($handle);
+            return $this->response->setJSON(['success' => false, 'message' => $e->getMessage()]);
         }
+    }
+
+    public function downloadTemplate()
+    {
+        $rombel_info = $this->getRombelInfoWaliKelas();
+        if (!$rombel_info) return "Akses ditolak.";
+
+        $db = \Config\Database::connect();
+        $id_ta = $this->request->getGet('id_ta');
+        $semester = $this->request->getGet('semester');
+
+        $students = $db->table('anggota_rombel ar')
+            ->select('siswa.nama_lengkap, siswa.nisn')
+            ->join('siswa', 'siswa.id = ar.siswa_id')
+            ->where('ar.rombel_id', $rombel_info['id'])
+            ->where('ar.tahun_ajaran_id', $id_ta)
+            ->where('ar.semester', $semester)
+            ->orderBy('siswa.nama_lengkap', 'ASC')
+            ->get()->getResultArray();
+
+        $filename = "Template_Absensi_" . str_replace(' ', '_', $rombel_info['nama_rombel']) . ".csv";
+
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        $output = fopen('php://output', 'w');
+        fputcsv($output, ['NISN', 'Nama Siswa', 'Hadir', 'Sakit', 'Izin', 'Alpha']);
+
+        foreach ($students as $s) {
+            fputcsv($output, [$s['nisn'], $s['nama_lengkap'], 0, 0, 0, 0]);
+        }
+
+        fclose($output);
+        exit();
     }
 
     private function normalizeImportedDateHeader($value): ?string
