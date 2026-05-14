@@ -191,7 +191,10 @@ class NilaiRaporController extends GuruMapelBaseController
         if ($db->fieldExists('kategori', 'nilai_sumatif')) {
             $qSumatif->groupStart()
                 ->where('kategori', $kategori)
-                ->orWhere('kategori', $kategori === 'Tengah Semester' ? 'Tengah' : 'Akhir')
+                ->orWhere('kategori', 'Tengah Semester')
+                ->orWhere('kategori', 'Tengah')
+                ->orWhere('kategori', 'Akhir Semester')
+                ->orWhere('kategori', 'Akhir')
                 ->orWhere('kategori', '')
                 ->orWhere('kategori', null)
                 ->groupEnd();
@@ -232,19 +235,16 @@ class NilaiRaporController extends GuruMapelBaseController
                     $jenis = strtoupper(trim($sum['jenis_sumatif'] ?? ($sum['jenis_penilaian'] ?? '')));
                     $nilai = isset($sum['nilai']) ? (float)$sum['nilai'] : (float)($sum['nilai_angka'] ?? 0);
 
-                    if ($kategori === 'Tengah Semester') {
-                        if (strpos($jenis, 'STS') !== false || strpos($jenis, 'PTS') !== false) {
-                            $sum_sts += $nilai;
-                            $count_sts++;
-                        }
-                    } else {
-                        if (strpos($jenis, 'PAS') !== false) {
-                            $sum_pas += $nilai;
-                            $count_pas++;
-                        } elseif (strpos($jenis, 'SAS') !== false) {
-                            $sum_sas += $nilai;
-                            $count_sas++;
-                        }
+                    // Selalu kumpulkan semua jenis sumatif untuk kalkulasi akhir yang akurat
+                    if (strpos($jenis, 'STS') !== false || strpos($jenis, 'PTS') !== false) {
+                        $sum_sts += $nilai;
+                        $count_sts++;
+                    } elseif (strpos($jenis, 'PAS') !== false) {
+                        $sum_pas += $nilai;
+                        $count_pas++;
+                    } elseif (strpos($jenis, 'SAS') !== false) {
+                        $sum_sas += $nilai;
+                        $count_sas++;
                     }
                 }
             }
@@ -276,11 +276,21 @@ class NilaiRaporController extends GuruMapelBaseController
                 $w_sts = $bobot['akhir_semester']['sts'] / 100;
                 $w_sas = $bobot['akhir_semester']['sas'] / 100;
 
-                $avg_ujian_akhir = $count_pas > 0 ? $avg_pas : ($count_sas > 0 ? $avg_sas : 0);
-                $kalkulasi = ($avg_nh * $w_nh) + ($avg_uh * $w_uh) + ($avg_sts * $w_sts) + ($avg_ujian_akhir * $w_sas);
+                $val_sts = ($count_sts > 0) ? $avg_sts : $avg_pas;
+                
+                // Jika PAS sudah dipakai di STS, jangan pakai lagi di SAS kecuali SAS kosong
+                $val_sas = ($count_sas > 0) ? $avg_sas : (($val_sts != $avg_pas) ? $avg_pas : 0);
+                
+                // KALKULASI DENGAN POTONG 1 DESIMAL (TRUNCATION) TIAP KOMPONEN SESUAI PERMINTAAN CLIENT
+                $c_nh  = floor(($avg_nh * $w_nh) * 10) / 10;
+                $c_uh  = floor(($avg_uh * $w_uh) * 10) / 10;
+                $c_sts = floor(($val_sts * $w_sts) * 10) / 10;
+                $c_sas = floor(($val_sas * $w_sas) * 10) / 10;
+                
+                $kalkulasi = $c_nh + $c_uh + $c_sts + $c_sas;
             }
 
-            $nilai_akhir = round($kalkulasi);
+            $nilai_akhir = number_format($kalkulasi, 1, '.', '');
             $s['nilai_akhir'] = $nilai_akhir;
 
             // --- 🚀 PREDIKAT DINAMIS ---
@@ -405,7 +415,12 @@ class NilaiRaporController extends GuruMapelBaseController
             if ($db->fieldExists('kategori', 'nilai_sumatif')) {
                 $qAllSumatif->groupStart()
                     ->where('kategori', $kategori)
-                    ->orWhere('kategori', $kategoriDB)
+                    ->orWhere('kategori', 'Tengah Semester')
+                    ->orWhere('kategori', 'Tengah')
+                    ->orWhere('kategori', 'Akhir Semester')
+                    ->orWhere('kategori', 'Akhir')
+                    ->orWhere('kategori', '')
+                    ->orWhere('kategori', null)
                     ->groupEnd();
             }
 
@@ -453,19 +468,15 @@ class NilaiRaporController extends GuruMapelBaseController
                         $jenis = strtoupper(trim($s['jenis_sumatif'] ?? ($s['jenis_penilaian'] ?? '')));
                         $nilai = isset($s['nilai']) ? (float)$s['nilai'] : (float)($s['nilai_angka'] ?? 0);
 
-                        if ($kategori === 'Tengah Semester') {
-                            if (strpos($jenis, 'STS') !== false || strpos($jenis, 'PTS') !== false) {
-                                $sum_sts += $nilai;
-                                $count_sts++;
-                            }
-                        } else {
-                            if (strpos($jenis, 'PAS') !== false) {
-                                $sum_pas += $nilai;
-                                $count_pas++;
-                            } elseif (strpos($jenis, 'SAS') !== false) {
-                                $sum_sas += $nilai;
-                                $count_sas++;
-                            }
+                        if (strpos($jenis, 'STS') !== false || strpos($jenis, 'PTS') !== false) {
+                            $sum_sts += $nilai;
+                            $count_sts++;
+                        } elseif (strpos($jenis, 'PAS') !== false) {
+                            $sum_pas += $nilai;
+                            $count_pas++;
+                        } elseif (strpos($jenis, 'SAS') !== false) {
+                            $sum_sas += $nilai;
+                            $count_sas++;
                         }
                     }
                 }
@@ -494,15 +505,24 @@ class NilaiRaporController extends GuruMapelBaseController
                     $w_sts = $bobot['akhir_semester']['sts'] / 100;
                     $w_sas = $bobot['akhir_semester']['sas'] / 100;
 
-                    $avg_ujian_akhir = $count_pas > 0 ? $avg_pas : ($count_sas > 0 ? $avg_sas : 0);
-                    $kalkulasi = ($avg_nh * $w_nh) + ($avg_uh * $w_uh) + ($avg_sts * $w_sts) + ($avg_ujian_akhir * $w_sas);
+                    // SMART MAPPING: Jika STS kosong, gunakan PAS sebagai pengganti
+                    $val_sts = ($count_sts > 0) ? $avg_sts : $avg_pas;
+                    $val_sas = ($count_sas > 0) ? $avg_sas : (($val_sts != $avg_pas) ? $avg_pas : 0);
+
+                    // KALKULASI DENGAN POTONG 1 DESIMAL (TRUNCATION) TIAP KOMPONEN SESUAI PERMINTAAN CLIENT
+                    $c_nh  = floor(($avg_nh * $w_nh) * 10) / 10;
+                    $c_uh  = floor(($avg_uh * $w_uh) * 10) / 10;
+                    $c_sts = floor(($val_sts * $w_sts) * 10) / 10;
+                    $c_sas = floor(($val_sas * $w_sas) * 10) / 10;
+
+                    $kalkulasi = $c_nh + $c_uh + $c_sts + $c_sas;
 
                     // Simpan rata-rata ke kolom DB (untuk archive)
                     $rata_formatif = round(($avg_nh + $avg_uh) / 2, 1);
-                    $rata_sumatif = round(($avg_sts + $avg_ujian_akhir) / 2, 1);
+                    $rata_sumatif = round(($val_sts + $val_sas) / 2, 1);
                 }
 
-                $nilai_akhir = round($kalkulasi);
+                $nilai_akhir = number_format($kalkulasi, 1, '.', '');
 
                 // --- 🚀 PREDIKAT DINAMIS ---
                 $predikat = '-';
