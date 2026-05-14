@@ -297,7 +297,7 @@ class NilaiRaporController extends GuruMapelBaseController
             $predikat = '-';
             if (!empty($aturanPredikat)) {
                 foreach ($aturanPredikat as $aturan) {
-                    if ($nilai_akhir >= $aturan['nilai_min'] && $nilai_akhir <= $aturan['nilai_max']) {
+                    if (floor($nilai_akhir) >= $aturan['nilai_min'] && floor($nilai_akhir) <= $aturan['nilai_max']) {
                         $predikat = $aturan['deskripsi_predikat']; // cth: "Sangat Baik"
                         break;
                     }
@@ -528,7 +528,7 @@ class NilaiRaporController extends GuruMapelBaseController
                 $predikat = '-';
                 if (!empty($aturanPredikat)) {
                     foreach ($aturanPredikat as $aturan) {
-                        if ($nilai_akhir >= $aturan['nilai_min'] && $nilai_akhir <= $aturan['nilai_max']) {
+                        if (floor($nilai_akhir) >= $aturan['nilai_min'] && floor($nilai_akhir) <= $aturan['nilai_max']) {
                             $predikat = $aturan['deskripsi_predikat']; // Cth: "Sangat Baik"
                             break;
                         }
