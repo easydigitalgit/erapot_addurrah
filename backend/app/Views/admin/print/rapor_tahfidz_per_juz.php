@@ -126,55 +126,58 @@
         * Keterangan Predikat: Mumtaz (90-100), Jayyid Jiddan (80-89), Jayyid (70-79), Maqbul (60-69).
     </p>
 
-    <!-- TANDA TANGAN -->
-    <table class="footer-ttd" style="width: 100%;">
-        <tr>
-            <td style="width: 35%; text-align: center; vertical-align: top; border: none;">
-                Mengetahui,<br>Orang Tua/Wali
-                <div style="height: 60px;"><br><br><br></div>
-                ( .................................... )
-            </td>
+    <!-- Wrapper to prevent page-break inside signature section -->
+    <div style="page-break-inside: avoid; display: block; width: 100%;">
+        <!-- TANDA TANGAN -->
+        <table class="footer-ttd" style="width: 100%; page-break-inside: avoid;">
+            <tr>
+                <td style="width: 35%; text-align: center; vertical-align: top; border: none;">
+                    Mengetahui,<br>Orang Tua/Wali
+                    <div style="height: 60px;"><br><br><br></div>
+                    ( .................................... )
+                </td>
 
-            <td style="width: 30%; text-align: center; vertical-align: middle; border: none;">
-                <div style="text-align: center; margin-top: 5px;">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=<?= urlencode($link_verifikasi) ?>" style="width: 80px; height: 80px;">
-                    <br>
-                    <span style="font-size: 7pt; color: #666; font-style: italic;">Scan Validasi</span>
-                </div>
-            </td>
+                <td style="width: 30%; text-align: center; vertical-align: middle; border: none;">
+                    <div style="text-align: center; margin-top: 5px;">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=<?= urlencode($link_verifikasi) ?>" style="width: 80px; height: 80px;">
+                        <br>
+                        <span style="font-size: 7pt; color: #666; font-style: italic;">Scan Validasi</span>
+                    </div>
+                </td>
 
-            <td style="width: 35%; text-align: center; vertical-align: top; border: none;">
-                <?= esc(ucwords(strtolower($sekolah['kabupaten_nama'] ?? 'Lhokseumawe'))) ?>, <?= date('d F Y') ?><br>
-                Wali Kelas
-                <div style="height: 60px;" align="center">
-                    <?php if (!empty($siswa['wali_ttd']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'])): ?>
-                        <img src="<?= FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'] ?>" style="height: 60px;">
-                    <?php else: ?>
-                        <br><br><br>
-                    <?php endif; ?>
-                </div>
-                <strong style="text-decoration: underline;">( <?= esc($siswa['wali_kelas'] ?? '................................') ?> )</strong>
-            </td>
-        </tr>
-    </table>
+                <td style="width: 35%; text-align: center; vertical-align: top; border: none;">
+                    <?= esc(ucwords(strtolower($sekolah['kabupaten_nama'] ?? 'Lhokseumawe'))) ?>, <?= date('d F Y') ?><br>
+                    Wali Kelas
+                    <div style="height: 60px;" align="center">
+                        <?php if (!empty($siswa['wali_ttd']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'])): ?>
+                            <img src="<?= FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'] ?>" style="height: 60px;">
+                        <?php else: ?>
+                            <br><br><br>
+                        <?php endif; ?>
+                    </div>
+                    <strong style="text-decoration: underline;">( <?= esc($siswa['wali_kelas'] ?? '................................') ?> )</strong>
+                </td>
+            </tr>
+        </table>
 
-    <!-- TTD KEPALA SEKOLAH DI TENGAH BAWAH -->
-    <table style="width: 100%; border: none; margin-top: 20px;">
-        <tr>
-            <td align="center" style="border: none;">
-                Mengetahui,<br>Kepala Sekolah
-                <div style="height: 70px;" align="center">
-                    <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
-                        <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="height: 70px;">
-                    <?php else: ?>
-                        <br><br><br>
-                    <?php endif; ?>
-                </div>
-                <strong class="uppercase" style="text-decoration: underline;"><?= esc($kepsek['nama_lengkap'] ?? '................................') ?></strong><br>
-                <?= !empty($kepsek['nuptk']) ? 'NUPTK. ' . $kepsek['nuptk'] : '' ?>
-            </td>
-        </tr>
-    </table>
+        <!-- TTD KEPALA SEKOLAH DI TENGAH BAWAH -->
+        <table style="width: 100%; border: none; margin-top: 20px; page-break-inside: avoid;">
+            <tr>
+                <td align="center" style="border: none;">
+                    Mengetahui,<br>Kepala Sekolah
+                    <div style="height: 70px;" align="center">
+                        <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
+                            <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="height: 70px;">
+                        <?php else: ?>
+                            <br><br><br>
+                        <?php endif; ?>
+                    </div>
+                    <strong class="uppercase" style="text-decoration: underline;"><?= esc($kepsek['nama_lengkap'] ?? '................................') ?></strong><br>
+                    <?= !empty($kepsek['nuptk']) ? 'NUPTK. ' . $kepsek['nuptk'] : '' ?>
+                </td>
+            </tr>
+        </table>
+    </div>
 
 </body>
 </html>

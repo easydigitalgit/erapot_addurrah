@@ -305,90 +305,93 @@
             </tbody>
         </table>
 
-        <h4 style="margin-top: 15px; margin-bottom: 5px;">Kegiatan Ekstrakurikuler</h4>
-        <table class="tbl-border">
-            <thead>
-                <tr>
-                    <th width="5%">No</th>
-                    <th width="40%">Nama Kegiatan</th>
-                    <th width="15%">Predikat</th>
-                    <th width="40%">Keterangan</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if(empty($ekskul)): ?>
-                    <tr><td colspan="4" class="text-center" style="padding: 10px;">Belum ada data kegiatan ekstrakurikuler.</td></tr>
-                <?php else: ?>
-                    <?php foreach($ekskul as $ix => $eks): ?>
+        <!-- Wrapper to prevent page-break inside extracurricular and signature sections -->
+        <div style="page-break-inside: avoid; display: block; width: 100%;">
+            <h4 style="margin-top: 15px; margin-bottom: 5px;">Kegiatan Ekstrakurikuler</h4>
+            <table class="tbl-border">
+                <thead>
                     <tr>
-                        <td class="text-center"><?= $ix + 1 ?></td>
-                        <td><?= $eks['kegiatan'] ?></td>
-                        <td class="text-center font-bold"><?= $eks['predikat'] ?></td>
-                        <td class="deskripsi-text"><?= $eks['keterangan'] ?></td>
+                        <th width="5%">No</th>
+                        <th width="40%">Nama Kegiatan</th>
+                        <th width="15%">Predikat</th>
+                        <th width="40%">Keterangan</th>
                     </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php if(empty($ekskul)): ?>
+                        <tr><td colspan="4" class="text-center" style="padding: 10px;">Belum ada data kegiatan ekstrakurikuler.</td></tr>
+                    <?php else: ?>
+                        <?php foreach($ekskul as $ix => $eks): ?>
+                        <tr>
+                            <td class="text-center"><?= $ix + 1 ?></td>
+                            <td><?= $eks['kegiatan'] ?></td>
+                            <td class="text-center font-bold"><?= $eks['predikat'] ?></td>
+                            <td class="deskripsi-text"><?= $eks['keterangan'] ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
 
-        <!-- Tahfidz & Tahsin section removed as it has its own report module -->
+            <!-- Tahfidz & Tahsin section removed as it has its own report module -->
 
-        <h4 style="margin-top: 15px; margin-bottom: 5px;">Ketidakhadiran</h4>
-        <table class="tbl-border" style="width: 50%;">
-            <tr>
-                <td width="60%">Sakit</td>
-                <td width="40%" class="text-center"><?= $absen['sakit'] ?> hari</td>
-            </tr>
-            <tr>
-                <td>Izin</td>
-                <td class="text-center"><?= $absen['izin'] ?> hari</td>
-            </tr>
-            <tr>
-                <td>Tanpa Keterangan</td>
-                <td class="text-center"><?= $absen['alpha'] ?> hari</td>
-            </tr>
-        </table>
-        
-        <?php if(!empty($catatan_wali)): ?>
-        <h4 style="margin-top: 15px; margin-bottom: 5px;">Catatan Wali Kelas</h4>
-        <div style="border: 1px solid #000; padding: 8px; min-height: 40px; font-style: italic; background: rgba(255,255,255,0.7);">
-            "<?= $catatan_wali ?>"
+            <h4 style="margin-top: 15px; margin-bottom: 5px;">Ketidakhadiran</h4>
+            <table class="tbl-border" style="width: 50%;">
+                <tr>
+                    <td width="60%">Sakit</td>
+                    <td width="40%" class="text-center"><?= $absen['sakit'] ?> hari</td>
+                </tr>
+                <tr>
+                    <td>Izin</td>
+                    <td class="text-center"><?= $absen['izin'] ?> hari</td>
+                </tr>
+                <tr>
+                    <td>Tanpa Keterangan</td>
+                    <td class="text-center"><?= $absen['alpha'] ?> hari</td>
+                </tr>
+            </table>
+            
+            <?php if(!empty($catatan_wali)): ?>
+            <h4 style="margin-top: 15px; margin-bottom: 5px;">Catatan Wali Kelas</h4>
+            <div style="border: 1px solid #000; padding: 8px; min-height: 40px; font-style: italic; background: rgba(255,255,255,0.7);">
+                "<?= $catatan_wali ?>"
+            </div>
+            <?php endif; ?>
+
+            <?php if(!empty($status_kenaikan)): ?>
+            <div style="margin-top: 15px; border: 1px solid #000; padding: 10px; text-align: center; background: rgba(255,255,255,0.7);">
+                <p style="margin:0; font-size: 10pt;">Keputusan:</p>
+                <h3 style="margin:5px 0 0 0;"><?= $status_kenaikan ?></h3>
+            </div>
+            <?php endif; ?>
+
+            <table style="width: 100%; margin-top: 40px; border: none; font-size: 10pt; page-break-inside: avoid;">
+                <tr>
+                    <td style="width: 28%; text-align: center; vertical-align: top;">
+                        Mengetahui,<br>Orang Tua/Wali
+                        <br><br><br><br><br><br><br>
+                        ( ................................ )
+                    </td>
+                    <td style="width: 32%; text-align: center; vertical-align: top;">
+                        Diverifikasi Oleh,<br>Wali Kelas
+                        <br><br><br><br><br><br><br>
+                        <strong>( <?= esc($siswa['wali_kelas'] ?? '................................') ?> )</strong>
+                    </td>
+                    <td style="width: 40%; text-align: center; vertical-align: top;">
+                        <?= esc($sekolah['kabupaten_nama'] ?? ($sekolah['kabupaten'] ?? 'Lhokseumawe')) ?>, <?= $tanggal_rapor ?><br>
+                        Kepala Sekolah,
+                        <div style="height: 120px; position: relative; margin-top: 5px; margin-bottom: 5px;">
+                            <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
+                                <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="height: 100px;">
+                            <?php else: ?>
+                                <br><br><br><br><br>
+                            <?php endif; ?>
+                        </div>
+                        <strong><?= esc($kepsek['nama_lengkap'] ?? '................................') ?></strong><br>
+                        <?= !empty($kepsek['nuptk']) ? 'NUPTK. '.$kepsek['nuptk'] : (!empty($kepsek['niy']) ? 'NIY. '.$kepsek['niy'] : 'NIP/NIY. -') ?>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <?php endif; ?>
-
-        <?php if(!empty($status_kenaikan)): ?>
-        <div style="margin-top: 15px; border: 1px solid #000; padding: 10px; text-align: center; background: rgba(255,255,255,0.7);">
-            <p style="margin:0; font-size: 10pt;">Keputusan:</p>
-            <h3 style="margin:5px 0 0 0;"><?= $status_kenaikan ?></h3>
-        </div>
-        <?php endif; ?>
-
-        <table style="width: 100%; margin-top: 40px; border: none; font-size: 10pt;">
-            <tr>
-                <td style="width: 28%; text-align: center; vertical-align: top;">
-                    Mengetahui,<br>Orang Tua/Wali
-                    <br><br><br><br><br><br><br>
-                    ( ................................ )
-                </td>
-                <td style="width: 32%; text-align: center; vertical-align: top;">
-                    Diverifikasi Oleh,<br>Wali Kelas
-                    <br><br><br><br><br><br><br>
-                    <strong>( <?= esc($siswa['wali_kelas'] ?? '................................') ?> )</strong>
-                </td>
-                <td style="width: 40%; text-align: center; vertical-align: top;">
-                    <?= esc($sekolah['kabupaten_nama'] ?? ($sekolah['kabupaten'] ?? 'Lhokseumawe')) ?>, <?= $tanggal_rapor ?><br>
-                    Kepala Sekolah,
-                    <div style="height: 120px; position: relative; margin-top: 5px; margin-bottom: 5px;">
-                        <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
-                            <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="height: 100px;">
-                        <?php else: ?>
-                            <br><br><br><br><br>
-                        <?php endif; ?>
-                    </div>
-                    <strong><?= esc($kepsek['nama_lengkap'] ?? '................................') ?></strong><br>
-                    <?= !empty($kepsek['nuptk']) ? 'NUPTK. '.$kepsek['nuptk'] : (!empty($kepsek['niy']) ? 'NIY. '.$kepsek['niy'] : 'NIP/NIY. -') ?>
-                </td>
-            </tr>
-        </table>
     </div> </body>
 </html>

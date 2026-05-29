@@ -280,7 +280,7 @@
         elseif (!empty($siswa['nama_wali']) && trim($siswa['nama_wali']) !== '-') $nama_ortu = $siswa['nama_wali'];
         ?>
 
-        <table style="width: 100%; margin-top: 30px; border: none; font-size: 10pt; table-layout: fixed;">
+        <table style="width: 100%; margin-top: 30px; border: none; font-size: 10pt; table-layout: fixed; page-break-inside: avoid;">
             <tr>
                 <!-- KOLOM KIRI: ORANG TUA -->
                 <td style="width: 35%; text-align: center; vertical-align: top; border: none; padding: 0;">
