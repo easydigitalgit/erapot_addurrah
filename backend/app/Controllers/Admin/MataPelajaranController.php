@@ -90,7 +90,7 @@ class MataPelajaranController extends AdminBaseController
                 'jp_minggu'    => $this->request->getPost('hours'),
                 'nomor_urut'   => $this->request->getPost('nomor_urut') ?? 0,
                 'kurikulum_id' => $this->request->getPost('curriculum'),
-                'status'       => 'Aktif'
+                'status'       => $this->request->getPost('status') ?? 'Aktif'
             ];
 
             if ($this->mapelModel->insert($data)) {
@@ -123,7 +123,8 @@ class MataPelajaranController extends AdminBaseController
                 'kelompok'     => $this->request->getPost('edit_group'),
                 'jp_minggu'    => $this->request->getPost('edit_hours'),
                 'nomor_urut'   => $this->request->getPost('edit_nomor_urut') ?? 0,
-                'kurikulum_id' => $this->request->getPost('edit_curriculum')
+                'kurikulum_id' => $this->request->getPost('edit_curriculum'),
+                'status'       => $this->request->getPost('edit_status') ?? 'Aktif'
             ];
 
             if ($this->mapelModel->update($id, $data)) {
@@ -140,6 +141,40 @@ class MataPelajaranController extends AdminBaseController
         } catch (\Exception $e) {
             return $this->response->setJSON([
                 'status' => 'error', 
+                'message' => 'System Error: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function toggleStatus($id)
+    {
+        if (!$this->request->isAJAX()) return $this->response->setStatusCode(404);
+
+        try {
+            $mapel = $this->mapelModel->find($id);
+            if (!$mapel) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Mata pelajaran tidak ditemukan.'
+                ]);
+            }
+
+            $newStatus = $mapel['status'] === 'Aktif' ? 'Non-aktif' : 'Aktif';
+            if ($this->mapelModel->update($id, ['status' => $newStatus])) {
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'message' => 'Status mata pelajaran berhasil diperbarui menjadi ' . ($newStatus === 'Aktif' ? 'Aktif' : 'Nonaktif'),
+                    'new_status' => $newStatus
+                ]);
+            } else {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Gagal memperbarui status.'
+                ]);
+            }
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
                 'message' => 'System Error: ' . $e->getMessage()
             ]);
         }

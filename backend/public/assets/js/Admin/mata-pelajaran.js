@@ -105,9 +105,9 @@ function populateMapel() {
                 <span class="px-2 py-1 bg-gray-100 dark:bg-slate-600 text-gray-700 dark:text-slate-300 rounded text-xs font-bold">${mapel.nomor_urut || 0}</span>
             </td>
             <td class="px-6 py-4 text-center">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-colors shadow-sm ${mapel.status === 'Aktif' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50' : 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/50'}">
+                <button onclick="toggleMapelStatus('${mapel.id}')" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-colors shadow-sm cursor-pointer border hover:opacity-80 outline-none ${mapel.status === 'Aktif' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50' : 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/50'}">
                     ${mapel.status === 'Aktif' ? textObj.js_status_active : textObj.js_status_inactive}
-                </span>
+                </button>
             </td>
             <td class="px-6 py-4">
                 <div class="flex items-center justify-center gap-2 opacity-1 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
@@ -161,6 +161,7 @@ window.showEditMapelModal = (id) => {
     setValue('edit_curriculum', mapel.curriculum_id); 
     setValue('edit_hours', mapel.hours);
     setValue('edit_nomor_urut', mapel.nomor_urut || 0);
+    setValue('edit_status', mapel.status || 'Aktif');
     
     document.getElementById('editMapelModal').classList.remove('hidden');
 };
@@ -209,6 +210,31 @@ window.confirmDelete = async function() {
             setTimeout(() => window.location.reload(), 1000);
         } else {
             showToast('error', textObj.js_fail, json.message || textObj.js_err_del_fail);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('error', textObj.js_error, textObj.js_err_conn);
+    }
+};
+
+window.toggleMapelStatus = async function(id) {
+    try {
+        const formData = new FormData();
+        formData.append(csrfTokenName, csrfTokenHash);
+
+        const res = await fetch(`${BASE_URL}/admin/mata-pelajaran/toggle-status/${id}`, {
+            method: 'POST',
+            body: formData,
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        });
+
+        const json = await res.json();
+        
+        if (json.status === 'success') {
+            showToast('success', textObj.js_success, json.message);
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            showToast('error', textObj.js_fail, json.message);
         }
     } catch (err) {
         console.error(err);

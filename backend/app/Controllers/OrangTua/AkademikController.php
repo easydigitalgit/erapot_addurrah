@@ -426,24 +426,34 @@ class AkademikController extends OrangTuaBaseController
         $vJpTA = ($fJpTA === 'tahun_ajaran') ? $tahun_ajaran : $ta_id;
 
         $jadwal_mapel = $db->table('jadwal_pelajaran jp')
-            ->select('m.id, m.nama_mapel, m.kkm')
+            ->select('m.id, m.nama_mapel, m.kkm, m.nomor_urut, m.status')
             ->join('mata_pelajaran m', 'm.id = jp.mapel_id')
             ->where('jp.rombel_id', $siswa['rombel_id'])
             ->where('jp.' . $fJpTA, $vJpTA)
-            ->groupBy('m.id, m.nama_mapel, m.kkm')
-            ->orderBy('m.nama_mapel', 'ASC')
+            ->groupBy('m.id, m.nama_mapel, m.kkm, m.nomor_urut, m.status')
             ->get()->getResultArray();
 
-        // Filter Mapel Umum (Keluarkan Tahfidz/BPI dll dari daftar utama)
+        // Filter Mapel Umum (Keluarkan Tahfidz/BPI dll dari daftar utama & Non-aktif)
         $filtered_jadwal = [];
         $kata_kunci_kecuali = ['tahfidz', 'tahfiz', 'tahsin', 'bpi'];
         foreach ($jadwal_mapel as $m) {
+            if (isset($m['status']) && $m['status'] === 'Non-aktif') {
+                continue;
+            }
             $is_dikecualikan = false;
             foreach ($kata_kunci_kecuali as $kata) {
                 if (stripos($m['nama_mapel'], $kata) !== false) { $is_dikecualikan = true; break; }
             }
             if (!$is_dikecualikan) $filtered_jadwal[] = $m;
         }
+
+        // Pastikan urutannya tetap sesuai (berdasarkan nomor_urut dan nama_mapel)
+        usort($filtered_jadwal, function ($a, $b) {
+            $noA = (int)($a['nomor_urut'] ?? 0);
+            $noB = (int)($b['nomor_urut'] ?? 0);
+            if ($noA !== $noB) return $noA <=> $noB;
+            return strcmp($a['nama_mapel'], $b['nama_mapel']);
+        });
 
         // Ambil data nilai_rapor sebagai acuan utama (Dinamis: ID atau Teks)
         $fTA_NR = $db->fieldExists('tahun_ajaran_id', 'nilai_rapor') ? 'tahun_ajaran_id' : 'tahun_ajaran';

@@ -161,6 +161,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ro
     $routes->get('mata-pelajaran', 'MataPelajaranController::index');
     $routes->post('mata-pelajaran/store', 'MataPelajaranController::store');
     $routes->post('mata-pelajaran/update/(:num)', 'MataPelajaranController::update/$1');
+    $routes->post('mata-pelajaran/toggle-status/(:num)', 'MataPelajaranController::toggleStatus/$1');
 
     // Route untuk Delete (Mendukung method POST dan DELETE via JS)
     $routes->post('mata-pelajaran/delete/(:num)', 'MataPelajaranController::delete/$1');

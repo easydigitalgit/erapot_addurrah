@@ -348,11 +348,11 @@ class CetakRaporController extends AdminBaseController
             ->get()->getRowArray();
 
         $jadwal_mapel = [];
-
+ 
         if ($this->db->tableExists('jadwal_pelajaran')) {
             $fTA_Jadwal = $this->db->fieldExists('id_tahun_ajaran', 'jadwal_pelajaran') ? 'id_tahun_ajaran' : 'tahun_ajaran_id';
             $jp = $this->db->table('jadwal_pelajaran jp')
-                ->select('m.id, m.nama_mapel, m.kkm, m.nomor_urut')
+                ->select('m.id, m.nama_mapel, m.kkm, m.nomor_urut, m.status')
                 ->join('mata_pelajaran m', 'CONVERT(m.id USING utf8mb4) COLLATE utf8mb4_general_ci = CONVERT(jp.mapel_id USING utf8mb4) COLLATE utf8mb4_general_ci', 'left', false)
                 ->where('jp.rombel_id', $siswa['rombel_id'])
                 ->where('jp.' . $fTA_Jadwal, $ta_id)
@@ -361,11 +361,11 @@ class CetakRaporController extends AdminBaseController
                 if (!empty($m['id'])) $jadwal_mapel[$m['id']] = $m;
             }
         }
-
+ 
         if ($this->db->tableExists('guru_mapel')) {
             $fTA_GM = $this->db->fieldExists('tahun_ajaran_id', 'guru_mapel') ? 'tahun_ajaran_id' : 'tahun_ajaran';
             $gm = $this->db->table('guru_mapel gm')
-                ->select('m.id, m.nama_mapel, m.kkm, m.nomor_urut')
+                ->select('m.id, m.nama_mapel, m.kkm, m.nomor_urut, m.status')
                 ->join('mata_pelajaran m', 'CONVERT(m.id USING utf8mb4) COLLATE utf8mb4_general_ci = CONVERT(gm.mapel_id USING utf8mb4) COLLATE utf8mb4_general_ci', 'left', false)
                 ->where('gm.rombel_id', $siswa['rombel_id'])
                 ->where('gm.' . $fTA_GM, ($fTA_GM === 'tahun_ajaran_id' ? $ta_id : $tahun_ajaran))
@@ -374,22 +374,22 @@ class CetakRaporController extends AdminBaseController
                 if (!empty($m['id'])) $jadwal_mapel[$m['id']] = $m;
             }
         }
-
+ 
         if (empty($jadwal_mapel) && $this->db->tableExists('mata_pelajaran')) {
             $all_mapel = $this->db->table('mata_pelajaran')->get()->getResultArray();
             foreach ($all_mapel as $m) {
                 if (!empty($m['id'])) $jadwal_mapel[$m['id']] = $m;
             }
         }
-
+ 
         $nilai_db = $this->db->table('nilai_rapor nr')
-            ->select('nr.*, m.nama_mapel, m.kkm, m.nomor_urut')
+            ->select('nr.*, m.nama_mapel, m.kkm, m.nomor_urut, m.status')
             ->join('mata_pelajaran m', 'CONVERT(m.id USING utf8mb4) COLLATE utf8mb4_general_ci = CONVERT(nr.mapel_id USING utf8mb4) COLLATE utf8mb4_general_ci', 'left', false)
             ->where('nr.siswa_id', $siswa_id)
             ->where('nr.tahun_ajaran_id', $ta_id)
             ->where('nr.kategori', $kategori)
             ->get()->getResultArray();
-
+ 
         $mapNilai = [];
         foreach ($nilai_db as $nr) {
             $mapNilai[$nr['mapel_id']] = $nr;
@@ -398,30 +398,34 @@ class CetakRaporController extends AdminBaseController
                     'id'         => $nr['mapel_id'],
                     'nama_mapel' => $nr['nama_mapel'],
                     'kkm'        => $nr['kkm'],
-                    'nomor_urut' => $nr['nomor_urut']
+                    'nomor_urut' => $nr['nomor_urut'],
+                    'status'     => $nr['status']
                 ];
             }
         }
-
+ 
         $filtered_jadwal = [];
         $kata_kunci_kecuali = ['tahfidz', 'tahfiz', 'tahsin', 'bpi'];
-
+ 
         foreach ($jadwal_mapel as $m) {
+            if (isset($m['status']) && $m['status'] === 'Non-aktif') {
+                continue;
+            }
             $nama_mapel_lower = strtolower($m['nama_mapel']);
             $is_dikecualikan = false;
-
+ 
             foreach ($kata_kunci_kecuali as $kata) {
                 if (strpos($nama_mapel_lower, $kata) !== false) {
                     $is_dikecualikan = true;
                     break;
                 }
             }
-
+ 
             if (!$is_dikecualikan) {
                 $filtered_jadwal[] = $m;
             }
         }
-
+ 
         $jadwal_mapel = $filtered_jadwal;
         usort($jadwal_mapel, function ($a, $b) {
             $noA = (int)($a['nomor_urut'] ?? 0);

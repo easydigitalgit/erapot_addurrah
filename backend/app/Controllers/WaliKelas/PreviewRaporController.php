@@ -254,7 +254,7 @@ class PreviewRaporController extends WaliKelasBaseController
         if ($db->tableExists('jadwal_pelajaran')) {
             $fTA_Jadwal = $db->fieldExists('tahun_ajaran_id', 'jadwal_pelajaran') ? 'tahun_ajaran_id' : ($db->fieldExists('id_tahun_ajaran', 'jadwal_pelajaran') ? 'id_tahun_ajaran' : 'tahun_ajaran');
             $jp = $db->table('jadwal_pelajaran jp')
-                ->select('m.id, m.nama_mapel, m.kkm, m.nomor_urut')
+                ->select('m.id, m.nama_mapel, m.kkm, m.nomor_urut, m.status')
                 ->join('mata_pelajaran m', 'CONVERT(m.id USING utf8mb4) COLLATE utf8mb4_general_ci = CONVERT(jp.mapel_id USING utf8mb4) COLLATE utf8mb4_general_ci', 'left', false)
                 ->where('jp.rombel_id', $rombelData['id'])
                 ->where('jp.' . $fTA_Jadwal, $ta_id)
@@ -266,7 +266,7 @@ class PreviewRaporController extends WaliKelasBaseController
         if ($db->tableExists('guru_mapel')) {
             $fTA_GM = $db->fieldExists('tahun_ajaran_id', 'guru_mapel') ? 'tahun_ajaran_id' : 'tahun_ajaran';
             $gm = $db->table('guru_mapel gm')
-                ->select('m.id, m.nama_mapel, m.kkm, m.nomor_urut')
+                ->select('m.id, m.nama_mapel, m.kkm, m.nomor_urut, m.status')
                 ->join('mata_pelajaran m', 'CONVERT(m.id USING utf8mb4) COLLATE utf8mb4_general_ci = CONVERT(gm.mapel_id USING utf8mb4) COLLATE utf8mb4_general_ci', 'left', false)
                 ->where('gm.rombel_id', $rombelData['id'])
                 ->where('gm.' . $fTA_GM, $ta_id) // Admin menggunakan ID
@@ -280,7 +280,7 @@ class PreviewRaporController extends WaliKelasBaseController
         if ($db->tableExists('nilai_rapor')) {
             $fTA_NR = $db->fieldExists('tahun_ajaran_id', 'nilai_rapor') ? 'tahun_ajaran_id' : 'tahun_ajaran';
             $nilai_db = $db->table('nilai_rapor nr')
-                ->select('nr.*, m.nama_mapel, m.kkm, m.nomor_urut')
+                ->select('nr.*, m.nama_mapel, m.kkm, m.nomor_urut, m.status')
                 ->join('mata_pelajaran m', 'm.id = nr.mapel_id', 'left')
                 ->where([
                     'nr.siswa_id' => $siswa_id, 
@@ -291,7 +291,13 @@ class PreviewRaporController extends WaliKelasBaseController
             foreach ($nilai_db as $nr) {
                 $mapNilai[$nr['mapel_id']] = $nr;
                 if (!isset($jadwal_mapel[$nr['mapel_id']]) && !empty($nr['nama_mapel'])) {
-                    $jadwal_mapel[$nr['mapel_id']] = ['id' => $nr['mapel_id'], 'nama_mapel' => $nr['nama_mapel'], 'kkm' => $nr['kkm'], 'nomor_urut' => $nr['nomor_urut']];
+                    $jadwal_mapel[$nr['mapel_id']] = [
+                        'id' => $nr['mapel_id'], 
+                        'nama_mapel' => $nr['nama_mapel'], 
+                        'kkm' => $nr['kkm'], 
+                        'nomor_urut' => $nr['nomor_urut'],
+                        'status' => $nr['status']
+                    ];
                 }
             }
         }
@@ -302,10 +308,13 @@ class PreviewRaporController extends WaliKelasBaseController
             foreach ($all_m as $m) { if (!empty($m['id'])) $jadwal_mapel[$m['id']] = $m; }
         }
 
-        // e. FILTER EXCLUDE (Mengecualikan Mapel Tahfidz/Tahsin/BPI)
+        // e. FILTER EXCLUDE (Mengecualikan Mapel Tahfidz/Tahsin/BPI & Non-aktif)
         $filtered_jadwal = [];
         $kata_kunci_kecuali = ['tahfidz', 'tahfiz', 'tahsin', 'bpi'];
         foreach ($jadwal_mapel as $m) {
+            if (isset($m['status']) && $m['status'] === 'Non-aktif') {
+                continue;
+            }
             $nama_mapel_lower = strtolower($m['nama_mapel']);
             $is_dikecualikan = false;
             foreach ($kata_kunci_kecuali as $kata) { if (strpos($nama_mapel_lower, $kata) !== false) { $is_dikecualikan = true; break; } }
