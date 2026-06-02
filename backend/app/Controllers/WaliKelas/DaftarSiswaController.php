@@ -108,7 +108,6 @@ class DaftarSiswaController extends WaliKelasBaseController
                         if ($statistik['total_siswa'] > 0) {
                             $statistik['persen_hadir'] = round(($hadir_hari_ini / $statistik['total_siswa']) * 100, 1);
                         }
-                    }
 
                     // B. Batch Tahfidz (Hafalan Terakhir)
                     $tahfidzMap = [];
