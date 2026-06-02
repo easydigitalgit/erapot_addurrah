@@ -54,6 +54,20 @@ class AkademikController extends OrangTuaBaseController
         $catatan_wali = null;
 
         if ($anak) {
+            $deactivatedMapelIds = [];
+            if ($db->tableExists('mapel_nonaktif_rombel')) {
+                $siswaRow = $db->table('siswa')->where('id', $anak['id'])->get()->getRowArray();
+                $rombelId = $siswaRow ? ($siswaRow['rombel_id'] ?? 0) : 0;
+                if ($rombelId) {
+                    $mnrRows = $db->table('mapel_nonaktif_rombel')
+                        ->where('rombel_id', $rombelId)
+                        ->get()->getResultArray();
+                    foreach ($mnrRows as $row) {
+                        $deactivatedMapelIds[] = (int)$row['mapel_id'];
+                    }
+                }
+            }
+
             // 4. AMBIL NILAI AKADEMIK (Menggunakan tahun_ajaran_id berupa Angka)
             $tabelAcuan = $db->tableExists('nilai_akademik') ? 'nilai_akademik' : ($db->tableExists('nilai_formatif') ? 'nilai_formatif' : 'nilai_sumatif');
             $fieldNilai = $db->fieldExists('nilai_angka', $tabelAcuan) ? 'nilai_angka' : 'nilai';
@@ -62,7 +76,7 @@ class AkademikController extends OrangTuaBaseController
 
             if ($db->tableExists($tabelAcuan)) {
                 $qNilai = $db->table($tabelAcuan)
-                            ->select('mata_pelajaran.nama_mapel, mata_pelajaran.kkm, AVG(' . $tabelAcuan . '.' . $fieldNilai . ') as nilai_angka_avg')
+                            ->select($tabelAcuan . '.mapel_id, mata_pelajaran.nama_mapel, mata_pelajaran.kkm, AVG(' . $tabelAcuan . '.' . $fieldNilai . ') as nilai_angka_avg')
                             ->join('mata_pelajaran', 'mata_pelajaran.id = ' . $tabelAcuan . '.mapel_id')
                             ->where($tabelAcuan . '.siswa_id', $anak['id']);
                 
@@ -92,6 +106,9 @@ class AkademikController extends OrangTuaBaseController
                             ->get()->getResultArray();
                 
                 foreach($nilaiRaw as $n){
+                    if (in_array((int)$n['mapel_id'], $deactivatedMapelIds)) {
+                        continue;
+                    }
                     $angka = round(floatval($n['nilai_angka_avg']));
                     if (empty($n['predikat'])) {
                         if ($angka >= 90) $n['predikat'] = 'A';
@@ -433,11 +450,24 @@ class AkademikController extends OrangTuaBaseController
             ->groupBy('m.id, m.nama_mapel, m.kkm, m.nomor_urut, m.status')
             ->get()->getResultArray();
 
+        $deactivatedMapelIds = [];
+        if ($db->tableExists('mapel_nonaktif_rombel')) {
+            $mnrRows = $db->table('mapel_nonaktif_rombel')
+                ->where('rombel_id', $siswa['rombel_id'])
+                ->get()->getResultArray();
+            foreach ($mnrRows as $row) {
+                $deactivatedMapelIds[] = (int)$row['mapel_id'];
+            }
+        }
+
         // Filter Mapel Umum (Keluarkan Tahfidz/BPI dll dari daftar utama & Non-aktif)
         $filtered_jadwal = [];
         $kata_kunci_kecuali = ['tahfidz', 'tahfiz', 'tahsin', 'bpi'];
         foreach ($jadwal_mapel as $m) {
             if (isset($m['status']) && $m['status'] === 'Non-aktif') {
+                continue;
+            }
+            if (in_array((int)$m['id'], $deactivatedMapelIds)) {
                 continue;
             }
             $is_dikecualikan = false;

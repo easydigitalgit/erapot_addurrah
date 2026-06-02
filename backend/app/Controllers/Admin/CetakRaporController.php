@@ -404,11 +404,24 @@ class CetakRaporController extends AdminBaseController
             }
         }
  
+        $deactivatedMapelIds = [];
+        if ($this->db->tableExists('mapel_nonaktif_rombel')) {
+            $mnrRows = $this->db->table('mapel_nonaktif_rombel')
+                ->where('rombel_id', $siswa['rombel_id'])
+                ->get()->getResultArray();
+            foreach ($mnrRows as $row) {
+                $deactivatedMapelIds[] = (int)$row['mapel_id'];
+            }
+        }
+
         $filtered_jadwal = [];
         $kata_kunci_kecuali = ['tahfidz', 'tahfiz', 'tahsin', 'bpi'];
  
         foreach ($jadwal_mapel as $m) {
             if (isset($m['status']) && $m['status'] === 'Non-aktif') {
+                continue;
+            }
+            if (in_array((int)$m['id'], $deactivatedMapelIds)) {
                 continue;
             }
             $nama_mapel_lower = strtolower($m['nama_mapel']);

@@ -19,6 +19,8 @@ class MataPelajaranController extends AdminBaseController
 
     public function index(): string
     {
+        $db = \Config\Database::connect();
+
         // 1. Ambil Semua Data
         $rawMapel = $this->mapelModel->findAll();
 
@@ -46,8 +48,32 @@ class MataPelajaranController extends AdminBaseController
                         ->countAllResults(),
         ];
 
+        // Fetch active tahun ajaran & rombels
+        $ta_aktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        $id_ta = $ta_aktif ? $ta_aktif['id'] : 0;
+        
+        $rombelList = $db->table('rombel')
+                         ->where('id_tahun_ajaran', $id_ta)
+                         ->orderBy('tingkat', 'ASC')
+                         ->orderBy('nama_rombel', 'ASC')
+                         ->get()->getResultArray();
+
+        // Fetch deactivated mapel rombel mappings
+        $deactivations = $db->table('mapel_nonaktif_rombel mnr')
+            ->select('mnr.mapel_id, mnr.rombel_id, r.nama_rombel, r.tingkat')
+            ->join('rombel r', 'r.id = mnr.rombel_id')
+            ->get()->getResultArray();
+            
+        $deactivatedMap = [];
+        foreach ($deactivations as $d) {
+            $deactivatedMap[$d['mapel_id']][] = [
+                'id' => $d['rombel_id'],
+                'name' => $d['tingkat'] . '-' . $d['nama_rombel']
+            ];
+        }
+
         // 3. Format Data untuk Tabel JS
-        $formattedMapel = array_map(function($row) {
+        $formattedMapel = array_map(function($row) use ($deactivatedMap) {
             $namaKurikulum = 'Lainnya';
             if ($row['kurikulum_id'] == 1) { $namaKurikulum = 'Kurikulum 2013'; }
             elseif ($row['kurikulum_id'] == 2) { $namaKurikulum = 'Kurikulum Merdeka'; }
@@ -62,7 +88,8 @@ class MataPelajaranController extends AdminBaseController
                 'curriculum_id' => $row['kurikulum_id'],
                 'hours'         => $row['jp_minggu'],
                 'nomor_urut'    => $row['nomor_urut'],
-                'status'        => $row['status']
+                'status'        => $row['status'],
+                'deactivated_rombel' => $deactivatedMap[$row['id']] ?? []
             ];
         }, $rawMapel);
 
@@ -72,7 +99,8 @@ class MataPelajaranController extends AdminBaseController
             'navigations' => $this->getSidebarMenu(),
             'color'       => $this->getColor(),
             'mapelData'   => $formattedMapel,
-            'stats'       => $stats 
+            'stats'       => $stats,
+            'rombelList'  => $rombelList
         ];
 
         return view('admin/mata-pelajaran', $data);
@@ -117,6 +145,7 @@ class MataPelajaranController extends AdminBaseController
         if (!$this->request->isAJAX()) return $this->response->setStatusCode(404);
 
         try {
+            $status = $this->request->getPost('edit_status') ?? 'Aktif';
             $data = [
                 'kode_mapel'   => $this->request->getPost('edit_mapel_code'),
                 'nama_mapel'   => $this->request->getPost('edit_mapel_name'),
@@ -124,10 +153,29 @@ class MataPelajaranController extends AdminBaseController
                 'jp_minggu'    => $this->request->getPost('edit_hours'),
                 'nomor_urut'   => $this->request->getPost('edit_nomor_urut') ?? 0,
                 'kurikulum_id' => $this->request->getPost('edit_curriculum'),
-                'status'       => $this->request->getPost('edit_status') ?? 'Aktif'
+                'status'       => $status
             ];
 
             if ($this->mapelModel->update($id, $data)) {
+                // Handle rombel-specific deactivation
+                $db = \Config\Database::connect();
+                // Clear existing deactivations for this mapel
+                $db->table('mapel_nonaktif_rombel')->where('mapel_id', $id)->delete();
+
+                if ($status === 'Aktif') {
+                    $deactivatedRombels = $this->request->getPost('deactivated_rombels');
+                    if (!empty($deactivatedRombels) && is_array($deactivatedRombels)) {
+                        $insertBatch = [];
+                        foreach ($deactivatedRombels as $rombelId) {
+                            $insertBatch[] = [
+                                'mapel_id'  => $id,
+                                'rombel_id' => $rombelId
+                            ];
+                        }
+                        $db->table('mapel_nonaktif_rombel')->insertBatch($insertBatch);
+                    }
+                }
+
                 return $this->response->setJSON([
                     'status' => 'success', 
                     'message' => 'Mata pelajaran berhasil diperbarui!'

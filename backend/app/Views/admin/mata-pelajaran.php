@@ -258,6 +258,12 @@
                         <option value="Non-aktif">Nonaktif</option>
                     </select>
                 </div>
+                <div id="edit_rombel_deactivate_section" class="col-span-2 mt-2 hidden">
+                    <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-2">Nonaktifkan di Kelas:</label>
+                    <div id="edit_rombel_deactivate_container" class="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-gray-50 dark:bg-slate-900/50 p-4 rounded-xl border border-gray-100 dark:border-slate-700">
+                        <!-- Checkbox rombel dirender secara dinamis oleh JS -->
+                    </div>
+                </div>
             </div>
             <div class="flex gap-3 pt-4 mt-2 border-t border-gray-100 dark:border-slate-700 transition-colors">
                 <button type="button" onclick="closeEditMapelModal()" class="flex-1 px-5 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-300 font-semibold rounded-xl hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors shadow-sm outline-none">
@@ -386,6 +392,7 @@
 <?= $this->section('scripts') ?>
 <script>
     const dbMapelData = <?= !empty($mapelData) ? json_encode($mapelData) : '[]' ?>;
+    const dbRombelList = <?= !empty($rombelList) ? json_encode($rombelList) : '[]' ?>;
     const BASE_URL = "<?= rtrim(base_url(), '/') ?>";
     const csrfTokenName = "<?= csrf_token() ?>";
     const csrfTokenHash = "<?= csrf_hash() ?>";

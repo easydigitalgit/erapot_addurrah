@@ -8,8 +8,21 @@ const textObj = window.LANG || {
 
 document.addEventListener('DOMContentLoaded', () => {
     window.mapelData = typeof dbMapelData !== 'undefined' ? dbMapelData : [];
+    window.rombelList = typeof dbRombelList !== 'undefined' ? dbRombelList : [];
     window.filteredMapel = [...window.mapelData];
     populateMapel();
+
+    const editStatusSelect = document.getElementById('edit_status');
+    if (editStatusSelect) {
+        editStatusSelect.addEventListener('change', (e) => {
+            const section = document.getElementById('edit_rombel_deactivate_section');
+            if (e.target.value === 'Aktif') {
+                section.classList.remove('hidden');
+            } else {
+                section.classList.add('hidden');
+            }
+        });
+    }
 
     const searchInput = document.getElementById('searchMapel');
     if (searchInput) {
@@ -105,9 +118,32 @@ function populateMapel() {
                 <span class="px-2 py-1 bg-gray-100 dark:bg-slate-600 text-gray-700 dark:text-slate-300 rounded text-xs font-bold">${mapel.nomor_urut || 0}</span>
             </td>
             <td class="px-6 py-4 text-center">
-                <button onclick="toggleMapelStatus('${mapel.id}')" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-colors shadow-sm cursor-pointer border hover:opacity-80 outline-none ${mapel.status === 'Aktif' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50' : 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/50'}">
-                    ${mapel.status === 'Aktif' ? textObj.js_status_active : textObj.js_status_inactive}
-                </button>
+                ${(() => {
+                    const deactivatedRombels = mapel.deactivated_rombel || [];
+                    if (mapel.status === 'Aktif') {
+                        if (deactivatedRombels.length > 0) {
+                            const rombelNames = deactivatedRombels.map(r => r.name).join(', ');
+                            return `
+                                <button onclick="toggleMapelStatus('${mapel.id}')" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-colors shadow-sm cursor-pointer border hover:opacity-80 outline-none bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/50">
+                                    Aktif Sebagian
+                                </button>
+                                <div class="text-[10px] text-red-500 dark:text-red-400 font-medium mt-1">Nonaktif di: ${rombelNames}</div>
+                            `;
+                        } else {
+                            return `
+                                <button onclick="toggleMapelStatus('${mapel.id}')" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-colors shadow-sm cursor-pointer border hover:opacity-80 outline-none bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
+                                    ${textObj.js_status_active}
+                                </button>
+                            `;
+                        }
+                    } else {
+                        return `
+                            <button onclick="toggleMapelStatus('${mapel.id}')" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-colors shadow-sm cursor-pointer border hover:opacity-80 outline-none bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/50">
+                                ${textObj.js_status_inactive}
+                            </button>
+                        `;
+                    }
+                })()}
             </td>
             <td class="px-6 py-4">
                 <div class="flex items-center justify-center gap-2 opacity-1 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
@@ -162,6 +198,28 @@ window.showEditMapelModal = (id) => {
     setValue('edit_hours', mapel.hours);
     setValue('edit_nomor_urut', mapel.nomor_urut || 0);
     setValue('edit_status', mapel.status || 'Aktif');
+
+    // Populate rombel deactivation checkboxes
+    const container = document.getElementById('edit_rombel_deactivate_container');
+    const section = document.getElementById('edit_rombel_deactivate_section');
+    if (container) {
+        const deactivatedRombel = mapel.deactivated_rombel || [];
+        container.innerHTML = window.rombelList.map(rombel => `
+            <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-slate-300 cursor-pointer">
+                <input type="checkbox" name="deactivated_rombels[]" value="${rombel.id}" class="rounded text-[var(--warna-primary)] focus:ring-[var(--warna-primary)] border-gray-300 dark:border-slate-600 dark:bg-slate-700" 
+                       ${deactivatedRombel.some(r => r.id == rombel.id) ? 'checked' : ''}>
+                <span>${rombel.tingkat}-${rombel.nama_rombel}</span>
+            </label>
+        `).join('');
+    }
+
+    if (section) {
+        if ((mapel.status || 'Aktif') === 'Aktif') {
+            section.classList.remove('hidden');
+        } else {
+            section.classList.add('hidden');
+        }
+    }
     
     document.getElementById('editMapelModal').classList.remove('hidden');
 };
