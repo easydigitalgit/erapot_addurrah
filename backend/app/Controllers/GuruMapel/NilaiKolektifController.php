@@ -459,6 +459,7 @@ class NilaiKolektifController extends GuruMapelBaseController
         $exist = $qCek->get()->getRowArray();
 
         $dataSimpan = [
+            'rombel_id'       => $rombel_id,
             'nilai_angka'     => $nilai,
             'predikat'        => $predikat,
             'catatan'         => $catatan,
