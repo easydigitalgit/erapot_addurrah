@@ -292,7 +292,7 @@ class CetakRaporController extends AdminBaseController
     {
         $jenisRapor = $this->request->getGet('jenis_rapor') ?? 'lengkap';
         $optCover   = $this->request->getGet('cover') === '1';
-        $optTtd     = $this->request->getGet('ttd') === '1' || true;
+        $optTtd     = $this->request->getGet('ttd') !== '0';
         $optQr      = $this->request->getGet('qr') === '1';
         $kategori   = $this->request->getGet('kategori') ?? 'Akhir Semester';
 
