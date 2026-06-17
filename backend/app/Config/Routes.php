@@ -459,6 +459,7 @@ $routes->group('wali', ['namespace' => 'App\Controllers\WaliKelas', 'filter' => 
 
     // -- Progres --
     $routes->get('progres-nilai', 'ProgresNilaiController::index');
+    $routes->post('progres-nilai/sync-semua', 'ProgresNilaiController::syncSemuaMapel');
     $routes->get('progres-tahfidz', 'ProgresTahfidzController::index');
 
     // -- Catatan Rapor & Wali Kelas --

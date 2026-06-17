@@ -65,46 +65,8 @@ class ProgresNilaiController extends WaliKelasBaseController
                 
                 $siswaIds = array_column($siswaList, 'id');
 
-                $jadwalMapel = [];
                 // PERBAIKAN ANTI-GAGAL: Pencarian Mapel Tiga Lapis (Triple Fallback)
-                if ($db->tableExists('mata_pelajaran')) {
-                    // Lapis 1: Berdasarkan Kurikulum Rombel
-                    $kurikulum_id = $rombel['kurikulum_id'] ?? 0;
-                    if ($kurikulum_id > 0) {
-                        $jadwalMapel = $db->table('mata_pelajaran')
-                                          ->select('id as mapel_id, nama_mapel')
-                                          ->where('kurikulum_id', $kurikulum_id)
-                                          ->where('status', 'Aktif')
-                                          ->get()->getResultArray();
-                    }
-                                      
-                    // Lapis 2: Berdasarkan Jadwal Pelajaran jika Lapis 1 Kosong
-                    if (empty($jadwalMapel) && $db->tableExists('jadwal_pelajaran')) {
-                        $jadwalMapel = $db->table('jadwal_pelajaran')
-                                          ->select('mata_pelajaran.id as mapel_id, mata_pelajaran.nama_mapel')
-                                          ->join('mata_pelajaran', 'mata_pelajaran.id = jadwal_pelajaran.mapel_id')
-                                          ->where('jadwal_pelajaran.rombel_id', $rombel['id'])
-                                          ->groupBy(['mata_pelajaran.id', 'mata_pelajaran.nama_mapel'])
-                                          ->get()->getResultArray();
-                    }
-
-                    // Lapis 3: Berdasarkan Sisa-Sisa Nilai Existing jika Lapis 1 & 2 Kosong
-                    if (empty($jadwalMapel) && !empty($siswaIds) && $db->tableExists('nilai_sumatif')) {
-                        $existIds = $db->table('nilai_sumatif')
-                                       ->select('mapel_id')
-                                       ->whereIn('siswa_id', $siswaIds)
-                                       ->groupBy('mapel_id')
-                                       ->get()->getResultArray();
-                        
-                        if (!empty($existIds)) {
-                            $mapelIdsFound = array_column($existIds, 'mapel_id');
-                            $jadwalMapel = $db->table('mata_pelajaran')
-                                              ->select('id as mapel_id, nama_mapel')
-                                              ->whereIn('id', $mapelIdsFound)
-                                              ->get()->getResultArray();
-                        }
-                    }
-                }
+                $jadwalMapel = $this->_getJadwalMapel($rombel, $siswaIds);
 
                 // 4. INISIALISASI STRUKTUR ARRAY AGAR TIDAK ADA YANG HILANG
                 $mapelGrouped = [];
@@ -226,5 +188,405 @@ class ProgresNilaiController extends WaliKelasBaseController
         ];
 
         return view('WaliKelas/progres-nilai', $data); 
+    }
+
+    private function _getJadwalMapel($rombel, $siswaIds)
+    {
+        $db = \Config\Database::connect();
+        $jadwalMapel = [];
+        if ($db->tableExists('mata_pelajaran')) {
+            // Lapis 1: Berdasarkan Kurikulum Rombel
+            $kurikulum_id = $rombel['kurikulum_id'] ?? 0;
+            if ($kurikulum_id > 0) {
+                $jadwalMapel = $db->table('mata_pelajaran')
+                                  ->select('id as mapel_id, nama_mapel')
+                                  ->where('kurikulum_id', $kurikulum_id)
+                                  ->where('status', 'Aktif')
+                                  ->get()->getResultArray();
+            }
+                              
+            // Lapis 2: Berdasarkan Jadwal Pelajaran jika Lapis 1 Kosong
+            if (empty($jadwalMapel) && $db->tableExists('jadwal_pelajaran')) {
+                $jadwalMapel = $db->table('jadwal_pelajaran')
+                                  ->select('mata_pelajaran.id as mapel_id, mata_pelajaran.nama_mapel')
+                                  ->join('mata_pelajaran', 'mata_pelajaran.id = jadwal_pelajaran.mapel_id')
+                                  ->where('jadwal_pelajaran.rombel_id', $rombel['id'])
+                                  ->groupBy(['mata_pelajaran.id', 'mata_pelajaran.nama_mapel'])
+                                  ->get()->getResultArray();
+            }
+
+            // Lapis 3: Berdasarkan Sisa-Sisa Nilai Existing jika Lapis 1 & 2 Kosong
+            if (empty($jadwalMapel) && !empty($siswaIds) && $db->tableExists('nilai_sumatif')) {
+                $existIds = $db->table('nilai_sumatif')
+                               ->select('mapel_id')
+                               ->whereIn('siswa_id', $siswaIds)
+                               ->groupBy('mapel_id')
+                               ->get()->getResultArray();
+                
+                if (!empty($existIds)) {
+                    $mapelIdsFound = array_column($existIds, 'mapel_id');
+                    $jadwalMapel = $db->table('mata_pelajaran')
+                                      ->select('id as mapel_id, nama_mapel')
+                                      ->whereIn('id', $mapelIdsFound)
+                                      ->get()->getResultArray();
+                }
+            }
+        }
+        return $jadwalMapel;
+    }
+
+    public function syncSemuaMapel()
+    {
+        $db = \Config\Database::connect();
+        $userId = session()->get('user_id');
+        $kategori = $this->request->getPost('kategori') ?? 'Akhir Semester';
+        $kategoriDB = (stripos($kategori, 'tengah') !== false) ? 'Tengah' : 'Akhir';
+
+        $guru = $db->table('guru_tendik')->where('user_id', $userId)->get()->getRowArray();
+        if (!$guru) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Data guru tidak ditemukan.']);
+        }
+
+        // Ambil tahun ajaran & rombel dari session
+        $tahun_ajaran = session()->get('tahun_ajaran') ?? '2024/2025';
+        $semester = session()->get('semester') ?? 'Ganjil';
+        
+        $ta_aktif = $db->table('tahun_ajaran')->where('tahun', $tahun_ajaran)->where('semester', $semester)->get()->getRowArray();
+        if(!$ta_aktif) $ta_aktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        $ta_id = $ta_aktif ? $ta_aktif['id'] : 0;
+
+        if (!$ta_id) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Tahun ajaran tidak aktif/tidak ditemukan.']);
+        }
+
+        $rombel = $db->table('rombel')->where('wali_kelas_id', $guru['id'])->where('id_tahun_ajaran', $ta_id)->get()->getRowArray();
+        if (!$rombel) {
+            // Fallback cari rombel terbaru jika tidak ketemu
+            $rombel = $db->table('rombel')
+                         ->where('wali_kelas_id', $guru['id'])
+                         ->orderBy('id', 'DESC')
+                         ->get()->getRowArray();
+        }
+
+        if (!$rombel) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Rombel untuk Wali Kelas tidak ditemukan.']);
+        }
+
+        $rombel_id = $rombel['id'];
+
+        $siswaList = $db->table('siswa')
+                        ->select('id, nama_lengkap as nama_siswa')
+                        ->where('rombel_id', $rombel_id)
+                        ->where('status_siswa', 'Aktif')
+                        ->get()->getResultArray();
+        
+        if (empty($siswaList)) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Tidak ada siswa aktif di kelas ini.']);
+        }
+
+        $siswaIds = array_column($siswaList, 'id');
+        $list_mapel = $this->_getJadwalMapel($rombel, $siswaIds);
+
+        if (empty($list_mapel)) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Tidak ada mata pelajaran yang terdaftar untuk kelas ini.']);
+        }
+
+        // --- 1. AMBIL ATURAN BOBOT DARI DATABASE ---
+        $queryBobot = $db->table('setting_bobot_nilai')->get()->getResultArray();
+        $bobot = [
+            'tengah_semester' => ['nh' => 35, 'uh' => 35, 'sts' => 30],
+            'akhir_semester'  => ['nh' => 30, 'uh' => 30, 'sts' => 15, 'sas' => 25]
+        ];
+        foreach ($queryBobot as $row) {
+            if (isset($bobot[$row['kategori']][$row['sub_kategori']])) {
+                $bobot[$row['kategori']][$row['sub_kategori']] = (float)$row['bobot'];
+            }
+        }
+
+        // --- 2. AMBIL ATURAN PREDIKAT DARI DATABASE ---
+        $aturanPredikat = $db->table('setting_aturan_nilai')->orderBy('nilai_max', 'DESC')->get()->getResultArray();
+
+        // Bersihkan tingkat rombel
+        $tingkatClean = 0;
+        $tingkatStr = strtoupper(trim((string)$rombel['tingkat']));
+        $angka = preg_replace('/[^0-9]/', '', $tingkatStr);
+        if (!empty($angka)) {
+            $tingkatClean = (int) $angka;
+        } else {
+            if (preg_match('/\b(VII|VIII|IX|X|XI|XII)\b/', $tingkatStr, $matches)) {
+                $romToNum = ['VII' => 7, 'VIII' => 8, 'IX' => 9, 'X' => 10, 'XI' => 11, 'XII' => 12];
+                $tingkatClean = $romToNum[$matches[1]] ?? 0;
+            }
+        }
+
+        $db->transBegin();
+        $jumlah_mapel_disinkron = 0;
+
+        try {
+            foreach ($list_mapel as $mapel) {
+                $mapel_id = $mapel['mapel_id'];
+
+                // Ambil Data Master LM untuk Auto Deskripsi Capaian per mapel
+                $allLMs = [];
+                if ($db->tableExists('master_lm') && !empty($tingkatClean)) {
+                    $qLm = $db->table('master_lm')
+                        ->where('mapel_id', $mapel_id)
+                        ->where('tingkat', $tingkatClean)
+                        ->where('semester', $semester);
+
+                    if ($db->fieldExists('kategori', 'master_lm')) {
+                        $qLm->groupStart()
+                            ->where('kategori', $kategoriDB)
+                            ->orWhere('kategori', $kategori)
+                            ->orWhere('kategori', '')
+                            ->orWhere('kategori', null)
+                            ->groupEnd();
+                    }
+                    $allLMs = $qLm->orderBy('id', 'ASC')->get()->getResultArray();
+                }
+
+                $qAllFormatif = $db->table('nilai_formatif')
+                    ->where('mapel_id', $mapel_id)
+                    ->where('tahun_ajaran_id', $ta_id)
+                    ->where('rombel_id', $rombel_id);
+
+                if ($db->fieldExists('kategori', 'nilai_formatif')) {
+                    $qAllFormatif->groupStart()
+                        ->where('kategori', $kategori)
+                        ->orWhere('kategori', $kategoriDB)
+                        ->groupEnd();
+                }
+                $all_formatif = $qAllFormatif->get()->getResultArray();
+
+                $qAllSumatif = $db->table('nilai_sumatif')
+                    ->where('mapel_id', $mapel_id)
+                    ->where('tahun_ajaran_id', $ta_id);
+
+                if ($db->fieldExists('kategori', 'nilai_sumatif')) {
+                    $qAllSumatif->groupStart()
+                        ->where('kategori', $kategori)
+                        ->orWhere('kategori', 'Tengah Semester')
+                        ->orWhere('kategori', 'Tengah')
+                        ->orWhere('kategori', 'Akhir Semester')
+                        ->orWhere('kategori', 'Akhir')
+                        ->orWhere('kategori', '')
+                        ->orWhere('kategori', null)
+                        ->groupEnd();
+                }
+                $all_sumatif = $qAllSumatif->get()->getResultArray();
+
+                // Deteksi Progres Dinamis
+                $pembagi = $this->_getPembagiDinamis($all_formatif);
+
+                foreach ($siswaList as $siswa) {
+                    $siswa_id = $siswa['id'];
+
+                    $sum_nh = 0;
+                    $sum_uh = 0;
+                    $sum_sts = 0;
+                    $count_sts = 0;
+                    $sum_pas = 0;
+                    $count_pas = 0;
+                    $sum_sas = 0;
+                    $count_sas = 0;
+
+                    $lm_scores = [];
+
+                    foreach ($all_formatif as $f) {
+                        if ($f['siswa_id'] == $siswa_id) {
+                            $jenis = strtoupper(trim($f['jenis_penilaian'] ?? ''));
+                            $nilai = (float)($f['nilai_angka'] ?? 0);
+                            $pert = (int)($f['pertemuan'] ?? 0);
+
+                            if (strpos($jenis, 'UH') !== false || strpos($jenis, 'ULANGAN') !== false) {
+                                $sum_uh += $nilai;
+                            } else {
+                                $sum_nh += $nilai;
+                            }
+
+                            if (!isset($lm_scores[$pert])) $lm_scores[$pert] = ['sum' => 0, 'count' => 0];
+                            $lm_scores[$pert]['sum'] += $nilai;
+                            $lm_scores[$pert]['count']++;
+                        }
+                    }
+
+                    foreach ($all_sumatif as $s) {
+                        if ($s['siswa_id'] == $siswa_id) {
+                            $jenis = strtoupper(trim($s['jenis_sumatif'] ?? ($s['jenis_penilaian'] ?? '')));
+                            $nilai = isset($s['nilai']) ? (float)$s['nilai'] : (float)($s['nilai_angka'] ?? 0);
+
+                            if (strpos($jenis, 'STS') !== false || strpos($jenis, 'PTS') !== false) {
+                                $sum_sts += $nilai;
+                                $count_sts++;
+                            } elseif (strpos($jenis, 'PAS') !== false) {
+                                $sum_pas += $nilai;
+                                $count_pas++;
+                            } elseif (strpos($jenis, 'SAS') !== false) {
+                                $sum_sas += $nilai;
+                                $count_sas++;
+                            }
+                        }
+                    }
+
+                    $avg_nh  = $sum_nh / $pembagi['nh'];
+                    $avg_uh  = $sum_uh / $pembagi['uh'];
+                    $avg_sts = $count_sts > 0 ? ($sum_sts / $count_sts) : 0;
+                    $avg_pas = $count_pas > 0 ? ($sum_pas / $count_pas) : 0;
+                    $avg_sas = $count_sas > 0 ? ($sum_sas / $count_sas) : 0;
+
+                    if ($kategori === 'Tengah Semester') {
+                        $w_nh  = $bobot['tengah_semester']['nh'] / 100;
+                        $w_uh  = $bobot['tengah_semester']['uh'] / 100;
+                        $w_sts = $bobot['tengah_semester']['sts'] / 100;
+
+                        $kalkulasi = ($avg_nh * $w_nh) + ($avg_uh * $w_uh) + ($avg_sts * $w_sts);
+                        $rata_formatif = round(($avg_nh + $avg_uh) / 2, 1);
+                        $rata_sumatif = round($avg_sts, 1);
+                    } else {
+                        $w_nh  = $bobot['akhir_semester']['nh'] / 100;
+                        $w_uh  = $bobot['akhir_semester']['uh'] / 100;
+                        $w_sts = $bobot['akhir_semester']['sts'] / 100;
+                        $w_sas = $bobot['akhir_semester']['sas'] / 100;
+
+                        $val_sts = $avg_pas;
+                        $val_sas = $avg_sas;
+
+                        $c_nh  = floor(round($avg_nh * $w_nh, 4) * 10) / 10;
+                        $c_uh  = floor(round($avg_uh * $w_uh, 4) * 10) / 10;
+                        $c_sts = floor(round($val_sts * $w_sts, 4) * 10) / 10;
+                        $c_sas = floor(round($val_sas * $w_sas, 4) * 10) / 10;
+
+                        $kalkulasi = $c_nh + $c_uh + $c_sts + $c_sas;
+                        $rata_formatif = round(($avg_nh + $avg_uh) / 2, 1);
+                        $rata_sumatif = round(($val_sts + $val_sas) / 2, 1);
+                    }
+
+                    $nilai_akhir = number_format($kalkulasi, 1, '.', '');
+
+                    $predikat = '-';
+                    if (!empty($aturanPredikat)) {
+                        foreach ($aturanPredikat as $aturan) {
+                            if (floor($nilai_akhir) >= $aturan['nilai_min'] && floor($nilai_akhir) <= $aturan['nilai_max']) {
+                                $predikat = $aturan['deskripsi_predikat'];
+                                break;
+                            }
+                        }
+                        if ($predikat === '-') {
+                            $predikat = 'Perlu Bimbingan';
+                        }
+                    } else {
+                        if ($nilai_akhir >= 90) $predikat = 'Sangat Baik';
+                        elseif ($nilai_akhir >= 80) $predikat = 'Baik';
+                        elseif ($nilai_akhir >= 70) $predikat = 'Cukup';
+                        else $predikat = 'Perlu Bimbingan';
+                    }
+
+                    // Deskripsi Tertinggi & Terendah
+                    $max_score = -1;
+                    $min_score = 101;
+                    $max_pert = null;
+                    $min_pert = null;
+
+                    foreach ($lm_scores as $pert => $data_score) {
+                        $avg_pert = $data_score['sum'] / $data_score['count'];
+                        if ($avg_pert > $max_score) {
+                            $max_score = $avg_pert;
+                            $max_pert = $pert;
+                        }
+                        if ($avg_pert < $min_score) {
+                            $min_score = $avg_pert;
+                            $min_pert = $pert;
+                        }
+                    }
+
+                    $deskripsi_tertinggi = '';
+                    $deskripsi_terendah = '';
+
+                    foreach ($allLMs as $lm) {
+                        $angka_lm = (int) preg_replace('/[^0-9]/', '', $lm['kode_lm']);
+                        $materi = trim(lcfirst($lm['deskripsi_lm'] ?? ''));
+
+                        if ($materi) {
+                            if ($angka_lm === $max_pert) {
+                                $deskripsi_tertinggi = "Menunjukkan penguasaan yang sangat baik dalam " . $materi;
+                            }
+                            if ($angka_lm === $min_pert && $min_score < 75) {
+                                $deskripsi_terendah = "Perlu pendampingan lebih lanjut dalam " . $materi;
+                            }
+                        }
+                    }
+
+                    $dataUpsert = [
+                        'siswa_id'        => $siswa_id,
+                        'rombel_id'       => $rombel_id,
+                        'tahun_ajaran_id' => $ta_id,
+                        'mapel_id'        => $mapel_id,
+                        'kategori'        => $kategori,
+                        'rata_formatif'   => $rata_formatif,
+                        'rata_sumatif'    => $rata_sumatif,
+                        'nilai_akhir'     => $nilai_akhir,
+                        'predikat'        => $predikat
+                    ];
+
+                    if ($db->fieldExists('deskripsi_tertinggi', 'nilai_rapor')) {
+                        $dataUpsert['deskripsi_tertinggi'] = $deskripsi_tertinggi;
+                    }
+                    if ($db->fieldExists('deskripsi_terendah', 'nilai_rapor')) {
+                        $dataUpsert['deskripsi_terendah'] = $deskripsi_terendah;
+                    }
+
+                    $existing = $db->table('nilai_rapor')->where([
+                        'siswa_id'        => $siswa_id,
+                        'tahun_ajaran_id' => $ta_id,
+                        'mapel_id'        => $mapel_id,
+                        'kategori'        => $kategori
+                    ])->get()->getRowArray();
+
+                    if ($existing) {
+                        $db->table('nilai_rapor')->where('id', $existing['id'])->update($dataUpsert);
+                    } else {
+                        $db->table('nilai_rapor')->insert($dataUpsert);
+                    }
+                }
+                $jumlah_mapel_disinkron++;
+            }
+
+            $db->transCommit();
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => "Berhasil mensinkronisasi nilai rapor untuk {$jumlah_mapel_disinkron} mata pelajaran secara massal."
+            ]);
+
+        } catch (\Throwable $e) {
+            $db->transRollback();
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Error Server: ' . $e->getMessage()]);
+        }
+    }
+
+    private function _getPembagiDinamis($formatifs)
+    {
+        $max_nh_pert = 0;
+        $max_uh_pert = 0;
+
+        foreach ($formatifs as $f) {
+            $jenis = strtoupper(trim($f['jenis_penilaian'] ?? ''));
+            $pert = (int)($f['pertemuan'] ?? 0);
+            $nilai = (float)($f['nilai_angka'] ?? 0);
+
+            if ($nilai > 0) {
+                if (strpos($jenis, 'UH') !== false || strpos($jenis, 'ULANGAN') !== false) {
+                    if ($pert > $max_uh_pert) $max_uh_pert = $pert;
+                } else {
+                    if ($pert > $max_nh_pert) $max_nh_pert = $pert;
+                }
+            }
+        }
+
+        return [
+            'nh' => $max_nh_pert > 0 ? $max_nh_pert : 1,
+            'uh' => $max_uh_pert > 0 ? $max_uh_pert : 1,
+            'ada_nh' => $max_nh_pert > 0,
+            'ada_uh' => $max_uh_pert > 0
+        ];
     }
 }

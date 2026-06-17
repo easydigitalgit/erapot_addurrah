@@ -459,3 +459,94 @@ function submitRemediProgram(e) {
   alert(LANG.remedi_succ_msg);
   closeRemediModal();
 }
+
+window.syncSemuaNilai = function() {
+    Swal.fire({
+        title: 'Sinkronisasi Semua Nilai Rapor?',
+        html: `
+            <div class="text-left mt-2">
+                <p class="text-sm text-gray-600 mb-3 dark:text-slate-400">Sistem akan menarik data nilai harian formatif & sumatif terupdate, lalu mengalkulasi nilai akhir rapor untuk seluruh mata pelajaran di kelas ini.</p>
+                <label class="block text-xs font-bold text-gray-700 dark:text-slate-300 uppercase mb-1.5">Pilih Kategori Rapor:</label>
+                <select id="swalKategori" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-800 dark:text-slate-200">
+                    <option value="Akhir Semester">Akhir Semester (SAS/PAS)</option>
+                    <option value="Tengah Semester">Tengah Semester (STS/PTS)</option>
+                </select>
+            </div>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#10b981',
+        cancelButtonColor: '#94a3b8',
+        confirmButtonText: 'Mulai Sinkronisasi',
+        cancelButtonText: 'Batal',
+        customClass: { popup: 'rounded-3xl' },
+        preConfirm: () => {
+            return document.getElementById('swalKategori').value;
+        }
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            const kategori = result.value;
+            
+            Swal.fire({
+                title: 'Sedang Memproses...',
+                html: 'Tunggu sebentar, sistem sedang melakukan sinkronisasi massal seluruh mata pelajaran kelas.',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            try {
+                const formData = new FormData();
+                formData.append('kategori', kategori);
+
+                // Security CSRF Helper
+                if(typeof csrfTokenName !== 'undefined' && typeof csrfTokenHash !== 'undefined') {
+                    formData.append(csrfTokenName, csrfTokenHash);
+                } else {
+                    const csrfEl = document.getElementById('csrf_token') || document.querySelector('input[type="hidden"][name*="csrf"]');
+                    if (csrfEl) {
+                        formData.append(csrfEl.name, csrfEl.value);
+                    }
+                }
+
+                const response = await fetch(`${BASE_URL}/wali/progres-nilai/sync-semua`, { 
+                    method: 'POST', 
+                    body: formData,
+                    headers: {'X-Requested-With': 'XMLHttpRequest'} 
+                });
+                
+                const textResp = await response.text();
+                let json;
+                try {
+                    json = JSON.parse(textResp);
+                } catch(e) {
+                    throw new Error("Gagal membaca respon server. Hubungi administrator.");
+                }
+                
+                if (json.status === 'success') {
+                    Swal.fire({ 
+                        icon: 'success', 
+                        title: 'Berhasil!', 
+                        text: json.message, 
+                        customClass: { popup: 'rounded-3xl' } 
+                    }).then(() => {
+                        window.location.reload(); 
+                    });
+                } else {
+                    Swal.fire({ 
+                        icon: 'error', 
+                        title: 'Gagal', 
+                        text: json.message, 
+                        customClass: { popup: 'rounded-3xl' } 
+                    });
+                }
+            } catch (err) {
+                Swal.fire({ 
+                    icon: 'error', 
+                    title: 'Error Sistem', 
+                    text: err.message, 
+                    customClass: { popup: 'rounded-3xl' } 
+                });
+            }
+        }
+    });
+}

@@ -70,6 +70,10 @@
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4 lg:p-5 mb-6">
       <div class="flex items-center justify-between mb-4">
        <h2 class="font-semibold text-gray-800 dark:text-slate-100"><?= lang('WaliKelas/ProgresNilai.filter_settings') ?></h2>
+       <button type="button" onclick="syncSemuaNilai()" id="btnSyncAll" class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all duration-300 hover:scale-105 active:scale-95 border border-emerald-500 hover:border-emerald-600">
+         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5" /></svg>
+         Sinkronkan Semua Nilai
+       </button>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
        <div>
@@ -398,6 +402,8 @@
     window.dynamicSubjectsData = <?= $subjectsData ?? '[]' ?>;
     window.dynamicStudentsData = <?= $studentsData ?? '[]' ?>;
     window.BASE_URL = '<?= rtrim(base_url(), '/') ?>';
+    window.csrfTokenName = '<?= csrf_token() ?>';
+    window.csrfTokenHash = '<?= csrf_hash() ?>';
     
     // KAMUS JS
     window.LANG = {
