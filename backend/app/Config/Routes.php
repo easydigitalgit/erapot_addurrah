@@ -513,6 +513,20 @@ $routes->group('wali', ['namespace' => 'App\Controllers\WaliKelas', 'filter' => 
         $routes->post('save', 'TahfidzController::saveNilai');
         $routes->get('cetak-rapor/(:num)', 'TahfidzController::cetakRapor/$1');
     });
+
+    // -- Ledger Nilai (Wali Kelas) --
+    $routes->group('cetak-leger', function ($routes) {
+        $routes->get('/', 'CetakLegerController::index');
+        $routes->post('get-data', 'CetakLegerController::getData');
+        $routes->get('export-excel', 'CetakLegerController::exportExcel');
+    });
+
+    // -- Ledger Ekskul (Wali Kelas) --
+    $routes->group('cetak-leger-ekskul', function ($routes) {
+        $routes->get('/', 'CetakLegerEkskulController::index');
+        $routes->post('get-data', 'CetakLegerEkskulController::getData');
+        $routes->get('export-excel', 'CetakLegerEkskulController::exportExcel');
+    });
 });
 
 // ====================================================================

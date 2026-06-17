@@ -40,7 +40,7 @@ return [
     'backup'             => 'Cadangkan & Pulihkan',
     'l_m'                => 'Lingkup Materi (LM)',
     'ekskul'             => 'Ekstrakulikuler',
-    'leger_ekskul'       => 'Leger Ekstrakulikuler',
+    'leger_ekskul'       => 'Ledger Ekstrakurikuler',
 
     // Guru Mapel
     'kelas_mengajar'     => 'Kelas Mengajar',

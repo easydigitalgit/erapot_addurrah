@@ -79,6 +79,8 @@ class WaliKelasBaseController extends BaseController
         $sub_rapor = [
             ['url' => 'wali/preview-rapor', 'label' => lang('Sidebar.preview_rapor_kelas')],
             ['url' => 'wali/tahfidz', 'label' => 'Cetak Rapor Nilai Tahfiz', 'active' => url_is('wali/tahfidz*')],
+            ['url' => 'wali/cetak-leger', 'label' => lang('Sidebar.ledger'), 'active' => url_is('wali/cetak-leger*')],
+            ['url' => 'wali/cetak-leger-ekskul', 'label' => lang('Sidebar.leger_ekskul'), 'active' => url_is('wali/cetak-leger-ekskul*')],
         ];
     
         // MAIN NAVIGATION ARRAY
@@ -111,7 +113,7 @@ class WaliKelasBaseController extends BaseController
                 'label'    => lang('Sidebar.rapor'),
                 'icon'     => '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>',
                 'submenu'  => $sub_rapor,
-                'active'   => url_is('wali/preview-rapor*')
+                'active'   => url_is('wali/preview-rapor*') || url_is('wali/tahfidz*') || url_is('wali/cetak-leger*') || url_is('wali/cetak-leger-ekskul*')
             ],
             'akun_saya' => [
                 'url'      => 'wali/akun-saya',
