@@ -179,7 +179,7 @@ class PreviewRaporController extends WaliKelasBaseController
         $jenisRapor = $this->request->getGet('jenis_rapor') ?? 'lengkap';
         $optCover   = $this->request->getGet('cover') === '1';
         $optTtd     = $this->request->getGet('ttd') !== '0';
-        $optQr      = $this->request->getGet('qr') === '1';
+        $optQr      = $this->request->getGet('qr') !== '0';
         $ta_id_get  = $this->request->getGet('ta'); // Menangkap Tahun Ajaran Pilihan
 
         $guru = $this->getGuru();

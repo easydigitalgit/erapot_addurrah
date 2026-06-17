@@ -334,60 +334,60 @@
     elseif (!empty($siswa['nama_ibu']) && trim($siswa['nama_ibu']) !== '-') $nama_ortu = $siswa['nama_ibu'];
     elseif (!empty($siswa['nama_wali']) && trim($siswa['nama_wali']) !== '-') $nama_ortu = $siswa['nama_wali'];
     ?>
-    <?php if (!empty($opt_ttd)): ?>
-        <table class="ttd-container" style="table-layout: fixed;">
-            <tr>
-                <!-- KOLOM KIRI: ORANG TUA -->
-                <td style="width: 35%;">
-                    Mengetahui,<br>Orang Tua/Wali
-                    <div style="height: 60px;" align="center">
-                        <br><br><br>
-                    </div>
-                    ( <?= esc($nama_ortu) ?> )
-                </td>
+    <table class="ttd-container" style="table-layout: fixed;">
+        <tr>
+            <!-- KOLOM KIRI: ORANG TUA -->
+            <td style="width: 35%;">
+                Mengetahui,<br>Orang Tua/Wali
+                <div style="height: 60px;" align="center">
+                    <br><br><br>
+                </div>
+                ( <?= esc($nama_ortu) ?> )
+            </td>
 
-                <!-- KOLOM TENGAH: QR CODE VALIDASI -->
-                <td style="width: 30%; vertical-align: middle;">
+            <!-- KOLOM TENGAH: QR CODE VALIDASI -->
+            <td style="width: 30%; vertical-align: middle;">
+                <?php if (!empty($opt_qr)): ?>
                     <div style="text-align: center; margin-top: 5px;">
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=<?= urlencode($link_verifikasi) ?>" style="width: 80px; height: 80px;">
                         <br>
                         <span style="font-size: 7pt; color: #666; font-style: italic;">Scan untuk Validasi</span>
                     </div>
-                </td>
+                <?php endif; ?>
+            </td>
 
-                <!-- KOLOM KANAN: WALI KELAS -->
-                <td style="width: 35%;">
-                    <?= esc(ucwords(strtolower($sekolah['kabupaten_nama'] ?? ($sekolah['kabupaten'] ?? 'Lhokseumawe')))) ?>, <?= esc($tanggal_rapor ?? date('d F Y')) ?><br>
-                    Wali Kelas
-                    <div style="height: 60px;" align="center">
-                        <?php if (!empty($siswa['wali_ttd']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'])): ?>
-                            <img src="<?= FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'] ?>" style="height: 60px;">
-                        <?php else: ?>
-                            <br><br><br>
-                        <?php endif; ?>
-                    </div>
-                    <strong style="text-decoration: underline;">( <?= esc($siswa['wali_kelas'] ?? '................................') ?> )</strong><br>
-                    <?= !empty($siswa['wali_nuptk']) ? 'NUPTK. ' . $siswa['wali_nuptk'] : '' ?>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="3" style="padding-top: 15px;">
-                    Mengetahui,<br>Kepala SMPS IT Ad Durrah
+            <!-- KOLOM KANAN: WALI KELAS -->
+            <td style="width: 35%;">
+                <?= esc(ucwords(strtolower($sekolah['kabupaten_nama'] ?? ($sekolah['kabupaten'] ?? 'Lhokseumawe')))) ?>, <?= esc($tanggal_rapor ?? date('d F Y')) ?><br>
+                Wali Kelas
+                <div style="height: 60px;" align="center">
+                    <?php if (!empty($opt_ttd) && !empty($siswa['wali_ttd']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'])): ?>
+                        <img src="<?= FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'] ?>" style="height: 60px;">
+                    <?php else: ?>
+                        <br><br><br>
+                    <?php endif; ?>
+                </div>
+                <strong style="text-decoration: underline;">( <?= esc($siswa['wali_kelas'] ?? '................................') ?> )</strong><br>
+                <?= !empty($siswa['wali_nuptk']) ? 'NUPTK. ' . $siswa['wali_nuptk'] : '' ?>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" style="padding-top: 15px;">
+                Mengetahui,<br>Kepala SMPS IT Ad Durrah
 
-                    <div style="height: 70px;" align="center">
-                        <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
-                            <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="height: 70px;" alt="TTD">
-                        <?php else: ?>
-                            <br><br><br>
-                        <?php endif; ?>
-                    </div>
+                <div style="height: 70px;" align="center">
+                    <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
+                        <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="height: 70px;" alt="TTD">
+                    <?php else: ?>
+                        <br><br><br>
+                    <?php endif; ?>
+                </div>
 
-                    <strong class="uppercase" style="text-decoration: underline; margin-bottom: 2px; display: block;"><?= esc($kepsek['nama_lengkap'] ?? '................................') ?></strong>
-                    <?= !empty($kepsek['nuptk']) ? 'NUPTK. ' . $kepsek['nuptk'] : (!empty($kepsek['niy']) ? 'NIY. ' . $kepsek['niy'] : 'NIP/NIY. -') ?>
-                </td>
-            </tr>
-        </table>
-    <?php endif; ?>
+                <strong class="uppercase" style="text-decoration: underline; margin-bottom: 2px; display: block;"><?= esc($kepsek['nama_lengkap'] ?? '................................') ?></strong>
+                <?= !empty($kepsek['nuptk']) ? 'NUPTK. ' . $kepsek['nuptk'] : (!empty($kepsek['niy']) ? 'NIY. ' . $kepsek['niy'] : 'NIP/NIY. -') ?>
+            </td>
+        </tr>
+    </table>
 </body>
 
 </html>

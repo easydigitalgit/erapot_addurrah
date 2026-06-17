@@ -361,7 +361,6 @@
         elseif (!empty($siswa['nama_wali']) && trim($siswa['nama_wali']) !== '-') $nama_ortu = $siswa['nama_wali'];
         ?>
 
-        <?php if (!empty($opt_ttd)): ?>
             <table class="ttd-container" style="table-layout: fixed;">
                 <tr>
                     <!-- KOLOM KIRI: ORANG TUA -->
@@ -375,11 +374,13 @@
 
                     <!-- KOLOM TENGAH: QR CODE VALIDASI -->
                     <td style="width: 30%; vertical-align: middle;">
-                        <div style="text-align: center; margin-top: 5px;">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=<?= urlencode($link_verifikasi) ?>" style="width: 80px; height: 80px;">
-                            <br>
-                            <span style="font-size: 7pt; color: #666; font-style: italic;">Scan untuk Validasi</span>
-                        </div>
+                        <?php if (!empty($opt_qr)): ?>
+                            <div style="text-align: center; margin-top: 5px;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=<?= urlencode($link_verifikasi) ?>" style="width: 80px; height: 80px;">
+                                <br>
+                                <span style="font-size: 7pt; color: #666; font-style: italic;">Scan untuk Validasi</span>
+                            </div>
+                        <?php endif; ?>
                     </td>
 
                     <!-- KOLOM KANAN: WALI KELAS -->
@@ -387,7 +388,7 @@
                         <?= esc(ucwords(strtolower($sekolah['kabupaten_nama'] ?? ($sekolah['kabupaten'] ?? 'Lhokseumawe')))) ?>, <?= esc($tanggal_rapor ?? date('d F Y')) ?><br>
                         Wali Kelas
                         <div style="height: 60px;" align="center">
-                            <?php if (!empty($siswa['wali_ttd']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'])): ?>
+                            <?php if (!empty($opt_ttd) && !empty($siswa['wali_ttd']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'])): ?>
                                 <img src="<?= FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'] ?>" style="height: 60px;">
                             <?php else: ?>
                                 <br><br><br>
@@ -415,7 +416,6 @@
                     </td>
                 </tr>
             </table>
-        <?php endif; ?>
     </div>
 
 </body>

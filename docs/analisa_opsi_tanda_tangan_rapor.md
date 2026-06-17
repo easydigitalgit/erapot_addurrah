@@ -63,41 +63,79 @@ Karena data `'opt_ttd' => $optTtd` yang dikirim dari controller selalu bernilai 
 
 ## 3. Solusi Perbaikan
 
-Untuk memperbaiki bug ini, penentuan nilai `$optTtd` di controller harus mengecek apakah parameter `ttd` secara eksplisit bernilai `'0'` (di-uncheck) atau tidak. Jika parameter `ttd` tidak dikirim (default), maka tanda tangan tetap ditampilkan (`true`).
+Sesuai dengan kebutuhan klien:
+- **Tabel tanda tangan (nama wali kelas, nama kepala sekolah, tanggal cetak, dan garis pembatas) harus tetap dicetak**.
+- **Hanya gambar (image) tanda tangan digital Wali Kelas saja** yang dikosongkan (tidak dicetak) ketika opsi "Tampilkan Tanda Tangan" dinonaktifkan.
+- **Tanda tangan Kepala Sekolah** tetap dicetak seperti biasa (tidak disembunyikan oleh checkbox tersebut).
 
-### Rekomendasi Kode Baru:
-Ubah baris penentuan `$optTtd` pada controller menjadi:
+Oleh karena itu, perbaikan dilakukan pada level **Controller** dan **View**:
+
+### A. Perbaikan pada Controller
+Agar parameter `ttd` (khusus Wali Kelas) dan `qr` (khusus Barcode Kepala Sekolah) di-handle dengan benar (bernilai `true` secara default jika tidak dikirim, tetapi bernilai `false` jika di-uncheck atau bernilai `0`):
+1. **Wali Kelas**: [[PreviewRaporController.php](file:///d:/xampp/htdocs/erapoteasy/backend/app/Controllers/WaliKelas/PreviewRaporController.php#L181)]
+2. **Admin**: [[CetakRaporController.php](file:///d:/xampp/htdocs/erapoteasy/backend/app/Controllers/Admin/CetakRaporController.php#L295)]
+
+**Perubahan Kode:**
 ```php
-$optTtd = $this->request->getGet('ttd') !== '0';
+$optTtd     = $this->request->getGet('ttd') !== '0';
+$optQr      = $this->request->getGet('qr') !== '0';
 ```
 
-### Analisis Logika Kode Baru:
-- **Checkbox Dicentang (`ttd=1`)**: `getGet('ttd') !== '0'` bernilai `true` (Tanda tangan ditampilkan).
-- **Checkbox Tidak Dicentang (`ttd=0`)**: `getGet('ttd') !== '0'` bernilai `false` (Tanda tangan disembunyikan/tidak dicetak).
-- **Parameter Tidak Dikirim (`ttd=null`)**: `getGet('ttd') !== '0'` bernilai `true` (Default tampil, aman untuk integrasi route lain).
+### B. Perbaikan pada View Template
+Modifikasi dilakukan pada 3 file template rapor:
+1. [rapor_lengkap.php](file:///d:/xampp/htdocs/erapoteasy/backend/app/Views/admin/print/rapor_lengkap.php#L506)
+2. [rapor_akademik.php](file:///d:/xampp/htdocs/erapoteasy/backend/app/Views/admin/print/rapor_akademik.php#L337)
+3. [rapor_karakter.php](file:///d:/xampp/htdocs/erapoteasy/backend/app/Views/admin/print/rapor_karakter.php#L364)
 
-### Lokasi File yang Perlu Diperbaiki:
-1. **Wali Kelas**: [PreviewRaporController.php](file:///d:/xampp/htdocs/erapoteasy/backend/app/Controllers/WaliKelas/PreviewRaporController.php#L181)
-2. **Admin**: [CetakRaporController.php](file:///d:/xampp/htdocs/erapoteasy/backend/app/Controllers/Admin/CetakRaporController.php#L295)
+**Perubahan Struktur View:**
+- Wrapper `<?php if (!empty($opt_ttd)): ?>` yang sebelumnya membungkus seluruh tabel `.ttd-container` **dihapus**, sehingga struktur tanda tangan selalu dicetak.
+- Tag `<img>` untuk **tanda tangan digital Wali Kelas** dibungkus dengan pengecekan `$opt_ttd` (hanya dirender jika opsi aktif):
+  ```php
+  <div style="height: 60px;" align="center">
+      <?php if (!empty($opt_ttd) && !empty($siswa['wali_ttd']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'])): ?>
+          <img src="<?= FCPATH . 'assets/uploads/ttd/' . $siswa['wali_ttd'] ?>" style="height: 60px;">
+      <?php else: ?>
+          <br><br><br>
+      <?php endif; ?>
+  </div>
+  ```
+- Tag `<img>` untuk **tanda tangan digital Kepala Sekolah** tetap dirender seperti semula tanpa pengecekan `$opt_ttd` (mencetak gambar tanda tangan secara unconditional selama berkas fisiknya ada):
+  ```php
+  <div style="height: 70px;" align="center">
+      <?php if (!empty($kepsek['ttd_digital']) && file_exists(FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'])): ?>
+          <img src="<?= FCPATH . 'assets/uploads/ttd/' . $kepsek['ttd_digital'] ?>" style="height: 70px;">
+      <?php else: ?>
+          <br><br><br>
+      <?php endif; ?>
+  </div>
+  ```
+- Kolom QR Code dibungkus dengan pengecekan `$opt_qr` (hanya dirender jika opsi aktif):
+  ```php
+  <td style="width: 30%; vertical-align: middle;">
+      <?php if (!empty($opt_qr)): ?>
+          <div style="text-align: center; margin-top: 5px;">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=<?= urlencode($link_verifikasi) ?>" style="width: 80px; height: 80px;">
+              <br>
+              <span style="font-size: 7pt; color: #666; font-style: italic;">Scan untuk Validasi</span>
+          </div>
+      <?php endif; ?>
+  </td>
+  ```
 
 ---
 
 ## 4. Hasil Implementasi Perbaikan
 
-Perbaikan telah berhasil diimplementasikan di kedua file controller pada tanggal **17 Juni 2026**:
-
-1. **Wali Kelas**: Di [[PreviewRaporController.php](file:///d:/xampp/htdocs/erapoteasy/backend/app/Controllers/WaliKelas/PreviewRaporController.php#L181)], baris kode:
-   ```diff
-   - $optTtd     = $this->request->getGet('ttd') === '1' || true;
-   + $optTtd     = $this->request->getGet('ttd') !== '0';
-   ```
-2. **Admin**: Di [[CetakRaporController.php](file:///d:/xampp/htdocs/erapoteasy/backend/app/Controllers/Admin/CetakRaporController.php#L295)], baris kode:
-   ```diff
-   - $optTtd     = $this->request->getGet('ttd') === '1' || true;
-   + $optTtd     = $this->request->getGet('ttd') !== '0';
-   ```
+Perbaikan telah berhasil diimplementasikan di seluruh controller dan view terkait pada tanggal **17 Juni 2026**.
 
 ### Hasil Pengujian & Verifikasi:
-- **Checkbox Dinonaktifkan (`ttd=0`)**: Parameter `ttd=0` dikirim ke server. Evaluasi `$optTtd = $this->request->getGet('ttd') !== '0';` bernilai `false`. Seluruh tabel tanda tangan beserta tanda tangan digital disembunyikan/tidak dicetak dari PDF rapor.
-- **Checkbox Aktif (`ttd=1`)**: Parameter `ttd=1` dikirim ke server. Evaluasi `$optTtd` bernilai `true`. Tabel tanda tangan dicetak normal.
-- **Parameter Kosong (`ttd=null`)**: Evaluasi `$optTtd` bernilai `true`. Tabel tanda tangan dicetak normal sebagai perilaku default yang aman.
+- **Opsi "Tampilkan Tanda Tangan" Dinonaktifkan (`ttd=0`)**:
+  * Dokumen PDF tetap menampilkan nama wali kelas, kepala sekolah, dan tanggal cetak (misal: *Kota Medan, 17 Juni 2026*).
+  * Gambar tanda tangan digital **Wali Kelas kosong / tidak dicetak** (hanya berupa ruang kosong `height` 60px).
+  * Gambar tanda tangan digital **Kepala Sekolah tetap tercetak** seperti biasa (selama gambarnya telah diunggah di sistem).
+- **Opsi "Tampilkan Tanda Tangan" Aktif (`ttd=1`)**:
+  * Gambar tanda tangan digital Wali Kelas dan Kepala Sekolah **tercetak dengan normal**.
+- **Opsi "Tampilkan Barcode Validasi" Dinonaktifkan (`qr=0`)**:
+  * Kolom tengah (QR Code) **kosong/bersih** tanpa barcode, menjaga tata letak tetap simetris.
+- **Opsi "Tampilkan Barcode Validasi" Aktif (`qr=1`)**:
+  * QR Code Validasi **tercetak dengan normal** di bagian tengah tanda tangan.
