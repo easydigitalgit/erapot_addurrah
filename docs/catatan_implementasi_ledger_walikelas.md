@@ -59,3 +59,16 @@ Daftar rute berikut telah ditambahkan di dalam grup rute `'wali'` yang diproteks
 Fitur ini didesain dengan tingkat keamanan tinggi untuk mencegah eksploitasi parameter tampering ( bypass ID rombel ):
 - Di sisi server, parameter `rombel_id` yang dikirim dari browser diabaikan atau divalidasi silang. Server akan **selalu mengambil data rombel berdasarkan relasi `wali_kelas_id` dari guru yang login** di session untuk tahun ajaran terpilih.
 - Jika Wali Kelas tidak memiliki kelas perwalian pada tahun ajaran/semester yang dipilih, server mengembalikan respon kosong secara aman dengan status error `success = false` dan pesan informatif, sehingga tidak memicu kebocoran data (information leakage).
+
+---
+
+## 4. Sinkronisasi Nilai & Penanganan Perbedaan Nilai (Grade Discrepancy Resolution)
+
+### Temuan Akar Masalah (Root Cause):
+1. **Sumber Tabel Berbeda**: Awalnya leger mengambil data mentah langsung dari tabel `nilai_formatif`/`nilai_sumatif` sebelum dihitung bobot nilainya. Sementara Cetak Rapor mengambil nilai akhir yang sudah matang dari tabel `nilai_rapor` hasil sinkronisasi.
+2. **Pembulatan Nilai**: Cetak Rapor menerapkan pembulatan `round()` ke integer terdekat (seperti `93.8` menjadi `94`), sedangkan Leger sebelumnya mengambil nilai desimal mentah dari database.
+
+### Solusi dan Langkah Perbaikan:
+1. **Penyelarasan Sumber Data**: Kueri data pada `getData` dan `exportExcel` di controller `Admin\CetakLegerController` dan `WaliKelas\CetakLegerController` telah diubah secara penuh untuk merujuk langsung ke tabel `nilai_rapor`.
+2. **Penyelarasan Format Nilai**: Fungsi pembulatan `round()` telah disuntikkan ke pemrosesan nilai angka pada database hasil kueri leger sebelum dikirimkan ke frontend (JSON) maupun saat ditulis ke berkas Excel (`exportExcel`). Dengan ini, seluruh visualisasi nilai di leger (layar, cetak, Excel) dipastikan 100% identik dengan hasil cetak rapor fisik.
+

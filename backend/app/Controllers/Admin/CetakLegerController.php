@@ -89,34 +89,17 @@ class CetakLegerController extends AdminBaseController
         $mapelIds = array_column($mapelAktif, 'id');
 
         // 2. Query Nilai Siswa
-        $tabelAcuan = $db->tableExists('nilai_akademik') ? 'nilai_akademik' : ($db->tableExists('nilai_formatif') ? 'nilai_formatif' : 'nilai_sumatif');
-        $fieldNilai = $db->fieldExists('nilai_angka', $tabelAcuan) ? 'nilai_angka' : 'nilai';
-        $fieldSmt   = $db->fieldExists('semester', $tabelAcuan);
-        $fieldTA    = $db->fieldExists('tahun_ajaran_id', $tabelAcuan) ? 'tahun_ajaran_id' : 'tahun_ajaran';
-
         $results = [];
-        if ($db->tableExists($tabelAcuan)) {
-            $builder = $db->table($tabelAcuan . ' n');
+        if ($db->tableExists('nilai_rapor')) {
+            $builder = $db->table('nilai_rapor n');
             
-            $hasPredikat = $db->fieldExists('predikat', $tabelAcuan);
-            $selectPredikat = $hasPredikat ? 'n.predikat' : '"" as predikat';
-            
-            // MENGGUNAKAN MESIN WAKTU (anggota_rombel)
-            $builder->select('n.siswa_id, n.mapel_id, n.' . $fieldNilai . ' as nilai_angka, ' . $selectPredikat . ', s.nis, s.nama_lengkap');
+            $builder->select('n.siswa_id, n.mapel_id, n.nilai_akhir as nilai_angka, n.predikat, s.nis, s.nama_lengkap');
             $builder->join('siswa s', 's.id = n.siswa_id');
-            // Join ke tabel anggota_rombel sebagai penjaga keamanan data
             $builder->join('anggota_rombel ar', 'ar.siswa_id = s.id');
             
-            // Where Kondisi
-            $builder->where('n.' . $fieldTA, $tahun_ajaran);
+            $builder->where('n.tahun_ajaran_id', $tahun_ajaran);
+            $builder->where('n.kategori', $kategori);
             
-            if ($fieldSmt) {
-                $builder->where('n.semester', $semester);
-            }
-            if ($db->fieldExists('kategori', $tabelAcuan) && !empty($kategori)) {
-                $builder->where('n.kategori', $kategori);
-            }            
-            // Filter berdasarkan mesin waktu
             $builder->where('ar.rombel_id', $rombel_id);
             $builder->where('ar.tahun_ajaran_id', $tahun_ajaran);
             $builder->where('ar.semester', $semester);
@@ -157,7 +140,7 @@ class CetakLegerController extends AdminBaseController
             // Masukkan nilai sesuai ID mapel
             $mapelId = $row['mapel_id'];
             if (in_array($mapelId, $mapelIds)) {
-                $leger[$siswaId]['nilai'][$mapelId]['angka'] = (float) $row['nilai_angka'];
+                $leger[$siswaId]['nilai'][$mapelId]['angka'] = $row['nilai_angka'] !== null ? round((float) $row['nilai_angka']) : 0;
                 $leger[$siswaId]['nilai'][$mapelId]['predikat'] = $row['predikat'];
             }
             
@@ -276,34 +259,17 @@ class CetakLegerController extends AdminBaseController
                          ->getResultArray();
         $mapelIds = array_column($mapelAktif, 'id');
 
-        $tabelAcuan = $db->tableExists('nilai_akademik') ? 'nilai_akademik' : ($db->tableExists('nilai_formatif') ? 'nilai_formatif' : 'nilai_sumatif');
-        $fieldNilai = $db->fieldExists('nilai_angka', $tabelAcuan) ? 'nilai_angka' : 'nilai';
-        $fieldSmt   = $db->fieldExists('semester', $tabelAcuan);
-        $fieldTA    = $db->fieldExists('tahun_ajaran_id', $tabelAcuan) ? 'tahun_ajaran_id' : 'tahun_ajaran';
-
         $results = [];
-        if ($db->tableExists($tabelAcuan)) {
-            $builder = $db->table($tabelAcuan . ' n');
+        if ($db->tableExists('nilai_rapor')) {
+            $builder = $db->table('nilai_rapor n');
             
-            $hasPredikat = $db->fieldExists('predikat', $tabelAcuan);
-            $selectPredikat = $hasPredikat ? 'n.predikat' : '"" as predikat';
-            
-            // MENGGUNAKAN MESIN WAKTU (anggota_rombel)
-            $builder->select('n.siswa_id, n.mapel_id, n.' . $fieldNilai . ' as nilai_angka, ' . $selectPredikat . ', s.nis, s.nama_lengkap');
+            $builder->select('n.siswa_id, n.mapel_id, n.nilai_akhir as nilai_angka, n.predikat, s.nis, s.nama_lengkap');
             $builder->join('siswa s', 's.id = n.siswa_id');
-            // Join ke tabel anggota_rombel
             $builder->join('anggota_rombel ar', 'ar.siswa_id = s.id');
             
-            // Where Kondisi
-            $builder->where('n.' . $fieldTA, $tahun_ajaran);
+            $builder->where('n.tahun_ajaran_id', $tahun_ajaran);
+            $builder->where('n.kategori', $kategori);
             
-            if ($fieldSmt){
-                $builder->where('n.semester', $semester);
-            }
-            if ($db->fieldExists('kategori', $tabelAcuan) && !empty($kategori)) {
-                $builder->where('n.kategori', $kategori);
-            }            
-            // Filter berdasarkan mesin waktu
             $builder->where('ar.rombel_id', $rombel_id);
             $builder->where('ar.tahun_ajaran_id', $tahun_ajaran);
             $builder->where('ar.semester', $semester);
@@ -333,7 +299,7 @@ class CetakLegerController extends AdminBaseController
             }
             $mapelId = $row['mapel_id'];
             if (in_array($mapelId, $mapelIds)) {
-                $angka = (float) $row['nilai_angka'];
+                $angka = $row['nilai_angka'] !== null ? round((float) $row['nilai_angka']) : 0;
                 $leger[$siswaId]['nilai'][$mapelId]['angka'] = $angka;
                 $leger[$siswaId]['nilai'][$mapelId]['predikat'] = $row['predikat'];
                 $leger[$siswaId]['total'] += $angka;
