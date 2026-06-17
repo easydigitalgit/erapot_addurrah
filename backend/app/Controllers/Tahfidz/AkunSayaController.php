@@ -77,7 +77,7 @@ class AkunSayaController extends TahfidzBaseController
 
         $db->table('users')->where('id', $userId)->update([
             'email'        => $email,
-            'full_name'    => $nama, // update full_name di users jika ada
+            'nama_lengkap' => $nama,
             'updated_at'   => date('Y-m-d H:i:s')
         ]);
 
