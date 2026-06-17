@@ -76,16 +76,18 @@ class AkunSayaController extends TahfidzBaseController
         $no_hp = $this->request->getPost('no_hp');
 
         $db->table('users')->where('id', $userId)->update([
-            'email'        => $email,
-            'nama_lengkap' => $nama,
-            'updated_at'   => date('Y-m-d H:i:s')
+            'email'           => $email,
+            'nama_lengkap'    => $nama,
+            'no_hp'           => $no_hp,
+            'alamat_domisili' => $this->request->getPost('alamat'),
+            'updated_at'      => date('Y-m-d H:i:s')
         ]);
 
         // Update Tabel Guru Tendik
         $db->table('guru_tendik')->where('user_id', $userId)->update([
-            'nama_lengkap' => $nama,
-            'no_hp'        => $no_hp,
-            'alamat'       => $this->request->getPost('alamat')
+            'nama_lengkap'    => $nama,
+            'no_hp'           => $no_hp,
+            'alamat_domisili' => $this->request->getPost('alamat')
         ]);
 
         // Update Session
