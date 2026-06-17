@@ -276,18 +276,20 @@ class NilaiRaporController extends GuruMapelBaseController
                 $w_sts = $bobot['akhir_semester']['sts'] / 100;
                 $w_sas = $bobot['akhir_semester']['sas'] / 100;
 
-                $val_sts = ($count_sts > 0) ? $avg_sts : $avg_pas;
-                
-                // Jika PAS sudah dipakai di STS, jangan pakai lagi di SAS kecuali SAS kosong
-                $val_sas = ($count_sas > 0) ? $avg_sas : (($val_sts != $avg_pas) ? $avg_pas : 0);
-                
-                // KALKULASI DENGAN POTONG 1 DESIMAL (TRUNCATION) TIAP KOMPONEN SESUAI PERMINTAAN CLIENT
-                $c_nh  = floor(($avg_nh * $w_nh) * 10) / 10;
-                $c_uh  = floor(($avg_uh * $w_uh) * 10) / 10;
-                $c_sts = floor(($val_sts * $w_sts) * 10) / 10;
-                $c_sas = floor(($val_sas * $w_sas) * 10) / 10;
-                
-                $kalkulasi = $c_nh + $c_uh + $c_sts + $c_sas;
+                 // Untuk Rapor Akhir Semester:
+                 // - Komponen ke-3 (bobot 'sts') menggunakan nilai PAS (Penilaian Akhir Semester)
+                 // - Komponen ke-4 (bobot 'sas') menggunakan nilai SAS (Sumatif Akhir Semester)
+                 $val_sts = $avg_pas;
+                 $val_sas = $avg_sas;
+                 
+                 // KALKULASI DENGAN POTONG 1 DESIMAL (TRUNCATION) TIAP KOMPONEN SESUAI PERMINTAAN CLIENT
+                 // Gunakan round(..., 4) sebelum floor untuk menghindari precision error biner float IEEE 754
+                 $c_nh  = floor(round($avg_nh * $w_nh, 4) * 10) / 10;
+                 $c_uh  = floor(round($avg_uh * $w_uh, 4) * 10) / 10;
+                 $c_sts = floor(round($val_sts * $w_sts, 4) * 10) / 10;
+                 $c_sas = floor(round($val_sas * $w_sas, 4) * 10) / 10;
+                 
+                 $kalkulasi = $c_nh + $c_uh + $c_sts + $c_sas;
             }
 
             $nilai_akhir = number_format($kalkulasi, 1, '.', '');
@@ -505,21 +507,24 @@ class NilaiRaporController extends GuruMapelBaseController
                     $w_sts = $bobot['akhir_semester']['sts'] / 100;
                     $w_sas = $bobot['akhir_semester']['sas'] / 100;
 
-                    // SMART MAPPING: Jika STS kosong, gunakan PAS sebagai pengganti
-                    $val_sts = ($count_sts > 0) ? $avg_sts : $avg_pas;
-                    $val_sas = ($count_sas > 0) ? $avg_sas : (($val_sts != $avg_pas) ? $avg_pas : 0);
-
-                    // KALKULASI DENGAN POTONG 1 DESIMAL (TRUNCATION) TIAP KOMPONEN SESUAI PERMINTAAN CLIENT
-                    $c_nh  = floor(($avg_nh * $w_nh) * 10) / 10;
-                    $c_uh  = floor(($avg_uh * $w_uh) * 10) / 10;
-                    $c_sts = floor(($val_sts * $w_sts) * 10) / 10;
-                    $c_sas = floor(($val_sas * $w_sas) * 10) / 10;
-
-                    $kalkulasi = $c_nh + $c_uh + $c_sts + $c_sas;
-
-                    // Simpan rata-rata ke kolom DB (untuk archive)
-                    $rata_formatif = round(($avg_nh + $avg_uh) / 2, 1);
-                    $rata_sumatif = round(($val_sts + $val_sas) / 2, 1);
+                     // Untuk Rapor Akhir Semester:
+                     // - Komponen ke-3 (bobot 'sts') menggunakan nilai PAS (Penilaian Akhir Semester)
+                     // - Komponen ke-4 (bobot 'sas') menggunakan nilai SAS (Sumatif Akhir Semester)
+                     $val_sts = $avg_pas;
+                     $val_sas = $avg_sas;
+ 
+                     // KALKULASI DENGAN POTONG 1 DESIMAL (TRUNCATION) TIAP KOMPONEN SESUAI PERMINTAAN CLIENT
+                     // Gunakan round(..., 4) sebelum floor untuk menghindari precision error biner float IEEE 754
+                     $c_nh  = floor(round($avg_nh * $w_nh, 4) * 10) / 10;
+                     $c_uh  = floor(round($avg_uh * $w_uh, 4) * 10) / 10;
+                     $c_sts = floor(round($val_sts * $w_sts, 4) * 10) / 10;
+                     $c_sas = floor(round($val_sas * $w_sas, 4) * 10) / 10;
+ 
+                     $kalkulasi = $c_nh + $c_uh + $c_sts + $c_sas;
+ 
+                     // Simpan rata-rata ke kolom DB (untuk archive)
+                     $rata_formatif = round(($avg_nh + $avg_uh) / 2, 1);
+                     $rata_sumatif = round(($val_sts + $val_sas) / 2, 1);
                 }
 
                 $nilai_akhir = number_format($kalkulasi, 1, '.', '');
