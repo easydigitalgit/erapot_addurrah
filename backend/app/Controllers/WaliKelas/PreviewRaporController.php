@@ -450,16 +450,22 @@ class PreviewRaporController extends WaliKelasBaseController
             
             if ($db->tableExists('master_ekskul')) {
                 $ekskul_id_field = $db->fieldExists('ekskul_id', 'nilai_ekskul') ? 'ekskul_id' : 'id_ekskul';
-                $ekskul = $db->table('nilai_ekskul ne')
+                $builderEkskul = $db->table('nilai_ekskul ne')
                             ->select('me.nama_ekskul as kegiatan, ne.predikat, ne.keterangan')
                             ->join('master_ekskul me', "CONVERT(me.id USING utf8mb4) COLLATE utf8mb4_general_ci = CONVERT(ne.$ekskul_id_field USING utf8mb4) COLLATE utf8mb4_general_ci", 'left', false)
-                            ->where(['ne.siswa_id' => $siswa_id, 'ne.' . $fTA_Ekskul => $val_ta_ekskul, 'ne.semester' => $semester])
-                            ->get()->getResultArray();
+                            ->where(['ne.siswa_id' => $siswa_id, 'ne.' . $fTA_Ekskul => $val_ta_ekskul, 'ne.semester' => $semester]);
+                if ($db->fieldExists('kategori', 'nilai_ekskul')) {
+                    $builderEkskul->where('ne.kategori', $kategori);
+                }
+                $ekskul = $builderEkskul->get()->getResultArray();
             } else {
-                $ekskul = $db->table('nilai_ekskul')
+                $builderEkskul = $db->table('nilai_ekskul')
                             ->select('nama_kegiatan as kegiatan, predikat, keterangan')
-                            ->where(['siswa_id' => $siswa_id, 'fTA_Ekskul' => $val_ta_ekskul, 'semester' => $semester])
-                            ->get()->getResultArray();
+                            ->where(['siswa_id' => $siswa_id, 'fTA_Ekskul' => $val_ta_ekskul, 'semester' => $semester]);
+                if ($db->fieldExists('kategori', 'nilai_ekskul')) {
+                    $builderEkskul->where('kategori', $kategori);
+                }
+                $ekskul = $builderEkskul->get()->getResultArray();
             }
         }
 
@@ -502,7 +508,12 @@ class PreviewRaporController extends WaliKelasBaseController
 
             $fieldTahfidzTA = $db->fieldExists('tahun_ajaran_id', 'nilai_tahfidz') ? 'tahun_ajaran_id' : 'tahun_ajaran';
             $val_ta_tahfidz = ($fieldTahfidzTA === 'tahun_ajaran_id') ? $ta_id : $tahun_ajaran;
-            $tahfidz = $db->table('nilai_tahfidz')->where(['siswa_id' => $siswa_id, $fieldTahfidzTA => $val_ta_tahfidz, 'semester' => $semester])->get()->getRowArray();
+            $builderTahfidz = $db->table('nilai_tahfidz')
+                ->where(['siswa_id' => $siswa_id, $fieldTahfidzTA => $val_ta_tahfidz, 'semester' => $semester]);
+            if ($db->fieldExists('kategori', 'nilai_tahfidz')) {
+                $builderTahfidz->where('kategori', $kategori);
+            }
+            $tahfidz = $builderTahfidz->get()->getRowArray();
             
             if ($tahfidz) {
                 $metrics_teori = $this->getGradeMetrics($tahfidz['nilai_teori'] ?? 0);
@@ -529,7 +540,13 @@ class PreviewRaporController extends WaliKelasBaseController
         } else {
             if ($db->tableExists('nilai_tahfidz')) {
                 $fieldTahfidzTA = $db->fieldExists('tahun_ajaran_id', 'nilai_tahfidz') ? 'tahun_ajaran_id' : 'tahun_ajaran';
-                $tahfidz = $db->table('nilai_tahfidz')->where(['siswa_id' => $siswa_id, $fieldTahfidzTA => $tahun_ajaran, 'semester' => $semester])->get()->getRowArray();
+                $val_ta_tahfidz = ($fieldTahfidzTA === 'tahun_ajaran_id') ? $ta_id : $tahun_ajaran;
+                $builderTahfidz = $db->table('nilai_tahfidz')
+                    ->where(['siswa_id' => $siswa_id, $fieldTahfidzTA => $val_ta_tahfidz, 'semester' => $semester]);
+                if ($db->fieldExists('kategori', 'nilai_tahfidz')) {
+                    $builderTahfidz->where('kategori', $kategori);
+                }
+                $tahfidz = $builderTahfidz->get()->getRowArray();
             }
         }
 
