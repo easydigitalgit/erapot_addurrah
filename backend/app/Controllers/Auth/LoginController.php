@@ -215,8 +215,24 @@ class LoginController extends AdminBaseController
                 $guruModel = new \App\Models\Admin\GuruTendikModel();
                 $guru = $guruModel->where('user_id', $userId)->first();
                 if ($guru) {
-                    $rombelModel = new \App\Models\Admin\RombelModel();
-                    $rombel = $rombelModel->where('wali_kelas_id', $guru['id'])->first();
+                    $db = \Config\Database::connect();
+                    $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+                    $idTaAktif = $taAktif ? $taAktif['id'] : null;
+
+                    $rombel = null;
+                    if ($idTaAktif) {
+                        $rombel = $db->table('rombel')
+                                     ->where('wali_kelas_id', $guru['id'])
+                                     ->where('id_tahun_ajaran', $idTaAktif)
+                                     ->get()->getRowArray();
+                    }
+                    if (!$rombel) {
+                        $rombel = $db->table('rombel')
+                                     ->where('wali_kelas_id', $guru['id'])
+                                     ->orderBy('id_tahun_ajaran', 'DESC')
+                                     ->get()->getRowArray();
+                    }
+
                     if ($rombel) {
                         $roles[] = ['role_id' => 3, 'key' => 'wali_kelas', 'label' => 'Wali Kelas ' . $rombel['nama_rombel'], 'redirect_url' => base_url('/wali/ringkasan-kelas')];
                         $hasWaliKelasRole = true;
@@ -224,7 +240,32 @@ class LoginController extends AdminBaseController
                 }
             }
             if ($rid == 3 && !$hasWaliKelasRole) {
-                $roles[] = ['role_id' => 3, 'key' => 'wali_kelas', 'label' => 'Wali Kelas', 'redirect_url' => base_url('/wali/ringkasan-kelas')];
+                $guruModel = new \App\Models\Admin\GuruTendikModel();
+                $guru = $guruModel->where('user_id', $userId)->first();
+                $labelWali = 'Wali Kelas';
+                if ($guru) {
+                    $db = \Config\Database::connect();
+                    $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+                    $idTaAktif = $taAktif ? $taAktif['id'] : null;
+
+                    $rombel = null;
+                    if ($idTaAktif) {
+                        $rombel = $db->table('rombel')
+                                     ->where('wali_kelas_id', $guru['id'])
+                                     ->where('id_tahun_ajaran', $idTaAktif)
+                                     ->get()->getRowArray();
+                    }
+                    if (!$rombel) {
+                        $rombel = $db->table('rombel')
+                                     ->where('wali_kelas_id', $guru['id'])
+                                     ->orderBy('id_tahun_ajaran', 'DESC')
+                                     ->get()->getRowArray();
+                    }
+                    if ($rombel) {
+                        $labelWali = 'Wali Kelas ' . $rombel['nama_rombel'];
+                    }
+                }
+                $roles[] = ['role_id' => 3, 'key' => 'wali_kelas', 'label' => $labelWali, 'redirect_url' => base_url('/wali/ringkasan-kelas')];
                 $hasWaliKelasRole = true;
             }
             if ($rid == 4) {

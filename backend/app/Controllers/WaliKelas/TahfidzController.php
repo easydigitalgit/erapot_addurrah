@@ -27,8 +27,26 @@ class TahfidzController extends WaliKelasBaseController
         $this->data['title'] = 'Manajemen Tahfidz Kelas';
         $this->data['color'] = $this->getColor();
         
-        $wali_id = session()->get('id');
-        $rombel = $this->db->table('rombel')->where('wali_kelas_id', $wali_id)->get()->getRowArray();
+        $user_id = session()->get('user_id') ?? session()->get('id');
+        $guru = $this->db->table('guru_tendik')->where('user_id', $user_id)->get()->getRowArray();
+        $guru_id = $guru ? $guru['id'] : null;
+
+        $ta_aktif = $this->db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+        $id_ta = $ta_aktif ? $ta_aktif['id'] : 0;
+
+        $rombel = null;
+        if ($guru_id) {
+            $rombel = $this->db->table('rombel')
+                               ->where('wali_kelas_id', $guru_id)
+                               ->where('id_tahun_ajaran', $id_ta)
+                               ->get()->getRowArray();
+            if (!$rombel) {
+                $rombel = $this->db->table('rombel')
+                                   ->where('wali_kelas_id', $guru_id)
+                                   ->orderBy('id_tahun_ajaran', 'DESC')
+                                   ->get()->getRowArray();
+            }
+        }
         
         $this->data['rombel'] = $rombel;
         $this->data['surahList'] = $this->db->table('ref_surah')->where('no_surah >=', 78)->orderBy('no_surah', 'ASC')->get()->getResultArray();
