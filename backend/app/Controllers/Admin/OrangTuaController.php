@@ -344,25 +344,31 @@ class OrangTuaController extends AdminBaseController
 
     /**
      * --------------------------------------------------------------------------
-     * DOWNLOAD TEMPLATE IMPORT ORTU (DATA ASLI DARI DB)
+     * DOWNLOAD TEMPLATE IMPORT ORTU (BERBASIS NIS & 2 SHEET)
      * --------------------------------------------------------------------------
      */
     public function downloadTemplate()
     {
+        $db = \Config\Database::connect();
         $spreadsheet = new Spreadsheet();
+
+        // --- SHEET 1: FORM IMPORT DATA ORANG TUA ---
         $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Data Orang Tua');
 
         $headers = [
-            'ID Ortu (JANGAN UBAH JIKA UPDATE)',
-            'ID Siswa (WAJIB ADA - Lihat DB Siswa)',
+            'NIS Siswa (Wajib / Kunci Relasi)',
+            'Nama Siswa (Lihat Sheet 2)',
             'Nama Ayah',
+            'NIK Ayah',
             'Pekerjaan Ayah',
             'Nama Ibu',
+            'NIK Ibu',
             'Pekerjaan Ibu',
-            'Nama Wali (Kosongkan jika tdk ada)',
+            'Nama Wali',
             'Pekerjaan Wali',
-            'Email Ortu (Untuk Akun)',
-            'No HP Ortu / WhatsApp',
+            'No HP / WA Orang Tua',
+            'Email Orang Tua',
             'Alamat Lengkap'
         ];
 
@@ -375,20 +381,55 @@ class OrangTuaController extends AdminBaseController
             $col++;
         }
 
-        // --- PEMbersihan Template: Data Contoh (DUMMY) ---
-        $sheet->setCellValue('A2', ''); // Kosongkan ID untuk data baru
-        $sheet->setCellValue('B2', '8'); // Contoh ID Siswa
+        // Baris Contoh (Sample Data)
+        $sheet->setCellValueExplicit('A2', '08.26.0001', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValue('B2', 'Contoh: Ahmad Zidan');
         $sheet->setCellValue('C2', 'Budi Santoso');
-        $sheet->setCellValue('D2', 'Wiraswasta');
-        $sheet->setCellValue('E2', 'Siti Aminah');
-        $sheet->setCellValue('F2', 'Ibu Rumah Tangga');
-        $sheet->setCellValue('G2', '-');
-        $sheet->setCellValue('H2', '-');
-        $sheet->setCellValue('I2', 'budi.santoso@email.com');
-        $sheet->setCellValueExplicit('J2', '081234567890', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-        $sheet->setCellValue('K2', 'Jl. Kebahagiaan No. 7, Jakarta');
+        $sheet->setCellValueExplicit('D2', '3201011122330001', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValue('E2', 'Wiraswasta');
+        $sheet->setCellValue('F2', 'Siti Aminah');
+        $sheet->setCellValueExplicit('G2', '3201014455660002', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValue('H2', 'Ibu Rumah Tangga');
+        $sheet->setCellValue('I2', '-');
+        $sheet->setCellValue('J2', '-');
+        $sheet->setCellValueExplicit('K2', '081234567890', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValue('L2', 'budi.santoso@email.com');
+        $sheet->setCellValue('M2', 'Jl. Kebahagiaan No. 7, Jakarta');
 
-        $filename = 'Data_OrangTua_' . date('Y-m-d') . '.xlsx';
+        // --- SHEET 2: REFERENSI DAFTAR SISWA AKTIF ---
+        $sheet2 = $spreadsheet->createSheet();
+        $sheet2->setTitle('Daftar Siswa');
+
+        $sheet2->setCellValue('A1', 'NIS SISWA (Copy ke Sheet 1 Kolom A)');
+        $sheet2->setCellValue('B1', 'NAMA LENGKAP');
+        $sheet2->setCellValue('C1', 'KELAS / ROMBEL');
+        $sheet2->getStyle('A1:C1')->getFont()->setBold(true);
+        $sheet2->getStyle('A1:C1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFEFEFEF');
+        $sheet2->getColumnDimension('A')->setAutoSize(true);
+        $sheet2->getColumnDimension('B')->setAutoSize(true);
+        $sheet2->getColumnDimension('C')->setAutoSize(true);
+
+        $builder = $db->table('siswa s')
+            ->select('s.nis, s.nama_lengkap, r.nama_rombel, r.tingkat')
+            ->join('rombel r', 'r.id = s.rombel_id', 'left')
+            ->where('s.status_siswa', 'Aktif')
+            ->orderBy('r.tingkat', 'ASC')
+            ->orderBy('r.nama_rombel', 'ASC')
+            ->orderBy('s.nama_lengkap', 'ASC');
+
+        $dataSiswa = $builder->get()->getResultArray();
+        $rowSiswa = 2;
+        foreach ($dataSiswa as $s) {
+            $kelas = ($s['tingkat'] && $s['nama_rombel']) ? ($s['tingkat'] . ' ' . $s['nama_rombel']) : '-';
+            $sheet2->setCellValueExplicit('A' . $rowSiswa, $s['nis'] ?? '-', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet2->setCellValue('B' . $rowSiswa, $s['nama_lengkap']);
+            $sheet2->setCellValue('C' . $rowSiswa, $kelas);
+            $rowSiswa++;
+        }
+
+        $spreadsheet->setActiveSheetIndex(0);
+
+        $filename = 'Template_Import_OrangTua_' . date('Y-m-d') . '.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
@@ -399,7 +440,7 @@ class OrangTuaController extends AdminBaseController
 
     /**
      * --------------------------------------------------------------------------
-     * IMPORT DATA ORANG TUA (SINKRON DENGAN TEMPLATE & NIS SISWA)
+     * IMPORT DATA ORANG TUA (BERBASIS NIS SISWA & UPSERT)
      * --------------------------------------------------------------------------
      */
     public function import()
@@ -414,7 +455,7 @@ class OrangTuaController extends AdminBaseController
 
         $file = $this->request->getFile('file_excel');
         if (!$file || !$file->isValid() || $file->hasMoved()) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'File gagal diunggah.']);
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File gagal diunggah atau corrupt.']);
         }
 
         $extension = strtolower($file->getClientExtension());
@@ -431,35 +472,58 @@ class OrangTuaController extends AdminBaseController
 
             $ortuModel = new \App\Models\Admin\OrangTuaModel();
             $userModel = new \App\Models\Admin\UserModel();
-            $siswaModel = new \App\Models\Admin\SiswaModel(); // Dipanggil untuk melacak NIS Siswa
+            $siswaModel = new \App\Models\Admin\SiswaModel();
 
             $countInsert = 0;
             $countUpdate = 0;
+            $errors = [];
 
             foreach ($sheet as $idx => $row) {
-                // Lewati baris 1 (Header/Judul Kolom Excel)
+                // Lewati baris 1 (Header/Judul Kolom)
                 if ($idx == 1) continue;
 
-                // 1. Kunci Utama: Cari Siswa berdasarkan NIS (Kolom C)
-                $nis = trim($row['C'] ?? '');
-                if (empty($nis) || $nis == '-') continue; 
+                $nis = trim($row['A'] ?? '');
+                $namaSiswa = trim($row['B'] ?? '');
+                $namaAyah = trim($row['C'] ?? '');
+                $nikAyah = trim($row['D'] ?? '');
+                $pekerjaanAyah = trim($row['E'] ?? '');
+                $namaIbu = trim($row['F'] ?? '');
+                $nikIbu = trim($row['G'] ?? '');
+                $pekerjaanIbu = trim($row['H'] ?? '');
+                $namaWali = trim($row['I'] ?? '');
+                $pekerjaanWali = trim($row['J'] ?? '');
+                $hpRaw = preg_replace('/[^0-9]/', '', trim($row['K'] ?? ''));
+                $email = trim($row['L'] ?? '');
+                $alamat = trim($row['M'] ?? '');
 
-                $siswa = $siswaModel->where('nis', $nis)->first();
-                if (!$siswa) continue; // Abaikan jika NIS tidak terdaftar di database
+                // Lewati baris kosong
+                if (empty($nis) && empty($namaSiswa) && empty($namaAyah) && empty($namaIbu)) {
+                    continue;
+                }
+
+                // 1. Kunci Utama: Cari Siswa berdasarkan NIS (Kolom A) atau Fallback Nama (Kolom B)
+                $siswa = null;
+                if (!empty($nis) && $nis !== '-') {
+                    $siswa = $siswaModel->where('nis', $nis)->first();
+                }
+                if (!$siswa && !empty($namaSiswa) && stripos($namaSiswa, 'Contoh:') === false) {
+                    $siswa = $siswaModel->where('LOWER(nama_lengkap)', strtolower($namaSiswa))->first();
+                }
+
+                if (!$siswa) {
+                    $errors[] = "Baris $idx: Siswa dengan NIS '{$nis}' / Nama '{$namaSiswa}' tidak ditemukan di database.";
+                    continue;
+                }
 
                 $siswaId = $siswa['id'];
 
-                // 2. Bersihkan Data Kontak untuk Pembuatan Akun
-                $hpRaw = preg_replace('/[^0-9]/', '', trim($row['J'] ?? '')); // Kolom J: No HP
-                $email = trim($row['K'] ?? ''); // Kolom K: Email
+                // 2. Buat / Sinkronkan Akun Login Orang Tua (User)
+                $username = !empty($hpRaw) ? $hpRaw : ('W' . ($siswa['nis'] ?: $siswaId));
 
-                $userId = null;
-
-                // 3. Buat Akun Login Wali (Bypass jika sudah ada)
-                // Username prioritas: No HP. Jika kosong, pakai "W" + NIS Siswa
-                $username = !empty($hpRaw) ? $hpRaw : 'W' . $nis;
-
-                $existingUser = $userModel->where('username', $username)->first();
+                $existingUser = null;
+                if (!empty($username)) {
+                    $existingUser = $userModel->where('username', $username)->first();
+                }
                 if (!$existingUser && !empty($email)) {
                     $existingUser = $userModel->where('email', $email)->first();
                 }
@@ -469,32 +533,36 @@ class OrangTuaController extends AdminBaseController
                 } else {
                     $userData = [
                         'username'  => substr($username, 0, 50),
-                        'password'  => password_hash('12345678', PASSWORD_BCRYPT), // Default pass: 12345678
-                        'role_id'   => 4, // 4 = Role Orang Tua/Wali
+                        'password'  => password_hash('12345678', PASSWORD_BCRYPT),
+                        'role_id'   => 4, // Role 4 = Orang Tua
                         'is_active' => 1
                     ];
-                    if (!empty($email)) $userData['email'] = substr($email, 0, 100);
-                    
+                    if (!empty($email)) {
+                        $userData['email'] = substr($email, 0, 100);
+                    }
+
                     $userModel->insert($userData);
                     $userId = $userModel->getInsertID();
                 }
 
-                // 4. Susun Data Orang Tua sesuai Urutan Kolom Template
+                // 3. Susun Data Orang Tua
                 $ortuData = [
                     'user_id'         => $userId,
                     'siswa_id'        => $siswaId,
-                    'nama_ayah'       => substr(trim($row['D'] ?? '-'), 0, 100),
-                    'pekerjaan_ayah'  => substr(trim($row['E'] ?? '-'), 0, 50),
-                    'nama_ibu'        => substr(trim($row['F'] ?? '-'), 0, 100),
-                    'pekerjaan_ibu'   => substr(trim($row['G'] ?? '-'), 0, 50),
-                    'nama_wali'       => substr(trim($row['H'] ?? '-'), 0, 100),
-                    'pekerjaan_wali'  => substr(trim($row['I'] ?? '-'), 0, 50),
+                    'nama_ayah'       => !empty($namaAyah) ? substr($namaAyah, 0, 100) : '-',
+                    'nik_ayah'        => !empty($nikAyah) ? substr($nikAyah, 0, 50) : null,
+                    'pekerjaan_ayah'  => !empty($pekerjaanAyah) ? substr($pekerjaanAyah, 0, 50) : '-',
+                    'nama_ibu'        => !empty($namaIbu) ? substr($namaIbu, 0, 100) : '-',
+                    'nik_ibu'         => !empty($nikIbu) ? substr($nikIbu, 0, 50) : null,
+                    'pekerjaan_ibu'   => !empty($pekerjaanIbu) ? substr($pekerjaanIbu, 0, 50) : '-',
+                    'nama_wali'       => !empty($namaWali) ? substr($namaWali, 0, 100) : '-',
+                    'pekerjaan_wali'  => !empty($pekerjaanWali) ? substr($pekerjaanWali, 0, 50) : '-',
                     'no_hp_ortu'      => substr($hpRaw, 0, 20),
                     'email_ortu'      => substr($email, 0, 100),
-                    'alamat_orangtua' => trim($row['L'] ?? '-')
+                    'alamat_orangtua' => !empty($alamat) ? substr($alamat, 0, 255) : '-'
                 ];
 
-                // 5. Simpan (Update jika sudah ada wali untuk siswa ini, Insert jika belum)
+                // 4. Upsert ke tabel orangtua_wali
                 $existingOrtu = $ortuModel->where('siswa_id', $siswaId)->first();
 
                 if ($existingOrtu) {
@@ -506,15 +574,22 @@ class OrangTuaController extends AdminBaseController
                 }
             }
 
-            if ($db->transStatus() === false) {
-                $dbError = $db->error();
+            if (!empty($errors) && $countInsert == 0 && $countUpdate == 0) {
                 $db->transRollback();
-                return $this->response->setJSON(['status' => 'error', 'message' => 'DB Error: ' . ($dbError['message'] ?? 'Gagal menyimpan.')]);
+                return $this->response->setJSON([
+                    'status'  => 'error',
+                    'message' => '<b>Proses import gagal:</b><br><ul><li>' . implode('</li><li>', array_slice($errors, 0, 10)) . '</li></ul>'
+                ]);
             }
 
             $db->transCommit();
-            return $this->response->setJSON(['status' => 'success', 'message' => "Import Orang Tua Sukses! $countInsert Data Baru, $countUpdate Diperbarui."]);
-            
+            $msg = "Import Orang Tua Sukses! <b>{$countInsert}</b> Data Baru ditambahkan, <b>{$countUpdate}</b> Data Diperbarui.";
+            if (!empty($errors)) {
+                $msg .= "<br><br><small class='text-amber-600'>Catatan (" . count($errors) . " baris dilewati):<br>" . implode('<br>', array_slice($errors, 0, 5)) . "</small>";
+            }
+
+            return $this->response->setJSON(['status' => 'success', 'message' => $msg]);
+
         } catch (\Throwable $e) {
             if (isset($db)) $db->transRollback();
             return $this->response->setJSON(['status' => 'error', 'message' => 'Fatal Error: ' . $e->getMessage()]);
@@ -523,26 +598,26 @@ class OrangTuaController extends AdminBaseController
 
     /**
      * --------------------------------------------------------------------------
-     * EXPORT DATA ORANG TUA / WALI KE EXCEL (100% DATA ASLI DB)
+     * EXPORT DATA ORANG TUA / WALI KE EXCEL (FORMAT SINKRON DENGAN TEMPLATE)
      * --------------------------------------------------------------------------
      */
     public function export()
     {
-        // Bersihkan output buffer agar file Excel tidak corrupt (Wajib)
         if (ob_get_length()) ob_clean();
 
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Data Orang Tua');
 
-        // 1. Header menyesuaikan struktur asli tabel orangtua_wali
+        // Header menyesuaikan 100% dengan struktur Template Import
         $headers = [
-            'No',
-            'Nama Anak (Siswa)',
-            'NIS',
+            'NIS Siswa',
+            'Nama Siswa',
             'Nama Ayah',
+            'NIK Ayah',
             'Pekerjaan Ayah',
             'Nama Ibu',
+            'NIK Ibu',
             'Pekerjaan Ibu',
             'Nama Wali',
             'Pekerjaan Wali',
@@ -560,36 +635,33 @@ class OrangTuaController extends AdminBaseController
             $col++;
         }
 
-        // 2. Tarik Data Murni dari Database
+        // Tarik Data dari Database
         $db = \Config\Database::connect();
         $builder = $db->table('orangtua_wali');
-        // Join dengan tabel siswa untuk mengekstrak Nama Anak dan NIS sesuai foreign key
         $builder->select('orangtua_wali.*, siswa.nama_lengkap as nama_siswa, siswa.nis');
         $builder->join('siswa', 'siswa.id = orangtua_wali.siswa_id', 'left');
         $builder->orderBy('siswa.nama_lengkap', 'ASC');
 
         $dataOrtu = $builder->get()->getResultArray();
 
-        // 3. Mapping Data ke Kolom Excel (Tanpa Rekayasa Dummy)
         $row = 2;
-        $no = 1;
         foreach ($dataOrtu as $ortu) {
-            $sheet->setCellValue('A' . $row, $no++);
+            $sheet->setCellValueExplicit('A' . $row, $ortu['nis'] ?? '-', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('B' . $row, $ortu['nama_siswa'] ?? 'Siswa Tidak Ditemukan');
-            $sheet->setCellValueExplicit('C' . $row, $ortu['nis'] ?? '-', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('D' . $row, $ortu['nama_ayah']);
+            $sheet->setCellValue('C' . $row, $ortu['nama_ayah']);
+            $sheet->setCellValueExplicit('D' . $row, $ortu['nik_ayah'] ?? '-', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('E' . $row, $ortu['pekerjaan_ayah']);
             $sheet->setCellValue('F' . $row, $ortu['nama_ibu']);
-            $sheet->setCellValue('G' . $row, $ortu['pekerjaan_ibu']);
-            $sheet->setCellValue('H' . $row, $ortu['nama_wali']);
-            $sheet->setCellValue('I' . $row, $ortu['pekerjaan_wali']);
-            $sheet->setCellValueExplicit('J' . $row, $ortu['no_hp_ortu'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('K' . $row, $ortu['email_ortu']);
-            $sheet->setCellValue('L' . $row, $ortu['alamat_orangtua']);
+            $sheet->setCellValueExplicit('G' . $row, $ortu['nik_ibu'] ?? '-', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('H' . $row, $ortu['pekerjaan_ibu']);
+            $sheet->setCellValue('I' . $row, $ortu['nama_wali']);
+            $sheet->setCellValue('J' . $row, $ortu['pekerjaan_wali']);
+            $sheet->setCellValueExplicit('K' . $row, $ortu['no_hp_ortu'] ?? '-', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('L' . $row, $ortu['email_ortu']);
+            $sheet->setCellValue('M' . $row, $ortu['alamat_orangtua']);
             $row++;
         }
 
-        // 4. Proses Download Otomatis
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $filename = 'Data_OrangTua_Wali_' . date('Y-m-d_H-i') . '.xlsx';
 
@@ -599,5 +671,5 @@ class OrangTuaController extends AdminBaseController
 
         $writer->save('php://output');
         exit;
-    }   
+    }
 }

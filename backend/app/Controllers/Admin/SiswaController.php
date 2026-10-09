@@ -706,26 +706,34 @@ function delete($id)
 
     public function downloadTemplate()
     {
+        $db = \Config\Database::connect();
         $spreadsheet = new Spreadsheet();
+
+        // --- SHEET 1: FORM IMPORT DATA SISWA ---
         $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Data Siswa');
 
         $headers = [
-            'ID Siswa (JANGAN UBAH JIKA UPDATE)',
-            'Nama Lengkap',
-            'NIS',
+            'NIS (Kunci Utama / Kosongkan Jika Baru)',
             'NISN',
-            'Email',
+            'NIK',
+            'Nama Lengkap (Wajib)',
             'Jenis Kelamin (L/P)',
             'Tempat Lahir',
             'Tanggal Lahir (YYYY-MM-DD)',
             'Agama',
-            'Anak Ke',
-            'Status Dalam Keluarga',
-            'Alamat',
-            'No Telp Rumah',
+            'Kelas / Rombel (Lihat Sheet 2)',
+            'Alamat Siswa',
+            'Kecamatan',
+            'Kelurahan / Desa',
+            'No HP Siswa',
+            'Email Siswa',
             'Asal Sekolah',
             'Diterima di Kelas',
             'Tanggal Diterima (YYYY-MM-DD)',
+            'Nama Ayah',
+            'Nama Ibu',
+            'No HP / WA Orang Tua',
             'Status Siswa (Aktif/Lulus/Pindah/Keluar)'
         ];
 
@@ -740,30 +748,54 @@ function delete($id)
             $col++;
         }
 
-        // --- KODINGAN BOCOR (Dihapus agar template bersih tanpa data asli) ---
-        // dataSiswa dihilangkan di sini...
+        // Baris Contoh (Sample Row)
+        $sheet->setCellValueExplicit('A2', '08.26.0001', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValueExplicit('B2', '0012345678', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValueExplicit('C2', '3201012345670001', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValue('D2', 'Contoh: Ahmad Zidan');
+        $sheet->setCellValue('E2', 'L');
+        $sheet->setCellValue('F2', 'Jakarta');
+        $sheet->setCellValue('G2', '2010-05-20');
+        $sheet->setCellValue('H2', 'Islam');
+        $sheet->setCellValue('I2', 'VII Safir');
+        $sheet->setCellValue('J2', 'Jl. Merdeka No. 10');
+        $sheet->setCellValue('K2', 'Kebayoran Baru');
+        $sheet->setCellValue('L2', 'Senayan');
+        $sheet->setCellValueExplicit('M2', '081234567890', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValue('N2', 'ahmad@sekolah.sch.id');
+        $sheet->setCellValue('O2', 'SDN 1 Jakarta');
+        $sheet->setCellValue('P2', 'VII');
+        $sheet->setCellValue('Q2', '2024-07-15');
+        $sheet->setCellValue('R2', 'Budi Santoso');
+        $sheet->setCellValue('S2', 'Siti Rahmah');
+        $sheet->setCellValueExplicit('T2', '081298765432', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValue('U2', 'Aktif');
 
-        if (empty($dataSiswa)) {
-            $sheet->setCellValue('A2', '');
-            $sheet->setCellValue('B2', 'Contoh: Ahmad Zidan');
-            $sheet->setCellValueExplicit('C2', '08.26.0001', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValueExplicit('D2', '0012345678', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('E2', 'ahmad@email.com');
-            $sheet->setCellValue('F2', 'L');
-            $sheet->setCellValue('G2', 'Jakarta');
-            $sheet->setCellValue('H2', '2008-05-20');
-            $sheet->setCellValue('I2', 'Islam');
-            $sheet->setCellValue('J2', '1');
-            $sheet->setCellValue('K2', 'Anak Kandung');
-            $sheet->setCellValue('L2', 'Jl. Merdeka No. 10');
-            $sheet->setCellValueExplicit('M2', '081234567890', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('N2', 'SDN 1 Jakarta');
-            $sheet->setCellValue('O2', 'VII');
-            $sheet->setCellValue('P2', '2023-07-15');
-            $sheet->setCellValue('Q2', 'Aktif');
+        // --- SHEET 2: REFERENSI ROMBEL & KELAS ---
+        $sheet2 = $spreadsheet->createSheet();
+        $sheet2->setTitle('Referensi Rombel');
+
+        $sheet2->setCellValue('A1', 'NAMA ROMBEL (Copy ke Sheet 1 Kolom I)');
+        $sheet2->setCellValue('B1', 'TINGKAT');
+        $sheet2->getStyle('A1:B1')->getFont()->setBold(true);
+        $sheet2->getStyle('A1:B1')->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('FFEFEFEF');
+        $sheet2->getColumnDimension('A')->setAutoSize(true);
+        $sheet2->getColumnDimension('B')->setAutoSize(true);
+
+        $rombels = $db->table('rombel')->orderBy('tingkat', 'ASC')->orderBy('nama_rombel', 'ASC')->get()->getResultArray();
+        $rowRombel = 2;
+        foreach ($rombels as $r) {
+            $sheet2->setCellValue('A' . $rowRombel, $r['tingkat'] . ' ' . $r['nama_rombel']);
+            $sheet2->setCellValue('B' . $rowRombel, $r['tingkat']);
+            $rowRombel++;
         }
 
-        $filename = 'Data_Siswa_' . date('Y-m-d') . '.xlsx';
+        // Set active sheet kembali ke Sheet 1
+        $spreadsheet->setActiveSheetIndex(0);
+
+        $filename = 'Template_Import_Siswa_' . date('Y-m-d') . '.xlsx';
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
@@ -787,343 +819,313 @@ function delete($id)
 
         $file = $this->request->getFile('file_excel');
         if (!$file || !$file->isValid() || $file->hasMoved()) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'File gagal diunggah.']);
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File gagal diunggah atau tidak valid.']);
+        }
+
+        $ext = strtolower($file->getClientExtension());
+        if (!in_array($ext, ['xls', 'xlsx'])) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Format file harus Excel (.xlsx atau .xls)']);
         }
 
         $db = \Config\Database::connect();
 
-        // Proteksi Index: Tidak lagi menghapus index NIS
-
         try {
-            $fieldsSiswa = $db->getFieldNames('siswa');
-            $newColumnsSiswa = [
-                'nik' => 'VARCHAR(50) NULL',
-                'rt' => 'VARCHAR(10) NULL',
-                'rw' => 'VARCHAR(10) NULL',
-                'dusun' => 'VARCHAR(100) NULL',
-                'kelurahan' => 'VARCHAR(100) NULL',
-                'kecamatan' => 'VARCHAR(100) NULL',
-                'kode_pos' => 'VARCHAR(20) NULL',
-                'jenis_tinggal' => 'VARCHAR(100) NULL',
-                'alat_transportasi' => 'VARCHAR(100) NULL',
-                'no_hp' => 'VARCHAR(50) NULL',
-                'skhun' => 'VARCHAR(100) NULL',
-                'penerima_kps' => 'VARCHAR(20) NULL',
-                'no_kps' => 'VARCHAR(100) NULL',
-                'no_peserta_un' => 'VARCHAR(100) NULL',
-                'no_seri_ijazah' => 'VARCHAR(100) NULL',
-                'penerima_kip' => 'VARCHAR(20) NULL',
-                'nomor_kip' => 'VARCHAR(100) NULL',
-                'nama_di_kip' => 'VARCHAR(150) NULL',
-                'nomor_kks' => 'VARCHAR(100) NULL',
-                'no_registrasi_akta' => 'VARCHAR(100) NULL',
-                'layak_pip' => 'VARCHAR(20) NULL',
-                'alasan_layak_pip' => 'VARCHAR(255) NULL',
-                'kebutuhan_khusus' => 'VARCHAR(100) NULL',
-                'no_kk' => 'VARCHAR(50) NULL',
-                'berat_badan' => 'INT NULL',
-                'tinggi_badan' => 'INT NULL',
-                'lingkar_kepala' => 'INT NULL',
-                'jml_saudara_kandung' => 'INT NULL',
-                'jarak_ke_sekolah' => 'VARCHAR(50) NULL'
-            ];
-            foreach ($newColumnsSiswa as $col => $type) {
-                if (!in_array($col, $fieldsSiswa))
-                    $db->query("ALTER TABLE `siswa` ADD COLUMN `$col` $type");
-            }
+            $spreadsheet = IOFactory::load($file->getTempName());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $sheetData = $worksheet->toArray(null, true, true, true);
 
-            $fieldsOrtu = $db->getFieldNames('orangtua_wali');
-            $newColumnsOrtu = [
-                'tahun_lahir_ayah' => 'VARCHAR(10) NULL',
-                'pendidikan_ayah' => 'VARCHAR(100) NULL',
-                'penghasilan_ayah' => 'VARCHAR(100) NULL',
-                'nik_ayah' => 'VARCHAR(50) NULL',
-                'tahun_lahir_ibu' => 'VARCHAR(10) NULL',
-                'pendidikan_ibu' => 'VARCHAR(100) NULL',
-                'penghasilan_ibu' => 'VARCHAR(100) NULL',
-                'nik_ibu' => 'VARCHAR(50) NULL',
-                'tahun_lahir_wali' => 'VARCHAR(10) NULL',
-                'pendidikan_wali' => 'VARCHAR(100) NULL',
-                'penghasilan_wali' => 'VARCHAR(100) NULL',
-                'nik_wali' => 'VARCHAR(50) NULL'
-            ];
-            foreach ($newColumnsOrtu as $col => $type) {
-                if (!in_array($col, $fieldsOrtu))
-                    $db->query("ALTER TABLE `orangtua_wali` ADD COLUMN `$col` $type");
-            }
-        } catch (\Exception $e) {
-        }
+            // 1. Ambil Tahun Ajaran Aktif
+            $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
 
-        $db->transBegin();
-
-        try {
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getTempName());
-
+            // 2. Siapkan Mapping Rombel
             $dbRombel = $db->table('rombel')->get()->getResultArray();
             $mapRombel = [];
             foreach ($dbRombel as $r) {
-                $key1 = strtolower(trim($r['tingkat'] . '-' . $r['nama_rombel']));
-                $key2 = strtolower(trim($r['tingkat'] . ' ' . $r['nama_rombel']));
-                $mapRombel[$key1] = $r['id'];
-                $mapRombel[$key2] = $r['id'];
+                $nama = strtolower(trim($r['nama_rombel']));
+                $tingkat = strtolower(trim($r['tingkat']));
+
+                $mapRombel[$tingkat . ' ' . $nama] = $r['id'];
+                $mapRombel[$tingkat . '-' . $nama] = $r['id'];
+                $mapRombel[$tingkat . $nama] = $r['id'];
+                $mapRombel[$nama] = $r['id'];
             }
+
+            // 3. Helper Parsing Tanggal
+            $parseDate = function ($val) {
+                if (empty($val)) return null;
+                $val = trim((string)$val);
+                if (is_numeric($val) && (float)$val > 10000 && (float)$val < 100000) {
+                    try {
+                        return \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject((float)$val)->format('Y-m-d');
+                    } catch (\Throwable $e) {
+                    }
+                }
+                if (preg_match('/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/', $val, $m)) {
+                    return sprintf('%04d-%02d-%02d', $m[3], $m[2], $m[1]);
+                }
+                $ts = strtotime($val);
+                if ($ts !== false && $ts > 0) {
+                    return date('Y-m-d', $ts);
+                }
+                return null;
+            };
+
+            $db->transBegin();
 
             $countInsert = 0;
             $countUpdate = 0;
-            $errors = []; // Tampung error duplikasi
+            $errors = [];
 
-            // --- 🚀 PERSIAPAN MESIN WAKTU ---
-            $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+            foreach ($sheetData as $idx => $row) {
+                // Lewati baris header
+                if ($idx == 1) continue;
 
-            $getInt = function ($val) {
-                $val = preg_replace('/[^0-9]/', '', explode('.', trim($val))[0]);
-                return (empty($val) && $val !== '0') ? null : (int) $val;
-            };
+                $namaLengkap = trim($row['D'] ?? '');
+                $nisInput    = trim($row['A'] ?? '');
 
-            foreach ($spreadsheet->getAllSheets() as $worksheet) {
-                $sheet = $worksheet->toArray(null, true, true, true);
+                // Jika baris kosong, lewati
+                if (empty($namaLengkap) && empty($nisInput)) {
+                    continue;
+                }
 
-                foreach ($sheet as $idx => $row) {
-                    $noUrut = trim($row['A'] ?? '');
-                    if (!is_numeric($noUrut))
-                        continue;
+                if (empty($namaLengkap)) {
+                    $errors[] = "Baris $idx: Nama Lengkap wajib diisi.";
+                    continue;
+                }
 
-                    $namaLengkap = trim($row['B'] ?? '');
-                    if (empty($namaLengkap))
-                        continue;
+                $nisFinal = !empty($nisInput) ? substr($nisInput, 0, 30) : null;
+                $nisnFinal = !empty($row['B']) ? substr(preg_replace('/\.0$/', '', trim($row['B'])), 0, 20) : null;
+                $nikFinal = !empty($row['C']) ? substr(preg_replace('/\.0$/', '', trim($row['C'])), 0, 50) : null;
+                $jk = (strtoupper(trim($row['E'] ?? 'L')) === 'P') ? 'P' : 'L';
+                $tempatLahir = substr(trim($row['F'] ?? ''), 0, 50);
+                $tglLahir = $parseDate($row['G'] ?? '');
+                $agama = substr(trim($row['H'] ?? 'Islam'), 0, 20) ?: 'Islam';
 
-                    $nisRaw = trim($row['C'] ?? '');
-                    $nisFinal = empty($nisRaw) ? null : substr($nisRaw, 0, 20);
+                // Resolusi Rombel
+                $rombelRaw = strtolower(trim($row['I'] ?? ''));
+                $rombelId = null;
+                if (!empty($rombelRaw) && isset($mapRombel[$rombelRaw])) {
+                    $rombelId = $mapRombel[$rombelRaw];
+                }
 
-                    $nisnRaw = preg_replace('/\.0$/', '', trim($row['E'] ?? ''));
-                    $nisnFinal = empty($nisnRaw) ? null : substr($nisnRaw, 0, 20);
+                $alamat = trim($row['J'] ?? '');
+                $kecamatan = substr(trim($row['K'] ?? ''), 0, 100);
+                $kelurahan = substr(trim($row['L'] ?? ''), 0, 100);
+                $noHpSiswa = substr(preg_replace('/\.0$/', '', trim($row['M'] ?? '')), 0, 50);
+                $emailSiswa = substr(trim($row['N'] ?? ''), 0, 100);
+                $asalSekolah = substr(trim($row['O'] ?? ''), 0, 100);
+                $diterimaDiKelas = substr(trim($row['P'] ?? ''), 0, 20);
+                $tglDiterima = $parseDate($row['Q'] ?? '') ?: date('Y-m-d');
+                $namaAyah = substr(trim($row['R'] ?? ''), 0, 100);
+                $namaIbu = substr(trim($row['S'] ?? ''), 0, 100);
+                $noHpOrtu = substr(preg_replace('/\.0$/', '', trim($row['T'] ?? '')), 0, 50);
+                $statusSiswa = substr(trim($row['U'] ?? 'Aktif'), 0, 20) ?: 'Aktif';
 
-                    $nikRaw = preg_replace('/\.0$/', '', trim($row['H'] ?? ''));
-                    $nikFinal = empty($nikRaw) ? null : substr($nikRaw, 0, 50);
-
-                    $emailRaw = trim($row['U'] ?? '');
-                    $emailFinal = empty($emailRaw) ? null : substr($emailRaw, 0, 100);
-
-                    $rombelExcel = strtolower(trim($row['AQ'] ?? ''));
-                    $rombelId = null;
-                    if (!empty($rombelExcel) && isset($mapRombel[$rombelExcel])) {
-                        $rombelId = $mapRombel[$rombelExcel];
+                try {
+                    // --- 🔍 PENCARIAN SISWA BERDASARKAN NIS (ACUAN UTAMA) ---
+                    $existing = null;
+                    if (!empty($nisFinal)) {
+                        $existing = $db->table('siswa')->where('nis', $nisFinal)->get()->getRowArray();
+                    }
+                    if (!$existing && !empty($nisnFinal)) {
+                        $existing = $db->table('siswa')->where('nisn', $nisnFinal)->get()->getRowArray();
+                    }
+                    if (!$existing && !empty($nikFinal)) {
+                        $existing = $db->table('siswa')->where('nik', $nikFinal)->get()->getRowArray();
+                    }
+                    if (!$existing && !empty($namaLengkap) && !empty($tempatLahir)) {
+                        $existing = $db->table('siswa')
+                            ->where('LOWER(nama_lengkap)', strtolower($namaLengkap))
+                            ->where('LOWER(tempat_lahir)', strtolower($tempatLahir))
+                            ->get()->getRowArray();
                     }
 
-                    $tglLahir = null;
-                    $tglRaw = trim($row['G'] ?? '');
-                    if (!empty($tglRaw) && strtotime($tglRaw) !== false) {
-                        $tglLahir = date('Y-m-d', strtotime($tglRaw));
-                    }
-
-                    $dataSiswa = [
-                        'nama_lengkap' => substr($namaLengkap, 0, 100),
-                        'nis' => $nisFinal,
-                        'nisn' => $nisnFinal,
-                        'jenis_kelamin' => (strtoupper(trim($row['D'] ?? '')) == 'P') ? 'P' : 'L',
-                        'tempat_lahir' => substr(trim($row['F'] ?? ''), 0, 50),
-                        'tanggal_lahir' => $tglLahir,
-                        'nik' => $nikFinal,
-                        'agama' => substr(trim($row['I'] ?? 'Islam'), 0, 20),
-                        'alamat_siswa' => trim($row['J'] ?? ''),
-                        'rt' => substr(trim($row['K'] ?? ''), 0, 10),
-                        'rw' => substr(trim($row['L'] ?? ''), 0, 10),
-                        'dusun' => substr(trim($row['M'] ?? ''), 0, 100),
-                        'kelurahan' => substr(trim($row['N'] ?? ''), 0, 100),
-                        'kecamatan' => substr(trim($row['O'] ?? ''), 0, 100),
-                        'kode_pos' => substr(trim($row['P'] ?? ''), 0, 20),
-                        'jenis_tinggal' => substr(trim($row['Q'] ?? ''), 0, 100),
-                        'alat_transportasi' => substr(trim($row['R'] ?? ''), 0, 100),
-                        'no_telp_rumah' => substr(trim($row['S'] ?? ''), 0, 50),
-                        'no_hp' => substr(preg_replace('/\.0$/', '', trim($row['T'] ?? '')), 0, 50),
-                        'email_siswa' => $emailFinal,
-                        'skhun' => substr(trim($row['V'] ?? ''), 0, 100),
-                        'penerima_kps' => (strtolower(trim($row['W'] ?? '')) == 'ya') ? 'Ya' : 'Tidak',
-                        'no_kps' => substr(trim($row['X'] ?? ''), 0, 100),
-                        'rombel_id' => $rombelId,
-                        'no_peserta_un' => substr(trim($row['AR'] ?? ''), 0, 100),
-                        'no_seri_ijazah' => substr(trim($row['AS'] ?? ''), 0, 100),
-                        'penerima_kip' => (strtolower(trim($row['AT'] ?? '')) == 'ya') ? 'Ya' : 'Tidak',
-                        'nomor_kip' => substr(trim($row['AU'] ?? ''), 0, 100),
-                        'nama_di_kip' => substr(trim($row['AV'] ?? ''), 0, 150),
-                        'nomor_kks' => substr(trim($row['AW'] ?? ''), 0, 100),
-                        'no_registrasi_akta' => substr(trim($row['AX'] ?? ''), 0, 100),
-                        'layak_pip' => (strtolower(trim($row['BB'] ?? '')) == 'ya') ? 'Ya' : 'Tidak',
-                        'alasan_layak_pip' => substr(trim($row['BC'] ?? ''), 0, 255),
-                        'kebutuhan_khusus' => substr(trim($row['BD'] ?? 'Tidak ada'), 0, 100),
-                        'asal_sekolah' => substr(trim($row['BE'] ?? ''), 0, 100),
-                        'anak_ke' => $getInt($row['BF'] ?? ''),
-                        'no_kk' => substr(preg_replace('/\.0$/', '', trim($row['BI'] ?? '')), 0, 50),
-                        'berat_badan' => $getInt($row['BJ'] ?? ''),
-                        'tinggi_badan' => $getInt($row['BK'] ?? ''),
-                        'lingkar_kepala' => $getInt($row['BL'] ?? ''),
-                        'jml_saudara_kandung' => $getInt($row['BM'] ?? ''),
-                        'jarak_ke_sekolah' => substr(trim($row['BN'] ?? ''), 0, 50),
-                        'status_siswa' => 'Aktif'
-                    ];
-
-                    try {
-                        $existing = null;
-
-                        if (!empty($nisnFinal)) {
-                            $existing = $db->table('siswa')->where('nisn', $nisnFinal)->get()->getRowArray();
-                        }
-                        if (!$existing && !empty($nikFinal)) {
-                            $existing = $db->table('siswa')->where('nik', $nikFinal)->get()->getRowArray();
-                        }
-                        if (!$existing && !empty($nisFinal)) {
-                            $existing = $db->table('siswa')
-                                ->where('nis', $nisFinal)
-                                ->where('nama_lengkap', $namaLengkap)
-                                ->get()->getRowArray();
-                        }
-                        if (!$existing) {
-                            $existing = $db->table('siswa')->where('nama_lengkap', $namaLengkap)->get()->getRowArray();
-                        }
-
-                        $siswaIdForOrtu = null;
-
-                        if ($existing) {
-                            $dataUpdate = [];
-                            foreach ($dataSiswa as $key => $val) {
-                                if (empty($existing[$key]) && !empty($val)) {
-                                    $dataUpdate[$key] = $val;
-                                }
-                            }
-
-                            if (!empty($dataUpdate)) {
-                                if (!$db->table('siswa')->where('id', $existing['id'])->update($dataUpdate)) {
-                                    throw new \Exception("DB Update Siswa Error: " . ($db->error()['message'] ?? ''));
-                                }
-                            }
-
-                            // --- 🚀 SUNTIKAN MESIN WAKTU (Sinkronisasi saat Import Update) ---
-                            if ($taAktif && !empty($dataSiswa['rombel_id'])) {
-                                $cekAR = $db->table('anggota_rombel')->where(['siswa_id' => $existing['id'], 'tahun_ajaran_id' => $taAktif['id']])->get()->getRowArray();
-                                if ($cekAR) {
-                                    $db->table('anggota_rombel')->where('id', $cekAR['id'])->update(['rombel_id' => $dataSiswa['rombel_id'], 'semester' => $taAktif['semester']]);
-                                } else {
-                                    $db->table('anggota_rombel')->insert([
-                                        'siswa_id' => $existing['id'],
-                                        'rombel_id' => $dataSiswa['rombel_id'],
-                                        'tahun_ajaran_id' => $taAktif['id'],
-                                        'semester' => $taAktif['semester']
-                                    ]);
-                                }
-                            }
-
-                            $siswaIdForOrtu = $existing['id'];
-                            $countUpdate++;
-                        } else {
-                            // VALIDASI STRICT SEBELUM INSERT
-                            $conflict = null;
-                            if (!empty($nisnFinal)) {
-                                $conflict = $db->table('siswa')->where('nisn', $nisnFinal)->get()->getRowArray();
-                                if ($conflict) $errors[] = "Baris $idx: NISN <b>$nisnFinal</b> sudah digunakan oleh <b>{$conflict['nama_lengkap']}</b>";
-                            }
-                            if (!$conflict && !empty($nikFinal)) {
-                                $conflict = $db->table('siswa')->where('nik', $nikFinal)->get()->getRowArray();
-                                if ($conflict) $errors[] = "Baris $idx: NIK <b>$nikFinal</b> sudah digunakan oleh <b>{$conflict['nama_lengkap']}</b>";
-                            }
-                            if (!$conflict && !empty($nisFinal)) {
-                                $conflict = $db->table('siswa')->where('nis', $nisFinal)->get()->getRowArray();
-                                if ($conflict) $errors[] = "Baris $idx: NIS <b>$nisFinal</b> sudah digunakan oleh <b>{$conflict['nama_lengkap']}</b>";
-                            }
-
-                            if ($conflict) continue; // Lewati baris ini jika ada konflik
-
-                            $username = !empty($dataSiswa['nisn']) ? $dataSiswa['nisn'] : (!empty($dataSiswa['nis']) ? $dataSiswa['nis'] : 'siswa' . time() . $idx);
-                            if ($db->table('users')->where('username', substr($username, 0, 50))->countAllResults() > 0) {
-                                $username = 'siswa' . time() . $idx;
-                            }
-
-                            $userData = [
-                                'username' => substr($username, 0, 50),
-                                'password' => password_hash('12345678', PASSWORD_BCRYPT),
-                                'role_id' => 3,
-                                'is_active' => 1
-                            ];
-                            if (!empty($dataSiswa['email_siswa']))
-                                $userData['email'] = $dataSiswa['email_siswa'];
-
-                            if (!$db->table('users')->insert($userData))
-                                throw new \Exception("Insert User: " . ($db->error()['message'] ?? ''));
-                            $dataSiswa['user_id'] = $db->insertID();
-
-                            if (!$db->table('siswa')->insert($dataSiswa))
-                                throw new \Exception("Insert Siswa: " . ($db->error()['message'] ?? ''));
-                            $siswaIdForOrtu = $db->insertID();
-
-                            // --- 🚀 SUNTIKAN MESIN WAKTU (Sinkronisasi saat Import Baru) ---
-                            if ($taAktif && !empty($dataSiswa['rombel_id'])) {
-                                $db->table('anggota_rombel')->insert([
-                                    'siswa_id' => $siswaIdForOrtu,
-                                    'rombel_id' => $dataSiswa['rombel_id'],
-                                    'tahun_ajaran_id' => $taAktif['id'],
-                                    'semester' => $taAktif['semester']
-                                ]);
-                            }
-
-                            $countInsert++;
-                        }
-
-                        $dataOrtuExcel = [
-                            'siswa_id' => $siswaIdForOrtu,
-                            'nama_ayah' => substr(trim($row['Y'] ?? ''), 0, 100),
-                            'tahun_lahir_ayah' => substr(trim($row['Z'] ?? ''), 0, 10),
-                            'pendidikan_ayah' => substr(trim($row['AA'] ?? ''), 0, 100),
-                            'pekerjaan_ayah' => substr(trim($row['AB'] ?? ''), 0, 50),
-                            'penghasilan_ayah' => substr(trim($row['AC'] ?? ''), 0, 100),
-                            'nik_ayah' => substr(preg_replace('/\.0$/', '', trim($row['AD'] ?? '')), 0, 50),
-                            'nama_ibu' => substr(trim($row['AE'] ?? ''), 0, 100),
-                            'tahun_lahir_ibu' => substr(trim($row['AF'] ?? ''), 0, 10),
-                            'pendidikan_ibu' => substr(trim($row['AG'] ?? ''), 0, 100),
-                            'pekerjaan_ibu' => substr(trim($row['AH'] ?? ''), 0, 50),
-                            'penghasilan_ibu' => substr(trim($row['AI'] ?? ''), 0, 100),
-                            'nik_ibu' => substr(preg_replace('/\.0$/', '', trim($row['AJ'] ?? '')), 0, 50),
-                            'nama_wali' => substr(trim($row['AK'] ?? ''), 0, 100),
-                            'tahun_lahir_wali' => substr(trim($row['AL'] ?? ''), 0, 10),
-                            'pendidikan_wali' => substr(trim($row['AM'] ?? ''), 0, 100),
-                            'pekerjaan_wali' => substr(trim($row['AN'] ?? ''), 0, 50),
-                            'penghasilan_wali' => substr(trim($row['AO'] ?? ''), 0, 100),
-                            'nik_wali' => substr(preg_replace('/\.0$/', '', trim($row['AP'] ?? '')), 0, 50)
+                    if ($existing) {
+                        // ==========================================
+                        // KASUS 1: UPDATE SISWA YANG SUDAH ADA
+                        // ==========================================
+                        $siswaId = $existing['id'];
+                        $dataUpdate = [
+                            'nama_lengkap'  => $namaLengkap,
+                            'jenis_kelamin' => $jk,
+                            'tempat_lahir'  => $tempatLahir,
+                            'agama'         => $agama,
+                            'status_siswa'  => $statusSiswa
                         ];
 
-                        $ortuExist = $db->table('orangtua_wali')->where('siswa_id', $siswaIdForOrtu)->get()->getRowArray();
-                        if ($ortuExist) {
-                            $dataOrtuUpdate = [];
-                            foreach ($dataOrtuExcel as $key => $val) {
-                                if (empty($ortuExist[$key]) && !empty($val))
-                                    $dataOrtuUpdate[$key] = $val;
+                        if (!empty($nisnFinal)) $dataUpdate['nisn'] = $nisnFinal;
+                        if (!empty($nikFinal)) $dataUpdate['nik'] = $nikFinal;
+                        if (!empty($tglLahir)) $dataUpdate['tanggal_lahir'] = $tglLahir;
+                        if (!empty($alamat)) $dataUpdate['alamat_siswa'] = $alamat;
+                        if (!empty($kecamatan)) $dataUpdate['kecamatan'] = $kecamatan;
+                        if (!empty($kelurahan)) $dataUpdate['kelurahan'] = $kelurahan;
+                        if (!empty($noHpSiswa)) $dataUpdate['no_hp'] = $noHpSiswa;
+                        if (!empty($emailSiswa)) $dataUpdate['email_siswa'] = $emailSiswa;
+                        if (!empty($asalSekolah)) $dataUpdate['asal_sekolah'] = $asalSekolah;
+                        if (!empty($diterimaDiKelas)) $dataUpdate['diterima_dikelas'] = $diterimaDiKelas;
+                        if (!empty($tglDiterima)) $dataUpdate['tgl_diterima'] = $tglDiterima;
+                        if (!empty($rombelId)) $dataUpdate['rombel_id'] = $rombelId;
+
+                        $db->table('siswa')->where('id', $siswaId)->update($dataUpdate);
+
+                        // Sinkronisasi Anggota Rombel (Mesin Waktu)
+                        if ($taAktif && !empty($rombelId)) {
+                            $cekAR = $db->table('anggota_rombel')->where([
+                                'siswa_id'        => $siswaId,
+                                'tahun_ajaran_id' => $taAktif['id']
+                            ])->get()->getRowArray();
+
+                            if ($cekAR) {
+                                $db->table('anggota_rombel')->where('id', $cekAR['id'])->update([
+                                    'rombel_id' => $rombelId,
+                                    'semester'  => $taAktif['semester']
+                                ]);
+                            } else {
+                                $db->table('anggota_rombel')->insert([
+                                    'siswa_id'        => $siswaId,
+                                    'rombel_id'       => $rombelId,
+                                    'tahun_ajaran_id' => $taAktif['id'],
+                                    'semester'        => $taAktif['semester']
+                                ]);
                             }
-                            if (!empty($dataOrtuUpdate))
-                                $db->table('orangtua_wali')->where('siswa_id', $siswaIdForOrtu)->update($dataOrtuUpdate);
-                        } else {
-                            $db->table('orangtua_wali')->insert($dataOrtuExcel);
                         }
-                    } catch (\Exception $dbRowErr) {
-                        $db->transRollback();
-                        return $this->response->setJSON([
-                            'status' => 'error',
-                            'message' => "<strong>Gagal di Siswa: {$namaLengkap}</strong><br>" . $dbRowErr->getMessage()
+
+                        // Sinkronisasi Data Orang Tua
+                        $ortuExist = $db->table('orangtua_wali')->where('siswa_id', $siswaId)->get()->getRowArray();
+                        $dataOrtuUpdate = [];
+                        if (!empty($namaAyah)) $dataOrtuUpdate['nama_ayah'] = $namaAyah;
+                        if (!empty($namaIbu)) $dataOrtuUpdate['nama_ibu'] = $namaIbu;
+                        if (!empty($noHpOrtu)) $dataOrtuUpdate['no_hp_ortu'] = $noHpOrtu;
+                        if (!empty($alamat)) $dataOrtuUpdate['alamat_orangtua'] = $alamat;
+
+                        if (!empty($dataOrtuUpdate)) {
+                            if ($ortuExist) {
+                                $db->table('orangtua_wali')->where('siswa_id', $siswaId)->update($dataOrtuUpdate);
+                            } else {
+                                $dataOrtuUpdate['siswa_id'] = $siswaId;
+                                $db->table('orangtua_wali')->insert($dataOrtuUpdate);
+                            }
+                        }
+
+                        $countUpdate++;
+                    } else {
+                        // ==========================================
+                        // KASUS 2: INSERT SISWA BARU
+                        // ==========================================
+                        if (empty($nisFinal)) {
+                            $nisFinal = $this->generateNextNisInternal($tglDiterima);
+                        }
+
+                        // Buat Akun Login User untuk Siswa
+                        $usernameSiswa = $nisFinal;
+                        if ($db->table('users')->where('username', substr($usernameSiswa, 0, 50))->countAllResults() > 0) {
+                            $usernameSiswa = $usernameSiswa . '_' . rand(10, 99);
+                        }
+
+                        $userData = [
+                            'username'  => substr($usernameSiswa, 0, 50),
+                            'password'  => password_hash('12345678', PASSWORD_BCRYPT),
+                            'role_id'   => 3,
+                            'is_active' => 1
+                        ];
+                        if (!empty($emailSiswa)) {
+                            $userData['email'] = $emailSiswa;
+                        }
+
+                        if (!$db->table('users')->insert($userData)) {
+                            throw new \Exception("Gagal membuat akun user untuk {$namaLengkap}: " . ($db->error()['message'] ?? ''));
+                        }
+                        $userIdSiswa = $db->insertID();
+
+                        // Simpan Data Siswa
+                        $dataSiswaBaru = [
+                            'user_id'          => $userIdSiswa,
+                            'nis'              => $nisFinal,
+                            'nisn'             => $nisnFinal,
+                            'nik'              => $nikFinal,
+                            'nama_lengkap'     => $namaLengkap,
+                            'jenis_kelamin'    => $jk,
+                            'tempat_lahir'     => $tempatLahir,
+                            'tanggal_lahir'    => $tglLahir,
+                            'agama'            => $agama,
+                            'rombel_id'        => $rombelId,
+                            'alamat_siswa'     => $alamat,
+                            'kecamatan'        => $kecamatan,
+                            'kelurahan'        => $kelurahan,
+                            'no_hp'            => $noHpSiswa,
+                            'email_siswa'      => $emailSiswa,
+                            'asal_sekolah'     => $asalSekolah,
+                            'diterima_dikelas' => $diterimaDiKelas,
+                            'tgl_diterima'     => $tglDiterima,
+                            'status_siswa'     => $statusSiswa
+                        ];
+
+                        if (!$db->table('siswa')->insert($dataSiswaBaru)) {
+                            throw new \Exception("Gagal menyimpan data siswa {$namaLengkap}: " . ($db->error()['message'] ?? ''));
+                        }
+                        $siswaId = $db->insertID();
+
+                        // Masukkan ke Anggota Rombel Tahun Ajaran Aktif
+                        if ($taAktif && !empty($rombelId)) {
+                            $db->table('anggota_rombel')->insert([
+                                'siswa_id'        => $siswaId,
+                                'rombel_id'       => $rombelId,
+                                'tahun_ajaran_id' => $taAktif['id'],
+                                'semester'        => $taAktif['semester']
+                            ]);
+                        }
+
+                        // Akun & Data Orang Tua
+                        $usernameOrtu = !empty($noHpOrtu) ? $noHpOrtu : 'W' . $nisFinal;
+                        $existingUserOrtu = $db->table('users')->where('username', substr($usernameOrtu, 0, 50))->get()->getRowArray();
+                        if ($existingUserOrtu) {
+                            $userIdOrtu = $existingUserOrtu['id'];
+                        } else {
+                            $ortuAccount = [
+                                'username'  => substr($usernameOrtu, 0, 50),
+                                'password'  => password_hash('12345678', PASSWORD_BCRYPT),
+                                'role_id'   => 4,
+                                'is_active' => 1
+                            ];
+                            $db->table('users')->insert($ortuAccount);
+                            $userIdOrtu = $db->insertID();
+                        }
+
+                        $db->table('orangtua_wali')->insert([
+                            'siswa_id'        => $siswaId,
+                            'user_id'         => $userIdOrtu,
+                            'nama_ayah'       => !empty($namaAyah) ? $namaAyah : '-',
+                            'nama_ibu'        => !empty($namaIbu) ? $namaIbu : '-',
+                            'no_hp_ortu'      => $noHpOrtu,
+                            'alamat_orangtua' => $alamat
                         ]);
+
+                        $countInsert++;
                     }
+                } catch (\Throwable $dbRowErr) {
+                    $errors[] = "Baris $idx ({$namaLengkap}): " . $dbRowErr->getMessage();
                 }
             }
 
-            if (!empty($errors)) {
+            if (!empty($errors) && $countInsert == 0 && $countUpdate == 0) {
                 $db->transRollback();
                 return $this->response->setJSON([
-                    'status' => 'error',
-                    'message' => '<b>Ditemukan duplikasi data!</b> Import dibatalkan untuk menjaga integritas.<br><br><ul><li>' . implode('</li><li>', $errors) . '</li></ul>'
+                    'status'  => 'error',
+                    'message' => '<b>Proses import gagal:</b><br><ul><li>' . implode('</li><li>', array_slice($errors, 0, 10)) . '</li></ul>'
                 ]);
             }
 
             $db->transCommit();
-            return $this->response->setJSON(['status' => 'success', 'message' => "Import Dapodik Sukses! $countInsert Siswa Baru ditambahkan, $countUpdate Data Siswa diperbarui."]);
+            $msg = "Import Siswa Sukses! <b>{$countInsert}</b> Siswa Baru ditambahkan, <b>{$countUpdate}</b> Data Siswa diperbarui.";
+            if (!empty($errors)) {
+                $msg .= "<br><br><small class='text-amber-600'>Catatan (" . count($errors) . " baris dilewati/error):<br>" . implode('<br>', array_slice($errors, 0, 5)) . "</small>";
+            }
+
+            return $this->response->setJSON(['status' => 'success', 'message' => $msg]);
         } catch (\Throwable $e) {
-            if (isset($db))
+            if (isset($db)) {
                 $db->transRollback();
+            }
             return $this->response->setJSON(['status' => 'error', 'message' => 'Fatal Error: ' . $e->getMessage()]);
         }
     }
@@ -1154,18 +1156,16 @@ function delete($id)
         $data = $builder->get()->getResultArray();
         return $this->response->setJSON($data);
     }
+
     // =========================================================
-    // FITUR BARU: API UNTUK MERAMAL/GENERATE NIS OTOMATIS
+    // FITUR INTERNAL & API: GENERATE NIS OTOMATIS
     // =========================================================
-    public function generateNextNis()
+    private function generateNextNisInternal($tglDiterima = null)
     {
         $siswaModel = new SiswaModel();
+        $tgl = $tglDiterima ?: date('Y-m-d');
+        $tahunMasuk = date('y', strtotime($tgl));
 
-        // Ambil tanggal dari frontend (jika diubah), jika kosong pakai hari ini
-        $tglDiterima = $this->request->getGet('tgl_diterima') ?: date('Y-m-d');
-        $tahunMasuk = date('y', strtotime($tglDiterima));
-
-        // Logika meracik NIS yang sama persis dengan fungsi store()
         $lastSiswa = $siswaModel->orderBy('id', 'DESC')->first();
         if ($lastSiswa && !empty($lastSiswa['nis']) && strpos($lastSiswa['nis'], '.') !== false) {
             $parts = explode('.', $lastSiswa['nis']);
@@ -1179,11 +1179,17 @@ function delete($id)
         $prefixNis = sprintf("%02d", $angkatanBaru) . '.' . $tahunMasuk . '.';
         $cekUrutan = $siswaModel->like('nis', $prefixNis, 'after')->orderBy('nis', 'DESC')->first();
         $nextUrut = $cekUrutan ? ((int) explode('.', $cekUrutan['nis'])[2] + 1) : 1;
-        $nisFinal = $prefixNis . sprintf("%05d", $nextUrut);
+        return $prefixNis . sprintf("%05d", $nextUrut);
+    }
+
+    public function generateNextNis()
+    {
+        $tglDiterima = $this->request->getGet('tgl_diterima') ?: date('Y-m-d');
+        $nisFinal = $this->generateNextNisInternal($tglDiterima);
 
         return $this->response->setJSON([
             'status' => 'success',
-            'nis' => $nisFinal
+            'nis'    => $nisFinal
         ]);
     }
 }
