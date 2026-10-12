@@ -727,7 +727,7 @@ function delete($id)
             'Kecamatan',
             'Kelurahan / Desa',
             'No HP Siswa',
-            'Email Siswa',
+            'Email Siswa (Opsional - Kosongkan Jika Tidak Ada)',
             'Asal Sekolah',
             'Diterima di Kelas',
             'Tanggal Diterima (YYYY-MM-DD)',
@@ -870,6 +870,65 @@ function delete($id)
                 return null;
             };
 
+            // 4. Deteksi Header Dinamis dari Baris 1 (Pencegah Geser Kolom)
+            $headerRow = $sheetData[1] ?? [];
+            $colMap = [];
+            foreach ($headerRow as $colKey => $hVal) {
+                $h = strtolower(trim((string)$hVal));
+                if (empty($h)) continue;
+
+                if (strpos($h, 'nisn') !== false) {
+                    $colMap['nisn'] = $colKey;
+                } elseif (strpos($h, 'nis') !== false && !isset($colMap['nis'])) {
+                    $colMap['nis'] = $colKey;
+                } elseif (strpos($h, 'nik') !== false && strpos($h, 'ayah') === false && strpos($h, 'ibu') === false && strpos($h, 'wali') === false) {
+                    $colMap['nik'] = $colKey;
+                } elseif (strpos($h, 'nama') !== false && strpos($h, 'ayah') === false && strpos($h, 'ibu') === false && strpos($h, 'wali') === false && strpos($h, 'sekolah') === false) {
+                    $colMap['nama'] = $colKey;
+                } elseif (strpos($h, 'kelamin') !== false || $h === 'jk' || $h === 'l/p' || strpos($h, 'gender') !== false) {
+                    $colMap['jk'] = $colKey;
+                } elseif (strpos($h, 'tempat') !== false) {
+                    $colMap['tempat_lahir'] = $colKey;
+                } elseif (strpos($h, 'tanggal lahir') !== false || strpos($h, 'tgl lahir') !== false) {
+                    $colMap['tgl_lahir'] = $colKey;
+                } elseif (strpos($h, 'agama') !== false) {
+                    $colMap['agama'] = $colKey;
+                } elseif (strpos($h, 'kelas') !== false || strpos($h, 'rombel') !== false) {
+                    if (strpos($h, 'diterima') === false) {
+                        $colMap['rombel'] = $colKey;
+                    }
+                } elseif (strpos($h, 'alamat') !== false) {
+                    $colMap['alamat'] = $colKey;
+                } elseif (strpos($h, 'kecamatan') !== false) {
+                    $colMap['kecamatan'] = $colKey;
+                } elseif (strpos($h, 'kelurahan') !== false || strpos($h, 'desa') !== false) {
+                    $colMap['kelurahan'] = $colKey;
+                } elseif (strpos($h, 'email') !== false && strpos($h, 'ortu') === false && strpos($h, 'orang') === false) {
+                    $colMap['email'] = $colKey;
+                } elseif ((strpos($h, 'hp') !== false || strpos($h, 'telepon') !== false || strpos($h, 'telp') !== false || strpos($h, 'wa') !== false) && strpos($h, 'ortu') === false && strpos($h, 'orang') === false && strpos($h, 'wali') === false) {
+                    $colMap['no_hp'] = $colKey;
+                } elseif (strpos($h, 'asal') !== false || strpos($h, 'sekolah') !== false) {
+                    $colMap['asal_sekolah'] = $colKey;
+                } elseif (strpos($h, 'diterima di') !== false || strpos($h, 'diterima kelas') !== false) {
+                    $colMap['diterima_dikelas'] = $colKey;
+                } elseif (strpos($h, 'tgl diterima') !== false || strpos($h, 'tanggal diterima') !== false) {
+                    $colMap['tgl_diterima'] = $colKey;
+                } elseif (strpos($h, 'ayah') !== false && strpos($h, 'nik') === false) {
+                    $colMap['nama_ayah'] = $colKey;
+                } elseif (strpos($h, 'ibu') !== false && strpos($h, 'nik') === false) {
+                    $colMap['nama_ibu'] = $colKey;
+                } elseif ((strpos($h, 'hp') !== false || strpos($h, 'telepon') !== false || strpos($h, 'telp') !== false || strpos($h, 'wa') !== false) && (strpos($h, 'ortu') !== false || strpos($h, 'orang') !== false || strpos($h, 'wali') !== false)) {
+                    $colMap['no_hp_ortu'] = $colKey;
+                } elseif (strpos($h, 'status') !== false) {
+                    $colMap['status_siswa'] = $colKey;
+                }
+            }
+
+            $getVal = function ($row, $field, $defaultCol) use ($colMap) {
+                $col = $colMap[$field] ?? $defaultCol;
+                return trim((string)($row[$col] ?? ''));
+            };
+
             $db->transBegin();
 
             $countInsert = 0;
@@ -880,8 +939,8 @@ function delete($id)
                 // Lewati baris header
                 if ($idx == 1) continue;
 
-                $namaLengkap = trim($row['D'] ?? '');
-                $nisInput    = trim($row['A'] ?? '');
+                $namaLengkap = $getVal($row, 'nama', 'D');
+                $nisInput    = $getVal($row, 'nis', 'A');
 
                 // Jika baris kosong, lewati
                 if (empty($namaLengkap) && empty($nisInput)) {
@@ -894,32 +953,47 @@ function delete($id)
                 }
 
                 $nisFinal = !empty($nisInput) ? substr($nisInput, 0, 30) : null;
-                $nisnFinal = !empty($row['B']) ? substr(preg_replace('/\.0$/', '', trim($row['B'])), 0, 20) : null;
-                $nikFinal = !empty($row['C']) ? substr(preg_replace('/\.0$/', '', trim($row['C'])), 0, 50) : null;
-                $jk = (strtoupper(trim($row['E'] ?? 'L')) === 'P') ? 'P' : 'L';
-                $tempatLahir = substr(trim($row['F'] ?? ''), 0, 50);
-                $tglLahir = $parseDate($row['G'] ?? '');
-                $agama = substr(trim($row['H'] ?? 'Islam'), 0, 20) ?: 'Islam';
+                $nisnFinal = !empty($getVal($row, 'nisn', 'B')) ? substr(preg_replace('/\.0$/', '', $getVal($row, 'nisn', 'B')), 0, 20) : null;
+                $nikFinal = !empty($getVal($row, 'nik', 'C')) ? substr(preg_replace('/\.0$/', '', $getVal($row, 'nik', 'C')), 0, 50) : null;
+                $jkRaw = strtoupper($getVal($row, 'jk', 'E'));
+                $jk = ($jkRaw === 'P') ? 'P' : 'L';
+                $tempatLahir = substr($getVal($row, 'tempat_lahir', 'F'), 0, 50);
+                $tglLahir = $parseDate($getVal($row, 'tgl_lahir', 'G'));
+                $agama = substr($getVal($row, 'agama', 'H'), 0, 20) ?: 'Islam';
 
                 // Resolusi Rombel
-                $rombelRaw = strtolower(trim($row['I'] ?? ''));
+                $rombelRaw = strtolower($getVal($row, 'rombel', 'I'));
                 $rombelId = null;
                 if (!empty($rombelRaw) && isset($mapRombel[$rombelRaw])) {
                     $rombelId = $mapRombel[$rombelRaw];
                 }
 
-                $alamat = trim($row['J'] ?? '');
-                $kecamatan = substr(trim($row['K'] ?? ''), 0, 100);
-                $kelurahan = substr(trim($row['L'] ?? ''), 0, 100);
-                $noHpSiswa = substr(preg_replace('/\.0$/', '', trim($row['M'] ?? '')), 0, 50);
-                $emailSiswa = substr(trim($row['N'] ?? ''), 0, 100);
-                $asalSekolah = substr(trim($row['O'] ?? ''), 0, 100);
-                $diterimaDiKelas = substr(trim($row['P'] ?? ''), 0, 20);
-                $tglDiterima = $parseDate($row['Q'] ?? '') ?: date('Y-m-d');
-                $namaAyah = substr(trim($row['R'] ?? ''), 0, 100);
-                $namaIbu = substr(trim($row['S'] ?? ''), 0, 100);
-                $noHpOrtu = substr(preg_replace('/\.0$/', '', trim($row['T'] ?? '')), 0, 50);
-                $statusSiswa = substr(trim($row['U'] ?? 'Aktif'), 0, 20) ?: 'Aktif';
+                $alamat = $getVal($row, 'alamat', 'J');
+                $kecamatan = substr($getVal($row, 'kecamatan', 'K'), 0, 100);
+                $kelurahan = substr($getVal($row, 'kelurahan', 'L'), 0, 100);
+                $noHpSiswa = substr(preg_replace('/\.0$/', '', $getVal($row, 'no_hp', 'M')), 0, 50);
+
+                // --- 🛡️ SANITASI EMAIL SISWA: Hanya izinkan format email valid, abaikan dummy/angka ---
+                $emailRaw = $getVal($row, 'email', 'N');
+                $emailFinal = null;
+                if (!empty($emailRaw) && filter_var($emailRaw, FILTER_VALIDATE_EMAIL)) {
+                    // Cek apakah email sudah terdaftar di users atau siswa lain
+                    $cekUserEmail = $db->table('users')->where('email', $emailRaw)->countAllResults();
+                    $cekSiswaEmail = $db->table('siswa')->where('email_siswa', $emailRaw)->countAllResults();
+                    if ($cekUserEmail == 0 && $cekSiswaEmail == 0) {
+                        $emailFinal = substr($emailRaw, 0, 100);
+                    }
+                }
+
+                $asalSekolah = substr($getVal($row, 'asal_sekolah', 'O'), 0, 100);
+                $diterimaDiKelas = substr($getVal($row, 'diterima_dikelas', 'P'), 0, 20);
+                $tglDiterima = $parseDate($getVal($row, 'tgl_diterima', 'Q')) ?: date('Y-m-d');
+                $namaAyah = substr($getVal($row, 'nama_ayah', 'R'), 0, 100);
+                $namaIbu = substr($getVal($row, 'nama_ibu', 'S'), 0, 100);
+                $noHpOrtu = substr(preg_replace('/\.0$/', '', $getVal($row, 'no_hp_ortu', 'T')), 0, 50);
+                $statusSiswa = substr($getVal($row, 'status_siswa', 'U'), 0, 20) ?: 'Aktif';
+
+                $createdUserId = null;
 
                 try {
                     // --- 🔍 PENCARIAN SISWA BERDASARKAN NIS (ACUAN UTAMA) ---
@@ -960,7 +1034,7 @@ function delete($id)
                         if (!empty($kecamatan)) $dataUpdate['kecamatan'] = $kecamatan;
                         if (!empty($kelurahan)) $dataUpdate['kelurahan'] = $kelurahan;
                         if (!empty($noHpSiswa)) $dataUpdate['no_hp'] = $noHpSiswa;
-                        if (!empty($emailSiswa)) $dataUpdate['email_siswa'] = $emailSiswa;
+                        if (!empty($emailFinal)) $dataUpdate['email_siswa'] = $emailFinal;
                         if (!empty($asalSekolah)) $dataUpdate['asal_sekolah'] = $asalSekolah;
                         if (!empty($diterimaDiKelas)) $dataUpdate['diterima_dikelas'] = $diterimaDiKelas;
                         if (!empty($tglDiterima)) $dataUpdate['tgl_diterima'] = $tglDiterima;
@@ -1028,14 +1102,15 @@ function delete($id)
                             'role_id'   => 3,
                             'is_active' => 1
                         ];
-                        if (!empty($emailSiswa)) {
-                            $userData['email'] = $emailSiswa;
+                        if (!empty($emailFinal)) {
+                            $userData['email'] = $emailFinal;
                         }
 
                         if (!$db->table('users')->insert($userData)) {
                             throw new \Exception("Gagal membuat akun user untuk {$namaLengkap}: " . ($db->error()['message'] ?? ''));
                         }
                         $userIdSiswa = $db->insertID();
+                        $createdUserId = $userIdSiswa;
 
                         // Simpan Data Siswa
                         $dataSiswaBaru = [
@@ -1053,7 +1128,7 @@ function delete($id)
                             'kecamatan'        => $kecamatan,
                             'kelurahan'        => $kelurahan,
                             'no_hp'            => $noHpSiswa,
-                            'email_siswa'      => $emailSiswa,
+                            'email_siswa'      => $emailFinal,
                             'asal_sekolah'     => $asalSekolah,
                             'diterima_dikelas' => $diterimaDiKelas,
                             'tgl_diterima'     => $tglDiterima,
@@ -1103,6 +1178,13 @@ function delete($id)
                         $countInsert++;
                     }
                 } catch (\Throwable $dbRowErr) {
+                    // Bersihkan user baru jika insert siswa gagal agar tidak jadi user hantu
+                    if ($createdUserId) {
+                        try {
+                            $db->table('users')->where('id', $createdUserId)->delete();
+                        } catch (\Throwable $delErr) {
+                        }
+                    }
                     $errors[] = "Baris $idx ({$namaLengkap}): " . $dbRowErr->getMessage();
                 }
             }

@@ -1,29 +1,20 @@
 <?php
-define('FCPATH', __DIR__ . '/backend/public/');
-require 'backend/app/Config/Paths.php';
-$paths = new Config\Paths();
-require $paths->systemDirectory . '/bootstrap.php';
+$env = file_get_contents(__DIR__ . '/../backend/.env');
+preg_match('/database.default.hostname\s*=\s*(.*)/', $env, $mHost);
+preg_match('/database.default.database\s*=\s*(.*)/', $env, $mDb);
+preg_match('/database.default.username\s*=\s*(.*)/', $env, $mUser);
+preg_match('/database.default.password\s*=\s*(.*)/', $env, $mPass);
 
-$db = \Config\Database::connect();
+$pdo = new PDO("mysql:host=" . trim($mHost[1]) . ";dbname=" . trim($mDb[1]), trim($mUser[1]), trim($mPass[1]));
 
-echo "--- SETTING BOBOT NILAI ---\n";
-$bobot = $db->table('setting_bobot_nilai')->get()->getResultArray();
-print_r($bobot);
+echo "--- Check email_siswa in ('1','2','3','4','5','6','7','8','9','10') in siswa ---\n";
+$stmt = $pdo->query("SELECT id, nis, nama_lengkap, email_siswa FROM siswa WHERE email_siswa IN ('1','2','3','4','5','6','7','8','9','10')");
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    echo "ID: {$row['id']}, NIS: {$row['nis']}, Nama: {$row['nama_lengkap']}, Email: '{$row['email_siswa']}'\n";
+}
 
-echo "\n--- NILAI SISWA (AISYAHARA INDRI) ---\n";
-// AISYAHARA INDRI NISN: 0117905743
-$siswa = $db->table('siswa')->where('nisn', '0117905743')->get()->getRowArray();
-if ($siswa) {
-    $siswa_id = $siswa['id'];
-    echo "Siswa ID: $siswa_id\n";
-    
-    echo "\nSUMATIF:\n";
-    $sumatif = $db->table('nilai_sumatif')->where('siswa_id', $siswa_id)->get()->getResultArray();
-    print_r($sumatif);
-    
-    echo "\nFORMATIF:\n";
-    $formatif = $db->table('nilai_formatif')->where('siswa_id', $siswa_id)->get()->getResultArray();
-    print_r($formatif);
-} else {
-    echo "Siswa tidak ditemukan.\n";
+echo "\n--- Check email in ('1','2','3','4','5','6','7','8','9','10') in users ---\n";
+$stmt = $pdo->query("SELECT id, username, email FROM users WHERE email IN ('1','2','3','4','5','6','7','8','9','10')");
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    echo "ID: {$row['id']}, Username: {$row['username']}, Email: '{$row['email']}'\n";
 }

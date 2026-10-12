@@ -368,7 +368,7 @@ class OrangTuaController extends AdminBaseController
             'Nama Wali',
             'Pekerjaan Wali',
             'No HP / WA Orang Tua',
-            'Email Orang Tua',
+            'Email Orang Tua (Opsional - Kosongkan Jika Tidak Ada)',
             'Alamat Lengkap'
         ];
 
@@ -478,23 +478,68 @@ class OrangTuaController extends AdminBaseController
             $countUpdate = 0;
             $errors = [];
 
+            // --- 🛡️ PEMETAAN HEADER DINAMIS DARI BARIS 1 ---
+            $headerRow = $sheet[1] ?? [];
+            $colMap = [];
+            foreach ($headerRow as $colKey => $hVal) {
+                $h = strtolower(trim((string)$hVal));
+                if (strpos($h, 'nis') !== false) {
+                    $colMap['nis'] = $colKey;
+                } elseif (strpos($h, 'nama siswa') !== false || (strpos($h, 'siswa') !== false && strpos($h, 'nama') !== false)) {
+                    $colMap['nama_siswa'] = $colKey;
+                } elseif (strpos($h, 'ayah') !== false) {
+                    if (strpos($h, 'nik') !== false) {
+                        $colMap['nik_ayah'] = $colKey;
+                    } elseif (strpos($h, 'pekerjaan') !== false) {
+                        $colMap['pekerjaan_ayah'] = $colKey;
+                    } else {
+                        $colMap['nama_ayah'] = $colKey;
+                    }
+                } elseif (strpos($h, 'ibu') !== false) {
+                    if (strpos($h, 'nik') !== false) {
+                        $colMap['nik_ibu'] = $colKey;
+                    } elseif (strpos($h, 'pekerjaan') !== false) {
+                        $colMap['pekerjaan_ibu'] = $colKey;
+                    } else {
+                        $colMap['nama_ibu'] = $colKey;
+                    }
+                } elseif (strpos($h, 'wali') !== false) {
+                    if (strpos($h, 'pekerjaan') !== false) {
+                        $colMap['pekerjaan_wali'] = $colKey;
+                    } else {
+                        $colMap['nama_wali'] = $colKey;
+                    }
+                } elseif (strpos($h, 'hp') !== false || strpos($h, 'wa') !== false || strpos($h, 'telepon') !== false || strpos($h, 'telp') !== false) {
+                    $colMap['hp'] = $colKey;
+                } elseif (strpos($h, 'email') !== false) {
+                    $colMap['email'] = $colKey;
+                } elseif (strpos($h, 'alamat') !== false) {
+                    $colMap['alamat'] = $colKey;
+                }
+            }
+
+            $getVal = function ($row, $field, $defaultCol) use ($colMap) {
+                $col = $colMap[$field] ?? $defaultCol;
+                return trim((string)($row[$col] ?? ''));
+            };
+
             foreach ($sheet as $idx => $row) {
                 // Lewati baris 1 (Header/Judul Kolom)
                 if ($idx == 1) continue;
 
-                $nis = trim($row['A'] ?? '');
-                $namaSiswa = trim($row['B'] ?? '');
-                $namaAyah = trim($row['C'] ?? '');
-                $nikAyah = trim($row['D'] ?? '');
-                $pekerjaanAyah = trim($row['E'] ?? '');
-                $namaIbu = trim($row['F'] ?? '');
-                $nikIbu = trim($row['G'] ?? '');
-                $pekerjaanIbu = trim($row['H'] ?? '');
-                $namaWali = trim($row['I'] ?? '');
-                $pekerjaanWali = trim($row['J'] ?? '');
-                $hpRaw = preg_replace('/[^0-9]/', '', trim($row['K'] ?? ''));
-                $email = trim($row['L'] ?? '');
-                $alamat = trim($row['M'] ?? '');
+                $nis = $getVal($row, 'nis', 'A');
+                $namaSiswa = $getVal($row, 'nama_siswa', 'B');
+                $namaAyah = $getVal($row, 'nama_ayah', 'C');
+                $nikAyah = $getVal($row, 'nik_ayah', 'D');
+                $pekerjaanAyah = $getVal($row, 'pekerjaan_ayah', 'E');
+                $namaIbu = $getVal($row, 'nama_ibu', 'F');
+                $nikIbu = $getVal($row, 'nik_ibu', 'G');
+                $pekerjaanIbu = $getVal($row, 'pekerjaan_ibu', 'H');
+                $namaWali = $getVal($row, 'nama_wali', 'I');
+                $pekerjaanWali = $getVal($row, 'pekerjaan_wali', 'J');
+                $hpRaw = preg_replace('/[^0-9]/', '', $getVal($row, 'hp', 'K'));
+                $email = $getVal($row, 'email', 'L');
+                $alamat = $getVal($row, 'alamat', 'M');
 
                 // Lewati baris kosong
                 if (empty($nis) && empty($namaSiswa) && empty($namaAyah) && empty($namaIbu)) {
@@ -520,12 +565,17 @@ class OrangTuaController extends AdminBaseController
                 // 2. Buat / Sinkronkan Akun Login Orang Tua (User)
                 $username = !empty($hpRaw) ? $hpRaw : ('W' . ($siswa['nis'] ?: $siswaId));
 
+                $emailFinal = null;
+                if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $emailFinal = substr($email, 0, 100);
+                }
+
                 $existingUser = null;
                 if (!empty($username)) {
                     $existingUser = $userModel->where('username', $username)->first();
                 }
-                if (!$existingUser && !empty($email)) {
-                    $existingUser = $userModel->where('email', $email)->first();
+                if (!$existingUser && !empty($emailFinal)) {
+                    $existingUser = $userModel->where('email', $emailFinal)->first();
                 }
 
                 if ($existingUser) {
@@ -537,8 +587,9 @@ class OrangTuaController extends AdminBaseController
                         'role_id'   => 4, // Role 4 = Orang Tua
                         'is_active' => 1
                     ];
-                    if (!empty($email)) {
-                        $userData['email'] = substr($email, 0, 100);
+                    // Hanya set email jika valid dan belum terpakai oleh user lain
+                    if (!empty($emailFinal) && $userModel->where('email', $emailFinal)->countAllResults() == 0) {
+                        $userData['email'] = $emailFinal;
                     }
 
                     $userModel->insert($userData);
@@ -558,7 +609,7 @@ class OrangTuaController extends AdminBaseController
                     'nama_wali'       => !empty($namaWali) ? substr($namaWali, 0, 100) : '-',
                     'pekerjaan_wali'  => !empty($pekerjaanWali) ? substr($pekerjaanWali, 0, 50) : '-',
                     'no_hp_ortu'      => substr($hpRaw, 0, 20),
-                    'email_ortu'      => substr($email, 0, 100),
+                    'email_ortu'      => $emailFinal,
                     'alamat_orangtua' => !empty($alamat) ? substr($alamat, 0, 255) : '-'
                 ];
 
@@ -622,7 +673,7 @@ class OrangTuaController extends AdminBaseController
             'Nama Wali',
             'Pekerjaan Wali',
             'No HP / WhatsApp',
-            'Email',
+            'Email Orang Tua (Opsional - Kosongkan Jika Tidak Ada)',
             'Alamat Lengkap'
         ];
 

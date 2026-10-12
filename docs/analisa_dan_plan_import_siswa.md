@@ -175,4 +175,74 @@ Pengujian dijalankan via script [scratch/test_import_orangtua.php](file:///d:/la
 - **Parsing Data Baris**: 13 kolom terpetakan dengan presisi tanpa kesalahan pergeseran kolom.
 - **Status Eksekusi**: `Exit Code 0 (Success)`.
 
+---
+
+## 8. Analisa & Penanganan Laporan Error: Duplicate Entry Email Siswa & User
+
+### A. Laporan Kasus dari Lapangan
+Pada saat pengujian import di server (`raporsmpit.fath.dev/admin/siswa`), muncul modal error:
+```text
+Proses import gagal:
+Baris 2 (Al Buqhori Rafif): Gagal menyimpan data siswa Al Buqhori Rafif: Duplicate entry '1' for key 'siswa.email_siswa'
+Baris 3 (Alvaro Rafiqi Iranda Nst): Gagal menyimpan data siswa Alvaro Rafiqi Iranda Nst: Duplicate entry '2' for key 'siswa.email_siswa'
+Baris 4 (ARKA ZEVAN ABADI): Gagal menyimpan data siswa ARKA ZEVAN ABADI: Duplicate entry '3' for key 'siswa.email_siswa'
+Baris 5 (ARKAAN KAHFI AL IKHSAN): Gagal menyimpan data siswa ARKAAN KAHFI AL IKHSAN: Duplicate entry '4' for key 'siswa.email_siswa'
+Baris 6 (AZKA ADHYASTHA): Gagal menyimpan data siswa AZKA ADHYASTHA: Duplicate entry '5' for key 'siswa.email_siswa'
+Baris 7 (Bahri Habibie): Gagal membuat akun user untuk Bahri Habibie: Duplicate entry '6' for key 'users.email'
+Baris 8 (BIMA ADI BRATA): Gagal membuat akun user untuk BIMA ADI BRATA: Duplicate entry '7' for key 'users.email'
+Baris 9 (DAFFA AL RIANSYAH HARAHAP): Gagal membuat akun user untuk DAFFA AL RIANSYAH HARAHAP: Duplicate entry '8' for key 'users.email'
+Baris 10 (EMERY ALDRIC MUSYAFFA): Gagal membuat akun user untuk EMERY ALDRIC MUSYAFFA: Duplicate entry '9' for key 'users.email'
+```
+
+### B. Akar Penyebab Masalah (Root Cause Analysis)
+1. **Pengisian Angka Urut / Absen pada Kolom Email**:
+   - Kolom email (Kolom N) diisi angka nomor urut (`1, 2, 3, 4, 5...`) oleh admin sekolah atau terjadi pergeseran kolom saat pengisian Excel.
+2. **Constraint `UNIQUE` pada Database**:
+   - Kolom `email_siswa` di tabel `siswa` dan `email` di tabel `users` memiliki indeks `UNIQUE`.
+   - Pada kode sebelumnya, nilai di kolom N langsung disimpan mentah ke database tanpa validasi apakah format string tersebut adalah email yang sah.
+   - Ketika proses import sebelumnya gagal di tengah jalan atau dilakukan import ulang kelas lain yang juga memiliki nomor urut `1, 2, 3...`, MySQL menolak penyimpanan karena terjadi duplikasi nilai `'1'`, `'2'`, `'3'`.
+3. **Terbentuknya Akun "Hantu" (Ghost Users)**:
+   - Pada alur lama, akun user di tabel `users` dibuat terlebih dahulu sebelum data siswa disimpan.
+   - Ketika penyimpanan tabel `siswa` gagal (misal pada Baris 7), akun di tabel `users` tetap tersimpan. Pada percobaan import berikutnya, Baris 7 langsung gagal di tahap pembuatan user dengan pesan `Duplicate entry '6' for key 'users.email'`.
+
+### C. Solusi & Perbaikan Teknis yang Diterapkan
+Perbaikan telah diterapkan langsung di [SiswaController.php](file:///d:/laragon/htdocs/erapoteasy/backend/app/Controllers/Admin/SiswaController.php) dan [OrangTuaController.php](file:///d:/laragon/htdocs/erapoteasy/backend/app/Controllers/Admin/OrangTuaController.php):
+
+1. **Pemetaan Kolom Dinamis (Dynamic Header Mapping)**:
+   - Sistem kini membaca baris header (Baris 1) untuk mencocokkan kata kunci seperti `nis`, `nama`, `rombel`, `email`, dll.
+   - Jika admin menyisipkan kolom baru (seperti kolom nomor) atau urutan kolom bergeser, sistem tetap membaca data dari kolom yang tepat sesuai judul headernya.
+2. **Sanitasi Format Email Valid (`FILTER_VALIDATE_EMAIL`)**:
+   - Nilai email kini divalidasi secara ketat menggunakan fungsi bawaan PHP:
+     ```php
+     if (!empty($emailRaw) && filter_var($emailRaw, FILTER_VALIDATE_EMAIL)) { ... }
+     ```
+   - Nilai bukan email (seperti angka urut `'1'`, `'2'`, tanda strip `'-'`, atau teks acak) otomatis diubah menjadi `NULL`.
+   - Dalam standar SQL / MySQL, indeks `UNIQUE` memperbolehkan multiple nilai `NULL`, sehingga tidak akan pernah memicu tabrakan `Duplicate entry`.
+3. **Pemeriksaan Keunikan Email Sebelum Insert (Pre-Check Uniqueness)**:
+   - Sebelum menyisipkan email ke akun user atau data siswa, sistem memeriksa apakah email tersebut sudah terdaftar oleh pengguna/siswa lain:
+     - Jika sudah terdaftar oleh entitas lain &rarr; email diabaikan (diset `NULL`) agar proses pembuatan siswa dan akun login tetap berjalan lancar tanpa mengalami crash.
+4. **Pembersihan Otomatis Akun Gagal (Cleanup Ghost User)**:
+   - Ditambahkan blok penanganan khusus saat terjadi kegagalan insert siswa: jika pembuatan siswa gagal, akun user yang baru saja dibuat untuk baris tersebut langsung dihapus kembali (`$db->table('users')->where('id', $createdUserId)->delete()`).
+
+### D. Rekomendasi Pembersihan Database (Opsional untuk Server Production)
+Jika di server database saat ini sudah terdapat record kotor yang berisi email `'1'`, `'2'`, dst., admin/pengembang dapat menjalankan query pembersihan sederhana:
+```sql
+UPDATE siswa SET email_siswa = NULL WHERE email_siswa REGEXP '^[0-9]+$';
+UPDATE users SET email = NULL WHERE email REGEXP '^[0-9]+$';
+```
+Query di atas mengosongkan email yang hanya berupa deretan angka sehingga database kembali bersih.
+
+### E. Penyelarasan Label Header Template
+Untuk memastikan admin tidak lagi salah paham mengira kolom email wajib atau mengisinya dengan nomor urut:
+1. **Header Kolom Email Siswa** diperjelas menjadi:
+   `Email Siswa (Opsional - Kosongkan Jika Tidak Ada)` pada Kolom N.
+2. **Header Kolom Email Orang Tua** diperjelas menjadi:
+   `Email Orang Tua (Opsional - Kosongkan Jika Tidak Ada)` pada Kolom L.
+3. **Contoh Nilai Sel (Row 2)**:
+   Diisi contoh email yang jelas (`ahmad@sekolah.sch.id` dan `budi.santoso@email.com`), bukan teks ambigu.
+4. **Proteksi Ganda**:
+   Sekalipun admin tetap sengaja/tidak sengaja memasukkan nomor urut, `filter_var(..., FILTER_VALIDATE_EMAIL)` akan otomatis mengabaikannya dan menjadikannya `NULL` tanpa memicu crash database.
+
+
+
 
