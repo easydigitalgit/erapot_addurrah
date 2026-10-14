@@ -150,6 +150,11 @@ class NilaiKolektifController extends GuruMapelBaseController
         $sheet->setCellValue('A5', 'MATA PELAJARAN')->setCellValue('C5', ': ' . ($mapel['nama_mapel'] ?? '-'));
         $sheet->setCellValue('A6', 'JENIS FORMAT')->setCellValue('C6', ': ' . strtoupper($jenis) . ' SEMESTER');
 
+        // Simpan metadata ID pada baris 7 (hidden) agar saat import selalu akurat
+        $sheet->setCellValue('A7', $ta_id);
+        $sheet->setCellValue('B7', $rombel_id);
+        $sheet->setCellValue('C7', $mapel_id);
+
         $headerStyle = [
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
             'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['rgb' => '1E293B']],
@@ -274,12 +279,58 @@ class NilaiKolektifController extends GuruMapelBaseController
             $strMapel = trim(str_replace(':', '', (string)$sheet->getCell('C5')->getValue()));
             $strJenis = strtolower(trim(str_replace(':', '', (string)$sheet->getCell('C6')->getValue())));
 
-            $rombel = $this->db->table('rombel')->like('nama_rombel', $strKelas)->get()->getRowArray();
-            if (!$rombel) return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal membaca Kelas dari file Excel.']);
+            // 1. Cek apakah ada metadata ID tersimpan di sel hidden baris 7
+            $embeddedTaId     = (int)$sheet->getCell('A7')->getValue();
+            $embeddedRombelId = (int)$sheet->getCell('B7')->getValue();
+            $embeddedMapelId  = (int)$sheet->getCell('C7')->getValue();
+
+            // 2. Resolve Rombel
+            $rombel = null;
+            if ($embeddedRombelId > 0) {
+                $rombel = $this->db->table('rombel')->where('id', $embeddedRombelId)->get()->getRowArray();
+            }
+
+            if (!$rombel) {
+                $namaKelas = trim(preg_replace('/^(kelas|rombel)\s*/i', '', $strKelas));
+                if (strpos($namaKelas, '-') !== false) {
+                    $parts = explode('-', $namaKelas);
+                    $namaKelas = trim(end($parts));
+                }
+
+                // Cari berdasarkan nama rombel dan tahun ajaran aktif/terpilih
+                $rombelQuery = $this->db->table('rombel')->like('nama_rombel', $namaKelas);
+                if ($this->db->fieldExists('id_tahun_ajaran', 'rombel')) {
+                    $rombelQuery->where('id_tahun_ajaran', $tahun_ajaran_id);
+                } elseif ($this->db->fieldExists('tahun_ajaran_id', 'rombel')) {
+                    $rombelQuery->where('tahun_ajaran_id', $tahun_ajaran_id);
+                }
+                $rombel = $rombelQuery->get()->getRowArray();
+
+                // Fallback jika tidak ditemukan dengan filter TA
+                if (!$rombel) {
+                    $rombel = $this->db->table('rombel')->like('nama_rombel', $namaKelas)->get()->getRowArray();
+                }
+            }
+
+            if (!$rombel) {
+                return $this->response->setJSON(['status' => 'error', 'message' => "Gagal membaca Kelas '{$strKelas}' dari file Excel."]);
+            }
             $rombel_id = $rombel['id'];
 
-            $mapel = $this->db->table('mata_pelajaran')->like('nama_mapel', $strMapel)->get()->getRowArray();
-            if (!$mapel) return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal membaca Mata Pelajaran dari Excel.']);
+            // 3. Resolve Mapel
+            $mapel = null;
+            if ($embeddedMapelId > 0) {
+                $mapel = $this->db->table('mata_pelajaran')->where('id', $embeddedMapelId)->get()->getRowArray();
+            }
+
+            if (!$mapel) {
+                $namaMapel = trim(preg_replace('/^(mapel|mata pelajaran)\s*/i', '', $strMapel));
+                $mapel = $this->db->table('mata_pelajaran')->like('nama_mapel', $namaMapel)->get()->getRowArray();
+            }
+
+            if (!$mapel) {
+                return $this->response->setJSON(['status' => 'error', 'message' => "Gagal membaca Mata Pelajaran '{$strMapel}' dari Excel."]);
+            }
             $mapel_id = $mapel['id'];
 
             $kategori_semester = (stripos($strJenis, 'tengah') !== false) ? 'Tengah Semester' : 'Akhir Semester';
@@ -315,14 +366,37 @@ class NilaiKolektifController extends GuruMapelBaseController
                 $nis = trim((string)$sheet->getCell('B' . $row)->getValue());
                 if (empty($nis)) continue;
 
-                $siswa = $this->db->table('anggota_rombel ar')
+                // Cari siswa di anggota rombel dengan TA
+                $siswaQuery = $this->db->table('anggota_rombel ar')
                     ->select('s.id, s.nis, s.nama_lengkap')
                     ->join('siswa s', 's.id = ar.siswa_id')
                     ->where('s.nis', $nis)
-                    ->where('ar.rombel_id', $rombel_id)
-                    ->where('ar.tahun_ajaran_id', $tahun_ajaran_id)
-                    ->where('ar.semester', $semester)
-                    ->get()->getRowArray();
+                    ->where('ar.rombel_id', $rombel_id);
+
+                if ($this->db->fieldExists('tahun_ajaran_id', 'anggota_rombel')) {
+                    $siswaQuery->where('ar.tahun_ajaran_id', $tahun_ajaran_id);
+                }
+
+                $siswa = $siswaQuery->get()->getRowArray();
+
+                // Fallback jika tidak ditemukan dengan filter TA di anggota_rombel
+                if (!$siswa) {
+                    $siswa = $this->db->table('anggota_rombel ar')
+                        ->select('s.id, s.nis, s.nama_lengkap')
+                        ->join('siswa s', 's.id = ar.siswa_id')
+                        ->where('s.nis', $nis)
+                        ->where('ar.rombel_id', $rombel_id)
+                        ->get()->getRowArray();
+                }
+
+                // Fallback kedua: langsung ke tabel siswa jika kolom rombel_id ada
+                if (!$siswa && $this->db->fieldExists('rombel_id', 'siswa')) {
+                    $siswa = $this->db->table('siswa')
+                        ->select('id, nis, nama_lengkap')
+                        ->where('nis', $nis)
+                        ->where('rombel_id', $rombel_id)
+                        ->get()->getRowArray();
+                }
 
                 if (!$siswa) continue;
                 $siswa_id = $siswa['id'];
@@ -379,8 +453,11 @@ class NilaiKolektifController extends GuruMapelBaseController
         elseif ($angka >= $kkm) $predikat = 'C';
         else $predikat = 'D';
 
+        $katLM    = (stripos($kategoriDB, 'tengah') !== false) ? 'Tengah' : 'Akhir';
+        $katNilai = (stripos($kategoriDB, 'tengah') !== false) ? 'Tengah Semester' : 'Akhir Semester';
+
         static $lm_cache_global = [];
-        $cache_key = $mapel_id . '_' . $rombel_id . '_' . $ta_id . '_' . $sem . '_' . $kategoriDB;
+        $cache_key = $mapel_id . '_' . $rombel_id . '_' . $ta_id . '_' . $sem . '_' . $katLM;
 
         if (!array_key_exists($cache_key, $lm_cache_global)) {
             $rombel = $this->db->table('rombel')->where('id', $rombel_id)->get()->getRowArray();
@@ -407,7 +484,8 @@ class NilaiKolektifController extends GuruMapelBaseController
 
             if ($this->db->fieldExists('kategori', 'master_lm')) {
                 $lmQuery->groupStart()
-                    ->where('kategori', $kategoriDB)
+                    ->where('kategori', $katLM)
+                    ->orWhere('kategori', $kategoriDB)
                     ->orWhere('kategori', '')
                     ->orWhere('kategori', null)
                     ->groupEnd();
@@ -441,19 +519,18 @@ class NilaiKolektifController extends GuruMapelBaseController
             }
         }
 
-        // KUNCI PERBAIKAN: RESET QUERY BUILDER
         $dbTable = $this->db->table('nilai_formatif');
         $qCek = $dbTable->where([
-            'siswa_id' => $siswa_id,
-            'mapel_id' => $mapel_id,
-            'pertemuan' => $pertemuan,
+            'siswa_id'        => $siswa_id,
+            'mapel_id'        => $mapel_id,
+            'pertemuan'       => $pertemuan,
             'jenis_penilaian' => $jenis_penilaian,
             'tahun_ajaran_id' => $ta_id,
-            'semester' => $sem
+            'semester'        => $sem
         ]);
 
         if ($this->db->fieldExists('kategori', 'nilai_formatif')) {
-            $qCek->where('kategori', $kategoriDB);
+            $qCek->where('kategori', $katNilai);
         }
 
         $exist = $qCek->get()->getRowArray();
@@ -468,11 +545,11 @@ class NilaiKolektifController extends GuruMapelBaseController
         ];
 
         if ($this->db->fieldExists('kategori', 'nilai_formatif')) {
-            $dataSimpan['kategori'] = $kategoriDB;
+            $dataSimpan['kategori'] = $katNilai;
         }
 
         if ($exist) {
-            $dataSimpan['status_simpan'] = 'draft'; // Pastikan status tetap draft jika diupdate via kolektif
+            $dataSimpan['status_simpan'] = 'draft';
             $this->db->table('nilai_formatif')->where('id', $exist['id'])->update($dataSimpan);
         } else {
             $dataSimpan['siswa_id']          = $siswa_id;
@@ -491,12 +568,16 @@ class NilaiKolektifController extends GuruMapelBaseController
     private function _saveSumatif($siswa_id, $mapel_id, $ta_id, $kategori_semester, $jenis_sumatif, $nilai)
     {
         $dbTable = $this->db->table('nilai_sumatif');
-        $exist = $dbTable->where([
-            'siswa_id' => $siswa_id,
-            'mapel_id' => $mapel_id,
-            'jenis_sumatif' => $jenis_sumatif,
-            'tahun_ajaran_id' => $ta_id // Mencegah replace data tahun lalu
-        ])->get()->getRowArray();
+        $whereSumatif = [
+            'siswa_id'        => $siswa_id,
+            'mapel_id'        => $mapel_id,
+            'jenis_sumatif'   => $jenis_sumatif,
+            'tahun_ajaran_id' => $ta_id
+        ];
+        if ($this->db->fieldExists('kategori', 'nilai_sumatif')) {
+            $whereSumatif['kategori'] = $kategori_semester;
+        }
+        $exist = $dbTable->where($whereSumatif)->get()->getRowArray();
 
         if ($exist) {
             $this->db->table('nilai_sumatif')->where('id', $exist['id'])->update([

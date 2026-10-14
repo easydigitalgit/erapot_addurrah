@@ -243,6 +243,201 @@ Untuk memastikan admin tidak lagi salah paham mengira kolom email wajib atau men
 4. **Proteksi Ganda**:
    Sekalipun admin tetap sengaja/tidak sengaja memasukkan nomor urut, `filter_var(..., FILTER_VALIDATE_EMAIL)` akan otomatis mengabaikannya dan menjadikannya `NULL` tanpa memicu crash database.
 
+---
+
+## 9. Laporan Analisa Kasus Khusus: Terbelahnya Siswa Kelas VII Carnelian (26 vs 7 Siswa) & Error "NISN Sudah Digunakan"
+
+### A. Laporan Kasus dari Lapangan
+1. **Keluhan Wali Kelas**:
+   - Wali kelas VII Carnelian (**Tika Yeardila, M.Pd.**) mendapati bahwa dari total **33 siswa**, hanya **26 siswa** yang muncul di halaman perwalian wali kelas.
+   - Sebanyak **7 siswa** tidak muncul di daftar kelas perwalian:
+     1. Ariqa Erita Chaniago
+     2. Ashika Zalika zahra tarigan
+     3. Ataya Nur Ariqa
+     4. Jihan Talita Ulfa
+     5. Keisha Amila Husna
+     6. Nadifa Talita Sakti
+     7. Qabsha Nayla
+2. **Kendala Saat Upload Ulang**:
+   - Ketika wali kelas mencoba mengunggah / mengimpor kembali file Excel yang berisi 33 siswa tersebut, sistem menampilkan error: **"NISN sudah digunakan siswa lain"**.
+3. **Kondisi di Akun Admin**:
+   - Jika dicek dari akun Admin pada menu **Data Siswa** (`http://localhost:8080/admin/siswa`), data ke-7 siswa tersebut **ADA**, berstatus **Aktif**, dan tertulis jelas berada di kelas **VII - Carnelian** dengan wali kelas **Tika Yeardila, M.Pd.**
+
+---
+
+### B. Investigasi & Akar Penyebab Masalah (Root Cause Analysis)
+
+#### 1. Temuan Utama: Ada 2 Master Rombel "Carnelian" di Database (ID 55 vs ID 80)
+Pemeriksaan langsung ke tabel master `rombel` mengungkap adanya **dua baris data master untuk kelas VII Carnelian**:
+
+| ID Rombel | Nama Rombel | Tingkat | Tahun Ajaran (`id_tahun_ajaran`) | Wali Kelas | Status / Keterangan | Jumlah Siswa |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **80** | **Carnelian** | **VII** | **10 (2026/2027 Ganjil - Aktif)** | Tika Yeardila, M.Pd | Rombel Resmi Tahun Ajaran Aktif | **26 Siswa** |
+| **55** | **Carnelian** | **VII** | **NULL (Tanpa Tahun Ajaran)** | Tika Yeardila, M.Pd | Rombel Duplikat / Hantu | **7 Siswa** |
+
+> **Total Siswa Keseluruhan**: 26 + 7 = **33 Siswa**. Seluruh 33 siswa sebenarnya sudah tersimpan di database sekolah.
+
+#### 2. Mengapa Walikelas Hanya Melihat 26 Siswa?
+Pada modul Wali Kelas ([DaftarSiswaController.php](file:///d:/laragon/htdocs/erapoteasy/backend/app/Controllers/WaliKelas/DaftarSiswaController.php#L52-L68)):
+- Sistem mencari rombel perwalian Bu Tika yang memiliki `id_tahun_ajaran = 10` (Tahun Ajaran Aktif).
+- Sistem menemukan **Rombel ID 80**.
+- Kemudian sistem mengambil daftar siswa anggota rombel dengan query:
+  ```sql
+  SELECT s.* FROM anggota_rombel ar 
+  JOIN siswa s ON s.id = ar.siswa_id 
+  WHERE ar.rombel_id = 80 AND ar.tahun_ajaran_id = 10 AND s.status_siswa = 'Aktif';
+  ```
+- Karena ke-7 siswa tercatat di `rombel_id = 55`, mereka **terfilter keluar** dan tidak tampil di halaman perwalian wali kelas.
+
+#### 3. Mengapa di Akun Admin Data Siswa Terlihat Normal?
+Pada modul Admin Data Siswa ([SiswaController.php](file:///d:/laragon/htdocs/erapoteasy/backend/app/Controllers/Admin/SiswaController.php#L85-L105)):
+- Query admin mengambil seluruh siswa dan men-*join* ke tabel `rombel` berdasarkan `COALESCE(ar.rombel_id, s.rombel_id)`.
+- Ke-7 siswa tersebut men-*join* **Rombel ID 55**.
+- Karena Rombel ID 55 namanya sama-sama `"Carnelian"` dan wali kelasnya sama-sama `"Tika Yeardila, M.Pd."`, maka antarmuka admin menampilkan teks yang identik: **VII - Carnelian | Tika Yeardila, M.Pd.**
+- Hal ini menimbulkan ilusi bahwa data sudah benar di sisi admin, padahal ID rombel di balik layarnya berbeda (55 vs 80).
+
+#### 4. Mengapa 7 Siswa Bisa Nyasar ke Rombel 55 (Audit Jejak Waktu / Timestamp)?
+Pemeriksaan log waktu pembuatan data (`created_at`) di database membuktikan:
+```text
+1. [2026-10-08 09:48:03] Siswa: AENCHI JIANDRA NABABAN       -> Rombel ID 80
+2. [2026-10-08 10:04:26] Siswa: Anggitta Lady Azzahra Siregar -> Rombel ID 80
+3. [2026-10-08 10:30:17] Siswa: ARIQA ERITA CHANIAGO          -> Rombel ID 55 (Tersasar)
+4. [2026-10-08 10:40:34] Siswa: ASHIKA ZALIKA ZAHRA TARIGAN   -> Rombel ID 55 (Tersasar)
+5. [2026-10-08 10:50:17] Siswa: Ashillah Ratu Balqis          -> Rombel ID 80
+6. [2026-10-08 11:00:39] Siswa: ATAYA NUR ARIKA              -> Rombel ID 55 (Tersasar)
+...
+13. [2026-10-09 08:02:09] Siswa: JIHAN TALITA ULFA            -> Rombel ID 55 (Tersasar)
+...
+16. [2026-10-09 08:29:21] Siswa: KEISHA AMILA HUSNA           -> Rombel ID 55 (Tersasar)
+...
+20. [2026-10-09 09:13:34] Siswa: NADIFA TALITA SAKHI          -> Rombel ID 55 (Tersasar)
+...
+24. [2026-10-09 09:40:17] Siswa: QABHSA NAYLA                 -> Rombel ID 55 (Tersasar)
+...
+33. [2026-10-09 10:42:41] Siswa: YUMNA IZZATUNNISA            -> Rombel ID 80
+```
+- **Fakta 1**: Ke-33 siswa ini **bukan diimport dalam satu kali transaksi Excel**, melainkan dibuat pada rentang tanggal 8 s.d. 9 Oktober dengan selisih waktu 8–20 menit per siswa (pola pengisian manual satu per satu dari formulir web).
+- **Fakta 2 (Akar Bug Dropdown)**:
+  Pada fungsi `getRombel()` di [SiswaController.php](file:///d:/laragon/htdocs/erapoteasy/backend/app/Controllers/Admin/SiswaController.php#L112-L121), query mengambil semua data rombel tanpa memfilter tahun ajaran aktif:
+  ```php
+  $data = $db->table('rombel')->select('id, nama_rombel, tingkat')->get()->getResultArray();
+  ```
+  Di elemen `<select id="rombel_id">` pada browser, muncul **dua pilihan dengan nama yang kembar identik**:
+  ```html
+  <option value="55">VII - Carnelian</option>   <!-- Pilihan ID 55 (Tanpa TA) -->
+  <option value="80">VII - Carnelian</option>   <!-- Pilihan ID 80 (TA Aktif) -->
+  ```
+  Karena kedua label tertulis sama persis `"VII - Carnelian"`, penginput data tidak dapat membedakan keduanya:
+  - 7 siswa tidak sengaja terpilih opsi atas (`value="55"`).
+  - 26 siswa terpilih opsi bawah (`value="80"`).
+
+#### 5. Mengapa Muncul Error "NISN Sudah Digunakan"?
+- Kolom `nisn` pada tabel `siswa` MySQL memiliki aturan `UNIQUE KEY (nisn)`.
+- Karena wali kelas mendapati kelasnya hanya berisi 26 siswa, wali kelas mencoba mengunggah ulang file Excel yang berisi seluruh 33 siswa.
+- Ketika sistem membaca 7 siswa yang hilang tersebut, sistem mencoba melakukan `INSERT INTO siswa`.
+- MySQL langsung menolak insert tersebut karena nomor NISN mereka sudah terdaftar di database sejak 8-9 Oktober, sehingga memunculkan pesan:
+  ```text
+  Duplicate entry '0142996320' for key 'siswa.nisn' / NISN sudah digunakan siswa lain.
+  ```
+
+---
+
+### C. Temuan Kasus Serupa di Kelas Lain
+Audit menyeluruh pada rombel duplikat tanpa tahun ajaran menemukan kasus yang sama pada **Kelas VII Ruby**:
+- **Rombel ID 56** (Ruby tanpa TA): Terdapat 1 siswa tersasar, yaitu **Akifah Tihani Zuyyin** (ID: 563).
+- **Rombel ID 81** (Ruby TA 10 Aktif): Saat ini masih kosong (0 siswa).
+
+---
+
+### D. Rencana Solusi & Perbaikan Menyeluruh (Action Plan)
+
+#### 1. Perbaikan Data Langsung (Database Data Migration)
+Menyatukan kembali data siswa yang tersasar ke rombel resmi tahun ajaran aktif:
+
+```sql
+-- ========================================================
+-- 1. PINDAHKAN 7 SISWA CARNELIAN DARI ROMBEL 55 KE ROMBEL 80
+-- ========================================================
+UPDATE siswa 
+SET rombel_id = 80 
+WHERE rombel_id = 55;
+
+UPDATE anggota_rombel 
+SET rombel_id = 80 
+WHERE rombel_id = 55;
+
+-- ========================================================
+-- 2. PINDAHKAN 1 SISWA RUBY DARI ROMBEL 56 KE ROMBEL 81
+-- ========================================================
+UPDATE siswa 
+SET rombel_id = 81 
+WHERE rombel_id = 56;
+
+UPDATE anggota_rombel 
+SET rombel_id = 81 
+WHERE rombel_id = 56;
+
+-- ========================================================
+-- 3. BERSIHKAN MASTER ROMBEL HANTU (ID 52 - 66 TANPA TAHUN AJARAN)
+-- ========================================================
+DELETE FROM rombel 
+WHERE (id_tahun_ajaran IS NULL OR id_tahun_ajaran = 0)
+  AND id NOT IN (SELECT DISTINCT rombel_id FROM siswa WHERE rombel_id IS NOT NULL);
+```
+
+#### 2. Perbaikan Sistem & Logika Kode Backend (System Prevention Fix)
+
+##### A. Perbaikan Dropdown Rombel di [SiswaController.php](file:///d:/laragon/htdocs/erapoteasy/backend/app/Controllers/Admin/SiswaController.php)
+Modifikasi method `getRombel()` agar hanya mengembalikan rombel yang berada pada **Tahun Ajaran Aktif**:
+```php
+public function getRombel()
+{
+    $db = \Config\Database::connect();
+    
+    // Ambil ID Tahun Ajaran Aktif
+    $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
+    $taId = $taAktif ? $taAktif['id'] : 0;
+
+    $data = $db->table('rombel')
+        ->select('id, nama_rombel, tingkat')
+        ->where('id_tahun_ajaran', $taId) // 🛡️ Kunci hanya TA aktif!
+        ->orderBy('tingkat', 'ASC')
+        ->orderBy('nama_rombel', 'ASC')
+        ->get()->getResultArray();
+
+    return $this->response->setJSON($data);
+}
+```
+
+##### B. Perbaikan Mapping Rombel pada Fungsi `import()` di [SiswaController.php](file:///d:/laragon/htdocs/erapoteasy/backend/app/Controllers/Admin/SiswaController.php)
+Pastikan pencocokan nama rombel dari file Excel hanya memetakan ke rombel tahun ajaran aktif:
+```php
+// 2. Siapkan Mapping Rombel Khusus Tahun Ajaran Aktif
+$taAktifId = $taAktif ? $taAktif['id'] : 0;
+$dbRombel = $db->table('rombel')
+    ->where('id_tahun_ajaran', $taAktifId) // 🛡️ Hanya ambil rombel aktif
+    ->get()->getResultArray();
+
+$mapRombel = [];
+foreach ($dbRombel as $r) {
+    $nama = strtolower(trim($r['nama_rombel']));
+    $tingkat = strtolower(trim($r['tingkat']));
+
+    $mapRombel[$tingkat . ' ' . $nama] = $r['id'];
+    $mapRombel[$tingkat . '-' . $nama] = $r['id'];
+    $mapRombel[$tingkat . $nama] = $r['id'];
+    $mapRombel[$nama] = $r['id'];
+}
+```
+
+---
+
+### E. Hasil yang Dicapai Setelah Perbaikan
+1. **Daftar Siswa Kelas Carnelian Lengkap 33 Siswa**: Wali kelas Tika Yeardila akan langsung melihat seluruh 33 santri/siswa lengkap di halaman kelas perwaliannya tanpa perlu mengunggah ulang file Excel.
+2. **Eliminasi Error Duplikasi NISN**: Tidak ada lagi kegagalan import akibat tabrakan NISN.
+3. **Dropdown Bersih Tanpa Opsi Kembar**: Admin dan wali kelas tidak akan pernah lagi salah memilih rombel hantu karena dropdown hanya memuat rombel tahun ajaran aktif.
+
+
 
 
 
