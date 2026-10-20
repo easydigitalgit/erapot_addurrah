@@ -114448,8 +114448,7 @@ ALTER TABLE `observasi_sikap`
 --
 ALTER TABLE `orangtua_wali`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `user_id` (`user_id`),
-  ADD UNIQUE KEY `email_ortu` (`email_ortu`),
+  ADD KEY `user_id` (`user_id`),
   ADD KEY `siswa_id` (`siswa_id`);
 
 --
