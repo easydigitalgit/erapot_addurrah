@@ -318,6 +318,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ro
         $routes->post('store', 'MasterLmController::store');
         $routes->post('update', 'MasterLmController::update');
         $routes->post('delete', 'MasterLmController::delete');
+        $routes->post('toggle-status', 'MasterLmController::toggleStatus');
 
         // FITUR EXCEL LM YANG SUDAH DIBERSIHKAN (HANYA LM, TIDAK ADA DKN)
         $routes->get('export', 'MasterLmController::export');

@@ -84,7 +84,7 @@ Master Lingkup Materi (LM) - Rapor Digital
 </div>
 
 <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 mb-6 w-full min-w-0 transition-colors">
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 w-full">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 w-full">
     <div>
       <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Semester</label>
       <select id="filterSemester" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-dinamis outline-none cursor-pointer">
@@ -122,7 +122,15 @@ Master Lingkup Materi (LM) - Rapor Digital
         <option value="Akhir">SAS (Akhir)</option>
       </select>
     </div>
-    <div class="lg:col-span-1">
+    <div>
+      <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Status LM</label>
+      <select id="filterStatus" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-dinamis outline-none cursor-pointer transition-all">
+        <option value="ALL">Semua Status</option>
+        <option value="Aktif">Hanya Aktif</option>
+        <option value="Nonaktif">Hanya Nonaktif</option>
+      </select>
+    </div>
+    <div class="col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-6 mt-1">
       <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Pencarian</label>
       <div class="relative">
         <svg class="w-5 h-5 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -144,11 +152,12 @@ Master Lingkup Materi (LM) - Rapor Digital
           <th class="p-4 font-bold text-center">Kategori</th>
           <th class="p-4 font-bold text-center">Kode LM</th>
           <th class="p-4 font-bold w-1/3">Judul LM (Materi Pokok)</th>
-          <th class="p-4 font-bold text-center w-24">Aksi</th>
+          <th class="p-4 font-bold text-center w-24">Status</th>
+          <th class="p-4 font-bold text-center w-28">Aksi</th>
         </tr>
       </thead>
       <tbody id="tableBody" class="divide-y divide-slate-100 dark:divide-slate-700 text-sm text-slate-700 dark:text-slate-300">
-        <tr><td colspan="7" class="p-8 text-center text-slate-400">Memuat data...</td></tr>
+        <tr><td colspan="9" class="p-8 text-center text-slate-400">Memuat data...</td></tr>
       </tbody>
     </table>
   </div>
@@ -170,7 +179,7 @@ Master Lingkup Materi (LM) - Rapor Digital
       <form id="lmForm" class="space-y-6">
         <input type="hidden" id="lm_id" name="id">
         
-        <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           <div>
             <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Mata Pelajaran <span class="text-rose-500">*</span></label>
             <select name="mapel_id" id="mapel_id" required class="w-full p-2.5 border border-slate-200 dark:border-slate-600 rounded-xl outline-none focus:ring-2 focus:ring-dinamis dark:bg-slate-800 dark:text-white text-sm font-bold text-dinamis cursor-pointer">
@@ -208,6 +217,13 @@ Master Lingkup Materi (LM) - Rapor Digital
             <select name="semester" id="semester" required class="w-full p-2.5 border border-slate-200 dark:border-slate-600 rounded-xl outline-none focus:ring-2 focus:ring-dinamis dark:bg-slate-800 dark:text-white text-sm font-bold cursor-pointer">
               <option value="Ganjil">Ganjil</option>
               <option value="Genap">Genap</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Status LM <span class="text-rose-500">*</span></label>
+            <select name="status" id="status" class="w-full p-2.5 border border-slate-200 dark:border-slate-600 rounded-xl outline-none focus:ring-2 focus:ring-dinamis dark:bg-slate-800 dark:text-white text-sm font-bold cursor-pointer">
+              <option value="Aktif">Aktif</option>
+              <option value="Nonaktif">Nonaktif</option>
             </select>
           </div>
         </div>

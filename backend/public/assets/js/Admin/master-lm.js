@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('filterLevel')?.addEventListener('change', applyFilters);
     document.getElementById('filterKodeLM')?.addEventListener('change', applyFilters);
     document.getElementById('filterKategori')?.addEventListener('change', applyFilters);
+    document.getElementById('filterStatus')?.addEventListener('change', applyFilters);
     document.getElementById('searchInput')?.addEventListener('input', applyFilters);
     
     // Inisialisasi Label Kategori
@@ -111,7 +112,8 @@ function applyFilters() {
     const filterLevel = document.getElementById('filterLevel')?.value;
     const filterKategori = document.getElementById('filterKategori')?.value;
     const filterKodeLM = document.getElementById('filterKodeLM')?.value;
-    const keyword = document.getElementById('searchInput')?.value.toLowerCase();
+    const filterStatus = document.getElementById('filterStatus')?.value;
+    const keyword = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
 
     const filtered = lmData.filter(item => {
         let sem = (item.semester || item.ta_semester || 'Ganjil').toLowerCase();
@@ -120,6 +122,7 @@ function applyFilters() {
         let fSem = (filterSemester || 'ALL').toLowerCase();
         let fKat = (filterKategori || 'ALL').toLowerCase();
         let fKode = (filterKodeLM || 'ALL').toLowerCase();
+        let fStatus = (filterStatus || 'ALL').toLowerCase();
 
         let romToNum = {'VII':7, 'VIII':8, 'IX':9, 'X':10, 'XI':11, 'XII':12};
         let tStr = String(item.tingkat).toUpperCase();
@@ -130,13 +133,14 @@ function applyFilters() {
         const matchLevel = !filterLevel || filterLevel === 'ALL' || numTingkat == filterLevel;
         const matchKategori = fKat === 'all' || kat === fKat;
         const matchKode = fKode === 'all' || (item.kode_lm && item.kode_lm.toLowerCase() === fKode);
+        const matchStatus = fStatus === 'all' || (item.status && item.status.toLowerCase() === fStatus) || (!item.status && fStatus === 'aktif');
         
         const matchSearch = !keyword || 
             (item.nama_mapel && item.nama_mapel.toLowerCase().includes(keyword)) ||
             (item.kode_lm && item.kode_lm.toLowerCase().includes(keyword)) ||
             (item.deskripsi_lm && item.deskripsi_lm.toLowerCase().includes(keyword));
 
-        return matchSemester && matchMapel && matchLevel && matchKategori && matchKode && matchSearch;
+        return matchSemester && matchMapel && matchLevel && matchKategori && matchKode && matchStatus && matchSearch;
     });
 
     renderTable(filtered);
@@ -147,7 +151,7 @@ function renderTable(data) {
     if (!tbody) return;
 
     if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="p-12 text-center text-slate-400 font-medium bg-slate-50/30 dark:bg-slate-900/10">Data tidak ditemukan sesuai filter.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="p-12 text-center text-slate-400 font-medium bg-slate-50/30 dark:bg-slate-900/10">Data tidak ditemukan sesuai filter.</td></tr>`;
         return;
     }
 
@@ -171,8 +175,23 @@ function renderTable(data) {
         let tStr = String(item.tingkat).toUpperCase();
         let dispTingkat = romToNum[tStr] ? romToNum[tStr] : tStr;
 
+        let isAktif = (item.status || 'Aktif').toLowerCase() === 'aktif';
+        let badgeStatus = isAktif 
+            ? `<button onclick="toggleStatus(${item.id}, 'Nonaktif')" title="Klik untuk Nonaktifkan" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-emerald-50 text-emerald-700 hover:bg-amber-50 hover:text-amber-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800 transition-all cursor-pointer group">
+                 <span class="w-2 h-2 rounded-full bg-emerald-500 group-hover:bg-amber-500"></span>
+                 <span>Aktif</span>
+               </button>`
+            : `<button onclick="toggleStatus(${item.id}, 'Aktif')" title="Klik untuk Mengaktifkan" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black bg-slate-100 text-slate-500 hover:bg-emerald-50 hover:text-emerald-700 dark:bg-slate-800 dark:text-slate-400 border border-slate-300 dark:border-slate-700 transition-all cursor-pointer group">
+                 <span class="w-2 h-2 rounded-full bg-slate-400 group-hover:bg-emerald-500"></span>
+                 <span>Nonaktif</span>
+               </button>`;
+
+        let toggleBtn = isAktif
+            ? `<button onclick="toggleStatus(${item.id}, 'Nonaktif')" class="p-2 text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-xl transition-all outline-none" title="Nonaktifkan LM"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg></button>`
+            : `<button onclick="toggleStatus(${item.id}, 'Aktif')" class="p-2 text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-xl transition-all outline-none" title="Aktifkan LM"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></button>`;
+
         html += `
-        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-all group border-b border-slate-100 dark:border-slate-700/50 animate-slide-up" style="animation-delay: ${index * 0.02}s">
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-all group border-b border-slate-100 dark:border-slate-700/50 ${!isAktif ? 'opacity-60 bg-slate-50/50' : ''} animate-slide-up" style="animation-delay: ${index * 0.02}s">
             <td class="p-4 text-center font-medium text-slate-400">${index + 1}</td>
             <td class="p-4">
                 <div class="flex flex-col">
@@ -199,9 +218,13 @@ function renderTable(data) {
                 <p class="whitespace-normal min-w-[280px] leading-relaxed text-slate-600 dark:text-slate-300 text-sm italic font-medium">"${item.deskripsi_lm}"</p>
             </td>
             <td class="p-4 text-center">
+                ${badgeStatus}
+            </td>
+            <td class="p-4 text-center">
                 <div class="flex justify-center gap-1.5">
                     <button onclick='lihatDetail(${JSON.stringify(item).replace(/'/g, "&#39;")})' class="p-2 text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-xl transition-all outline-none" title="Detail"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
                     <button onclick='editData(${JSON.stringify(item).replace(/'/g, "&#39;")})' class="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-xl transition-all outline-none" title="Edit"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+                    ${toggleBtn}
                     <button onclick="deleteData(${item.id})" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-xl transition-all outline-none" title="Hapus"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
                 </div>
             </td>
@@ -246,6 +269,7 @@ const form = document.getElementById('lmForm');
 window.showModal = function() {
     form.reset();
     document.getElementById('lm_id').value = '';
+    if(document.getElementById('status')) document.getElementById('status').value = 'Aktif';
     document.getElementById('modalTitle').innerText = 'Buat Template Deskripsi (LM)';
     modal.classList.remove('hidden');
     setTimeout(() => {
@@ -278,6 +302,7 @@ window.editData = function(item) {
     if(document.getElementById('deskripsi_b')) document.getElementById('deskripsi_b').value = item.deskripsi_b || '';
     if(document.getElementById('deskripsi_c')) document.getElementById('deskripsi_c').value = item.deskripsi_c || '';
     if(document.getElementById('deskripsi_d')) document.getElementById('deskripsi_d').value = item.deskripsi_d || '';
+    if(document.getElementById('status')) document.getElementById('status').value = item.status || 'Aktif';
     
     document.getElementById('modalTitle').innerText = 'Edit Template Deskripsi (LM)';
     modal.classList.remove('hidden');
@@ -390,18 +415,50 @@ form.addEventListener('submit', async function(e) {
     }
 });
 
+window.toggleStatus = async function(id, targetStatus) {
+    try {
+        const formData = new FormData();
+        formData.append('id', id);
+        formData.append('status', targetStatus);
+        const res = await fetch(`${BASE_URL}/admin/master-lm/toggle-status`, {
+            method: 'POST',
+            body: formData,
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        });
+        const json = await res.json();
+        if (json.status === 'success') {
+            showToast(json.message, 'success');
+            const idx = lmData.findIndex(x => x.id == id);
+            if (idx !== -1) {
+                lmData[idx].status = json.new_status;
+            }
+            applyFilters();
+        } else {
+            showToast(json.message || 'Gagal mengubah status LM', 'error');
+        }
+    } catch (err) {
+        showToast('Terjadi kesalahan koneksi server', 'error');
+    }
+};
+
 window.deleteData = function(id) {
     Swal.fire({
-        title: 'Hapus Template Ini?',
-        text: "Deskripsi ini tidak akan muncul lagi di Rapor Siswa!",
+        title: 'Hapus atau Nonaktifkan LM?',
+        text: "Peringatan: Menghapus permanen dapat mempengaruhi histori rapor terdahulu. Anda disarankan untuk 'Nonaktifkan Saja' agar arsip nilai tetap aman.",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#ef4444',
+        showDenyButton: true,
+        confirmButtonText: 'Nonaktifkan Saja (Aman)',
+        denyButtonText: 'Tetap Hapus Permanen',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#f59e0b',
+        denyButtonColor: '#ef4444',
         cancelButtonColor: '#94a3b8',
-        confirmButtonText: 'Ya, Hapus!',
         customClass: { popup: 'rounded-3xl' }
     }).then(async (result) => {
         if (result.isConfirmed) {
+            toggleStatus(id, 'Nonaktif');
+        } else if (result.isDenied) {
             const formData = new FormData();
             formData.append('id', id);
             try {
@@ -410,6 +467,8 @@ window.deleteData = function(id) {
                 if (json.status === 'success') {
                     Swal.fire({ icon: 'success', title: 'Dihapus!', text: json.message, showConfirmButton: false, timer: 1500, customClass:{popup:'rounded-3xl'} });
                     loadData();
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Gagal!', text: json.message, customClass:{popup:'rounded-3xl'} });
                 }
             } catch (err) {
                 Swal.fire({ icon: 'error', title: 'Error', text: 'Gagal menghapus data.', customClass:{popup:'rounded-3xl'} });

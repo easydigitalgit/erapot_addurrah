@@ -90,11 +90,10 @@ class MasterLmController extends AdminBaseController
             
             if ($cek) return $this->response->setJSON(['status' => 'error', 'message' => "Kode $kode_lm untuk Mapel ini di kelas, semester, & kategori tersebut sudah ada!"]);
 
-            $taAktif = $this->taModel->where('status', 'Aktif')->first();
-            $ta_id_dummy = $taAktif ? $taAktif['id'] : 1; 
+            $status   = $this->request->getPost('status') ?: 'Aktif';
 
             $data = [
-                'tahun_ajaran_id' => $ta_id_dummy,
+                'tahun_ajaran_id' => null, // LM bersifat Universal (Tanpa batas tahun ajaran)
                 'mapel_id'        => $mapel_id,
                 'tingkat'         => $tingkat,
                 'semester'        => $semester,
@@ -105,7 +104,7 @@ class MasterLmController extends AdminBaseController
                 'deskripsi_b'     => trim($this->request->getPost('deskripsi_b')),
                 'deskripsi_c'     => trim($this->request->getPost('deskripsi_c')),
                 'deskripsi_d'     => trim($this->request->getPost('deskripsi_d')),
-                'status'          => 'Aktif'
+                'status'          => $status
             ];
 
             if ($this->lmModel->insert($data)) {
@@ -133,10 +132,37 @@ class MasterLmController extends AdminBaseController
                 'deskripsi_d'     => trim($this->request->getPost('deskripsi_d'))
             ];
 
+            if ($this->request->getPost('status')) {
+                $data['status'] = $this->request->getPost('status');
+            }
+
             if ($this->lmModel->update($id, $data)) {
                 return $this->response->setJSON(['status' => 'success', 'message' => 'Data LM berhasil diperbarui.']);
             }
             return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui data.']);
+        }
+    }
+
+    public function toggleStatus()
+    {
+        if ($this->request->isAJAX()) {
+            $id = $this->request->getPost('id');
+            $lm = $this->lmModel->find($id);
+            if (!$lm) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Data LM tidak ditemukan.']);
+            }
+
+            $targetStatus = $this->request->getPost('status');
+            $newStatus = $targetStatus ?: (($lm['status'] === 'Aktif') ? 'Nonaktif' : 'Aktif');
+
+            if ($this->lmModel->update($id, ['status' => $newStatus])) {
+                return $this->response->setJSON([
+                    'status'     => 'success',
+                    'message'    => "Status LM {$lm['kode_lm']} berhasil diubah menjadi {$newStatus}.",
+                    'new_status' => $newStatus
+                ]);
+            }
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal mengubah status LM.']);
         }
     }
 
@@ -762,7 +788,7 @@ class MasterLmController extends AdminBaseController
                     if (empty($rowKategori)) $rowKategori = 'Akhir';
                     
                     $newData = [
-                        'tahun_ajaran_id' => $finalTahunAjaranId, 
+                        'tahun_ajaran_id' => null, // LM bersifat Universal (Tanpa batas tahun ajaran) 
                         'mapel_id'        => $mapel_id,
                         'tingkat'         => $tingkat,
                         'semester'        => $detectedSemester,

@@ -123,13 +123,17 @@ class NilaiKolektifController extends GuruMapelBaseController
                     ->where('tingkat', $tingkatClean)
                     ->where('semester', $semesterAktif);
 
-                if ($this->db->fieldExists('tahun_ajaran_id', 'master_lm')) {
-                    $bLm->where('tahun_ajaran_id', $ta_id);
+                // LM bersifat Universal (Tanpa batas tahun ajaran)
+                if ($this->db->fieldExists('kategori', 'master_lm')) {
+                    $bLm->groupStart();
+                    if (stripos($jenis, 'tengah') !== false || stripos($jenis, 'sts') !== false) {
+                        $bLm->whereIn('kategori', ['Tengah', 'STS', 'PTS']);
+                    } else {
+                        $bLm->whereIn('kategori', ['Akhir', 'SAS', 'PAS']);
+                    }
+                    $bLm->groupEnd();
                 }
 
-                if ($this->db->fieldExists('kategori', 'master_lm')) {
-                    $bLm->where('kategori', $kategoriDB);
-                }
                 if ($this->db->fieldExists('status', 'master_lm')) {
                     $bLm->where('status', 'Aktif');
                 }
@@ -473,15 +477,7 @@ class NilaiKolektifController extends GuruMapelBaseController
                 ->whereIn('tingkat', $tingkat_search)
                 ->where('semester', $sem); // Semester Master
 
-            // Master LM biasanya tidak dipisah per Tahun Ajaran, bisa nullable/0
-            if ($this->db->fieldExists('tahun_ajaran_id', 'master_lm')) {
-                $lmQuery->groupStart()
-                    ->where('tahun_ajaran_id', $ta_id)
-                    ->orWhere('tahun_ajaran_id', 0)
-                    ->orWhere('tahun_ajaran_id', null)
-                    ->groupEnd();
-            }
-
+            // LM bersifat Universal (Tanpa batas tahun ajaran)
             if ($this->db->fieldExists('kategori', 'master_lm')) {
                 $lmQuery->groupStart()
                     ->where('kategori', $katLM)
@@ -489,6 +485,10 @@ class NilaiKolektifController extends GuruMapelBaseController
                     ->orWhere('kategori', '')
                     ->orWhere('kategori', null)
                     ->groupEnd();
+            }
+
+            if ($this->db->fieldExists('status', 'master_lm')) {
+                $lmQuery->where('status', 'Aktif');
             }
 
             $allLM = $lmQuery->orderBy('id', 'ASC')->get()->getResultArray();

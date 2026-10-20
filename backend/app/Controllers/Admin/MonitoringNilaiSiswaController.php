@@ -217,12 +217,14 @@ class MonitoringNilaiSiswaController extends AdminBaseController
                     ->where('tingkat', $tingkatClean)
                     ->where('semester', $semesterAktif);
 
-                if ($db->fieldExists('tahun_ajaran_id', 'master_lm')) {
-                    $bLm->where('tahun_ajaran_id', $ta_id);
-                }
-
                 if ($db->fieldExists('kategori', 'master_lm')) {
-                    $bLm->where('kategori', $kategoriDB);
+                    $bLm->groupStart();
+                    if (stripos($kategoriDB, 'tengah') !== false || stripos($kategoriDB, 'sts') !== false) {
+                        $bLm->whereIn('kategori', ['Tengah', 'STS', 'PTS']);
+                    } else {
+                        $bLm->whereIn('kategori', ['Akhir', 'SAS', 'PAS']);
+                    }
+                    $bLm->groupEnd();
                 }
                 if ($db->fieldExists('status', 'master_lm')) {
                     $bLm->where('status', 'Aktif');

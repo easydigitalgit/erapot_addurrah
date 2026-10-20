@@ -106,14 +106,6 @@ class NilaiFormatifController extends GuruMapelBaseController
             ->whereIn('tingkat', $tingkatList)
             ->where('semester', $semester);
 
-        if ($tahun_ajaran_id) {
-            $bLm->groupStart()
-                ->where('tahun_ajaran_id', $tahun_ajaran_id)
-                ->orWhere('tahun_ajaran_id', 0)
-                ->orWhere('tahun_ajaran_id', null)
-                ->groupEnd();
-        }
-
         if ($db->fieldExists('kategori', 'master_lm')) {
             $bLm->groupStart();
             if (stripos($kategori, 'tengah') !== false) {
