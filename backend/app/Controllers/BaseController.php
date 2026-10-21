@@ -48,11 +48,12 @@ abstract class BaseController extends Controller
         // ==============================================================
         $session = \Config\Services::session();
         
-        if ($session->has('locale')) {
-            // Gunakan service('request') agar VS Code mengerti
-            service('request')->setLocale($session->get('locale'));
-        } else {
-            service('request')->setLocale('id'); 
+        if (method_exists(service('request'), 'setLocale')) {
+            if ($session->has('locale')) {
+                service('request')->setLocale($session->get('locale'));
+            } else {
+                service('request')->setLocale('id'); 
+            }
         }
         // ==============================================================
         // SELESAI PASTE

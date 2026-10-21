@@ -661,11 +661,6 @@ class CetakRaporController extends AdminBaseController
 
     private function getDeskripsiDinamis($siswa_id, $mapel_id, $tahun_id, $semester, $tingkat, $jenis_rapor, $nama_siswa, $nilai_akhir_fallback = null)
     {
-        $tabelAcuan = $this->db->tableExists('nilai_akademik') ? 'nilai_akademik' : ($this->db->tableExists('nilai_formatif') ? 'nilai_formatif' : 'nilai_sumatif');
-        $fieldTA    = $this->db->fieldExists('tahun_ajaran_id', $tabelAcuan) ? 'tahun_ajaran_id' : 'tahun_ajaran';
-        $fieldNilai = $this->db->fieldExists('nilai_angka', $tabelAcuan) ? 'nilai_angka' : 'nilai';
-        $fieldType  = $this->db->fieldExists('jenis_penilaian', $tabelAcuan) ? 'jenis_penilaian' : ($this->db->fieldExists('jenis_nilai', $tabelAcuan) ? 'jenis_nilai' : 'jenis_sumatif');
-
         if (!$this->db->tableExists('master_lm')) {
             return "-";
         }
@@ -676,56 +671,81 @@ class CetakRaporController extends AdminBaseController
             $tingkatClean = $romToNum[strtoupper($tingkat)] ?? $tingkat;
         }
 
-        $kategoriDB = 'Akhir';
-        if (stripos($jenis_rapor, 'Tengah') !== false || stripos($jenis_rapor, 'STS') !== false) {
-            $kategoriDB = 'Tengah';
+        $isTengah = (stripos($jenis_rapor, 'Tengah') !== false || stripos($jenis_rapor, 'STS') !== false || stripos($jenis_rapor, 'PTS') !== false);
+        $kategoriList = $isTengah ? ['Tengah', 'STS', 'PTS'] : ['Akhir', 'SAS', 'PAS'];
+        $katFormatif = $isTengah ? 'Tengah Semester' : 'Akhir Semester';
+
+        // 1. Ambil master_lm AKTIF yang SESUAI DENGAN SEMESTER, TINGKAT, & KATEGORI
+        $bLm = $this->db->table('master_lm')
+            ->where('mapel_id', $mapel_id)
+            ->where('tingkat', $tingkatClean)
+            ->where('semester', $semester);
+
+        if ($this->db->fieldExists('kategori', 'master_lm')) {
+            $bLm->whereIn('kategori', $kategoriList);
         }
 
-        $rawNilai = $this->db->table($tabelAcuan)
-            ->where(['siswa_id' => $siswa_id, 'mapel_id' => $mapel_id, $fieldTA => $tahun_id])
-            ->get()->getResultArray();
+        if ($this->db->fieldExists('status', 'master_lm')) {
+            $bLm->groupStart()
+                ->where('status', 'Aktif')
+                ->orWhere('status', null)
+                ->orWhere('status', '')
+                ->groupEnd();
+        }
 
-        if (empty($rawNilai) && $nilai_akhir_fallback === null) return "Kompetensi sudah tercapai sesuai dengan kriteria yang ditetapkan.";
+        $allLm = $bLm->orderBy('id', 'ASC')->get()->getResultArray();
+
+        $lmByNum = [];
+        foreach ($allLm as $lm) {
+            $num = (int) preg_replace('/[^0-9]/', '', $lm['kode_lm']);
+            if ($num > 0 && !isset($lmByNum[$num])) {
+                $lmByNum[$num] = $lm;
+            }
+        }
 
         $nilaiLM = [];
-        if (!empty($rawNilai)) {
-            foreach ($rawNilai as $rn) {
-                $kodeEntry = strtoupper(preg_replace('/[^A-Z0-9]/', '', (string)$rn[$fieldType]));
 
-                $lm = $this->db->table('master_lm')
-                    ->where([
-                        'mapel_id' => $mapel_id,
-                        'tingkat'  => $tingkatClean,
-                        'kategori' => $kategoriDB
-                    ])
-                    ->where("REPLACE(kode_lm, ' ', '') =", $kodeEntry)
-                    ->get()->getRowArray();
+        // 2. Ambil nilai per-LM dari tabel nilai_formatif (dikelompokkan berdasarkan pertemuan)
+        if ($this->db->tableExists('nilai_formatif')) {
+            $qFormatif = $this->db->table('nilai_formatif')
+                ->select('pertemuan, AVG(nilai_angka) as rata_nilai')
+                ->where([
+                    'siswa_id'        => $siswa_id,
+                    'mapel_id'        => $mapel_id,
+                    'tahun_ajaran_id' => $tahun_id,
+                    'semester'        => $semester
+                ]);
 
-                if ($lm) {
-                    $nilaiLM[] = array_merge($lm, ['nilai_angka' => $rn[$fieldNilai]]);
+            if ($this->db->fieldExists('kategori', 'nilai_formatif')) {
+                $qFormatif->where('kategori', $katFormatif);
+            }
+
+            $formatifRows = $qFormatif->groupBy('pertemuan')->get()->getResultArray();
+
+            foreach ($formatifRows as $fr) {
+                $pert = (int)$fr['pertemuan'];
+                if (isset($lmByNum[$pert])) {
+                    $nilaiLM[] = array_merge($lmByNum[$pert], ['nilai_angka' => round((float)$fr['rata_nilai'], 1)]);
                 }
             }
         }
 
-        if (empty($nilaiLM)) {
-            if ($nilai_akhir_fallback === null) return "Kompetensi sudah tercapai sesuai dengan kriteria yang ditetapkan.";
-
-            $allLm = $this->db->table('master_lm')
-                ->where([
-                    'mapel_id' => $mapel_id,
-                    'tingkat'  => $tingkatClean,
-                    'kategori' => $kategoriDB
-                ])
-                ->orderBy('kode_lm', 'ASC')
-                ->get()->getResultArray();
-
-            if (empty($allLm)) return "Kompetensi sudah tercapai sesuai dengan kriteria yang ditetapkan.";
+        // Fallback jika tidak ada data formatif per pertemuan, gunakan nilai akhir rapor
+        if (empty($nilaiLM) && !empty($allLm)) {
+            if ($nilai_akhir_fallback === null) {
+                return "Kompetensi sudah tercapai sesuai dengan kriteria yang ditetapkan.";
+            }
 
             foreach ($allLm as $lm) {
-                $nilaiLM[] = array_merge($lm, ['nilai_angka' => $nilai_akhir_fallback]);
+                $nilaiLM[] = array_merge($lm, ['nilai_angka' => (float)$nilai_akhir_fallback]);
             }
         }
 
+        if (empty($nilaiLM)) {
+            return "Kompetensi sudah tercapai sesuai dengan kriteria yang ditetapkan.";
+        }
+
+        // Urutkan dari nilai tertinggi ke terendah
         usort($nilaiLM, function ($a, $b) {
             return $b['nilai_angka'] <=> $a['nilai_angka'];
         });
@@ -733,21 +753,33 @@ class CetakRaporController extends AdminBaseController
         $best = $nilaiLM[0];
         $worst = $nilaiLM[count($nilaiLM) - 1];
 
+        // LOGIKA PENENTUAN TEKS BERDASARKAN NILAI (A, B, C, D)
         $getTeks = function ($row) {
             $n = (float)$row['nilai_angka'];
-            if ($n >= 90) return $row['deskripsi_a'];
-            if ($n >= 80) return $row['deskripsi_b'];
-            if ($n >= 75) return $row['deskripsi_c'];
-            return $row['deskripsi_d'];
+            if ($n >= 90 && !empty($row['deskripsi_a'])) return $row['deskripsi_a'];
+            if ($n >= 80 && !empty($row['deskripsi_b'])) return $row['deskripsi_b'];
+            if ($n >= 75 && !empty($row['deskripsi_c'])) return $row['deskripsi_c'];
+            if (!empty($row['deskripsi_d'])) return $row['deskripsi_d'];
+            return $row['deskripsi_lm'] ?? '';
         };
 
         $teksTinggi = $getTeks($best);
         $teksRendah = $getTeks($worst);
 
+        // Jika LM yang tertinggi dan terendah sama (hanya ada 1 LM), atau id-nya sama
         if (count($nilaiLM) === 1 || $best['id'] === $worst['id']) {
             return $this->formatTeksDeskripsi($teksTinggi, $nama_siswa);
         }
 
+        // Jika nilai tertinggi dan terendah sama persis (misal fallback nilai akhir yang sama)
+        if ($best['nilai_angka'] == $worst['nilai_angka']) {
+            if (trim($teksTinggi) === trim($teksRendah)) {
+                return $this->formatTeksDeskripsi($teksTinggi, $nama_siswa);
+            }
+            return $this->formatTeksDeskripsi($teksTinggi, $nama_siswa) . " serta " . $this->formatTeksDeskripsi($teksRendah, "");
+        }
+
+        // Jika beda LM dan beda nilai
         $deskripsiFinal = $this->formatTeksDeskripsi($teksTinggi, $nama_siswa);
 
         if ($worst['nilai_angka'] < 80) {
