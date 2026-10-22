@@ -39,7 +39,6 @@ class MasterLmModel extends Model
             // INNER JOIN: Membungkam data yatim piatu (null) secara otomatis
             ->join('mata_pelajaran', 'mata_pelajaran.id = master_lm.mapel_id', 'inner')
             ->join('tahun_ajaran', 'tahun_ajaran.id = master_lm.tahun_ajaran_id', 'left')
-            ->orderBy('tahun_ajaran.tahun', 'DESC')
             ->orderBy('master_lm.tingkat', 'ASC')
             ->orderBy('mata_pelajaran.nama_mapel', 'ASC')
             ->orderBy('master_lm.kode_lm', 'ASC')

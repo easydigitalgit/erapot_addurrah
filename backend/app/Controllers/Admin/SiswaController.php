@@ -724,8 +724,8 @@ function delete($id)
             'Agama',
             'Kelas / Rombel (Lihat Sheet 2)',
             'Alamat Siswa',
-            'Kecamatan',
             'Kelurahan / Desa',
+            'Kecamatan',
             'No HP Siswa',
             'Email Siswa (Opsional - Kosongkan Jika Tidak Ada)',
             'Asal Sekolah',
@@ -759,8 +759,8 @@ function delete($id)
         $sheet->setCellValue('H2', 'Islam');
         $sheet->setCellValue('I2', 'VII Safir');
         $sheet->setCellValue('J2', 'Jl. Merdeka No. 10');
-        $sheet->setCellValue('K2', 'Kebayoran Baru');
-        $sheet->setCellValue('L2', 'Senayan');
+        $sheet->setCellValue('K2', 'Senayan');
+        $sheet->setCellValue('L2', 'Kebayoran Baru');
         $sheet->setCellValueExplicit('M2', '081234567890', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
         $sheet->setCellValue('N2', 'ahmad@sekolah.sch.id');
         $sheet->setCellValue('O2', 'SDN 1 Jakarta');
@@ -870,57 +870,129 @@ function delete($id)
                 return null;
             };
 
-            // 4. Deteksi Header Dinamis dari Baris 1 (Pencegah Geser Kolom)
-            $headerRow = $sheetData[1] ?? [];
+            // 4. Deteksi Baris Header Dinamis (Cek baris 1 s/d 10 untuk mendukung Template maupun file Dapodik langsung)
+            $headerRowIndex = 1;
+            $headerRow = [];
+            $maxMatches = 0;
+
+            for ($r = 1; $r <= min(10, count($sheetData)); $r++) {
+                $candidateRow = $sheetData[$r] ?? [];
+                $matches = 0;
+                foreach ($candidateRow as $cellVal) {
+                    $valLower = strtolower(trim((string)$cellVal));
+                    if (empty($valLower)) continue;
+                    if (strpos($valLower, 'nama') !== false || 
+                        strpos($valLower, 'nis') !== false || 
+                        strpos($valLower, 'nik') !== false || 
+                        strpos($valLower, 'nipd') !== false || 
+                        strpos($valLower, 'kelamin') !== false || 
+                        strpos($valLower, 'lahir') !== false ||
+                        strpos($valLower, 'rombel') !== false ||
+                        strpos($valLower, 'alamat') !== false) {
+                        $matches++;
+                    }
+                }
+                if ($matches > $maxMatches) {
+                    $maxMatches = $matches;
+                    $headerRowIndex = $r;
+                    $headerRow = $candidateRow;
+                }
+            }
+
+            if (empty($headerRow)) {
+                $headerRow = $sheetData[1] ?? [];
+            }
+
             $colMap = [];
             foreach ($headerRow as $colKey => $hVal) {
                 $h = strtolower(trim((string)$hVal));
                 if (empty($h)) continue;
 
+                // 1. NISN (Harus dicek sebelum NIS/NIK)
                 if (strpos($h, 'nisn') !== false) {
                     $colMap['nisn'] = $colKey;
-                } elseif (strpos($h, 'nis') !== false && !isset($colMap['nis'])) {
+                }
+                // 2. NIS / NIPD / No Induk Siswa
+                elseif ((strpos($h, 'nis') !== false || strpos($h, 'nipd') !== false || strpos($h, 'no induk') !== false || strpos($h, 'no. induk') !== false) && !isset($colMap['nis'])) {
                     $colMap['nis'] = $colKey;
-                } elseif (strpos($h, 'nik') !== false && strpos($h, 'ayah') === false && strpos($h, 'ibu') === false && strpos($h, 'wali') === false) {
+                }
+                // 3. NIK Siswa (Kecualikan NIK orang tua/wali)
+                elseif (strpos($h, 'nik') !== false && strpos($h, 'ayah') === false && strpos($h, 'ibu') === false && strpos($h, 'wali') === false) {
                     $colMap['nik'] = $colKey;
-                } elseif (strpos($h, 'nama') !== false && strpos($h, 'ayah') === false && strpos($h, 'ibu') === false && strpos($h, 'wali') === false && strpos($h, 'sekolah') === false) {
-                    $colMap['nama'] = $colKey;
-                } elseif (strpos($h, 'kelamin') !== false || $h === 'jk' || $h === 'l/p' || strpos($h, 'gender') !== false) {
-                    $colMap['jk'] = $colKey;
-                } elseif (strpos($h, 'tempat') !== false) {
-                    $colMap['tempat_lahir'] = $colKey;
-                } elseif (strpos($h, 'tanggal lahir') !== false || strpos($h, 'tgl lahir') !== false) {
-                    $colMap['tgl_lahir'] = $colKey;
-                } elseif (strpos($h, 'agama') !== false) {
-                    $colMap['agama'] = $colKey;
-                } elseif (strpos($h, 'kelas') !== false || strpos($h, 'rombel') !== false) {
-                    if (strpos($h, 'diterima') === false) {
-                        $colMap['rombel'] = $colKey;
-                    }
-                } elseif (strpos($h, 'alamat') !== false) {
-                    $colMap['alamat'] = $colKey;
-                } elseif (strpos($h, 'kecamatan') !== false) {
-                    $colMap['kecamatan'] = $colKey;
-                } elseif (strpos($h, 'kelurahan') !== false || strpos($h, 'desa') !== false) {
-                    $colMap['kelurahan'] = $colKey;
-                } elseif (strpos($h, 'email') !== false && strpos($h, 'ortu') === false && strpos($h, 'orang') === false) {
-                    $colMap['email'] = $colKey;
-                } elseif ((strpos($h, 'hp') !== false || strpos($h, 'telepon') !== false || strpos($h, 'telp') !== false || strpos($h, 'wa') !== false) && strpos($h, 'ortu') === false && strpos($h, 'orang') === false && strpos($h, 'wali') === false) {
-                    $colMap['no_hp'] = $colKey;
-                } elseif (strpos($h, 'asal') !== false || strpos($h, 'sekolah') !== false) {
-                    $colMap['asal_sekolah'] = $colKey;
-                } elseif (strpos($h, 'diterima di') !== false || strpos($h, 'diterima kelas') !== false) {
+                }
+                // 4. Diterima di Kelas (HARUS DICEK SEBELUM ROMBEL/KELAS BIASA)
+                elseif (strpos($h, 'diterima') !== false && (strpos($h, 'kelas') !== false || strpos($h, 'rombel') !== false || strpos($h, 'tingkat') !== false)) {
                     $colMap['diterima_dikelas'] = $colKey;
-                } elseif (strpos($h, 'tgl diterima') !== false || strpos($h, 'tanggal diterima') !== false) {
+                }
+                // 5. Tanggal Diterima (HARUS DICEK SEBELUM TANGGAL LAHIR)
+                elseif (strpos($h, 'diterima') !== false && (strpos($h, 'tanggal') !== false || strpos($h, 'tgl') !== false)) {
                     $colMap['tgl_diterima'] = $colKey;
-                } elseif (strpos($h, 'ayah') !== false && strpos($h, 'nik') === false) {
-                    $colMap['nama_ayah'] = $colKey;
-                } elseif (strpos($h, 'ibu') !== false && strpos($h, 'nik') === false) {
-                    $colMap['nama_ibu'] = $colKey;
-                } elseif ((strpos($h, 'hp') !== false || strpos($h, 'telepon') !== false || strpos($h, 'telp') !== false || strpos($h, 'wa') !== false) && (strpos($h, 'ortu') !== false || strpos($h, 'orang') !== false || strpos($h, 'wali') !== false)) {
+                }
+                // 6. Tanggal Lahir Siswa
+                elseif (strpos($h, 'lahir') !== false && (strpos($h, 'tanggal') !== false || strpos($h, 'tgl') !== false || strpos($h, 'date') !== false)) {
+                    $colMap['tgl_lahir'] = $colKey;
+                }
+                // 7. Tempat Lahir Siswa
+                elseif (strpos($h, 'tempat') !== false && (strpos($h, 'lahir') !== false || strpos($h, 'tmpt') !== false)) {
+                    $colMap['tempat_lahir'] = $colKey;
+                }
+                // 8. Jenis Kelamin
+                elseif (strpos($h, 'kelamin') !== false || $h === 'jk' || $h === 'l/p' || strpos($h, 'gender') !== false) {
+                    $colMap['jk'] = $colKey;
+                }
+                // 9. Nama Lengkap Siswa
+                elseif (strpos($h, 'nama') !== false && strpos($h, 'ayah') === false && strpos($h, 'ibu') === false && strpos($h, 'wali') === false && strpos($h, 'sekolah') === false && strpos($h, 'rombel') === false) {
+                    $colMap['nama'] = $colKey;
+                }
+                // 10. Kelas / Rombel Saat Ini
+                elseif ((strpos($h, 'kelas') !== false || strpos($h, 'rombel') !== false) && strpos($h, 'diterima') === false) {
+                    $colMap['rombel'] = $colKey;
+                }
+                // 11. Agama
+                elseif (strpos($h, 'agama') !== false) {
+                    $colMap['agama'] = $colKey;
+                }
+                // 12. Alamat Siswa
+                elseif (strpos($h, 'alamat') !== false) {
+                    $colMap['alamat'] = $colKey;
+                }
+                // 13. Kelurahan / Desa
+                elseif (strpos($h, 'kelurahan') !== false || strpos($h, 'desa') !== false) {
+                    $colMap['kelurahan'] = $colKey;
+                }
+                // 14. Kecamatan
+                elseif (strpos($h, 'kecamatan') !== false) {
+                    $colMap['kecamatan'] = $colKey;
+                }
+                // 15. Asal Sekolah
+                elseif (strpos($h, 'asal') !== false || (strpos($h, 'sekolah') !== false && strpos($h, 'nama') === false)) {
+                    $colMap['asal_sekolah'] = $colKey;
+                }
+                // 16. Email Siswa
+                elseif ((strpos($h, 'email') !== false || strpos($h, 'e-mail') !== false) && strpos($h, 'ortu') === false && strpos($h, 'orang') === false) {
+                    $colMap['email'] = $colKey;
+                }
+                // 17. No HP / WA Orang Tua (HARUS DICEK SEBELUM NO HP SISWA)
+                elseif ((strpos($h, 'hp') !== false || strpos($h, 'telepon') !== false || strpos($h, 'telp') !== false || strpos($h, 'whatsapp') !== false || preg_match('/\bwa\b/i', $h)) && 
+                        (strpos($h, 'ortu') !== false || strpos($h, 'orang') !== false || strpos($h, 'wali') !== false || strpos($h, 'ayah') !== false || strpos($h, 'ibu') !== false)) {
                     $colMap['no_hp_ortu'] = $colKey;
-                } elseif (strpos($h, 'status') !== false) {
+                }
+                // 18. Status Siswa (HARUS DICEK SEBELUM HP SISWA AGAR TIDAK SALAH KARENA KATA 'sisWA')
+                elseif (strpos($h, 'status') !== false) {
                     $colMap['status_siswa'] = $colKey;
+                }
+                // 19. No HP Siswa (Hanya jika benar-benar HP siswa dan bukan status siswa)
+                elseif ((strpos($h, 'hp') !== false || strpos($h, 'telepon') !== false || strpos($h, 'telp') !== false || strpos($h, 'handphone') !== false || strpos($h, 'whatsapp') !== false || preg_match('/\bwa\b/i', $h)) &&
+                        strpos($h, 'ortu') === false && strpos($h, 'orang') === false && strpos($h, 'wali') === false && strpos($h, 'status') === false) {
+                    $colMap['no_hp'] = $colKey;
+                }
+                // 20. Nama Ayah
+                elseif (strpos($h, 'ayah') !== false && strpos($h, 'nik') === false && strpos($h, 'hp') === false && strpos($h, 'wa') === false) {
+                    $colMap['nama_ayah'] = $colKey;
+                }
+                // 21. Nama Ibu
+                elseif (strpos($h, 'ibu') !== false && strpos($h, 'nik') === false && strpos($h, 'hp') === false && strpos($h, 'wa') === false) {
+                    $colMap['nama_ibu'] = $colKey;
                 }
             }
 
@@ -936,8 +1008,8 @@ function delete($id)
             $errors = [];
 
             foreach ($sheetData as $idx => $row) {
-                // Lewati baris header
-                if ($idx == 1) continue;
+                // Lewati baris header dan baris kop di atasnya
+                if ($idx <= $headerRowIndex) continue;
 
                 $namaLengkap = $getVal($row, 'nama', 'D');
                 $nisInput    = $getVal($row, 'nis', 'A');
@@ -969,8 +1041,8 @@ function delete($id)
                 }
 
                 $alamat = $getVal($row, 'alamat', 'J');
-                $kecamatan = substr($getVal($row, 'kecamatan', 'K'), 0, 100);
-                $kelurahan = substr($getVal($row, 'kelurahan', 'L'), 0, 100);
+                $kelurahan = substr($getVal($row, 'kelurahan', 'K'), 0, 100);
+                $kecamatan = substr($getVal($row, 'kecamatan', 'L'), 0, 100);
                 $noHpSiswa = substr(preg_replace('/\.0$/', '', $getVal($row, 'no_hp', 'M')), 0, 50);
 
                 // --- 🛡️ SANITASI EMAIL SISWA: Hanya izinkan format email valid, abaikan dummy/angka ---

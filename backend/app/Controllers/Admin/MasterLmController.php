@@ -27,6 +27,25 @@ class MasterLmController extends AdminBaseController
         $this->taModel     = new TahunAjaranModel();
         $this->rombelModel = new RombelModel();
         $this->db          = \Config\Database::connect();
+        $this->ensureTableStructure();
+    }
+
+    protected function ensureTableStructure()
+    {
+        try {
+            if (!$this->db->tableExists('master_lm')) return;
+
+            if (!$this->db->fieldExists('kategori', 'master_lm')) {
+                $this->db->query("ALTER TABLE master_lm ADD COLUMN kategori ENUM('Tengah', 'Akhir') DEFAULT 'Akhir' AFTER semester");
+            }
+
+            $field = $this->db->query("SHOW COLUMNS FROM master_lm LIKE 'tahun_ajaran_id'")->getRowArray();
+            if ($field && strtoupper($field['Null']) === 'NO') {
+                $this->db->query("ALTER TABLE master_lm MODIFY COLUMN tahun_ajaran_id INT NULL DEFAULT NULL");
+            }
+        } catch (\Throwable $e) {
+            log_message('error', 'ensureTableStructure error: ' . $e->getMessage());
+        }
     }
 
     public function index(): string
@@ -75,72 +94,95 @@ class MasterLmController extends AdminBaseController
     public function store()
     {
         if ($this->request->isAJAX()) {
-            $mapel_id = $this->request->getPost('mapel_id');
-            $tingkat  = $this->request->getPost('tingkat');
-            $semester = $this->request->getPost('semester'); 
-            $kode_lm  = trim(strtoupper($this->request->getPost('kode_lm')));
-            $kategori = $this->request->getPost('kategori') ?: 'Akhir';
+            try {
+                $mapel_id = $this->request->getPost('mapel_id');
+                $tingkat  = $this->request->getPost('tingkat');
+                $semester = $this->request->getPost('semester'); 
+                $kode_lm  = trim(strtoupper($this->request->getPost('kode_lm')));
+                $kategori = $this->request->getPost('kategori') ?: 'Akhir';
 
-            $cek = $this->lmModel->where('mapel_id', $mapel_id)
-                                 ->where('tingkat', $tingkat)
-                                 ->where('semester', $semester)
-                                 ->where('kategori', $kategori)
-                                 ->where('kode_lm', $kode_lm)
-                                 ->first();
-            
-            if ($cek) return $this->response->setJSON(['status' => 'error', 'message' => "Kode $kode_lm untuk Mapel ini di kelas, semester, & kategori tersebut sudah ada!"]);
+                $cek = $this->lmModel->where('mapel_id', $mapel_id)
+                                     ->where('tingkat', $tingkat)
+                                     ->where('semester', $semester)
+                                     ->where('kategori', $kategori)
+                                     ->where('kode_lm', $kode_lm)
+                                     ->first();
+                
+                if ($cek) {
+                    return $this->response->setJSON([
+                        'status'  => 'error',
+                        'message' => "Kode $kode_lm untuk Mapel ini di kelas, semester, & kategori tersebut sudah ada!"
+                    ]);
+                }
 
-            $status   = $this->request->getPost('status') ?: 'Aktif';
+                $status = $this->request->getPost('status') ?: 'Aktif';
 
-            $data = [
-                'tahun_ajaran_id' => null, // LM bersifat Universal (Tanpa batas tahun ajaran)
-                'mapel_id'        => $mapel_id,
-                'tingkat'         => $tingkat,
-                'semester'        => $semester,
-                'kategori'        => $kategori,
-                'kode_lm'         => $kode_lm,
-                'deskripsi_lm'    => trim($this->request->getPost('deskripsi_lm')),
-                'deskripsi_a'     => trim($this->request->getPost('deskripsi_a')),
-                'deskripsi_b'     => trim($this->request->getPost('deskripsi_b')),
-                'deskripsi_c'     => trim($this->request->getPost('deskripsi_c')),
-                'deskripsi_d'     => trim($this->request->getPost('deskripsi_d')),
-                'status'          => $status
-            ];
+                $data = [
+                    'tahun_ajaran_id' => null, // LM bersifat Universal (Tanpa batas tahun ajaran)
+                    'mapel_id'        => $mapel_id,
+                    'tingkat'         => $tingkat,
+                    'semester'        => $semester,
+                    'kategori'        => $kategori,
+                    'kode_lm'         => $kode_lm,
+                    'deskripsi_lm'    => trim($this->request->getPost('deskripsi_lm')),
+                    'deskripsi_a'     => trim($this->request->getPost('deskripsi_a')),
+                    'deskripsi_b'     => trim($this->request->getPost('deskripsi_b')),
+                    'deskripsi_c'     => trim($this->request->getPost('deskripsi_c')),
+                    'deskripsi_d'     => trim($this->request->getPost('deskripsi_d')),
+                    'status'          => $status
+                ];
 
-            if ($this->lmModel->insert($data)) {
-                return $this->response->setJSON(['status' => 'success', 'message' => 'Data LM berhasil ditambahkan.']);
+                if ($this->lmModel->insert($data)) {
+                    return $this->response->setJSON(['status' => 'success', 'message' => 'Data LM berhasil ditambahkan.']);
+                }
+
+                $errors = $this->lmModel->errors();
+                $errMsg = !empty($errors) ? implode(', ', $errors) : 'Gagal menyimpan data ke database.';
+                return $this->response->setJSON(['status' => 'error', 'message' => $errMsg]);
+            } catch (\Throwable $e) {
+                log_message('error', 'MasterLmController::store error: ' . $e->getMessage());
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()]);
             }
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menyimpan data.']);
         }
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Invalid request']);
     }
 
     public function update()
     {
         if ($this->request->isAJAX()) {
-            $id = $this->request->getPost('id');
+            try {
+                $id = $this->request->getPost('id');
 
-            $data = [
-                'mapel_id'        => $this->request->getPost('mapel_id'),
-                'tingkat'         => $this->request->getPost('tingkat'),
-                'semester'        => $this->request->getPost('semester'),
-                'kategori'        => $this->request->getPost('kategori') ?: 'Akhir',
-                'kode_lm'         => trim(strtoupper($this->request->getPost('kode_lm'))),
-                'deskripsi_lm'    => trim($this->request->getPost('deskripsi_lm')),
-                'deskripsi_a'     => trim($this->request->getPost('deskripsi_a')),
-                'deskripsi_b'     => trim($this->request->getPost('deskripsi_b')),
-                'deskripsi_c'     => trim($this->request->getPost('deskripsi_c')),
-                'deskripsi_d'     => trim($this->request->getPost('deskripsi_d'))
-            ];
+                $data = [
+                    'mapel_id'        => $this->request->getPost('mapel_id'),
+                    'tingkat'         => $this->request->getPost('tingkat'),
+                    'semester'        => $this->request->getPost('semester'),
+                    'kategori'        => $this->request->getPost('kategori') ?: 'Akhir',
+                    'kode_lm'         => trim(strtoupper($this->request->getPost('kode_lm'))),
+                    'deskripsi_lm'    => trim($this->request->getPost('deskripsi_lm')),
+                    'deskripsi_a'     => trim($this->request->getPost('deskripsi_a')),
+                    'deskripsi_b'     => trim($this->request->getPost('deskripsi_b')),
+                    'deskripsi_c'     => trim($this->request->getPost('deskripsi_c')),
+                    'deskripsi_d'     => trim($this->request->getPost('deskripsi_d'))
+                ];
 
-            if ($this->request->getPost('status')) {
-                $data['status'] = $this->request->getPost('status');
+                if ($this->request->getPost('status')) {
+                    $data['status'] = $this->request->getPost('status');
+                }
+
+                if ($this->lmModel->update($id, $data)) {
+                    return $this->response->setJSON(['status' => 'success', 'message' => 'Data LM berhasil diperbarui.']);
+                }
+
+                $errors = $this->lmModel->errors();
+                $errMsg = !empty($errors) ? implode(', ', $errors) : 'Gagal memperbarui data.';
+                return $this->response->setJSON(['status' => 'error', 'message' => $errMsg]);
+            } catch (\Throwable $e) {
+                log_message('error', 'MasterLmController::update error: ' . $e->getMessage());
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()]);
             }
-
-            if ($this->lmModel->update($id, $data)) {
-                return $this->response->setJSON(['status' => 'success', 'message' => 'Data LM berhasil diperbarui.']);
-            }
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui data.']);
         }
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Invalid request']);
     }
 
     public function toggleStatus()

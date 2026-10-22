@@ -97,36 +97,87 @@ WHERE id = 127;
 
 ### 3.2. Perbaikan Kode Controller Rapor
 Memperbarui method `getDeskripsiDinamis()` pada:
-- `backend/app/Controllers/WaliKelas/PreviewRaporController.php`
-- `backend/app/Controllers/Admin/CetakRaporController.php`
+### 2.4. Mengapa Materi Bilangan Rasional Sempat Tidak Masuk ke Deskripsi Rapor?
+Wali kelas sempat melaporkan: *"Pak, deskripsinya gak sesuai di LM pak. Yg bilangan Rasional tidak masuk"*.
+Setelah ditelusuri:
+1. Pada tabel `nilai_formatif`, guru hanya menginput nilai untuk `pertemuan = 1` (karena pada template kolektif sebelum perbaikan tanggal 20 Oktober, kolom formatif yang terbentuk hanya 1 kolom NH 1 & UH 1).
+2. Pada kode controller, pemetaan hanya memasukkan LM yang terdapat di `nilai_formatif`:
+   ```php
+   foreach ($formatifRows as $fr) {
+       $pert = (int)$fr['pertemuan'];
+       if (isset($lmByNum[$pert])) {
+           $nilaiLM[] = array_merge($lmByNum[$pert], ...);
+       }
+   }
+   ```
+   Karena hanya pertemuan 1 yang ada, array `$nilaiLM` hanya berisi 1 elemen (LM 1 - Bilangan Bulat).
+3. Kode fallback (`if (empty($nilaiLM))`) terlewati karena `$nilaiLM` tidak kosong.
+4. Akibatnya, LM 2 (Bilangan Rasional) yang tidak memiliki record di `nilai_formatif` **sama sekali tidak dievaluasi dan tidak dicetak di rapor**, sehingga rapor hanya menampilkan 1 materi saja.
 
-**Poin-poin Perubahan:**
-1. **Filter Semester & Status Aktif:**
-   Query `master_lm` kini mengunci semester aktif (`->where('semester', $semester)`) dan status aktif (`->where('status', 'Aktif')`), sehingga tidak akan ada materi semester lain yang masuk.
-2. **Pencocokan Nilai Formatif Berdasarkan Kolom `pertemuan`:**
-   Nilai formatif dikelompokkan berdasarkan nomor pertemuan (`pertemuan 1` untuk LM 1, `pertemuan 2` untuk LM 2). Rata-rata nilai formatif pada pertemuan tersebut dipetakan langsung ke LM yang bersesuaian.
-3. **Penyempurnaan Tata Bahasa Kalimat Gabungan:**
-   Jika nilai capaian tertinggi dan terendah bernilai sama (misal pada fallback nilai akhir), teks dihubungkan secara harmonis (`"serta"`) dan tidak menambahkan kata penghubung kontras `", namun"` yang berulang jika siswa tidak mengalami kendala.
+---
 
-### 3.3. Penambahan Guard pada `BaseController.php`
+## 3. Implementasi Perbaikan
+
+### 3.1. Pembaruan Data `master_lm` (Database)
+Melakukan update pada baris ID 126 dan 127 agar sesuai dengan redaksi resmi dari guru/walikelas:
+
+```sql
+-- 1. LM 1 (ID: 126)
+UPDATE master_lm SET 
+    deskripsi_lm = 'Membaca, menulis, membandingkan dan mengoperasikan bilangan bulat serta menerapkan bilangan bulat dalam masalah kontekstual',
+    deskripsi_a  = 'Menunjukkan penguasaan yang sangat baik dalam membaca, menulis, membandingkan dan mengoperasikan bilangan bulat serta menerapkan bilangan bulat dalam masalah kontekstual.',
+    deskripsi_b  = 'Menunjukkan penguasaan yang baik dalam membaca, menulis, membandingkan dan mengoperasikan bilangan bulat serta menerapkan bilangan bulat dalam masalah kontekstual.',
+    deskripsi_c  = 'Cukup menguasai dalam membaca, menulis, membandingkan dan mengoperasikan bilangan bulat serta menerapkan bilangan bulat dalam masalah kontekstual, namun perlu peningkatan pemahaman lebih lanjut.',
+    deskripsi_d  = 'Perlu bimbingan dan pendampingan khusus dalam membaca, menulis, membandingkan dan mengoperasikan bilangan bulat serta menerapkan bilangan bulat dalam masalah kontekstual.',
+    updated_at   = NOW()
+WHERE id = 126;
+
+-- 2. LM 2 (ID: 127)
+UPDATE master_lm SET 
+    deskripsi_lm = 'Membaca, menulis, membandingkan dan mengoperasikan bilangan rasional serta menerapkan bilangan rasional dalam masalah kontekstual',
+    deskripsi_a  = 'Menunjukkan penguasaan yang sangat baik dalam membaca, menulis, membandingkan dan mengoperasikan bilangan rasional serta menerapkan bilangan rasional dalam masalah kontekstual.',
+    deskripsi_b  = 'Menunjukkan penguasaan yang baik dalam membaca, menulis, membandingkan dan mengoperasikan bilangan rasional serta menerapkan bilangan rasional dalam masalah kontekstual.',
+    deskripsi_c  = 'Cukup menguasai dalam membaca, menulis, membandingkan dan mengoperasikan bilangan rasional serta menerapkan bilangan rasional dalam masalah kontekstual, namun perlu peningkatan pemahaman lebih lanjut.',
+    deskripsi_d  = 'Perlu bimbingan dan pendampingan khusus dalam membaca, menulis, membandingkan dan mengoperasikan bilangan rasional serta menerapkan bilangan rasional dalam masalah kontekstual.',
+    updated_at   = NOW()
+WHERE id = 127;
+```
+
+### 3.2. Evaluasi Akurat Berdasarkan Nilai LM yang Riil Diinput (Tidak Memaksa Data Gaib)
+Sistem **tidak memaksakan penggabungan LM yang belum dinilai** dengan skor karangan/asumsi. Kebijakan sistem:
+1. Deskripsi rapor secara jujur dan akurat merefleksikan materi yang **benar-benar telah dinilai** oleh guru di tabel `nilai_formatif`.
+2. Jika guru baru menginput nilai formatif untuk LM 1 (Bilangan Bulat), maka deskripsi rapor hanya mencetak LM 1.
+3. Hal ini berfungsi sebagai **kontrol kualitas dan indikator pengingat (*reminder*)** bagi wali kelas dan guru mata pelajaran bahwa nilai untuk **LM 2 (Bilangan Rasional) belum diinput ke dalam sistem**.
+4. Begitu guru mengimpor nilai untuk LM 2 (melalui template kolektif yang sekarang sudah memuat kolom NH 1, NH 2, UH 1, UH 2), deskripsi Bilangan Rasional akan **otomatis muncul berdampingan dengan Bilangan Bulat** tanpa perlu rekayasa sistem.
+
+### 3.3. Penyempurnaan Tata Bahasa Penggabungan Antar-LM (Jika Ada $\ge 2$ LM)
+1. Menghilangkan titik sebelum kata penghubung (`rtrim($deskripsiFinal, " .")`).
+2. Menghubungkan capaian yang setara dengan kata penghubung `" serta "` yang baku dan alami dalam bahasa Indonesia.
+3. Menghubungkan capaian yang memerlukan bimbingan dengan `", namun "` tanpa ada duplikasi frasa.
+
+### 3.4. Penambahan Guard pada `BaseController.php`
 Menambahkan pengaman `method_exists(service('request'), 'setLocale')` di `backend/app/Controllers/BaseController.php` agar pemanggilan controller melalui background worker/CLI (seperti `spark`) tidak mengalami fatal error.
 
 ---
 
-## 4. Hasil Verifikasi dan Pengujian
+## 4. Hasil Verifikasi dan Status Aktual
 
 Pengujian dilakukan langsung terhadap data riil siswa:
 
-### Kasus Siswa Kelas VII (Ahmad Zaidan Bukhari Al Azmi - Rombel VII Opal)
-- **Nilai Formatif:** Pertemuan 1 (Tugas: 97, Ulangan: 80 $\rightarrow$ Rata-rata: 88.5 / Predikat B)
-- **Teks Rapor Sebelum:**
-  > *"Ahmad Zaidan Bukhari Al Azmi cukup menguasai dalam membaca, menulis, membandingkan, dan menyelesaikan masalah yang berkaitan dengan bilangan bulat, namun perlu peningkatan pemahaman lebih lanjut., **namun cukup menguasai dalam menyelesaikan masalah yang berkaitan dengan persamaan dan pertidaksamaan linear satu variabel, namun perlu peningkatan pemahaman lebih lanjut.**"* ❌
-- **Teks Rapor Sesudah:**
-  > *"Ahmad Zaidan Bukhari Al Azmi menunjukkan penguasaan yang baik dalam membaca, menulis, membandingkan dan mengoperasikan bilangan bulat serta menerapkan bilangan bulat dalam masalah kontekstual."* ✅
+### Kasus Siswa 1: Muhammad Faith Habib (Rombel VII Opal)
+- **Kondisi Data:** Di database hanya ada nilai formatif `pertemuan = 1` (LM 1: Bilangan Bulat). Belum ada nilai untuk `pertemuan = 2`.
+- **Hasil Cetak Rapor:**
+  > *"Muhammad Faith Habib menunjukkan penguasaan yang baik dalam membaca, menulis, membandingkan dan mengoperasikan bilangan bulat serta menerapkan bilangan bulat dalam masalah kontekstual."* ✅
+- **Catatan:** Tidak menampilkan Bilangan Rasional karena nilai LM 2 memang **belum diinput oleh guru**.
 
-### Kasus Siswa Kelas VIII (Afifah Dhia Fadillah - Rombel VIII Intan)
-- **Nilai Formatif:** Pertemuan 1: 80, Pertemuan 2: 85 (Keduanya LM Ganjil Aktif)
-- **Hasil:** Kedua materi ganjil berhasil dipetakan dengan tepat tanpa ada kebocoran materi semester genap.
+### Simulasi Jika Guru Sudah Menginput LM 1 dan LM 2:
+- Jika guru mengimpor nilai LM 2 (misal nilai 85.3), sistem otomatis menghasilkan deskripsi lengkap:
+  > *"Muhammad Faith Habib menunjukkan penguasaan yang baik dalam membaca, menulis, membandingkan dan mengoperasikan bilangan bulat serta menerapkan bilangan bulat dalam masalah kontekstual **serta menunjukkan penguasaan yang baik dalam membaca, menulis, membandingkan dan mengoperasikan bilangan rasional serta menerapkan bilangan rasional dalam masalah kontekstual.**"* ✅
+
+### Kasus Siswa 2: Afifah Dhia Fadillah (Rombel VIII Intan - Kelas VIII)
+- **Kondisi Data:** Guru sudah menginput nilai untuk Pertemuan 1 dan Pertemuan 2.
+- **Hasil Cetak Rapor:**
+  > *"Afifah Dhia Fadillah menunjukkan penguasaan yang baik dalam peserta didik dapat menyederhanakan bentuk aljabar atau angka yang memuat operasi bilangan berpangkat menggunakan sifat-sifatnya serta menunjukkan penguasaan yang baik dalam peserta didik dapat menjelaskan pengertian bilangan berpangkat sebagai bentuk perkalian berulang."* ✅ *(Kedua materi otomatis tercetak lengkap karena kedua nilai sudah diinput)*
 
 ---
 
@@ -135,8 +186,9 @@ Pengujian dilakukan langsung terhadap data riil siswa:
 1. **Database `master_lm`:**
    - Memperbarui baris ID 126 dan 127 sesuai capaian pembelajaran kontekstual yang diajarkan.
 2. `backend/app/Controllers/WaliKelas/PreviewRaporController.php`:
-   - Memperbaiki method `getDeskripsiDinamis()`.
+   - Memperbaiki method `getDeskripsiDinamis()` agar memfilter semester aktif dan memetakan nilai formatif riil per pertemuan.
 3. `backend/app/Controllers/Admin/CetakRaporController.php`:
-   - Memperbaiki method `getDeskripsiDinamis()`.
+   - Memperbaiki method `getDeskripsiDinamis()` agar memfilter semester aktif dan memetakan nilai formatif riil per pertemuan.
 4. `backend/app/Controllers/BaseController.php`:
    - Menambahkan pengaman `method_exists()` untuk `setLocale()`.
+

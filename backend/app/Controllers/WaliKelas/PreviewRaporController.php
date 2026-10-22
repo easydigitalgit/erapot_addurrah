@@ -731,7 +731,7 @@ class PreviewRaporController extends WaliKelasBaseController
             }
         }
 
-        // Fallback jika tidak ada data formatif per pertemuan, gunakan nilai akhir rapor
+        // 3. Fallback HANYA JIKA tidak ada data formatif sama sekali untuk mapel ini
         if (empty($nilaiLM) && !empty($allLm)) {
             if ($nilai_akhir_fallback === null) {
                 return "Kompetensi sudah tercapai sesuai dengan kriteria yang ditetapkan.";
@@ -772,21 +772,16 @@ class PreviewRaporController extends WaliKelasBaseController
             return $this->formatTeksDeskripsi($teksTinggi, $nama_siswa);
         }
 
-        // Jika nilai tertinggi dan terendah sama persis (misal fallback nilai akhir yang sama)
-        if ($best['nilai_angka'] == $worst['nilai_angka']) {
-            if (trim($teksTinggi) === trim($teksRendah)) {
-                return $this->formatTeksDeskripsi($teksTinggi, $nama_siswa);
-            }
-            return $this->formatTeksDeskripsi($teksTinggi, $nama_siswa) . " serta " . $this->formatTeksDeskripsi($teksRendah, "");
-        }
-
-        // Jika beda LM dan beda nilai
+        // Jika ada lebih dari 1 LM (misal LM 1 & LM 2):
         $deskripsiFinal = $this->formatTeksDeskripsi($teksTinggi, $nama_siswa);
+        $deskripsiFinal = rtrim($deskripsiFinal, " .");
+
+        $teksRendahFormatted = $this->formatTeksDeskripsi($teksRendah, "");
 
         if ($worst['nilai_angka'] < 80) {
-            $deskripsiFinal .= ", namun " . $this->formatTeksDeskripsi($teksRendah, "");
+            $deskripsiFinal .= ", namun " . $teksRendahFormatted;
         } else {
-            $deskripsiFinal .= " dan " . $this->formatTeksDeskripsi($teksRendah, "");
+            $deskripsiFinal .= " serta " . $teksRendahFormatted;
         }
 
         return $deskripsiFinal;

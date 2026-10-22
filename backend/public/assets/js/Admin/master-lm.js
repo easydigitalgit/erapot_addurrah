@@ -398,17 +398,23 @@ form.addEventListener('submit', async function(e) {
 
     try {
         const res = await fetch(url, { method: 'POST', body: formData, headers: {'X-Requested-With': 'XMLHttpRequest'} });
-        const json = await res.json();
+        let json = null;
+        try {
+            json = await res.json();
+        } catch(parseErr) {
+            // response was not JSON
+        }
         
-        if (json.status === 'success') {
+        if (res.ok && json && json.status === 'success') {
             Swal.fire({ icon: 'success', title: 'Berhasil!', text: json.message, showConfirmButton: false, timer: 1500, customClass:{popup:'rounded-3xl'} });
             closeModal();
             loadData();
         } else {
-            Swal.fire({ icon: 'error', title: 'Gagal!', text: json.message, customClass:{popup:'rounded-3xl'} });
+            const errorMsg = (json && json.message) ? json.message : 'Terjadi kesalahan pada server saat menyimpan template LM.';
+            Swal.fire({ icon: 'error', title: 'Gagal!', text: errorMsg, customClass:{popup:'rounded-3xl'} });
         }
     } catch (err) {
-        Swal.fire({ icon: 'error', title: 'Error', text: 'Koneksi ke server gagal.', customClass:{popup:'rounded-3xl'} });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Koneksi ke server gagal atau terjadi kesalahan respon server.', customClass:{popup:'rounded-3xl'} });
     } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
