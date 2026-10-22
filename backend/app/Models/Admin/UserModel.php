@@ -108,6 +108,7 @@ class UserModel extends Model
         // Join ke tabel user_roles dan roles untuk dapat nama rolenya
         return $this->db->table('user_roles')
             ->select('user_roles.role_id, roles.role_name')
+            ->distinct()
             ->join('roles', 'roles.id = user_roles.role_id')
             ->where('user_roles.user_id', $userId)
             ->get()

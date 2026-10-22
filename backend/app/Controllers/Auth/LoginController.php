@@ -202,6 +202,18 @@ class LoginController extends AdminBaseController
         $roles = [];
         $hasWaliKelasRole = false;
 
+        // Deduplikasi $dbRoles berdasarkan role_id
+        $uniqueDbRoles = [];
+        $seenRids = [];
+        foreach ($dbRoles as $dbRole) {
+            $rid = (int)($dbRole['role_id'] ?? 0);
+            if ($rid > 0 && !in_array($rid, $seenRids, true)) {
+                $seenRids[] = $rid;
+                $uniqueDbRoles[] = $dbRole;
+            }
+        }
+        $dbRoles = $uniqueDbRoles;
+
         foreach ($dbRoles as $dbRole) {
             $rid = $dbRole['role_id'];
             $roleNameStr = strtolower($dbRole['role_name'] ?? $dbRole['nama_role'] ?? '');
@@ -214,7 +226,7 @@ class LoginController extends AdminBaseController
 
                 $guruModel = new \App\Models\Admin\GuruTendikModel();
                 $guru = $guruModel->where('user_id', $userId)->first();
-                if ($guru) {
+                if ($guru && !$hasWaliKelasRole) {
                     $db = \Config\Database::connect();
                     $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
                     $idTaAktif = $taAktif ? $taAktif['id'] : null;
@@ -283,7 +295,18 @@ class LoginController extends AdminBaseController
                 ];
             }
         }
-        return $roles;
+
+        // Final safety: pastikan tidak ada role key yang duplikat
+        $uniqueRoles = [];
+        $seenKeys = [];
+        foreach ($roles as $r) {
+            if (!isset($seenKeys[$r['key']])) {
+                $seenKeys[$r['key']] = true;
+                $uniqueRoles[] = $r;
+            }
+        }
+
+        return $uniqueRoles;
     }
 
     public function logout()

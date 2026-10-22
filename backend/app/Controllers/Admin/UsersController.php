@@ -302,15 +302,17 @@ class UsersController extends AdminBaseController
             $db->table('user_roles')->where('user_id', $userId)->delete();
 
             if (!empty($roleIds)) {
+                $uniqueRoleIds = array_values(array_unique(array_filter(array_map('intval', (array)$roleIds))));
                 $insertData = [];
-                foreach ($roleIds as $rId) {
+                foreach ($uniqueRoleIds as $rId) {
                     $insertData[] = ['user_id' => $userId, 'role_id' => $rId];
                 }
                 // Masukkan peran-peran baru
-                $db->table('user_roles')->insertBatch($insertData);
-
-                // Update role_id utama di tabel users (Ambil elemen pertama sebagai role utama)
-                $db->table('users')->where('id', $userId)->update(['role_id' => $roleIds[0]]);
+                if (!empty($insertData)) {
+                    $db->table('user_roles')->insertBatch($insertData);
+                    // Update role_id utama di tabel users (Ambil elemen pertama sebagai role utama)
+                    $db->table('users')->where('id', $userId)->update(['role_id' => $uniqueRoleIds[0]]);
+                }
             } else {
                 // Jika semua centang dilepas, setidaknya beri dia role Kosong (agar tak error)
                 $db->table('users')->where('id', $userId)->update(['role_id' => 0]);

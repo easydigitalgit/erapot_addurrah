@@ -444,8 +444,20 @@ class GuruTendikController extends AdminBaseController
                     $userUpdate['foto_profil'] = $namaFotoDB; // Update foto jika ada foto baru
                 }
                 
+                $userUpdate['role_id'] = $roleId;
                 $db->table('users')->where('id', $existing['user_id'])->update($userUpdate);
-                $db->table('user_roles')->where('user_id', $existing['user_id'])->update(['role_id' => $roleId]);
+                
+                // Pastikan role terdaftar di user_roles tanpa menduplikasi atau menimpa role lain
+                $cekRole = $db->table('user_roles')
+                    ->where('user_id', $existing['user_id'])
+                    ->where('role_id', $roleId)
+                    ->countAllResults();
+                if ($cekRole == 0) {
+                    $db->table('user_roles')->insert([
+                        'user_id' => $existing['user_id'],
+                        'role_id' => $roleId
+                    ]);
+                }
                 
             } else {
                 // JIKA BELUM PUNYA AKUN: Buatkan akun otomatis!
