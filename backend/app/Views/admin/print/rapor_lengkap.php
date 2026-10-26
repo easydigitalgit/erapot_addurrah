@@ -264,19 +264,19 @@
 
     <table style="width: 100%; margin-top: 50px; border: none; font-size: 10pt;">
         <tr>
-            <td width="40%" style="text-align: center; vertical-align: top; border: none;">
-                <div style="width: 113px; height: 151px; border: 1px solid #000; margin: 0 auto; background: #fff; overflow: hidden;">
+            <td width="10%" style="border: none;"></td>
+            <td width="22%" style="text-align: right; vertical-align: middle; border: none; padding-right: 15px;">
+                <div style="width: 113px; height: 151px; border: 1px solid #000; margin-left: auto; margin-right: 0; background: #fff; overflow: hidden;">
                     <?php
                     $foto_path = FCPATH . 'uploads/siswa/' . ($siswa['foto_siswa'] ?? 'none.jpg');
                     if (file_exists($foto_path) && !is_dir($foto_path) && !empty($siswa['foto_siswa']) && $siswa['foto_siswa'] !== 'null'): ?>
                         <img src="<?= FCPATH . 'uploads/siswa/' . $siswa['foto_siswa'] ?>" style="width: 100%; height: 100%; object-fit: cover;">
                     <?php else: ?>
-                        <div style="padding-top: 40px; font-size: 10pt; color: #000;">PAS FOTO<br>3 x 4</div>
+                        <div style="padding-top: 40px; font-size: 10pt; color: #000; text-align: center;">PAS FOTO<br>3 x 4</div>
                     <?php endif; ?>
                 </div>
             </td>
-            <td width="20%" style="border: none;"></td>
-            <td width="40%" style="text-align: center; vertical-align: top; border: none;">
+            <td width="40%" style="text-align: center; vertical-align: top; border: none; padding-left: 10px;">
                 <?= esc(strtoupper($sekolah['kabupaten_nama'] ?? ($sekolah['kabupaten'] ?? 'Lhokseumawe'))) ?>, <?= esc($tanggal_rapor ?? date('d F Y')) ?><br>
                 Kepala Sekolah,
                 <br><br>
@@ -293,6 +293,7 @@
                 <strong class="uppercase" style="text-decoration: underline;"><?= esc($kepsek['nama_lengkap'] ?? 'Belum Diatur') ?></strong><br>
                 <?= !empty($kepsek['nuptk']) ? 'NUPTK. ' . $kepsek['nuptk'] : (!empty($kepsek['niy']) ? 'NIY. ' . $kepsek['niy'] : 'NIP/NIY. -') ?>
             </td>
+            <td width="28%" style="border: none;"></td>
         </tr>
     </table>
 

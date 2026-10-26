@@ -430,14 +430,23 @@ class SiswaController extends AdminBaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'Siswa tidak boleh memilih Ekstrakurikuler yang sama lebih dari 1 kali!']);
         }
 
-        if (!empty($dataSiswa['nisn']) && $siswaModel->where('nisn', $dataSiswa['nisn'])->where('id !=', $id)->countAllResults() > 0) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'NISN tersebut sudah dipakai siswa lain.']);
+        if (!empty($dataSiswa['nisn'])) {
+            $cekNisn = $siswaModel->where('nisn', $dataSiswa['nisn'])->where('id !=', $id)->first();
+            if ($cekNisn) {
+                return $this->response->setJSON(['status' => 'error', 'message' => "NISN [{$dataSiswa['nisn']}] sudah dipakai oleh siswa: <b>{$cekNisn['nama_lengkap']}</b>."]);
+            }
         }
-        if (!empty($dataSiswa['nik']) && $siswaModel->where('nik', $dataSiswa['nik'])->where('id !=', $id)->countAllResults() > 0) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'NIK tersebut sudah dipakai siswa lain.']);
+        if (!empty($dataSiswa['nik'])) {
+            $cekNik = $siswaModel->where('nik', $dataSiswa['nik'])->where('id !=', $id)->first();
+            if ($cekNik) {
+                return $this->response->setJSON(['status' => 'error', 'message' => "NIK [{$dataSiswa['nik']}] sudah dipakai oleh siswa: <b>{$cekNik['nama_lengkap']}</b>."]);
+            }
         }
-        if (!empty($dataSiswa['nis']) && $siswaModel->where('nis', $dataSiswa['nis'])->where('id !=', $id)->countAllResults() > 0) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'NIS tersebut sudah dipakai siswa lain.']);
+        if (!empty($dataSiswa['nis'])) {
+            $cekNis = $siswaModel->where('nis', $dataSiswa['nis'])->where('id !=', $id)->first();
+            if ($cekNis) {
+                return $this->response->setJSON(['status' => 'error', 'message' => "NIS [{$dataSiswa['nis']}] sudah dipakai oleh siswa: <b>{$cekNis['nama_lengkap']}</b>."]);
+            }
         }
         // FITUR BARU: CEK NOMOR HP SISWA KEMBAR SAAT EDIT
         // if (!empty($dataSiswa['no_hp'])) {
