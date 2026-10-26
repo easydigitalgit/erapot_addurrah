@@ -101,6 +101,7 @@ class NilaiKolektifController extends GuruMapelBaseController
             ->where('ar.tahun_ajaran_id', $ta_id)
             ->where('ar.semester', $semesterAktif)
             ->where('siswa.status_siswa', 'Aktif')
+            ->groupBy('siswa.id')
             ->orderBy('siswa.nama_lengkap', 'ASC')
             ->get()->getResultArray();
 
@@ -370,11 +371,16 @@ class NilaiKolektifController extends GuruMapelBaseController
                 $nis = trim((string)$sheet->getCell('B' . $row)->getValue());
                 if (empty($nis)) continue;
 
+                $namaSiswa = trim((string)$sheet->getCell('C' . $row)->getValue());
+
                 // Cari siswa di anggota rombel dengan TA
                 $siswaQuery = $this->db->table('anggota_rombel ar')
                     ->select('s.id, s.nis, s.nama_lengkap')
                     ->join('siswa s', 's.id = ar.siswa_id')
-                    ->where('s.nis', $nis)
+                    ->groupStart()
+                        ->where('s.nis', $nis)
+                        ->orWhere('TRIM(s.nis)', $nis)
+                    ->groupEnd()
                     ->where('ar.rombel_id', $rombel_id);
 
                 if ($this->db->fieldExists('tahun_ajaran_id', 'anggota_rombel')) {
@@ -388,7 +394,10 @@ class NilaiKolektifController extends GuruMapelBaseController
                     $siswa = $this->db->table('anggota_rombel ar')
                         ->select('s.id, s.nis, s.nama_lengkap')
                         ->join('siswa s', 's.id = ar.siswa_id')
-                        ->where('s.nis', $nis)
+                        ->groupStart()
+                            ->where('s.nis', $nis)
+                            ->orWhere('TRIM(s.nis)', $nis)
+                        ->groupEnd()
                         ->where('ar.rombel_id', $rombel_id)
                         ->get()->getRowArray();
                 }
@@ -397,8 +406,21 @@ class NilaiKolektifController extends GuruMapelBaseController
                 if (!$siswa && $this->db->fieldExists('rombel_id', 'siswa')) {
                     $siswa = $this->db->table('siswa')
                         ->select('id, nis, nama_lengkap')
-                        ->where('nis', $nis)
+                        ->groupStart()
+                            ->where('nis', $nis)
+                            ->orWhere('TRIM(nis)', $nis)
+                        ->groupEnd()
                         ->where('rombel_id', $rombel_id)
+                        ->get()->getRowArray();
+                }
+
+                // Fallback ketiga: cari berdasarkan nama lengkap jika NIS terdapat ketidakcocokan
+                if (!$siswa && !empty($namaSiswa)) {
+                    $siswa = $this->db->table('anggota_rombel ar')
+                        ->select('s.id, s.nis, s.nama_lengkap')
+                        ->join('siswa s', 's.id = ar.siswa_id')
+                        ->where('s.nama_lengkap', $namaSiswa)
+                        ->where('ar.rombel_id', $rombel_id)
                         ->get()->getRowArray();
                 }
 
