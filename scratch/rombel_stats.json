@@ -1,0 +1,167 @@
+[
+    {
+        "rombel_id": 77,
+        "nama_rombel": "Amazonite",
+        "tingkat": "VII",
+        "siswa_aktif_loc": 26,
+        "siswa_aktif_vps": 24,
+        "ar_total_loc": 389376,
+        "ar_total_vps": 389376,
+        "ar_uniq_loc": 26,
+        "ar_uniq_vps": 24
+    },
+    {
+        "rombel_id": 80,
+        "nama_rombel": "Carnelian",
+        "tingkat": "VII",
+        "siswa_aktif_loc": 33,
+        "siswa_aktif_vps": 30,
+        "ar_total_loc": 1078110,
+        "ar_total_vps": 1078110,
+        "ar_uniq_loc": 33,
+        "ar_uniq_vps": 33
+    },
+    {
+        "rombel_id": 78,
+        "nama_rombel": "Opal",
+        "tingkat": "VII",
+        "siswa_aktif_loc": 26,
+        "siswa_aktif_vps": 26,
+        "ar_total_loc": 509704,
+        "ar_total_vps": 509704,
+        "ar_uniq_loc": 26,
+        "ar_uniq_vps": 29
+    },
+    {
+        "rombel_id": 81,
+        "nama_rombel": "Ruby",
+        "tingkat": "VII",
+        "siswa_aktif_loc": 33,
+        "siswa_aktif_vps": 32,
+        "ar_total_loc": 1149984,
+        "ar_total_vps": 1149984,
+        "ar_uniq_loc": 33,
+        "ar_uniq_vps": 33
+    },
+    {
+        "rombel_id": 79,
+        "nama_rombel": "Zamrud",
+        "tingkat": "VII",
+        "siswa_aktif_loc": 26,
+        "siswa_aktif_vps": 26,
+        "ar_total_loc": 474552,
+        "ar_total_vps": 474552,
+        "ar_uniq_loc": 26,
+        "ar_uniq_vps": 27
+    },
+    {
+        "rombel_id": 72,
+        "nama_rombel": "Granit",
+        "tingkat": "VIII",
+        "siswa_aktif_loc": 32,
+        "siswa_aktif_vps": 27,
+        "ar_total_loc": 829440,
+        "ar_total_vps": 829440,
+        "ar_uniq_loc": 32,
+        "ar_uniq_vps": 30
+    },
+    {
+        "rombel_id": 74,
+        "nama_rombel": "Intan",
+        "tingkat": "VIII",
+        "siswa_aktif_loc": 22,
+        "siswa_aktif_vps": 19,
+        "ar_total_loc": 202312,
+        "ar_total_vps": 202312,
+        "ar_uniq_loc": 22,
+        "ar_uniq_vps": 22
+    },
+    {
+        "rombel_id": 75,
+        "nama_rombel": "Kyanite",
+        "tingkat": "VIII",
+        "siswa_aktif_loc": 22,
+        "siswa_aktif_vps": 22,
+        "ar_total_loc": 212960,
+        "ar_total_vps": 212960,
+        "ar_uniq_loc": 22,
+        "ar_uniq_vps": 20
+    },
+    {
+        "rombel_id": 76,
+        "nama_rombel": "Safir",
+        "tingkat": "VIII",
+        "siswa_aktif_loc": 22,
+        "siswa_aktif_vps": 13,
+        "ar_total_loc": 138424,
+        "ar_total_vps": 138424,
+        "ar_uniq_loc": 22,
+        "ar_uniq_vps": 22
+    },
+    {
+        "rombel_id": 73,
+        "nama_rombel": "Topaz",
+        "tingkat": "VIII",
+        "siswa_aktif_loc": 33,
+        "siswa_aktif_vps": 31,
+        "ar_total_loc": 1181565,
+        "ar_total_vps": 1181565,
+        "ar_uniq_loc": 33,
+        "ar_uniq_vps": 35
+    },
+    {
+        "rombel_id": 69,
+        "nama_rombel": "Biduri",
+        "tingkat": "IX",
+        "siswa_aktif_loc": 30,
+        "siswa_aktif_vps": 30,
+        "ar_total_loc": 864900,
+        "ar_total_vps": 864900,
+        "ar_uniq_loc": 31,
+        "ar_uniq_vps": 31
+    },
+    {
+        "rombel_id": 70,
+        "nama_rombel": "Crystal",
+        "tingkat": "IX",
+        "siswa_aktif_loc": 28,
+        "siswa_aktif_vps": 28,
+        "ar_total_loc": 705600,
+        "ar_total_vps": 705600,
+        "ar_uniq_loc": 30,
+        "ar_uniq_vps": 30
+    },
+    {
+        "rombel_id": 71,
+        "nama_rombel": "Diamond",
+        "tingkat": "IX",
+        "siswa_aktif_loc": 31,
+        "siswa_aktif_vps": 31,
+        "ar_total_loc": 923521,
+        "ar_total_vps": 923521,
+        "ar_uniq_loc": 31,
+        "ar_uniq_vps": 31
+    },
+    {
+        "rombel_id": 68,
+        "nama_rombel": "Emerald",
+        "tingkat": "IX",
+        "siswa_aktif_loc": 29,
+        "siswa_aktif_vps": 29,
+        "ar_total_loc": 707281,
+        "ar_total_vps": 707281,
+        "ar_uniq_loc": 29,
+        "ar_uniq_vps": 29
+    },
+    {
+        "rombel_id": 67,
+        "nama_rombel": "Fairuz",
+        "tingkat": "IX",
+        "siswa_aktif_loc": 28,
+        "siswa_aktif_vps": 28,
+        "ar_total_loc": 659344,
+        "ar_total_vps": 659344,
+        "ar_uniq_loc": 29,
+        "ar_uniq_vps": 29
+    }
+]

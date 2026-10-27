@@ -1,0 +1,659 @@
+[
+    {
+        "file": "Bahasa Arab (8 Intan, 8 Kyanite, 8 Safir).xlsx",
+        "detected_mapel": "BAHASA ARAB",
+        "mapel_id": 10,
+        "sheets": [
+            {
+                "sheet_name": "INTAN",
+                "rombel_id": 74,
+                "mapel_id": 10,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "SAFIR",
+                "rombel_id": 76,
+                "mapel_id": 10,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "KYANITE",
+                "rombel_id": 75,
+                "mapel_id": 10,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            }
+        ]
+    },
+    {
+        "file": "Bahasa Indonesia (8 Granit, 8 Intan, 8 Kyanite, 8 Safir).xlsx",
+        "detected_mapel": "BAHASA INDONESIA",
+        "mapel_id": 3,
+        "sheets": [
+            {
+                "sheet_name": "Granit",
+                "rombel_id": 72,
+                "mapel_id": 3,
+                "excel_students": 32,
+                "db_formatif": 64,
+                "db_sumatif": 26,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Intan",
+                "rombel_id": 74,
+                "mapel_id": 3,
+                "excel_students": 22,
+                "db_formatif": 44,
+                "db_sumatif": 17,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Kyanite",
+                "rombel_id": 75,
+                "mapel_id": 3,
+                "excel_students": 22,
+                "db_formatif": 44,
+                "db_sumatif": 15,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Safir",
+                "rombel_id": 76,
+                "mapel_id": 3,
+                "excel_students": 22,
+                "db_formatif": 44,
+                "db_sumatif": 11,
+                "status": "BELUM SINKRON \/ KURANG"
+            }
+        ]
+    },
+    {
+        "file": "Bahasa Indonesia (8 Topaz).xlsx",
+        "detected_mapel": "BAHASA INDONESIA",
+        "mapel_id": 3,
+        "sheets": [
+            {
+                "sheet_name": "Sheet1",
+                "rombel_id": null,
+                "mapel_id": 3,
+                "excel_students": 31,
+                "db_formatif": 0,
+                "db_sumatif": 0,
+                "status": "BELUM SINKRON \/ KURANG"
+            }
+        ]
+    },
+    {
+        "file": "Bahasa Inggris (Seluruh Kelas 8).xlsx",
+        "detected_mapel": "BAHASA INGGRIS",
+        "mapel_id": 6,
+        "sheets": [
+            {
+                "sheet_name": "8 INTAN",
+                "rombel_id": 74,
+                "mapel_id": 6,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "8 KYANITE",
+                "rombel_id": 75,
+                "mapel_id": 6,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "8 SAFIR",
+                "rombel_id": 76,
+                "mapel_id": 6,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "8 GRANIT",
+                "rombel_id": 72,
+                "mapel_id": 6,
+                "excel_students": 32,
+                "db_formatif": 128,
+                "db_sumatif": 32,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "8 TOPAZ",
+                "rombel_id": 73,
+                "mapel_id": 6,
+                "excel_students": 33,
+                "db_formatif": 134,
+                "db_sumatif": 33,
+                "status": "SUDAH SINKRON"
+            }
+        ]
+    },
+    {
+        "file": "Hadits (8 Intan, 8 Kyanite, 8 Safir).xlsx",
+        "detected_mapel": "HADITS",
+        "mapel_id": 11,
+        "sheets": [
+            {
+                "sheet_name": "8 INTAN",
+                "rombel_id": 74,
+                "mapel_id": 11,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "8 KYANITE",
+                "rombel_id": 75,
+                "mapel_id": 11,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "8 SAFIR",
+                "rombel_id": 76,
+                "mapel_id": 11,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 32,
+                "status": "SUDAH SINKRON"
+            }
+        ]
+    },
+    {
+        "file": "IPA (8 Granit, 8 Topaz, 8 Intan, 8 Kyanite, 8 Safir).xlsx",
+        "detected_mapel": "IPA",
+        "mapel_id": 5,
+        "sheets": [
+            {
+                "sheet_name": "KYANITE",
+                "rombel_id": 75,
+                "mapel_id": 5,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "INTAN",
+                "rombel_id": 74,
+                "mapel_id": 5,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "SAFIR",
+                "rombel_id": 76,
+                "mapel_id": 5,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "GRANIT",
+                "rombel_id": 72,
+                "mapel_id": 5,
+                "excel_students": 32,
+                "db_formatif": 128,
+                "db_sumatif": 32,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "TOPAZ",
+                "rombel_id": 73,
+                "mapel_id": 5,
+                "excel_students": 31,
+                "db_formatif": 132,
+                "db_sumatif": 33,
+                "status": "SUDAH SINKRON"
+            }
+        ]
+    },
+    {
+        "file": "IPS (Seluruh Kelas 8).xlsx",
+        "detected_mapel": "IPS",
+        "mapel_id": 14,
+        "sheets": [
+            {
+                "sheet_name": "SAFIR",
+                "rombel_id": 76,
+                "mapel_id": 14,
+                "excel_students": 22,
+                "db_formatif": 44,
+                "db_sumatif": 23,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "KYANITE",
+                "rombel_id": 75,
+                "mapel_id": 14,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 21,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "INTAN",
+                "rombel_id": 74,
+                "mapel_id": 14,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 19,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "TOPAZ",
+                "rombel_id": 73,
+                "mapel_id": 14,
+                "excel_students": 33,
+                "db_formatif": 64,
+                "db_sumatif": 28,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "GRANIT",
+                "rombel_id": 72,
+                "mapel_id": 14,
+                "excel_students": 32,
+                "db_formatif": 64,
+                "db_sumatif": 28,
+                "status": "BELUM SINKRON \/ KURANG"
+            }
+        ]
+    },
+    {
+        "file": "Informatika (Seluruh Kelas 8).xlsx",
+        "detected_mapel": "INFORMATIKA",
+        "mapel_id": 7,
+        "sheets": [
+            {
+                "sheet_name": "Granit",
+                "rombel_id": 72,
+                "mapel_id": 7,
+                "excel_students": 32,
+                "db_formatif": 64,
+                "db_sumatif": 28,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Topaz",
+                "rombel_id": 73,
+                "mapel_id": 7,
+                "excel_students": 33,
+                "db_formatif": 68,
+                "db_sumatif": 33,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "Intan",
+                "rombel_id": 74,
+                "mapel_id": 7,
+                "excel_students": 22,
+                "db_formatif": 44,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "Kyanite",
+                "rombel_id": 75,
+                "mapel_id": 7,
+                "excel_students": 22,
+                "db_formatif": 44,
+                "db_sumatif": 30,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "Safir",
+                "rombel_id": 76,
+                "mapel_id": 7,
+                "excel_students": 22,
+                "db_formatif": 44,
+                "db_sumatif": 29,
+                "status": "SUDAH SINKRON"
+            }
+        ]
+    },
+    {
+        "file": "Matematika (8 Granit, 8 Intan, 8 Kyanite).xlsx",
+        "detected_mapel": "MATEMATIKA",
+        "mapel_id": 4,
+        "sheets": [
+            {
+                "sheet_name": "GRANIT",
+                "rombel_id": 72,
+                "mapel_id": 4,
+                "excel_students": 32,
+                "db_formatif": 128,
+                "db_sumatif": 32,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "KYANITE",
+                "rombel_id": 75,
+                "mapel_id": 4,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 26,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "INTAN",
+                "rombel_id": 74,
+                "mapel_id": 4,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            }
+        ]
+    },
+    {
+        "file": "Matematika (8 Topaz, 8 Safir).xlsx",
+        "detected_mapel": "MATEMATIKA",
+        "mapel_id": 4,
+        "sheets": [
+            {
+                "sheet_name": "Safir",
+                "rombel_id": 76,
+                "mapel_id": 4,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 11,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Topaz",
+                "rombel_id": 73,
+                "mapel_id": 4,
+                "excel_students": 33,
+                "db_formatif": 136,
+                "db_sumatif": 30,
+                "status": "BELUM SINKRON \/ KURANG"
+            }
+        ]
+    },
+    {
+        "file": "Nahwu (8 Intan, 8 Kyanite, 8 Safir).xlsx",
+        "detected_mapel": "NAHWU",
+        "mapel_id": 44,
+        "sheets": [
+            {
+                "sheet_name": "INTAN",
+                "rombel_id": 74,
+                "mapel_id": 44,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "SAFIR",
+                "rombel_id": 76,
+                "mapel_id": 44,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "KYANITE",
+                "rombel_id": 75,
+                "mapel_id": 44,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 22,
+                "status": "SUDAH SINKRON"
+            }
+        ]
+    },
+    {
+        "file": "PAIBP (8 Granit).xlsx",
+        "detected_mapel": "PAIBP",
+        "mapel_id": 1,
+        "sheets": [
+            {
+                "sheet_name": "Sheet1",
+                "rombel_id": null,
+                "mapel_id": 1,
+                "excel_students": 32,
+                "db_formatif": 0,
+                "db_sumatif": 0,
+                "status": "BELUM SINKRON \/ KURANG"
+            }
+        ]
+    },
+    {
+        "file": "PAIBP (8 Topaz, 8 Intan, 8 Kyanite, 8 Safir).xlsx",
+        "detected_mapel": "PAIBP",
+        "mapel_id": 1,
+        "sheets": [
+            {
+                "sheet_name": "8 TOPAZ",
+                "rombel_id": 73,
+                "mapel_id": 1,
+                "excel_students": 31,
+                "db_formatif": 0,
+                "db_sumatif": 0,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "8 INTAN",
+                "rombel_id": 74,
+                "mapel_id": 1,
+                "excel_students": 22,
+                "db_formatif": 132,
+                "db_sumatif": 18,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "8 KYANITE",
+                "rombel_id": 75,
+                "mapel_id": 1,
+                "excel_students": 22,
+                "db_formatif": 132,
+                "db_sumatif": 18,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "8 SAFIR",
+                "rombel_id": 76,
+                "mapel_id": 1,
+                "excel_students": 22,
+                "db_formatif": 132,
+                "db_sumatif": 17,
+                "status": "BELUM SINKRON \/ KURANG"
+            }
+        ]
+    },
+    {
+        "file": "PJOK (8 Granit & 8 Topaz).xlsx",
+        "detected_mapel": "PJOK",
+        "mapel_id": 9,
+        "sheets": [
+            {
+                "sheet_name": "Granit",
+                "rombel_id": 72,
+                "mapel_id": 9,
+                "excel_students": 32,
+                "db_formatif": 128,
+                "db_sumatif": 28,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Topaz",
+                "rombel_id": 73,
+                "mapel_id": 9,
+                "excel_students": 32,
+                "db_formatif": 134,
+                "db_sumatif": 33,
+                "status": "SUDAH SINKRON"
+            }
+        ]
+    },
+    {
+        "file": "PJOK (8 Intan, 8 Kyanite, 8 Safir).xlsx",
+        "detected_mapel": "PJOK",
+        "mapel_id": 9,
+        "sheets": [
+            {
+                "sheet_name": "Intan",
+                "rombel_id": 74,
+                "mapel_id": 9,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 18,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Kyanite",
+                "rombel_id": 75,
+                "mapel_id": 9,
+                "excel_students": 21,
+                "db_formatif": 44,
+                "db_sumatif": 18,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Safir",
+                "rombel_id": 76,
+                "mapel_id": 9,
+                "excel_students": 22,
+                "db_formatif": 44,
+                "db_sumatif": 17,
+                "status": "BELUM SINKRON \/ KURANG"
+            }
+        ]
+    },
+    {
+        "file": "PKN (Seluruh Kelas 8).xlsx",
+        "detected_mapel": "PKN",
+        "mapel_id": 2,
+        "sheets": [
+            {
+                "sheet_name": "Granit",
+                "rombel_id": 72,
+                "mapel_id": 2,
+                "excel_students": 32,
+                "db_formatif": 64,
+                "db_sumatif": 24,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Topaz",
+                "rombel_id": 73,
+                "mapel_id": 2,
+                "excel_students": 33,
+                "db_formatif": 66,
+                "db_sumatif": 15,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Intan",
+                "rombel_id": 74,
+                "mapel_id": 2,
+                "excel_students": 22,
+                "db_formatif": 44,
+                "db_sumatif": 17,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Kyanite",
+                "rombel_id": 75,
+                "mapel_id": 2,
+                "excel_students": 22,
+                "db_formatif": 44,
+                "db_sumatif": 14,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Safir",
+                "rombel_id": 76,
+                "mapel_id": 2,
+                "excel_students": 22,
+                "db_formatif": 44,
+                "db_sumatif": 11,
+                "status": "BELUM SINKRON \/ KURANG"
+            }
+        ]
+    },
+    {
+        "file": "Seni Budaya (8 Granit, 8 Kyanite, 8 Safir).xlsx",
+        "detected_mapel": "SENI BUDAYA",
+        "mapel_id": 8,
+        "sheets": [
+            {
+                "sheet_name": "Granit",
+                "rombel_id": 72,
+                "mapel_id": 8,
+                "excel_students": 32,
+                "db_formatif": 128,
+                "db_sumatif": 28,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Kyanite",
+                "rombel_id": 75,
+                "mapel_id": 8,
+                "excel_students": 22,
+                "db_formatif": 88,
+                "db_sumatif": 18,
+                "status": "BELUM SINKRON \/ KURANG"
+            },
+            {
+                "sheet_name": "Safir",
+                "rombel_id": 76,
+                "mapel_id": 8,
+                "excel_students": 22,
+                "db_formatif": 66,
+                "db_sumatif": 7,
+                "status": "BELUM SINKRON \/ KURANG"
+            }
+        ]
+    },
+    {
+        "file": "Seni Budaya (8 Topaz, 8 Intan).xlsx",
+        "detected_mapel": "SENI BUDAYA",
+        "mapel_id": 8,
+        "sheets": [
+            {
+                "sheet_name": "Topaz",
+                "rombel_id": 73,
+                "mapel_id": 8,
+                "excel_students": 33,
+                "db_formatif": 68,
+                "db_sumatif": 33,
+                "status": "SUDAH SINKRON"
+            },
+            {
+                "sheet_name": "Intan",
+                "rombel_id": 74,
+                "mapel_id": 8,
+                "excel_students": 22,
+                "db_formatif": 44,
+                "db_sumatif": 18,
+                "status": "BELUM SINKRON \/ KURANG"
+            }
+        ]
+    }
+]

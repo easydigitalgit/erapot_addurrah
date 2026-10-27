@@ -702,8 +702,28 @@ class MasterLmController extends AdminBaseController
                         if (empty($nama_mapel) || empty($tingkat_str) || empty($kode_lm) || empty($materi)) continue;
                         if (strtolower($nama_mapel) === 'mata pelajaran' || strtolower($kode_lm) === 'kode lm') continue;
 
-                        preg_match('/(\d+)/', $tingkat_str, $matches);
-                        $tingkat = isset($matches[1]) ? (int)$matches[1] : 7;
+                        $tingkat = 0;
+                        if (preg_match('/(\d+)/', $tingkat_str, $matches)) {
+                            $tingkat = (int)$matches[1];
+                        } else {
+                            $romanMap = ['VIII' => 8, 'VII' => 7, 'IX' => 9, 'XII' => 12, 'XI' => 11, 'X' => 10];
+                            $cleanTingkat = strtoupper(trim($tingkat_str));
+                            foreach ($romanMap as $rom => $num) {
+                                if (strpos($cleanTingkat, $rom) !== false) {
+                                    $tingkat = $num;
+                                    break;
+                                }
+                            }
+                        }
+                        if ($tingkat === 0) {
+                            $cekRombel = $this->db->table('rombel')->like('nama_rombel', trim($tingkat_str))->get()->getRowArray();
+                            if ($cekRombel) {
+                                $rT = strtoupper(trim((string)$cekRombel['tingkat']));
+                                $tingkat = (int)preg_replace('/[^0-9]/', '', $rT) ?: (['VIII' => 8, 'VII' => 7, 'IX' => 9][$rT] ?? 7);
+                            } else {
+                                $tingkat = 7;
+                            }
+                        }
 
                         $extractedData[] = [
                             'mapel' => $nama_mapel, 

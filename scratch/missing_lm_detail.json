@@ -1,0 +1,542 @@
+[
+    {
+        "id": 107,
+        "mapel_id": 3,
+        "nama_mapel": "Bahasa Indonesia",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "menemukan data dan fakta pada teks laporan hasil observasi"
+    },
+    {
+        "id": 361,
+        "mapel_id": 6,
+        "nama_mapel": "Bahasa Inggris",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "memahami, mengidentifikasi, dan menggunakan ungkapan untuk menyatakan serta menanyakan minat (interest) dan hobi (hobbies)"
+    },
+    {
+        "id": 171,
+        "mapel_id": 11,
+        "nama_mapel": "Hadist",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Menghafal dan memahami isi kandungan dari hadist arbain yang ke delapan tentang perintah untuk memerangi manusia sampai mereka bersyahadat, sholat dan zakat. Dan hadist arbain yang ke sembilan tentang seorang Muslim harus melaksanakan perintah Allah sesuai kemampuannya dan menjauhi segala larangan-Nya"
+    },
+    {
+        "id": 172,
+        "mapel_id": 11,
+        "nama_mapel": "Hadist",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Memahami pengertian, fungsi dan kedudukan hadist"
+    },
+    {
+        "id": 357,
+        "mapel_id": 5,
+        "nama_mapel": "Ilmu Pengetahuan Alam",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Peserta didik mampu menjelaskan, mengidentifikasi dan mengamati jenis nutrisi, serta memahami jenis organ dan proses kerjanya pada sistem pencernaan dan sistem peredaran darah"
+    },
+    {
+        "id": 358,
+        "mapel_id": 5,
+        "nama_mapel": "Ilmu Pengetahuan Alam",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Peserta didik mampu menjelaskan macam-macam organ dan proses kerjanya serta menghubungkannya pada sistem pernafasan dan sistem ekskresi"
+    },
+    {
+        "id": 354,
+        "mapel_id": 14,
+        "nama_mapel": "Ilmu Pengetahuan Sosial",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "kondisi geografis Indonesia, menganalisis potensi dan pemanfaatan sumber daya alam, serta menjelaskan pengaruh kondisi geografis terhadap keragaman sosial budaya masyarakat Indonesia."
+    },
+    {
+        "id": 148,
+        "mapel_id": 7,
+        "nama_mapel": "Informatika",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Memahami Penggunaan Komputer"
+    },
+    {
+        "id": 149,
+        "mapel_id": 7,
+        "nama_mapel": "Informatika",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Memahami Pengaplikasian Komputer"
+    },
+    {
+        "id": 355,
+        "mapel_id": 4,
+        "nama_mapel": "Matematika",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "peserta didik mampu memahami dan melakukan operasi bilangan bulat berpangkat, pecahan berpangkat, dan siswa mampu melakukan operasi aljabar pada bentuk akar dan merasionalkan penyebut"
+    },
+    {
+        "id": 356,
+        "mapel_id": 4,
+        "nama_mapel": "Matematika",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "peserta didik mampu menyajikan bilangan dalam bentuk baku (notasi ilmiah)"
+    },
+    {
+        "id": 92,
+        "mapel_id": 1,
+        "nama_mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Mengetahui isi kandungan Q.S. Ar-Rum\/30: 41, Q.S. Ibrahim\/14: 32, dan Q.S. Az-Zukhruf\/43: 13."
+    },
+    {
+        "id": 93,
+        "mapel_id": 1,
+        "nama_mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Menjelaskan makna beriman kepada kitab-kitab Allah Swt., mengetahui nama-nama kitab Allah Swt. dan penerimanya serta mencintai dan mengamalkan kitab suci Al-Qur'an."
+    },
+    {
+        "id": 94,
+        "mapel_id": 1,
+        "nama_mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 3",
+        "deskripsi_lm": "Menjelaskan pengertian dan mengetahui pentingnya menjaga amanah dan kejujuran dalam kehidupan sehari-hari."
+    },
+    {
+        "id": 155,
+        "mapel_id": 9,
+        "nama_mapel": "Pendidikan Jasmani, Olahraga dan Kesehatan",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Memahami pengertian dan konsep megefektifkan gerak"
+    },
+    {
+        "id": 156,
+        "mapel_id": 9,
+        "nama_mapel": "Pendidikan Jasmani, Olahraga dan Kesehatan",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Memahami dan menerapkan konsep gerak parabola dan proyektil"
+    },
+    {
+        "id": 100,
+        "mapel_id": 2,
+        "nama_mapel": "Pendidikan Pancasila",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Pancasila dalam Kehidupan Bangsa"
+    },
+    {
+        "id": 101,
+        "mapel_id": 2,
+        "nama_mapel": "Pendidikan Pancasila",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Undang-undang Dasar Tahun 1945 sebagai Pedoman Negara"
+    },
+    {
+        "id": 163,
+        "mapel_id": 8,
+        "nama_mapel": "Seni Budaya",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Memahami teknik pembuatan karya seni dengan teknik mozaik"
+    },
+    {
+        "id": 164,
+        "mapel_id": 8,
+        "nama_mapel": "Seni Budaya",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Memahami prosedur dan teknik menggambar ornamen"
+    },
+    {
+        "id": 271,
+        "mapel_id": 8,
+        "nama_mapel": "Seni Budaya",
+        "tingkat": 8,
+        "semester": "Ganjil",
+        "kategori": "Akhir",
+        "kode_lm": "LM 4",
+        "deskripsi_lm": "Mengaplikasikan Teknik Aquarel Secara Kreatif Dengan Menonjolkan Karakter Sapuan Warna Yang Khas."
+    },
+    {
+        "id": 297,
+        "mapel_id": 3,
+        "nama_mapel": "Bahasa Indonesia",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Menulis Resensi Dengan memperhatikan unsur-unsur resensi"
+    },
+    {
+        "id": 298,
+        "mapel_id": 3,
+        "nama_mapel": "Bahasa Indonesia",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Membandingkan puisi diafan dan prismatis serta menganalissi ciri-ciri dan unsur - unsur puisi"
+    },
+    {
+        "id": 306,
+        "mapel_id": 6,
+        "nama_mapel": "Bahasa Inggris",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Memahami Future Plans and future goals"
+    },
+    {
+        "id": 307,
+        "mapel_id": 6,
+        "nama_mapel": "Bahasa Inggris",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Memahami Greetings card and letters"
+    },
+    {
+        "id": 308,
+        "mapel_id": 6,
+        "nama_mapel": "Bahasa Inggris",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 3",
+        "deskripsi_lm": "Memahami feelings and sentence of feelings"
+    },
+    {
+        "id": 335,
+        "mapel_id": 11,
+        "nama_mapel": "Hadist",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Mampu menghafal dan memahami Hadist tentang Meninggalkan yg meragukan dan mengerjakan yg tidak meragukan"
+    },
+    {
+        "id": 336,
+        "mapel_id": 11,
+        "nama_mapel": "Hadist",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Mampu menghafal dan memahami Hadist tentang pentingnya Halal dan Haram."
+    },
+    {
+        "id": 315,
+        "mapel_id": 5,
+        "nama_mapel": "Ilmu Pengetahuan Alam",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Mampu menjelaskan dan mendeskripsikan system pencernaan pada manusia"
+    },
+    {
+        "id": 316,
+        "mapel_id": 5,
+        "nama_mapel": "Ilmu Pengetahuan Alam",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Mampu menjelaskan mekanisme kerja dana berbagai contoh pesawat sederhana"
+    },
+    {
+        "id": 319,
+        "mapel_id": 14,
+        "nama_mapel": "Ilmu Pengetahuan Sosial",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Menganalisis proses interaksi masuk dan berkembangnya agama Islam di Indonesia"
+    },
+    {
+        "id": 320,
+        "mapel_id": 14,
+        "nama_mapel": "Ilmu Pengetahuan Sosial",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Mengevaluasi ide pengembangan sebuah usaha perdagangan dalam mendukung perdagangan antar pulau"
+    },
+    {
+        "id": 311,
+        "mapel_id": 4,
+        "nama_mapel": "Matematika",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Menentukan sudut berpelurus, berpenyiku, dan bertolak belakang, menemukan sifat sudut jika dua garis sejajar di potong garis ketiga"
+    },
+    {
+        "id": 312,
+        "mapel_id": 4,
+        "nama_mapel": "Matematika",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Memahami segi banyak dan menentukan jumlah sudut dalam dan sudut luar segi banyak"
+    },
+    {
+        "id": 289,
+        "mapel_id": 1,
+        "nama_mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Menjelaskan toleransi menurut Islam dan penerapannya, memiliki sikap toleran antar dan intern umat beragama serta meneladani Nabi dalam menerapkan sikap toleran."
+    },
+    {
+        "id": 290,
+        "mapel_id": 1,
+        "nama_mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Menjelaskan makna beriman kepada Nabi dan Rasul Allah SWT. serta memaparkan sifat-sifat Rasul dalam kehidupan sehari-hari."
+    },
+    {
+        "id": 293,
+        "mapel_id": 2,
+        "nama_mapel": "Pendidikan Pancasila",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Kebangkitan Nasional 1908 dan Sumpah Pemuda dalam perjuangan kemerdekaan Indonesia"
+    },
+    {
+        "id": 294,
+        "mapel_id": 2,
+        "nama_mapel": "Pendidikan Pancasila",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Jati diri bangsa dan budaya nasional"
+    },
+    {
+        "id": 331,
+        "mapel_id": 8,
+        "nama_mapel": "Seni Budaya",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Membuat karya seni rupa dengan teknik ecoprint"
+    },
+    {
+        "id": 332,
+        "mapel_id": 8,
+        "nama_mapel": "Seni Budaya",
+        "tingkat": 8,
+        "semester": "Genap",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Membuat karya seni rupa nirmana dua dimensi"
+    },
+    {
+        "id": 359,
+        "mapel_id": 3,
+        "nama_mapel": "Bahasa Indonesia",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Menyunting paragraf teks deskripsi dari aspek kohesi dan koherensi"
+    },
+    {
+        "id": 360,
+        "mapel_id": 3,
+        "nama_mapel": "Bahasa Indonesia",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Membuat infografik berisi prosedur secara kreatif"
+    },
+    {
+        "id": 124,
+        "mapel_id": 6,
+        "nama_mapel": "Bahasa Inggris",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Memahami teks deskripsi dalam kegiatan sehari-hari"
+    },
+    {
+        "id": 125,
+        "mapel_id": 6,
+        "nama_mapel": "Bahasa Inggris",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Meminta dan memberi informasi detail"
+    },
+    {
+        "id": 144,
+        "mapel_id": 14,
+        "nama_mapel": "Ilmu Pengetahuan Sosial",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Peserta didik mamapu memahamidan memiliki kesadaran terhadap perubahan sosialyg sedang terjadi di era kontemporer."
+    },
+    {
+        "id": 145,
+        "mapel_id": 14,
+        "nama_mapel": "Ilmu Pengetahuan Sosial",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Peserta didik mampu memahmidan mendeskripsikan fenomena dampak globalisasi di era modernisasi."
+    },
+    {
+        "id": 131,
+        "mapel_id": 4,
+        "nama_mapel": "Matematika",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Menyelesaikan permasalahan berkaitan sistem persamaan linear dua variabel"
+    },
+    {
+        "id": 132,
+        "mapel_id": 4,
+        "nama_mapel": "Matematika",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Mengidentifikai dan pemahaman konsep bangun ruang kubus dan balok"
+    },
+    {
+        "id": 158,
+        "mapel_id": 9,
+        "nama_mapel": "Pendidikan Jasmani, Olahraga dan Kesehatan",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Memahami pengertian dan konsep keterampilan gerak dalam pertandingan"
+    },
+    {
+        "id": 159,
+        "mapel_id": 9,
+        "nama_mapel": "Pendidikan Jasmani, Olahraga dan Kesehatan",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "\u2060Memahami tentang pengertian strategi perorangan dan tim"
+    },
+    {
+        "id": 102,
+        "mapel_id": 2,
+        "nama_mapel": "Pendidikan Pancasila",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Hubungan Antara Empat Pilar Kebangsaan Indonesia"
+    },
+    {
+        "id": 103,
+        "mapel_id": 2,
+        "nama_mapel": "Pendidikan Pancasila",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Hak dan Kewajiban Warga Negara"
+    },
+    {
+        "id": 165,
+        "mapel_id": 8,
+        "nama_mapel": "Seni Budaya",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 1",
+        "deskripsi_lm": "Memahami prosedur dan teknik melukis siluet"
+    },
+    {
+        "id": 166,
+        "mapel_id": 8,
+        "nama_mapel": "Seni Budaya",
+        "tingkat": 9,
+        "semester": "Ganjil",
+        "kategori": "Tengah",
+        "kode_lm": "LM 2",
+        "deskripsi_lm": "Memahami prosdur dan teknik melukis abstrak"
+    }
+]

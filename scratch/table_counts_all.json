@@ -1,0 +1,408 @@
+{
+    "absensi_harian": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 1300,
+        "vps_rows": 956,
+        "diff": 344
+    },
+    "anggota_rombel": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 990,
+        "vps_rows": 990,
+        "diff": 0
+    },
+    "audit_logs": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 1,
+        "vps_rows": 1,
+        "diff": 0
+    },
+    "backup_settings": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 1,
+        "vps_rows": 1,
+        "diff": 0
+    },
+    "bank_soal": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 0,
+        "vps_rows": 0,
+        "diff": 0
+    },
+    "catatan_akhlak": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 0,
+        "vps_rows": 0,
+        "diff": 0
+    },
+    "catatan_rapor": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 598,
+        "vps_rows": 622,
+        "diff": -24
+    },
+    "desa": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 48545,
+        "vps_rows": 48545,
+        "diff": 0
+    },
+    "guru_mapel": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 406,
+        "vps_rows": 406,
+        "diff": 0
+    },
+    "guru_tendik": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 61,
+        "vps_rows": 61,
+        "diff": 0
+    },
+    "jadwal_pelajaran": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 1087,
+        "vps_rows": 1087,
+        "diff": 0
+    },
+    "jadwal_piket": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 0,
+        "vps_rows": 0,
+        "diff": 0
+    },
+    "kabupaten": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 514,
+        "vps_rows": 514,
+        "diff": 0
+    },
+    "kecamatan": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 7206,
+        "vps_rows": 7206,
+        "diff": 0
+    },
+    "kurikulum": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 2,
+        "vps_rows": 2,
+        "diff": 0
+    },
+    "login_logs": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 2175,
+        "vps_rows": 2252,
+        "diff": -77
+    },
+    "mapel_nonaktif_rombel": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 0,
+        "vps_rows": 0,
+        "diff": 0
+    },
+    "master_ekskul": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 19,
+        "vps_rows": 19,
+        "diff": 0
+    },
+    "master_jabatan": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 13,
+        "vps_rows": 13,
+        "diff": 0
+    },
+    "master_lm": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 318,
+        "vps_rows": 267,
+        "diff": 51
+    },
+    "master_status_pegawai": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 3,
+        "vps_rows": 3,
+        "diff": 0
+    },
+    "mata_pelajaran": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 15,
+        "vps_rows": 15,
+        "diff": 0
+    },
+    "materi_pembelajaran": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 0,
+        "vps_rows": 0,
+        "diff": 0
+    },
+    "migrations": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 0,
+        "vps_rows": 0,
+        "diff": 0
+    },
+    "nilai_ekskul": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 1184,
+        "vps_rows": 1123,
+        "diff": 61
+    },
+    "nilai_formatif": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 57974,
+        "vps_rows": 58424,
+        "diff": -450
+    },
+    "nilai_komponen": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 0,
+        "vps_rows": 0,
+        "diff": 0
+    },
+    "nilai_proyek": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 0,
+        "vps_rows": 0,
+        "diff": 0
+    },
+    "nilai_rapor": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 17102,
+        "vps_rows": 17740,
+        "diff": -638
+    },
+    "nilai_sumatif": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 15263,
+        "vps_rows": 13679,
+        "diff": 1584
+    },
+    "nilai_tahfidz": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 2,
+        "vps_rows": 2,
+        "diff": 0
+    },
+    "notifikasi": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 67,
+        "vps_rows": 68,
+        "diff": -1
+    },
+    "observasi_sikap": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 0,
+        "vps_rows": 0,
+        "diff": 0
+    },
+    "orangtua_wali": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 575,
+        "vps_rows": 575,
+        "diff": 0
+    },
+    "paket_soal": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 0,
+        "vps_rows": 0,
+        "diff": 0
+    },
+    "password_resets": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 3,
+        "vps_rows": 3,
+        "diff": 0
+    },
+    "penilaian_proyek": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 3,
+        "vps_rows": 3,
+        "diff": 0
+    },
+    "propinsi": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 34,
+        "vps_rows": 34,
+        "diff": 0
+    },
+    "ref_juz": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 30,
+        "vps_rows": 30,
+        "diff": 0
+    },
+    "ref_surah": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 114,
+        "vps_rows": 114,
+        "diff": 0
+    },
+    "rekap_absensi": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 827,
+        "vps_rows": 827,
+        "diff": 0
+    },
+    "riwayat_jabatan_guru": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 225,
+        "vps_rows": 225,
+        "diff": 0
+    },
+    "riwayat_perubahan_nilai": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 0,
+        "vps_rows": 0,
+        "diff": 0
+    },
+    "role_permissions": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 10,
+        "vps_rows": 10,
+        "diff": 0
+    },
+    "roles": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 6,
+        "vps_rows": 6,
+        "diff": 0
+    },
+    "rombel": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 30,
+        "vps_rows": 30,
+        "diff": 0
+    },
+    "sekolah": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 1,
+        "vps_rows": 1,
+        "diff": 0
+    },
+    "setoran_tahfidz": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 3,
+        "vps_rows": 3,
+        "diff": 0
+    },
+    "setting_aturan_nilai": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 4,
+        "vps_rows": 4,
+        "diff": 0
+    },
+    "setting_bobot_nilai": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 7,
+        "vps_rows": 7,
+        "diff": 0
+    },
+    "siswa": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 567,
+        "vps_rows": 543,
+        "diff": 24
+    },
+    "tahun_ajaran": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 6,
+        "vps_rows": 6,
+        "diff": 0
+    },
+    "target_tahfidz": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 0,
+        "vps_rows": 0,
+        "diff": 0
+    },
+    "user_preferences": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 11,
+        "vps_rows": 11,
+        "diff": 0
+    },
+    "user_roles": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 125,
+        "vps_rows": 125,
+        "diff": 0
+    },
+    "users": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 447,
+        "vps_rows": 446,
+        "diff": 1
+    },
+    "validasi_nilai": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 1,
+        "vps_rows": 1,
+        "diff": 0
+    },
+    "validasi_rapor_siswa": {
+        "in_local": true,
+        "in_vps": true,
+        "local_rows": 0,
+        "vps_rows": 0,
+        "diff": 0
+    }
+}

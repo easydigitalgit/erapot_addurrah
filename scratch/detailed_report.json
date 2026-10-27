@@ -1,0 +1,1569 @@
+{
+    "tahun_ajaran": {
+        "local_active": {
+            "id": 10,
+            "tahun": "2026\/2027",
+            "semester": "Ganjil",
+            "status": "Aktif",
+            "tgl_mulai": "2026-07-01",
+            "tgl_akhir": "2026-12-31",
+            "is_locked": 0,
+            "created_at": "2026-03-09 14:37:43"
+        },
+        "vps_active": {
+            "id": 10,
+            "tahun": "2026\/2027",
+            "semester": "Ganjil",
+            "status": "Aktif",
+            "tgl_mulai": "2026-07-01",
+            "tgl_akhir": "2026-12-31",
+            "is_locked": 0,
+            "created_at": "2026-03-09 14:37:43"
+        },
+        "local_all": [
+            {
+                "id": 5,
+                "tahun": "2024\/2025",
+                "semester": "Ganjil",
+                "status": "Arsip",
+                "tgl_mulai": null,
+                "tgl_akhir": null,
+                "is_locked": 0,
+                "created_at": "2026-02-06 15:31:41"
+            },
+            {
+                "id": 6,
+                "tahun": "2024\/2025",
+                "semester": "Genap",
+                "status": "Arsip",
+                "tgl_mulai": null,
+                "tgl_akhir": null,
+                "is_locked": 0,
+                "created_at": "2026-02-06 15:31:41"
+            },
+            {
+                "id": 7,
+                "tahun": "2025\/2026",
+                "semester": "Ganjil",
+                "status": "Arsip",
+                "tgl_mulai": "2025-07-01",
+                "tgl_akhir": "2025-12-31",
+                "is_locked": 0,
+                "created_at": "2026-02-11 11:59:37"
+            },
+            {
+                "id": 9,
+                "tahun": "2025\/2026",
+                "semester": "Genap",
+                "status": "Arsip",
+                "tgl_mulai": "2026-01-01",
+                "tgl_akhir": "2026-06-30",
+                "is_locked": 0,
+                "created_at": "2026-03-09 14:08:52"
+            },
+            {
+                "id": 10,
+                "tahun": "2026\/2027",
+                "semester": "Ganjil",
+                "status": "Aktif",
+                "tgl_mulai": "2026-07-01",
+                "tgl_akhir": "2026-12-31",
+                "is_locked": 0,
+                "created_at": "2026-03-09 14:37:43"
+            },
+            {
+                "id": 12,
+                "tahun": "2026\/2027",
+                "semester": "Genap",
+                "status": "Arsip",
+                "tgl_mulai": "2026-06-01",
+                "tgl_akhir": "2027-06-01",
+                "is_locked": 0,
+                "created_at": "2026-03-14 10:48:55"
+            }
+        ],
+        "vps_all": [
+            {
+                "id": 5,
+                "tahun": "2024\/2025",
+                "semester": "Ganjil",
+                "status": "Arsip",
+                "tgl_mulai": null,
+                "tgl_akhir": null,
+                "is_locked": 0,
+                "created_at": "2026-02-06 15:31:41"
+            },
+            {
+                "id": 6,
+                "tahun": "2024\/2025",
+                "semester": "Genap",
+                "status": "Arsip",
+                "tgl_mulai": null,
+                "tgl_akhir": null,
+                "is_locked": 0,
+                "created_at": "2026-02-06 15:31:41"
+            },
+            {
+                "id": 7,
+                "tahun": "2025\/2026",
+                "semester": "Ganjil",
+                "status": "Arsip",
+                "tgl_mulai": "2025-07-01",
+                "tgl_akhir": "2025-12-31",
+                "is_locked": 0,
+                "created_at": "2026-02-11 11:59:37"
+            },
+            {
+                "id": 9,
+                "tahun": "2025\/2026",
+                "semester": "Genap",
+                "status": "Arsip",
+                "tgl_mulai": "2026-01-01",
+                "tgl_akhir": "2026-06-30",
+                "is_locked": 0,
+                "created_at": "2026-03-09 14:08:52"
+            },
+            {
+                "id": 10,
+                "tahun": "2026\/2027",
+                "semester": "Ganjil",
+                "status": "Aktif",
+                "tgl_mulai": "2026-07-01",
+                "tgl_akhir": "2026-12-31",
+                "is_locked": 0,
+                "created_at": "2026-03-09 14:37:43"
+            },
+            {
+                "id": 12,
+                "tahun": "2026\/2027",
+                "semester": "Genap",
+                "status": "Arsip",
+                "tgl_mulai": "2026-06-01",
+                "tgl_akhir": "2027-06-01",
+                "is_locked": 0,
+                "created_at": "2026-03-14 10:48:55"
+            }
+        ]
+    },
+    "rombel": {
+        "local_count": 30,
+        "vps_count": 30,
+        "diff": []
+    },
+    "siswa": {
+        "local_count": 567,
+        "vps_count": 543,
+        "missing_in_vps_count": 24,
+        "missing_in_vps": [
+            {
+                "id": 4,
+                "nis": "09.25.0010",
+                "nisn": "3136195157",
+                "nama_lengkap": "AKIL ZAYDAN RAHMANA",
+                "status_siswa": "Aktif",
+                "rombel_id": 72
+            },
+            {
+                "id": 9,
+                "nis": "09.25.0036",
+                "nisn": "0131889596",
+                "nama_lengkap": "BARIQ HIJRI AKBAR",
+                "status_siswa": "Aktif",
+                "rombel_id": 72
+            },
+            {
+                "id": 11,
+                "nis": "09.25.0042",
+                "nisn": "3135832794",
+                "nama_lengkap": "ELKAN ABSANA TANJUNG",
+                "status_siswa": "Aktif",
+                "rombel_id": 72
+            },
+            {
+                "id": 12,
+                "nis": "09.25.0045",
+                "nisn": "3122320841",
+                "nama_lengkap": "Fahrian Haikal Ginting",
+                "status_siswa": "Aktif",
+                "rombel_id": 72
+            },
+            {
+                "id": 24,
+                "nis": "09.25.0074",
+                "nisn": "3127585624",
+                "nama_lengkap": "MUHAMMAD RIYAADH SARAGIH",
+                "status_siswa": "Aktif",
+                "rombel_id": 72
+            },
+            {
+                "id": 40,
+                "nis": "10.26.0172",
+                "nisn": "3136235894",
+                "nama_lengkap": "FADHIL RAJABI",
+                "status_siswa": "Aktif",
+                "rombel_id": 73
+            },
+            {
+                "id": 44,
+                "nis": "10.26.0174",
+                "nisn": "3134031119",
+                "nama_lengkap": "Fathir Al Ghifary Lesmana",
+                "status_siswa": "Aktif",
+                "rombel_id": 73
+            },
+            {
+                "id": 72,
+                "nis": "09.25.0056",
+                "nisn": "3138693760",
+                "nama_lengkap": "INAYA AZMI ATHIFA",
+                "status_siswa": "Aktif",
+                "rombel_id": 74
+            },
+            {
+                "id": 75,
+                "nis": "09.25.0069",
+                "nisn": "3128350299",
+                "nama_lengkap": "KHEYSA RASHIFA",
+                "status_siswa": "Aktif",
+                "rombel_id": 74
+            },
+            {
+                "id": 77,
+                "nis": "09.25.0092",
+                "nisn": "3131800680",
+                "nama_lengkap": "NAURA DZAKIYYA SAKHI",
+                "status_siswa": "Aktif",
+                "rombel_id": 74
+            },
+            {
+                "id": 114,
+                "nis": "09.25.0016",
+                "nisn": "0133615982",
+                "nama_lengkap": "AMELIA FENETA ZULHAM",
+                "status_siswa": "Aktif",
+                "rombel_id": 76
+            },
+            {
+                "id": 118,
+                "nis": "09.25.0033",
+                "nisn": "0131690547",
+                "nama_lengkap": "Azqa Aqilla Mumtaz",
+                "status_siswa": "Aktif",
+                "rombel_id": 76
+            },
+            {
+                "id": 119,
+                "nis": "09.25.0041",
+                "nisn": "0135766600",
+                "nama_lengkap": "EARLYTA ARSYFA",
+                "status_siswa": "Aktif",
+                "rombel_id": 76
+            },
+            {
+                "id": 120,
+                "nis": "09.25.0047",
+                "nisn": "3126324682",
+                "nama_lengkap": "FARADILLA RAMADANI",
+                "status_siswa": "Aktif",
+                "rombel_id": 76
+            },
+            {
+                "id": 121,
+                "nis": "09.25.0055",
+                "nisn": "3121609857",
+                "nama_lengkap": "Inaya Athifa",
+                "status_siswa": "Aktif",
+                "rombel_id": 76
+            },
+            {
+                "id": 122,
+                "nis": "09.25.0059",
+                "nisn": "3136681849",
+                "nama_lengkap": "Jahira Humairoh Manurung",
+                "status_siswa": "Aktif",
+                "rombel_id": 76
+            },
+            {
+                "id": 123,
+                "nis": "09.25.0068",
+                "nisn": "3127124285",
+                "nama_lengkap": "KHEYLA RASHIFA",
+                "status_siswa": "Aktif",
+                "rombel_id": 76
+            },
+            {
+                "id": 124,
+                "nis": "09.25.0093",
+                "nisn": "3139883723",
+                "nama_lengkap": "NUR ALFIYAH HAWA",
+                "status_siswa": "Aktif",
+                "rombel_id": 76
+            },
+            {
+                "id": 125,
+                "nis": "09.25.0101",
+                "nisn": "0139035682",
+                "nama_lengkap": "RHALYNSA RIZKI",
+                "status_siswa": "Aktif",
+                "rombel_id": 76
+            },
+            {
+                "id": 440,
+                "nis": "10.26.0155",
+                "nisn": "3148500201",
+                "nama_lengkap": "Ashillah Ratu Balqis",
+                "status_siswa": "Aktif",
+                "rombel_id": 80
+            },
+            {
+                "id": 444,
+                "nis": "09.26.00009",
+                "nisn": "3158162292",
+                "nama_lengkap": "HAURA SYAKIRAH HUMAIRA",
+                "status_siswa": "Aktif",
+                "rombel_id": 80
+            },
+            {
+                "id": 446,
+                "nis": "09.26.00011",
+                "nisn": "3132753928",
+                "nama_lengkap": "JASMINE AZZAHRA SIREGAR",
+                "status_siswa": "Aktif",
+                "rombel_id": 80
+            },
+            {
+                "id": 534,
+                "nis": "13.26.00026",
+                "nisn": "0148919994",
+                "nama_lengkap": "ARKA ZEVAN ABADI",
+                "status_siswa": "Aktif",
+                "rombel_id": 77
+            },
+            {
+                "id": 540,
+                "nis": "10.26.0176",
+                "nisn": "3144183328",
+                "nama_lengkap": "EMERY ALDRIC MUSYAFFA",
+                "status_siswa": "Aktif",
+                "rombel_id": 77
+            }
+        ],
+        "missing_in_local_count": 0,
+        "missing_in_local": [],
+        "mismatched_count": 3,
+        "mismatched_sample": [
+            {
+                "id": 427,
+                "nis_loc": "09.25.0079",
+                "nis_vps": " 09.25.0079",
+                "nama_loc": "MUHAMMAD AFKHAR AYUB",
+                "nama_vps": "MUHAMMAD AFKHAR AYUB",
+                "nisn_loc": "3127356309",
+                "nisn_vps": "3127356309",
+                "status_loc": "Aktif",
+                "status_vps": "Aktif",
+                "rombel_loc": 73,
+                "rombel_vps": 73
+            },
+            {
+                "id": 649,
+                "nis_loc": "01.26.00023",
+                "nis_vps": "01.26.00023",
+                "nama_loc": "AULIA IZZATUNNISA KOTO ",
+                "nama_vps": "AULIA IZZATUNNISA KOTO",
+                "nisn_loc": "0144974968",
+                "nisn_vps": "0144974968",
+                "status_loc": "Aktif",
+                "status_vps": "Aktif",
+                "rombel_loc": 81,
+                "rombel_vps": 81
+            },
+            {
+                "id": 665,
+                "nis_loc": "01.26.00034",
+                "nis_vps": "01.26.00034",
+                "nama_loc": "AQILAH MUFIDAH HARAHAP",
+                "nama_vps": "AQILAH MUFIDAH HARAHAP",
+                "nisn_loc": "3131173367",
+                "nisn_vps": "3131173367",
+                "status_loc": "Aktif",
+                "status_vps": "Pindah",
+                "rombel_loc": 81,
+                "rombel_vps": 81
+            }
+        ]
+    },
+    "siswa_per_rombel_aktif": [
+        {
+            "rombel_id": 77,
+            "nama_rombel": "Amazonite",
+            "tingkat": "VII",
+            "jml_ar_local": 26,
+            "jml_ar_vps": 24,
+            "jml_siswa_col_local": 26,
+            "jml_siswa_col_vps": 24
+        },
+        {
+            "rombel_id": 80,
+            "nama_rombel": "Carnelian",
+            "tingkat": "VII",
+            "jml_ar_local": 33,
+            "jml_ar_vps": 33,
+            "jml_siswa_col_local": 33,
+            "jml_siswa_col_vps": 30
+        },
+        {
+            "rombel_id": 78,
+            "nama_rombel": "Opal",
+            "tingkat": "VII",
+            "jml_ar_local": 26,
+            "jml_ar_vps": 29,
+            "jml_siswa_col_local": 26,
+            "jml_siswa_col_vps": 26
+        },
+        {
+            "rombel_id": 81,
+            "nama_rombel": "Ruby",
+            "tingkat": "VII",
+            "jml_ar_local": 33,
+            "jml_ar_vps": 33,
+            "jml_siswa_col_local": 33,
+            "jml_siswa_col_vps": 32
+        },
+        {
+            "rombel_id": 79,
+            "nama_rombel": "Zamrud",
+            "tingkat": "VII",
+            "jml_ar_local": 26,
+            "jml_ar_vps": 27,
+            "jml_siswa_col_local": 26,
+            "jml_siswa_col_vps": 26
+        },
+        {
+            "rombel_id": 72,
+            "nama_rombel": "Granit",
+            "tingkat": "VIII",
+            "jml_ar_local": 32,
+            "jml_ar_vps": 30,
+            "jml_siswa_col_local": 32,
+            "jml_siswa_col_vps": 27
+        },
+        {
+            "rombel_id": 74,
+            "nama_rombel": "Intan",
+            "tingkat": "VIII",
+            "jml_ar_local": 22,
+            "jml_ar_vps": 22,
+            "jml_siswa_col_local": 22,
+            "jml_siswa_col_vps": 19
+        },
+        {
+            "rombel_id": 75,
+            "nama_rombel": "Kyanite",
+            "tingkat": "VIII",
+            "jml_ar_local": 22,
+            "jml_ar_vps": 20,
+            "jml_siswa_col_local": 22,
+            "jml_siswa_col_vps": 22
+        },
+        {
+            "rombel_id": 76,
+            "nama_rombel": "Safir",
+            "tingkat": "VIII",
+            "jml_ar_local": 22,
+            "jml_ar_vps": 22,
+            "jml_siswa_col_local": 22,
+            "jml_siswa_col_vps": 13
+        },
+        {
+            "rombel_id": 73,
+            "nama_rombel": "Topaz",
+            "tingkat": "VIII",
+            "jml_ar_local": 33,
+            "jml_ar_vps": 35,
+            "jml_siswa_col_local": 33,
+            "jml_siswa_col_vps": 31
+        },
+        {
+            "rombel_id": 69,
+            "nama_rombel": "Biduri",
+            "tingkat": "IX",
+            "jml_ar_local": 31,
+            "jml_ar_vps": 31,
+            "jml_siswa_col_local": 30,
+            "jml_siswa_col_vps": 30
+        },
+        {
+            "rombel_id": 70,
+            "nama_rombel": "Crystal",
+            "tingkat": "IX",
+            "jml_ar_local": 30,
+            "jml_ar_vps": 30,
+            "jml_siswa_col_local": 28,
+            "jml_siswa_col_vps": 28
+        },
+        {
+            "rombel_id": 71,
+            "nama_rombel": "Diamond",
+            "tingkat": "IX",
+            "jml_ar_local": 31,
+            "jml_ar_vps": 31,
+            "jml_siswa_col_local": 31,
+            "jml_siswa_col_vps": 31
+        },
+        {
+            "rombel_id": 68,
+            "nama_rombel": "Emerald",
+            "tingkat": "IX",
+            "jml_ar_local": 29,
+            "jml_ar_vps": 29,
+            "jml_siswa_col_local": 29,
+            "jml_siswa_col_vps": 29
+        },
+        {
+            "rombel_id": 67,
+            "nama_rombel": "Fairuz",
+            "tingkat": "IX",
+            "jml_ar_local": 29,
+            "jml_ar_vps": 29,
+            "jml_siswa_col_local": 28,
+            "jml_siswa_col_vps": 28
+        }
+    ],
+    "master_lm": {
+        "local_total": 318,
+        "vps_total": 267,
+        "dist_local": [
+            {
+                "tingkat": 7,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "jml": 30
+            },
+            {
+                "tingkat": 7,
+                "semester": "Ganjil",
+                "kategori": "Akhir",
+                "jml": 37
+            },
+            {
+                "tingkat": 7,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "jml": 28
+            },
+            {
+                "tingkat": 7,
+                "semester": "Genap",
+                "kategori": "Akhir",
+                "jml": 32
+            },
+            {
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "jml": 24
+            },
+            {
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Akhir",
+                "jml": 34
+            },
+            {
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "jml": 25
+            },
+            {
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Akhir",
+                "jml": 29
+            },
+            {
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "jml": 17
+            },
+            {
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Akhir",
+                "jml": 34
+            },
+            {
+                "tingkat": 9,
+                "semester": "Genap",
+                "kategori": "Akhir",
+                "jml": 28
+            }
+        ],
+        "dist_vps": [
+            {
+                "tingkat": 7,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "jml": 30
+            },
+            {
+                "tingkat": 7,
+                "semester": "Ganjil",
+                "kategori": "Akhir",
+                "jml": 37
+            },
+            {
+                "tingkat": 7,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "jml": 28
+            },
+            {
+                "tingkat": 7,
+                "semester": "Genap",
+                "kategori": "Akhir",
+                "jml": 32
+            },
+            {
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "jml": 4
+            },
+            {
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Akhir",
+                "jml": 33
+            },
+            {
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "jml": 6
+            },
+            {
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Akhir",
+                "jml": 29
+            },
+            {
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "jml": 6
+            },
+            {
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Akhir",
+                "jml": 34
+            },
+            {
+                "tingkat": 9,
+                "semester": "Genap",
+                "kategori": "Akhir",
+                "jml": 28
+            }
+        ],
+        "missing_in_vps_count": 54,
+        "missing_in_vps": [
+            {
+                "id": 92,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 1,
+                "nama_mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Mengetahui isi kandungan Q.S. Ar-Rum\/30: 41, Q.S. Ibrahim\/14: 32, dan Q.S. Az-Zukhruf\/43: 13."
+            },
+            {
+                "id": 289,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 1,
+                "nama_mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Menjelaskan toleransi menurut Islam dan penerapannya, memiliki sikap toleran antar dan intern umat beragama serta meneladani Nabi dalam menerapkan sikap toleran."
+            },
+            {
+                "id": 290,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 1,
+                "nama_mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Menjelaskan makna beriman kepada Nabi dan Rasul Allah SWT. serta memaparkan sifat-sifat Rasul dalam kehidupan sehari-hari."
+            },
+            {
+                "id": 93,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 1,
+                "nama_mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Menjelaskan makna beriman kepada kitab-kitab Allah Swt., mengetahui nama-nama kitab Allah Swt. dan penerimanya serta mencintai dan mengamalkan kitab suci Al-Qur'an."
+            },
+            {
+                "id": 94,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 1,
+                "nama_mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 3",
+                "deskripsi_lm": "Menjelaskan pengertian dan mengetahui pentingnya menjaga amanah dan kejujuran dalam kehidupan sehari-hari."
+            },
+            {
+                "id": 293,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 2,
+                "nama_mapel": "Pendidikan Pancasila",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Kebangkitan Nasional 1908 dan Sumpah Pemuda dalam perjuangan kemerdekaan Indonesia"
+            },
+            {
+                "id": 100,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 2,
+                "nama_mapel": "Pendidikan Pancasila",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Pancasila dalam Kehidupan Bangsa"
+            },
+            {
+                "id": 294,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 2,
+                "nama_mapel": "Pendidikan Pancasila",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Jati diri bangsa dan budaya nasional"
+            },
+            {
+                "id": 101,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 2,
+                "nama_mapel": "Pendidikan Pancasila",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Undang-undang Dasar Tahun 1945 sebagai Pedoman Negara"
+            },
+            {
+                "id": 102,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 2,
+                "nama_mapel": "Pendidikan Pancasila",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Hubungan Antara Empat Pilar Kebangsaan Indonesia"
+            },
+            {
+                "id": 103,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 2,
+                "nama_mapel": "Pendidikan Pancasila",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Hak dan Kewajiban Warga Negara"
+            },
+            {
+                "id": 297,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 3,
+                "nama_mapel": "Bahasa Indonesia",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Menulis Resensi Dengan memperhatikan unsur-unsur resensi"
+            },
+            {
+                "id": 107,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 3,
+                "nama_mapel": "Bahasa Indonesia",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "menemukan data dan fakta pada teks laporan hasil observasi"
+            },
+            {
+                "id": 298,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 3,
+                "nama_mapel": "Bahasa Indonesia",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Membandingkan puisi diafan dan prismatis serta menganalissi ciri-ciri dan unsur - unsur puisi"
+            },
+            {
+                "id": 359,
+                "tahun_ajaran_id": null,
+                "mapel_id": 3,
+                "nama_mapel": "Bahasa Indonesia",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Menyunting paragraf teks deskripsi dari aspek kohesi dan koherensi"
+            },
+            {
+                "id": 360,
+                "tahun_ajaran_id": null,
+                "mapel_id": 3,
+                "nama_mapel": "Bahasa Indonesia",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Membuat infografik berisi prosedur secara kreatif"
+            },
+            {
+                "id": 355,
+                "tahun_ajaran_id": null,
+                "mapel_id": 4,
+                "nama_mapel": "Matematika",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "peserta didik mampu memahami dan melakukan operasi bilangan bulat berpangkat, pecahan berpangkat, dan siswa mampu melakukan operasi aljabar pada bentuk akar dan merasionalkan penyebut"
+            },
+            {
+                "id": 311,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 4,
+                "nama_mapel": "Matematika",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Menentukan sudut berpelurus, berpenyiku, dan bertolak belakang, menemukan sifat sudut jika dua garis sejajar di potong garis ketiga"
+            },
+            {
+                "id": 356,
+                "tahun_ajaran_id": null,
+                "mapel_id": 4,
+                "nama_mapel": "Matematika",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "peserta didik mampu menyajikan bilangan dalam bentuk baku (notasi ilmiah)"
+            },
+            {
+                "id": 312,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 4,
+                "nama_mapel": "Matematika",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Memahami segi banyak dan menentukan jumlah sudut dalam dan sudut luar segi banyak"
+            },
+            {
+                "id": 131,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 4,
+                "nama_mapel": "Matematika",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Menyelesaikan permasalahan berkaitan sistem persamaan linear dua variabel"
+            },
+            {
+                "id": 132,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 4,
+                "nama_mapel": "Matematika",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Mengidentifikai dan pemahaman konsep bangun ruang kubus dan balok"
+            },
+            {
+                "id": 357,
+                "tahun_ajaran_id": null,
+                "mapel_id": 5,
+                "nama_mapel": "Ilmu Pengetahuan Alam",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Peserta didik mampu menjelaskan, mengidentifikasi dan mengamati jenis nutrisi, serta memahami jenis organ dan proses kerjanya pada sistem pencernaan dan sistem peredaran darah"
+            },
+            {
+                "id": 315,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 5,
+                "nama_mapel": "Ilmu Pengetahuan Alam",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Mampu menjelaskan dan mendeskripsikan system pencernaan pada manusia"
+            },
+            {
+                "id": 316,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 5,
+                "nama_mapel": "Ilmu Pengetahuan Alam",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Mampu menjelaskan mekanisme kerja dana berbagai contoh pesawat sederhana"
+            },
+            {
+                "id": 358,
+                "tahun_ajaran_id": null,
+                "mapel_id": 5,
+                "nama_mapel": "Ilmu Pengetahuan Alam",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Peserta didik mampu menjelaskan macam-macam organ dan proses kerjanya serta menghubungkannya pada sistem pernafasan dan sistem ekskresi"
+            },
+            {
+                "id": 361,
+                "tahun_ajaran_id": null,
+                "mapel_id": 6,
+                "nama_mapel": "Bahasa Inggris",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "memahami, mengidentifikasi, dan menggunakan ungkapan untuk menyatakan serta menanyakan minat (interest) dan hobi (hobbies)"
+            },
+            {
+                "id": 306,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 6,
+                "nama_mapel": "Bahasa Inggris",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Memahami Future Plans and future goals"
+            },
+            {
+                "id": 307,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 6,
+                "nama_mapel": "Bahasa Inggris",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Memahami Greetings card and letters"
+            },
+            {
+                "id": 308,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 6,
+                "nama_mapel": "Bahasa Inggris",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 3",
+                "deskripsi_lm": "Memahami feelings and sentence of feelings"
+            },
+            {
+                "id": 124,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 6,
+                "nama_mapel": "Bahasa Inggris",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Memahami teks deskripsi dalam kegiatan sehari-hari"
+            },
+            {
+                "id": 125,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 6,
+                "nama_mapel": "Bahasa Inggris",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Meminta dan memberi informasi detail"
+            },
+            {
+                "id": 148,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 7,
+                "nama_mapel": "Informatika",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Memahami Penggunaan Komputer"
+            },
+            {
+                "id": 149,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 7,
+                "nama_mapel": "Informatika",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Memahami Pengaplikasian Komputer"
+            },
+            {
+                "id": 163,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 8,
+                "nama_mapel": "Seni Budaya",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Memahami teknik pembuatan karya seni dengan teknik mozaik"
+            },
+            {
+                "id": 331,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 8,
+                "nama_mapel": "Seni Budaya",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Membuat karya seni rupa dengan teknik ecoprint"
+            },
+            {
+                "id": 332,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 8,
+                "nama_mapel": "Seni Budaya",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Membuat karya seni rupa nirmana dua dimensi"
+            },
+            {
+                "id": 164,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 8,
+                "nama_mapel": "Seni Budaya",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Memahami prosedur dan teknik menggambar ornamen"
+            },
+            {
+                "id": 271,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 8,
+                "nama_mapel": "Seni Budaya",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Akhir",
+                "kode_lm": "LM 4",
+                "deskripsi_lm": "Mengaplikasikan Teknik Aquarel Secara Kreatif Dengan Menonjolkan Karakter Sapuan Warna Yang Khas."
+            },
+            {
+                "id": 165,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 8,
+                "nama_mapel": "Seni Budaya",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Memahami prosedur dan teknik melukis siluet"
+            },
+            {
+                "id": 166,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 8,
+                "nama_mapel": "Seni Budaya",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Memahami prosdur dan teknik melukis abstrak"
+            },
+            {
+                "id": 155,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 9,
+                "nama_mapel": "Pendidikan Jasmani, Olahraga dan Kesehatan",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Memahami pengertian dan konsep megefektifkan gerak"
+            },
+            {
+                "id": 156,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 9,
+                "nama_mapel": "Pendidikan Jasmani, Olahraga dan Kesehatan",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Memahami dan menerapkan konsep gerak parabola dan proyektil"
+            },
+            {
+                "id": 158,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 9,
+                "nama_mapel": "Pendidikan Jasmani, Olahraga dan Kesehatan",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Memahami pengertian dan konsep keterampilan gerak dalam pertandingan"
+            },
+            {
+                "id": 159,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 9,
+                "nama_mapel": "Pendidikan Jasmani, Olahraga dan Kesehatan",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "\u2060Memahami tentang pengertian strategi perorangan dan tim"
+            },
+            {
+                "id": 171,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 11,
+                "nama_mapel": "Hadist",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Menghafal dan memahami isi kandungan dari hadist arbain yang ke delapan tentang perintah untuk memerangi manusia sampai mereka bersyahadat, sholat dan zakat. Dan hadist arbain yang ke sembilan tentang seorang Muslim harus melaksanakan perintah Allah sesuai kemampuannya dan menjauhi segala larangan-Nya"
+            },
+            {
+                "id": 335,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 11,
+                "nama_mapel": "Hadist",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Mampu menghafal dan memahami Hadist tentang Meninggalkan yg meragukan dan mengerjakan yg tidak meragukan"
+            },
+            {
+                "id": 172,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 11,
+                "nama_mapel": "Hadist",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Memahami pengertian, fungsi dan kedudukan hadist"
+            },
+            {
+                "id": 336,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 11,
+                "nama_mapel": "Hadist",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Mampu menghafal dan memahami Hadist tentang pentingnya Halal dan Haram."
+            },
+            {
+                "id": 354,
+                "tahun_ajaran_id": null,
+                "mapel_id": 14,
+                "nama_mapel": "Ilmu Pengetahuan Sosial",
+                "tingkat": 8,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "kondisi geografis Indonesia, menganalisis potensi dan pemanfaatan sumber daya alam, serta menjelaskan pengaruh kondisi geografis terhadap keragaman sosial budaya masyarakat Indonesia."
+            },
+            {
+                "id": 319,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 14,
+                "nama_mapel": "Ilmu Pengetahuan Sosial",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Menganalisis proses interaksi masuk dan berkembangnya agama Islam di Indonesia"
+            },
+            {
+                "id": 320,
+                "tahun_ajaran_id": 9,
+                "mapel_id": 14,
+                "nama_mapel": "Ilmu Pengetahuan Sosial",
+                "tingkat": 8,
+                "semester": "Genap",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Mengevaluasi ide pengembangan sebuah usaha perdagangan dalam mendukung perdagangan antar pulau"
+            },
+            {
+                "id": 144,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 14,
+                "nama_mapel": "Ilmu Pengetahuan Sosial",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Peserta didik mamapu memahamidan memiliki kesadaran terhadap perubahan sosialyg sedang terjadi di era kontemporer."
+            },
+            {
+                "id": 145,
+                "tahun_ajaran_id": 7,
+                "mapel_id": 14,
+                "nama_mapel": "Ilmu Pengetahuan Sosial",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Peserta didik mampu memahmidan mendeskripsikan fenomena dampak globalisasi di era modernisasi."
+            }
+        ],
+        "missing_in_local_count": 3,
+        "missing_in_local": [
+            {
+                "id": 362,
+                "tahun_ajaran_id": null,
+                "mapel_id": 6,
+                "nama_mapel": "Bahasa Inggris",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 1",
+                "deskripsi_lm": "Memahami fungsi sosial, struktur teks, dan unsur kebahasaan Descriptive Text tentang orang, tempat, benda, atau hewan."
+            },
+            {
+                "id": 363,
+                "tahun_ajaran_id": null,
+                "mapel_id": 6,
+                "nama_mapel": "Bahasa Inggris",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 2",
+                "deskripsi_lm": "Mengidentifikasi berbagai ungkapan yang digunakan untuk menyatakan perasaan dengan tingkat intensitas yang berbeda."
+            },
+            {
+                "id": 364,
+                "tahun_ajaran_id": null,
+                "mapel_id": 6,
+                "nama_mapel": "Bahasa Inggris",
+                "tingkat": 9,
+                "semester": "Ganjil",
+                "kategori": "Tengah",
+                "kode_lm": "LM 3",
+                "deskripsi_lm": "Memahami penggunaan time expressions dalam Recount Text"
+            }
+        ],
+        "diff_content_count": 0,
+        "diff_content": []
+    },
+    "nilai_sumatif": {
+        "by_ta": [
+            {
+                "ta_id": 9,
+                "tahun": "2025\/2026",
+                "jml_lokal": 10974,
+                "jml_vps": 9922,
+                "selisih": 1052
+            },
+            {
+                "ta_id": 10,
+                "tahun": "2026\/2027",
+                "jml_lokal": 4289,
+                "jml_vps": 3757,
+                "selisih": 532
+            }
+        ],
+        "ta_aktif_by_mapel": [
+            {
+                "mapel_id": 1,
+                "nama_mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+                "jml_lokal": 342,
+                "jml_vps": 281,
+                "selisih": 61
+            },
+            {
+                "mapel_id": 2,
+                "nama_mapel": "Pendidikan Pancasila",
+                "jml_lokal": 332,
+                "jml_vps": 279,
+                "selisih": 53
+            },
+            {
+                "mapel_id": 3,
+                "nama_mapel": "Bahasa Indonesia",
+                "jml_lokal": 336,
+                "jml_vps": 286,
+                "selisih": 50
+            },
+            {
+                "mapel_id": 4,
+                "nama_mapel": "Matematika",
+                "jml_lokal": 328,
+                "jml_vps": 306,
+                "selisih": 22
+            },
+            {
+                "mapel_id": 5,
+                "nama_mapel": "Ilmu Pengetahuan Alam",
+                "jml_lokal": 369,
+                "jml_vps": 306,
+                "selisih": 63
+            },
+            {
+                "mapel_id": 6,
+                "nama_mapel": "Bahasa Inggris",
+                "jml_lokal": 378,
+                "jml_vps": 309,
+                "selisih": 69
+            },
+            {
+                "mapel_id": 7,
+                "nama_mapel": "Informatika",
+                "jml_lokal": 381,
+                "jml_vps": 334,
+                "selisih": 47
+            },
+            {
+                "mapel_id": 8,
+                "nama_mapel": "Seni Budaya",
+                "jml_lokal": 336,
+                "jml_vps": 310,
+                "selisih": 26
+            },
+            {
+                "mapel_id": 9,
+                "nama_mapel": "Pendidikan Jasmani, Olahraga dan Kesehatan",
+                "jml_lokal": 354,
+                "jml_vps": 286,
+                "selisih": 68
+            },
+            {
+                "mapel_id": 10,
+                "nama_mapel": "Bahasa Arab",
+                "jml_lokal": 185,
+                "jml_vps": 201,
+                "selisih": -16
+            },
+            {
+                "mapel_id": 11,
+                "nama_mapel": "Hadist",
+                "jml_lokal": 335,
+                "jml_vps": 286,
+                "selisih": 49
+            },
+            {
+                "mapel_id": 14,
+                "nama_mapel": "Ilmu Pengetahuan Sosial",
+                "jml_lokal": 402,
+                "jml_vps": 345,
+                "selisih": 57
+            },
+            {
+                "mapel_id": 44,
+                "nama_mapel": "Nahwu",
+                "jml_lokal": 211,
+                "jml_vps": 228,
+                "selisih": -17
+            }
+        ]
+    },
+    "nilai_formatif": {
+        "by_ta": [
+            {
+                "ta_id": 9,
+                "tahun": "2025\/2026",
+                "jml_lokal": 40023,
+                "jml_vps": 40023,
+                "selisih": 0
+            },
+            {
+                "ta_id": 10,
+                "tahun": "2026\/2027",
+                "jml_lokal": 17951,
+                "jml_vps": 18401,
+                "selisih": -450
+            }
+        ],
+        "ta_aktif_by_mapel": [
+            {
+                "mapel_id": 1,
+                "nama_mapel": "Pendidikan Agama Islam dan Budi Pekerti",
+                "jml_lokal": 2340,
+                "jml_vps": 2340,
+                "selisih": 0
+            },
+            {
+                "mapel_id": 2,
+                "nama_mapel": "Pendidikan Pancasila",
+                "jml_lokal": 1074,
+                "jml_vps": 1074,
+                "selisih": 0
+            },
+            {
+                "mapel_id": 3,
+                "nama_mapel": "Bahasa Indonesia",
+                "jml_lokal": 1581,
+                "jml_vps": 1581,
+                "selisih": 0
+            },
+            {
+                "mapel_id": 4,
+                "nama_mapel": "Matematika",
+                "jml_lokal": 1800,
+                "jml_vps": 1806,
+                "selisih": -6
+            },
+            {
+                "mapel_id": 5,
+                "nama_mapel": "Ilmu Pengetahuan Alam",
+                "jml_lokal": 1392,
+                "jml_vps": 1392,
+                "selisih": 0
+            },
+            {
+                "mapel_id": 6,
+                "nama_mapel": "Bahasa Inggris",
+                "jml_lokal": 1628,
+                "jml_vps": 1628,
+                "selisih": 0
+            },
+            {
+                "mapel_id": 7,
+                "nama_mapel": "Informatika",
+                "jml_lokal": 1364,
+                "jml_vps": 1364,
+                "selisih": 0
+            },
+            {
+                "mapel_id": 8,
+                "nama_mapel": "Seni Budaya",
+                "jml_lokal": 1094,
+                "jml_vps": 1112,
+                "selisih": -18
+            },
+            {
+                "mapel_id": 9,
+                "nama_mapel": "Pendidikan Jasmani, Olahraga dan Kesehatan",
+                "jml_lokal": 1314,
+                "jml_vps": 1316,
+                "selisih": -2
+            },
+            {
+                "mapel_id": 10,
+                "nama_mapel": "Bahasa Arab",
+                "jml_lokal": 572,
+                "jml_vps": 780,
+                "selisih": -208
+            },
+            {
+                "mapel_id": 11,
+                "nama_mapel": "Hadist",
+                "jml_lokal": 2128,
+                "jml_vps": 2128,
+                "selisih": 0
+            },
+            {
+                "mapel_id": 14,
+                "nama_mapel": "Ilmu Pengetahuan Sosial",
+                "jml_lokal": 1078,
+                "jml_vps": 1078,
+                "selisih": 0
+            },
+            {
+                "mapel_id": 44,
+                "nama_mapel": "Nahwu",
+                "jml_lokal": 586,
+                "jml_vps": 802,
+                "selisih": -216
+            }
+        ]
+    },
+    "nilai_rapor": {
+        "by_ta": [
+            {
+                "ta_id": 5,
+                "tahun": "2024\/2025",
+                "jml_lokal": 2730,
+                "jml_vps": 3094,
+                "selisih": -364
+            },
+            {
+                "ta_id": 9,
+                "tahun": "2025\/2026",
+                "jml_lokal": 9082,
+                "jml_vps": 9082,
+                "selisih": 0
+            },
+            {
+                "ta_id": 10,
+                "tahun": "2026\/2027",
+                "jml_lokal": 5290,
+                "jml_vps": 5564,
+                "selisih": -274
+            }
+        ]
+    },
+    "orphans": {
+        "sumatif": {
+            "local": 0,
+            "vps": 0
+        },
+        "formatif": {
+            "local": 210,
+            "vps": 3376
+        },
+        "rapor": {
+            "local": 53,
+            "vps": 1139
+        }
+    }
+}

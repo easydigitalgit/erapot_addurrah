@@ -689,13 +689,25 @@ class SiswaController extends AdminBaseController
         exit;
     }
 
-function delete($id)
+    public function delete($id)
     {
         $db = \Config\Database::connect();
         $siswaModel = new SiswaModel();
         $siswa = $siswaModel->find($id);
 
         if ($siswa) {
+            // 🛡️ SAFETY GUARD: Cek apakah siswa sudah memiliki riwayat nilai
+            $hasFormatif = $db->tableExists('nilai_formatif') ? $db->table('nilai_formatif')->where('siswa_id', $id)->countAllResults() : 0;
+            $hasSumatif = $db->tableExists('nilai_sumatif') ? $db->table('nilai_sumatif')->where('siswa_id', $id)->countAllResults() : 0;
+            $hasRapor = $db->tableExists('nilai_rapor') ? $db->table('nilai_rapor')->where('siswa_id', $id)->countAllResults() : 0;
+
+            if ($hasFormatif > 0 || $hasSumatif > 0 || $hasRapor > 0) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Siswa "' . esc($siswa['nama_lengkap']) . '" tidak dapat dihapus karena sudah memiliki data nilai akademik/rapor. Jika siswa sudah tidak aktif/pindah, silakan ubah Status Siswa menjadi "Pindah" atau "Keluar" melalui tombol Edit.'
+                ]);
+            }
+
             $userRecord = $db->table('users')->where('id', $siswa['user_id'])->get()->getRowArray();
 
             // Hapus fisik file dari folder avatars
@@ -703,11 +715,17 @@ function delete($id)
                 unlink(FCPATH . 'assets/uploads/avatars/' . $userRecord['foto_profil']);
             }
 
-            // Hapus data (Otomatis terhapus jika FK CASCADE, jika tidak hapus manual)
-            $db->table('users')->where('id', $siswa['user_id'])->delete();
+            // Bersihkan relasi anggota_rombel & orang tua agar tidak menjadi record yatim (orphan)
+            $db->table('anggota_rombel')->where('siswa_id', $id)->delete();
+            $db->table('orangtua_wali')->where('siswa_id', $id)->delete();
+
+            // Hapus akun user dan data siswa
+            if (!empty($siswa['user_id'])) {
+                $db->table('users')->where('id', $siswa['user_id'])->delete();
+            }
             $siswaModel->delete($id);
 
-            return $this->response->setJSON(['status' => 'success', 'message' => 'Data dihapus.']);
+            return $this->response->setJSON(['status' => 'success', 'message' => 'Data siswa berhasil dihapus.']);
         } else {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Data tidak ditemukan.']);
         }
@@ -846,8 +864,16 @@ function delete($id)
             // 1. Ambil Tahun Ajaran Aktif
             $taAktif = $db->table('tahun_ajaran')->where('status', 'Aktif')->get()->getRowArray();
 
-            // 2. Siapkan Mapping Rombel
-            $dbRombel = $db->table('rombel')->get()->getResultArray();
+            // 2. Siapkan Mapping Rombel (Khusus Tahun Ajaran Aktif agar tidak tertukar dengan kelas tahun lalu)
+            $dbRombelQuery = $db->table('rombel');
+            if ($taAktif) {
+                if ($db->fieldExists('id_tahun_ajaran', 'rombel')) {
+                    $dbRombelQuery->where('id_tahun_ajaran', $taAktif['id']);
+                } elseif ($db->fieldExists('tahun_ajaran_id', 'rombel')) {
+                    $dbRombelQuery->where('tahun_ajaran_id', $taAktif['id']);
+                }
+            }
+            $dbRombel = $dbRombelQuery->get()->getResultArray();
             $mapRombel = [];
             foreach ($dbRombel as $r) {
                 $nama = strtolower(trim($r['nama_rombel']));

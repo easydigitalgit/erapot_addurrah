@@ -1,0 +1,42 @@
+-- ============================================================
+-- Table: `mapel_nonaktif_rombel`
+-- Split from raporsmpit.sql (per-table export)
+-- Relasi/FK ada di bagian akhir file ini.
+-- Catatan: file ini TIDAK men-drop tabel. Pastikan tabel kosong
+-- sebelum import untuk menghindari duplikasi data.
+-- ============================================================
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- Struktur tabel
+--
+
+CREATE TABLE `mapel_nonaktif_rombel` (
+  `id` int UNSIGNED NOT NULL,
+  `mapel_id` int NOT NULL,
+  `rombel_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+
+-- Index
+--
+ALTER TABLE `mapel_nonaktif_rombel`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mapel_id` (`mapel_id`),
+  ADD KEY `rombel_id` (`rombel_id`);
+
+--
+
+-- AUTO_INCREMENT
+--
+ALTER TABLE `mapel_nonaktif_rombel`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+
+SET FOREIGN_KEY_CHECKS = 1;

@@ -1,0 +1,19 @@
+RELASI FOREIGN KEY (dari dump raporsmpit.sql)
+============================================================
+Format: child_table.child_column -> parent_table.parent_column [ON DELETE]
+
+`absensi_harian`.`siswa_id` -> `siswa`.`id` [ON DELETE CASCADE]
+`guru_tendik`.`user_id` -> `users`.`id` [ON DELETE CASCADE]
+`jadwal_pelajaran`.`guru_id` -> `guru_tendik`.`id` [ON DELETE SET NULL]
+`jadwal_pelajaran`.`rombel_id` -> `rombel`.`id` [ON DELETE CASCADE]
+`jadwal_piket`.`guru_id` -> `guru_tendik`.`id` [ON DELETE CASCADE]
+`nilai_proyek`.`proyek_id` -> `penilaian_proyek`.`id` [ON DELETE CASCADE]
+`nilai_proyek`.`siswa_id` -> `siswa`.`id` [ON DELETE CASCADE]
+`nilai_sumatif`.`tahun_ajaran_id` -> `tahun_ajaran`.`id` [ON DELETE CASCADE]
+`nilai_sumatif`.`siswa_id` -> `siswa`.`id` [ON DELETE CASCADE]
+`nilai_sumatif`.`mapel_id` -> `mata_pelajaran`.`id` [ON DELETE CASCADE]
+`nilai_tahfidz`.`juz_id` -> `ref_juz`.`id` [ON DELETE SET NULL ON UPDATE CASCADE]
+`riwayat_jabatan_guru`.`guru_id` -> `guru_tendik`.`id` [ON DELETE CASCADE]
+
+Total tabel: 58
+Total relasi FK: 12

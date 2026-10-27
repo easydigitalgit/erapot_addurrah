@@ -1,0 +1,49 @@
+-- ============================================================
+-- Table: `jadwal_piket`
+-- Split from raporsmpit.sql (per-table export)
+-- Relasi/FK ada di bagian akhir file ini.
+-- Catatan: file ini TIDAK men-drop tabel. Pastikan tabel kosong
+-- sebelum import untuk menghindari duplikasi data.
+-- ============================================================
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- Struktur tabel
+--
+
+CREATE TABLE `jadwal_piket` (
+  `id` int NOT NULL,
+  `hari` varchar(20) NOT NULL,
+  `guru_id` int NOT NULL,
+  `shift` enum('Pagi','Siang','Full') NOT NULL DEFAULT 'Pagi',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+
+-- Index
+--
+ALTER TABLE `jadwal_piket`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `guru_id` (`guru_id`);
+
+--
+
+-- AUTO_INCREMENT
+--
+ALTER TABLE `jadwal_piket`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+
+-- Relasi / Foreign Key
+--
+ALTER TABLE `jadwal_piket`
+  ADD CONSTRAINT `fk_piket_guru` FOREIGN KEY (`guru_id`) REFERENCES `guru_tendik` (`id`) ON DELETE CASCADE;
+
+--
+
+SET FOREIGN_KEY_CHECKS = 1;
