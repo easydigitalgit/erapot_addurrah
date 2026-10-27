@@ -143,45 +143,64 @@ class NilaiSumatifController extends GuruMapelBaseController
         }
 
         $jenis_sumatif = $json->jenis_sumatif;
-        $mapel_id      = $json->mapel_id;
-        $ta_id         = $json->ta_id;
+        $mapel_id      = (int)$json->mapel_id;
+        $ta_id         = (int)$json->ta_id;
+        $rombel_id     = (int)($json->rombel_id ?? 0);
         $dataNilai     = $json->data_nilai;
 
+        // Tentukan kategori semester: pts = Tengah Semester, pas/sas = Akhir Semester
+        $kategori = ($jenis_sumatif === 'pts') ? 'Tengah Semester' : 'Akhir Semester';
+
         $userId   = session()->get('id');
-        $dataGuru = $this->db->table('guru_tendik')->select('id')->where('user_id', $userId)->get()->getRowArray();
+        $dataGuru = $this->db->table('guru_tendik')->select('id, nama_lengkap')->where('user_id', $userId)->get()->getRowArray();
         $guruId   = $dataGuru ? $dataGuru['id'] : 0;
+        $guruNama = $dataGuru ? $dataGuru['nama_lengkap'] : 'Guru Mapel';
 
         $this->db->transStart();
+        $savedCount = 0;
+        $affectedSiswa = [];
 
         foreach ($dataNilai as $item) {
+            // Filter nilai kosong / tidak valid: jangan timpa nilai dengan dummy
+            if ($item->nilai === null || trim((string)$item->nilai) === '' || !is_numeric($item->nilai)) {
+                continue;
+            }
+
+            $nilaiVal = (float)$item->nilai;
+            if ($nilaiVal < 0) $nilaiVal = 0;
+            if ($nilaiVal > 100) $nilaiVal = 100;
+
             $data = [
-                'siswa_id'        => $item->siswa_id,
-                //'guru_id'         => $guruId,
+                'siswa_id'        => (int)$item->siswa_id,
                 'mapel_id'        => $mapel_id,
                 'tahun_ajaran_id' => $ta_id,
+                'kategori'        => $kategori,
                 'jenis_sumatif'   => $jenis_sumatif,
-                'nilai'           => $item->nilai,
-                'deskripsi'       => $item->deskripsi,
+                'nilai'           => $nilaiVal,
+                'deskripsi'       => trim((string)($item->deskripsi ?? '')),
                 'status'          => 'draft'
             ];
 
-            // ==============================================================
-            // FIX MUTLAK: LOGIKA UPSERT (UPDATE OR INSERT) ANTI DUPLIKAT
-            // ==============================================================
+            // LOGIKA UPSERT ANTI-DUPLIKAT (dengan filter KATEGORI lengkap)
             $existing = $this->nilaiSumatifModel
                 ->where('siswa_id', $item->siswa_id)
                 ->where('mapel_id', $mapel_id)
                 ->where('tahun_ajaran_id', $ta_id)
+                ->where('kategori', $kategori)
                 ->where('jenis_sumatif', $jenis_sumatif)
                 ->first();
 
             if ($existing) {
-                // Jika sudah pernah tersimpan, Update nilainya
                 $this->nilaiSumatifModel->update($existing['id'], $data);
+                AuditLogService::log('UPDATE', 'nilai_sumatif', $existing['id'], "Update nilai {$jenis_sumatif} siswa ID {$item->siswa_id} menjadi {$nilaiVal}", ['nilai' => $existing['nilai']], ['nilai' => $nilaiVal]);
             } else {
-                // Jika baru pertama kali diketik, Insert baru
                 $this->nilaiSumatifModel->insert($data);
+                $newId = $this->db->insertID();
+                AuditLogService::log('CREATE', 'nilai_sumatif', $newId, "Input nilai {$jenis_sumatif} baru siswa ID {$item->siswa_id}: {$nilaiVal}", null, ['nilai' => $nilaiVal]);
             }
+
+            $savedCount++;
+            $affectedSiswa[] = (int)$item->siswa_id;
         }
 
         $this->db->transComplete();
@@ -189,7 +208,26 @@ class NilaiSumatifController extends GuruMapelBaseController
         if ($this->db->transStatus() === FALSE) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menyimpan data ke database.']);
         }
-        return $this->response->setJSON(['status' => 'success', 'message' => 'Draft nilai berhasil disimpan.']);
+
+        // AUTO-SINKRONISASI KE TABEL nilai_rapor UNTUK SETIAP SISWA YANG DIINPUT
+        if (!empty($affectedSiswa)) {
+            foreach ($affectedSiswa as $sId) {
+                // Resolusi rombel siswa jika rombel_id = 0
+                $rId = $rombel_id;
+                if ($rId <= 0) {
+                    $ar = $this->db->table('anggota_rombel')->where(['siswa_id' => $sId, 'tahun_ajaran_id' => $ta_id])->get()->getRowArray();
+                    $rId = $ar ? (int)$ar['rombel_id'] : 0;
+                }
+                if ($rId > 0) {
+                    NilaiRaporSyncService::syncStudent($sId, $mapel_id, $rId, $ta_id, $kategori);
+                }
+            }
+        }
+
+        return $this->response->setJSON([
+            'status' => 'success', 
+            'message' => "Draft nilai berhasil disimpan ({$savedCount} siswa) dan rapor otomatis disinkronkan."
+        ]);
     }
 
     public function updateStatus()

@@ -452,6 +452,10 @@ class NilaiKolektifController extends GuruMapelBaseController
 
             $this->db->transComplete();
 
+            // AUTO-SINKRONISASI RAPOR SELURUH SISWA ROMBEL
+            NilaiRaporSyncService::syncRombel($rombel_id, $mapel_id, $tahun_ajaran_id, $kategori_semester);
+            AuditLogService::log('IMPORT', 'nilai_kolektif', $rombel_id, "Import Nilai Kolektif mapel {$mapel_id} rombel {$rombel_id} ({$processedCount} siswa diproses)");
+
             if ($this->db->transStatus() === false) {
                 return $this->response->setJSON(['status' => 'error', 'message' => 'DATABASE ERROR: Terjadi kesalahan saat menyimpan data.']);
             }

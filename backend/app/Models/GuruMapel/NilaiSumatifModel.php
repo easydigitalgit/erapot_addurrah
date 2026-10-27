@@ -10,6 +10,8 @@ class NilaiSumatifModel extends Model
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
+    protected $useSoftDeletes = true;
+    protected $deletedField   = 'deleted_at';
     
     // ===================================================================================
     // FIX MUTLAK: Menambahkan 'tahun_ajaran_id' dan 'guru_id' agar data tidak diblokir CI4
@@ -19,7 +21,9 @@ class NilaiSumatifModel extends Model
         //'guru_id', 
         'mapel_id', 
         'tahun_ajaran_id', 
-        'jenis_sumatif', 
+        'kategori',
+        'jenis_sumatif',
+        'deleted_at', 
         'nilai', 
         'deskripsi', 
         'status'

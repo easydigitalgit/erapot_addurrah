@@ -33,7 +33,8 @@ Dokumen ini berfungsi sebagai buku catatan kerja (*living log*) untuk memantau s
 | **8** | **Sinkronisasi Massal Nilai Rapor (PAIBP, B. Indo, Arab, Nahwu, dll)** | Lokal &rarr; Dump | **SELESAI** | 28 Okt 2026, 01:03 | Masukkan 418 baris ke `nilai_rapor`. PAIBP Topaz (31 siswa), B. Indo Topaz (31 siswa), B. Arab & Nahwu Topaz, dan seluruh kelas. Rapor cetak terisi 100%. |
 | **9** | **Sinkronisasi NIS Resmi Dapodik (Update 27 Okt 2026)** | Lokal &rarr; Dump | **SELESAI** | 28 Okt 2026, 01:36 | Sinkronkan 206 NIS siswa ke Dapodik resmi. Tuntaskan 3 duplikat NIS (Akbar Wijaya, Mysha, Fadhil Rajabi). Duplikat NIS = 0. |
 | **10** | **Investigasi Nilai Kosong B. Arab & Nahwu VII Ikhwan** | Dokumentasi & Dokumen Guru | **TERCATAT** | 28 Okt 2026, 02:20 | Telusuri 4 database backup (lokal & VPS). Terbukti belum diinput oleh Ustadz M. Fahrozi Sianipar (78 siswa: Amazonite, Opal, Zamrud). Dibuat dokumen konfirmasi guru. |
-| **11** | **Master Plan Integritas Data, Soft Delete & Audit Trail** | Blueprint / Rencana Arsitektur | **SIAP** | 28 Okt 2026, 02:49 | Rencana 5 Pilar: Database Constraints, Safe Upsert di Controller, Dry-Run Frontend, Soft Delete (Recycle Bin) anti-asal hapus, dan Audit Trail Logging pelacak pengubah data (Before vs After). Berkas: `09_MASTER_PLAN_PERBAIKAN_FITUR_IMPORT.md`. |
+| **11** | **Master Plan Integritas Data, Soft Delete & Audit Trail** | Blueprint / Rencana Arsitektur | **SELESAI** | 28 Okt 2026, 02:49 | Rencana 5 Pilar: Database Constraints, Safe Upsert di Controller, Dry-Run Frontend, Soft Delete (Recycle Bin) anti-asal hapus, dan Audit Trail Logging pelacak pengubah data (Before vs After). Berkas: `09_MASTER_PLAN_PERBAIKAN_FITUR_IMPORT.md`. |
+| **12** | **Implementasi Tahap 1: Migrasi DDL, Soft Delete & Real-Time Sync** | Database & Controllers | **SELESAI** | 28 Okt 2026, 03:05 | Pasang 4 UNIQUE KEY mutlak, 6 kolom `deleted_at`, upgrade `audit_logs`, deploy `AuditLogService` & `NilaiRaporSyncService`. Refactor controller sumatif, formatif, kolektif, dan siswa. Dump diperbarui (**66,8 MB**). |
 
 ---
 
@@ -413,3 +414,44 @@ Di seluruh database ditemukan 63 grup nilai sumatif ganda di TA 10 (22 di Kelas 
 - **Tindak Lanjut & Dokumen Konfirmasi Guru:**
   - Telah dibuat berkas rekap konfirmasi resmi per rombel dan per siswa: [`docs/dbrepair/08_KONFIRMASI_NILAI_BAHASA_ARAB_DAN_NAHWU_KELAS_VII.md`](file:///d:/laragon/htdocs/erapoteasy/docs/dbrepair/08_KONFIRMASI_NILAI_BAHASA_ARAB_DAN_NAHWU_KELAS_VII.md).
   - Berkas ini siap dicetak / diserahkan kepada Ustadz Muhammad Fahrozi Sianipar untuk meminta berkas Excel DKN/Nilai STS agar dapat disinkronkan ke dalam sistem.
+
+---
+
+## 8. TAHAP 12: IMPLEMENTASI MIGRASI DDL, SOFT DELETE, AUDIT TRAIL & REAL-TIME SYNC
+
+- **Waktu Eksekusi:** 28 Oktober 2026, pukul 03:05 WIB
+- **Berkas Skrip SQL:** [`docs/dbrepair/08_migrasi_constraints_softdelete_audit.sql`](file:///d:/laragon/htdocs/erapoteasy/docs/dbrepair/08_migrasi_constraints_softdelete_audit.sql)
+- **Safety Backup Pra-Migrasi:** `backups/raporsmpit_local_pre_constraint_migration_20261028_0255.sql` (**66,0 MB**)
+
+### A. Tindakan DDL Database (MySQL Engine):
+1. **Pembersihan Prasyarat:**
+   - Menghapus 2 baris Master LM usang (ID 124 & 125, template lama Bahasa Inggris) yang telah digantikan oleh deskripsi lengkap dari guru (ID 362 & 363).
+   - Menghapus 248 baris duplikat identik pada `nilai_formatif` (mempertahankan baris yang memiliki catatan dan predikat lengkap).
+2. **Pemasangan UNIQUE KEY Constraints:**
+   - `siswa`: `uq_siswa_nis (nis)`
+   - `master_lm`: `uq_master_lm_unique (mapel_id, tingkat, semester, kategori, kode_lm)`
+   - `nilai_sumatif`: `uq_sumatif_siswa_mapel_ta_kat_jenis (siswa_id, mapel_id, tahun_ajaran_id, kategori, jenis_sumatif)`
+   - `nilai_formatif`: `uq_formatif_lengkap (siswa_id, mapel_id, rombel_id, tahun_ajaran_id, semester, kategori, jenis_penilaian, pertemuan)`
+3. **Pemasangan Kolom Soft Delete:**
+   - Menambahkan kolom `deleted_at DATETIME NULL` pada 6 tabel: `siswa`, `anggota_rombel`, `master_lm`, `nilai_formatif`, `nilai_sumatif`, `nilai_rapor`.
+4. **Upgrade Skema `audit_logs`:**
+   - Menambahkan kolom `role`, `tabel`, `record_id`, `old_data` (JSON), `new_data` (JSON), dan `user_agent`.
+
+### B. Deployment Services & Refactoring Controller (CodeIgniter 4):
+1. **`App\Services\AuditLogService`:**
+   - Layanan pencatat otomatis aktivitas `CREATE`, `UPDATE`, `DELETE`, `RESTORE`, dan `IMPORT`.
+   - Merekam user pengubah, role, IP address, waktu, serta selisih nilai sebelum vs sesudah (*Before vs After*) ke `audit_logs` dan `riwayat_perubahan_nilai`.
+2. **`App\Services\NilaiRaporSyncService`:**
+   - Mesin kalkulasi otomatis nilai rapor real-time.
+   - Menghitung rata-rata formatif, sumatif, bobot baku, predikat, dan deskripsi capaian LM seketika saat nilai disimpan.
+3. **Aktivasi Soft Delete di Model CI4:**
+   - `SiswaModel`, `MasterLmModel`, `NilaiSumatifModel` kini menggunakan `$useSoftDeletes = true;` dan `$deletedField = 'deleted_at';`.
+   - Menambahkan `kategori` ke `$allowedFields` pada `NilaiSumatifModel`.
+4. **Refactoring Controller:**
+   - `NilaiSumatifController::saveBulk`: Menambahkan filter kategori, filter proteksi nilai dummy 1.00, audit logging, dan auto-sinkronisasi ke `nilai_rapor`.
+   - `NilaiFormatifController::saveNilai`: Menambahkan audit logging dan auto-sinkronisasi ke `nilai_rapor`.
+   - `NilaiKolektifController::importExcel`: Menambahkan audit logging dan auto-sinkronisasi rombel ke `nilai_rapor`.
+   - `SiswaController::delete`: Diubah menjadi mekanisme Soft Delete (menonaktifkan akun user dan menandai `deleted_at`, bukan menghapus fisik).
+   - `SiswaController::restore`: Ditambahkan method pemulihan data siswa terhapus (*Recycle Bin Restore*).
+- **Pengujian Sistem:** Telah diuji melalui CodeIgniter CLI dengan hasil **100% SUCCESS** pada logging audit trail dan kalkulasi `nilai_rapor`.
+- **Pembaruan Berkas Dump Final:** [`docs/dbrepair/raporsmpit_repaired_and_sts_complete_20261027.sql`](file:///d:/laragon/htdocs/erapoteasy/docs/dbrepair/raporsmpit_repaired_and_sts_complete_20261027.sql) (**66,8 MB**).

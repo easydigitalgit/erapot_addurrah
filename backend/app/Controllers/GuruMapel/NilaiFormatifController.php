@@ -413,7 +413,13 @@ class NilaiFormatifController extends GuruMapelBaseController
                 }
                 $berhasilDisimpan++;
             }
-            return $this->response->setJSON(['status' => 'success', 'message' => "Disimpan!"]);
+            // AUTO-SINKRONISASI RAPOR SEKETIKA PASCA-SIMPAN
+            foreach ($json->nilaiData as $s_id => $data) {
+                NilaiRaporSyncService::syncStudent((int)$s_id, $mapel_id, $rombel_id, $tahun_ajaran_id, $kategori);
+            }
+            AuditLogService::log('UPDATE', 'nilai_formatif', null, "Input/Update nilai formatif pertemuan {$pertemuan} ({$jenis}) rombel {$rombel_id} mapel {$mapel_id} ({$berhasilDisimpan} siswa)");
+
+            return $this->response->setJSON(['status' => 'success', 'message' => "Disimpan ({$berhasilDisimpan} siswa) & rapor otomatis diperbarui!"]);
         } catch (\Throwable $e) {
             return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
         }

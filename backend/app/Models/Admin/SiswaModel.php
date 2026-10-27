@@ -10,8 +10,11 @@ class SiswaModel extends Model
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
+    protected $useSoftDeletes = true;
+    protected $deletedField   = 'deleted_at';
 
     protected $allowedFields = [
+        'deleted_at',
         'user_id',
         'rombel_id',
         'nis',

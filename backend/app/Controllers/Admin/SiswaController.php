@@ -715,20 +715,40 @@ class SiswaController extends AdminBaseController
                 unlink(FCPATH . 'assets/uploads/avatars/' . $userRecord['foto_profil']);
             }
 
-            // Bersihkan relasi anggota_rombel & orang tua agar tidak menjadi record yatim (orphan)
-            $db->table('anggota_rombel')->where('siswa_id', $id)->delete();
-            $db->table('orangtua_wali')->where('siswa_id', $id)->delete();
-
-            // Hapus akun user dan data siswa
+            // SOFT DELETE: Tandai deleted_at pada siswa & anggota_rombel, nonaktifkan user (bukan hard delete)
+            $now = date('Y-m-d H:i:s');
+            $db->table('anggota_rombel')->where('siswa_id', $id)->update(['deleted_at' => $now]);
+            
             if (!empty($siswa['user_id'])) {
-                $db->table('users')->where('id', $siswa['user_id'])->delete();
+                $db->table('users')->where('id', $siswa['user_id'])->update(['is_active' => 0]);
             }
-            $siswaModel->delete($id);
+            $siswaModel->delete($id); // CI4 Model otomatis mengisi deleted_at = NOW()
 
-            return $this->response->setJSON(['status' => 'success', 'message' => 'Data siswa berhasil dihapus.']);
+            AuditLogService::log('DELETE', 'siswa', (int)$id, "Soft delete siswa {$siswa['nama_lengkap']} (NIS: {$siswa['nis']})", $siswa, null);
+
+            return $this->response->setJSON(['status' => 'success', 'message' => 'Data siswa berhasil dipindahkan ke tong sampah (Soft Delete). Data dapat dipulihkan sewaktu-waktu.']);
         } else {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Data tidak ditemukan.']);
         }
+    }
+
+    
+    public function restore($id)
+    {
+        $db = \Config\Database::connect();
+        $siswaModel = new SiswaModel();
+        $siswa = $siswaModel->withDeleted()->find($id);
+
+        if ($siswa) {
+            $siswaModel->update($id, ['deleted_at' => null]);
+            $db->table('anggota_rombel')->where('siswa_id', $id)->update(['deleted_at' => null]);
+            if (!empty($siswa['user_id'])) {
+                $db->table('users')->where('id', $siswa['user_id'])->update(['is_active' => 1]);
+            }
+            AuditLogService::log('RESTORE', 'siswa', (int)$id, "Restore siswa {$siswa['nama_lengkap']} (NIS: {$siswa['nis']})");
+            return $this->response->setJSON(['status' => 'success', 'message' => "Data siswa {$siswa['nama_lengkap']} berhasil dipulihkan."]);
+        }
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Data tidak ditemukan.']);
     }
 
     public function downloadTemplate()

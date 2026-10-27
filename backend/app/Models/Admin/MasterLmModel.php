@@ -11,9 +11,12 @@ class MasterLmModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $protectFields    = true;
+    protected $useSoftDeletes = true;
+    protected $deletedField   = 'deleted_at';
 
     // PERBAIKAN: Memasukkan kembali deskripsi_a sampai deskripsi_d
     protected $allowedFields    = [
+        'deleted_at',
         'tahun_ajaran_id',
         'kurikulum_id',
         'mapel_id',
