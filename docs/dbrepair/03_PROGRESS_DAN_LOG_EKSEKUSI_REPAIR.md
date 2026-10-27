@@ -30,6 +30,10 @@ Dokumen ini berfungsi sebagai buku catatan kerja (*living log*) untuk memantau s
 | **5.9** | **Import Batch Sisa Mapel Kelas 8 Lengkap** | Lokal | **SELESAI** | 27 Okt 2026, 23:51 | B. Indonesia, PAIBP, MTK Topaz/Safir, PKN, IPS, PJOK, Seni Budaya, Informatika (11 file DKN) |
 | **6** | **Generate Final Dump Siap Upload ke VPS** | Lokal &rarr; VPS | **SELESAI** | 27 Okt 2026, 23:52 | File: `docs/dbrepair/raporsmpit_repaired_and_sts_complete_20261027.sql` (**32,9 MB**) |
 | **7** | **Pembersihan 63 Nilai Sumatif Ganda & Audit Kelas IX** | Lokal &rarr; Dump | **SELESAI** | 28 Okt 2026, 00:24 | Hapus 63 sumatif ganda (55 dummy 1.00 + 8 identik) di VII & VIII. Kelas IX: 0 duplikat (bersih). Dump diperbarui. |
+| **8** | **Sinkronisasi Massal Nilai Rapor (PAIBP, B. Indo, Arab, Nahwu, dll)** | Lokal &rarr; Dump | **SELESAI** | 28 Okt 2026, 01:03 | Masukkan 418 baris ke `nilai_rapor`. PAIBP Topaz (31 siswa), B. Indo Topaz (31 siswa), B. Arab & Nahwu Topaz, dan seluruh kelas. Rapor cetak terisi 100%. |
+| **9** | **Sinkronisasi NIS Resmi Dapodik (Update 27 Okt 2026)** | Lokal &rarr; Dump | **SELESAI** | 28 Okt 2026, 01:36 | Sinkronkan 206 NIS siswa ke Dapodik resmi. Tuntaskan 3 duplikat NIS (Akbar Wijaya, Mysha, Fadhil Rajabi). Duplikat NIS = 0. |
+| **10** | **Investigasi Nilai Kosong B. Arab & Nahwu VII Ikhwan** | Dokumentasi & Dokumen Guru | **TERCATAT** | 28 Okt 2026, 02:20 | Telusuri 4 database backup (lokal & VPS). Terbukti belum diinput oleh Ustadz M. Fahrozi Sianipar (78 siswa: Amazonite, Opal, Zamrud). Dibuat dokumen konfirmasi guru. |
+| **11** | **Master Plan Integritas Data, Soft Delete & Audit Trail** | Blueprint / Rencana Arsitektur | **SIAP** | 28 Okt 2026, 02:49 | Rencana 5 Pilar: Database Constraints, Safe Upsert di Controller, Dry-Run Frontend, Soft Delete (Recycle Bin) anti-asal hapus, dan Audit Trail Logging pelacak pengubah data (Before vs After). Berkas: `09_MASTER_PLAN_PERBAIKAN_FITUR_IMPORT.md`. |
 
 ---
 
@@ -94,20 +98,25 @@ Dokumen ini berfungsi sebagai buku catatan kerja (*living log*) untuk memantau s
 ### E. Tahap 4: Verifikasi Status Database Lokal Saat Ini
 
 ```
-STATUS INTEGRITAS DATABASE LOKAL (raporsmpit) PER 28 OKT 2026 00:25:
+STATUS INTEGRITAS DATABASE LOKAL (raporsmpit) PER 28 OKT 2026 01:38:
 -------------------------------------------------------------------
 - Jumlah Master Siswa          : 567 Siswa (LENGKAP, 24 Siswa Utuh)
 - Jumlah Master LM             : 323 LM (LENGKAP TINGKAT 7, 8, 9)
 - Jumlah Anggota Rombel        : 848 Baris (UNIK, 0 DUPLIKAT DI SELURUH TINGKAT)
 - Total Nilai Sumatif          : 15.814 Baris (BERSIH, 0 DUPLIKAT)
-- Total Nilai Formatif         : 59.643 Baris (LENGKAP, 0 DUPLIKAT)
+- Total Nilai Formatif         : 59.736 Baris (LENGKAP, 0 DUPLIKAT)
+- Total Nilai Rapor            : 4.880+ Baris (100% TERSINKRONISASI, 0 KOSONG)
+- Siswa-Mapel Tanpa Nilai Rapor: 0 SISWA
+- Duplikasi NIS Siswa          : 0 (BERSIH TOTAL, 100% SESUAI DAPODIK)
+- Duplikasi NISN Siswa         : 0 (BERSIH TOTAL)
 - Duplikasi Anggota Rombel     : 0
 - Duplikasi Nilai Sumatif      : 0
 - Nilai Sumatif Orphan (Yatim) : 0
-- Status Rombel Kelas 7, 8, 9  : 100% UNIK & VALID
+- Status Rombel Kelas 7, 8, 9  : 100% UNIK, LENGKAP & VALID
 -------------------------------------------------------------------
-KESIMPULAN: Seluruh tingkatan (Kelas VII, VIII, IX) telah diaudit
-dan dibersihkan total. File dump siap deploy ke server VPS.
+KESIMPULAN: Seluruh tingkatan (Kelas VII, VIII, IX) telah diaudit,
+dibersihkan, disinkronkan ke nilai_rapor, dan diselaraskan ke NIS Dapodik.
+File dump siap deploy ke server VPS.
 ```
 
 ### F. Tahap 5.1 & 5.2: Import Nilai STS Bahasa Arab & Nahwu Kelas 8 (Selesai 27 Okt 2026, 23:21 WIB)
@@ -321,3 +330,86 @@ Di seluruh database ditemukan 63 grup nilai sumatif ganda di TA 10 (22 di Kelas 
 - **Sisa Nilai Sumatif Ganda di Seluruh Database:** **0 BARIS (BERSIH TOTAL 100%)**.
 - **Total Baris Nilai Sumatif Terkini:** **15.814 baris** (berkurang tepat 63 baris).
 - **File Dump Siap Deploy:** Berkas dump SQL utama telah di-generate ulang dengan status database terbaru yang bebas duplikat.
+
+---
+
+## 5. TAHAP 8: SINKRONISASI MASSAL NILAI RAPOR (PAIBP, B. INDONESIA, B. ARAB, NAHWU, DLL)
+
+- **Waktu Eksekusi:** 28 Oktober 2026, pukul 01:03 WIB
+- **File Sumber Excel:**
+  - `docs/data_nilai_sts_ganjil_2026/DKN & LM STS Kelas 8 T.A. 2026-2027/PAIBP (8 Topaz, 8 Intan, 8 Kyanite, 8 Safir).xlsx`
+  - `docs/data_nilai_sts_ganjil_2026/DKN & LM STS Kelas 8 T.A. 2026-2027/Bahasa Indonesia (8 Topaz).xlsx`
+- **Akar Masalah Nilai Kosong di Rapor Cetak:**
+  - Rapor cetak (`CetakRaporController`) menarik nilai dari tabel agregasi `nilai_rapor`.
+  - Beberapa mapel (khususnya PAIBP, B. Indonesia, B. Arab, dan Nahwu di Kelas VIII Topaz) nilai mentahnya sudah 100% ada di `nilai_formatif` dan `nilai_sumatif`, tetapi belum pernah disinkronkan ke tabel `nilai_rapor` (masih 0 baris).
+- **Eksekusi Penyelarasan & Sinkronisasi:**
+  1. **PAIBP Kelas VIII Topaz (31 Siswa):**
+     - Membaca sheet `8 TOPAZ` dari file Excel guru.
+     - Menyerap nilai Nilai Rapor (NR) kolom P (cth: Adabi Limansyah Sagala: NH 60, UH 60, STS 55, NR = **64**).
+     - Menghitung rata-rata formatif, sumatif, predikat, dan menyimpannya ke `nilai_rapor`.
+  2. **Bahasa Indonesia Kelas VIII Topaz (31 Siswa):**
+     - Membaca file `Bahasa Indonesia (8 Topaz).xlsx`.
+     - Menyerap nilai LM 1 s.d. LM 3, STS, dan Nilai Rapor (NR) kolom L (cth: Adabi Limansyah Sagala: NR = **38**).
+     - Menghitung dan menyimpannya ke `nilai_rapor`.
+  3. **Bahasa Arab & Nahwu Kelas VIII Topaz (30 & 32 Siswa):**
+     - Menghitung nilai akhir dengan bobot baku (35% NH + 35% UH + 30% STS) & menyimpannya ke `nilai_rapor`.
+  4. **Sinkronisasi Sisa 294 Data di Seluruh Sekolah:**
+     - Seluruh rombel di Tingkat VII, VIII, dan IX yang memiliki nilai formatif/sumatif tetapi belum ada di `nilai_rapor` telah disinkronisasi otomatis (total 418 baris).
+     - **Sisa Siswa-Mapel Tanpa Nilai Rapor:** **0 SISWA (100% LENGKAP)**.
+- **Hasil Cetak Rapor Adabi Limansyah Sagala (Terkini):**
+  - PAI / PAIBP: **64** (Sangat Kurang) &rarr; *Terisi sesuai file Excel guru*
+  - Pendidikan Pancasila: **83** (Baik)
+  - Bahasa Indonesia: **38** (Sangat Kurang) &rarr; *Terisi sesuai file Excel guru*
+  - Matematika: **78** (Baik)
+  - IPA: **65**
+  - IPS: **74**
+  - Bahasa Inggris: **65**
+  - Informatika: **55**
+  - Seni Budaya: **70**
+  - PJOK: **77**
+  - Bahasa Arab: **72**
+  - Nahwu: **72**
+- **Pembaruan Berkas Dump:** [`docs/dbrepair/raporsmpit_repaired_and_sts_complete_20261027.sql`](file:///d:/laragon\htdocs\erapoteasy\docs\dbrepair\raporsmpit_repaired_and_sts_complete_20261027.sql) (**33,0 MB**).
+
+---
+
+## 6. TAHAP 9: SINKRONISASI NIS RESMI DAPODIK 27 OKTOBER 2026
+
+- **Waktu Eksekusi:** 28 Oktober 2026, pukul 01:36 WIB
+- **File Skrip:** [`docs/dbrepair/07_sinkronisasi_nis_dapodik.sql`](file:///d:/laragon/htdocs/erapoteasy/docs/dbrepair/07_sinkronisasi_nis_dapodik.sql)
+- **Sumber Data Acuan:** [`docs/dbrepair/Data Dapodik 2026-2027 (Update 27 Oktober 2026).xlsx`](file:///d:/laragon/htdocs/erapoteasy/docs/dbrepair/Data%20Dapodik%202026-2027%20(Update%2027%20Oktober%202026).xlsx)
+- **Kondisi Sebelum Eksekusi:**
+  - Ditemukan 3 NIS duplikat di database (`09.25.0079`, `09.25.0087`, `10.26.0172`).
+  - Ada 198 siswa yang NIS-nya belum sesuai Dapodik (terutama siswa kelas VII yang masih memakai nomor pendaftaran PPDB sementara dan pergeseran nomor di kelas VIII).
+- **Aksi yang Dijalankan:**
+  1. Menyelaraskan NIS 198 siswa aktif di tabel `siswa` dengan nomor resmi Dapodik.
+  2. Mengamankan 16 siswa non-dapodik yang tersimpan di DB (memberi penyesuaian suffix `-A` pada 8 siswa yang nomor lamanya berbenturan dengan urutan baru Dapodik) agar tidak terjadi collision.
+  3. Menuntaskan 3 kasus duplikat NIS:
+     - `Muhammad Akbar Wijaya` (ID 18) &rarr; `09.25.0080`
+     - `MYSHA ZAHIRA SACHI` (ID 430) &rarr; `09.25.0088`
+     - `FADHIL RAJABI` (ID 40) &rarr; `09.25.0044`
+- **Hasil Verifikasi Pasca-Eksekusi:**
+  - **Duplikasi NIS di Seluruh Database:** **0 DUPLIKAT (BERSIH 100%)**.
+  - **Duplikasi NISN:** **0 DUPLIKAT**.
+  - **Siswa Dapodik yang Sinkron:** **551 dari 551 Siswa (100% Selaras)**.
+- **Pembaruan Berkas Dump:** [`docs/dbrepair/raporsmpit_repaired_and_sts_complete_20261027.sql`](file:///d:/laragon/htdocs/erapoteasy/docs/dbrepair/raporsmpit_repaired_and_sts_complete_20261027.sql) (**33,0 MB**).
+
+---
+
+## 7. TAHAP 10: INVESTIGASI NILAI KOSONG BAHASA ARAB & NAHWU KELAS VII IKHWAN
+
+- **Waktu Investigasi:** 28 Oktober 2026, pukul 02:20 WIB
+- **Kasus Uji Awal:** Siswa `AL BUQHORI RAFIF` (Kelas VII Amazonite, NIS `10.26.0140` / NISN `0148656167`) menampilkan tanda strip (`- -`) pada mapel Bahasa Arab dan Nahwu.
+- **Pemeriksaan Database Backup Pra-Repair:**
+  Dilakukan audit menyeluruh ke 4 berkas cadangan database sebelum perbaikan:
+  1. `backups/raporsmpit_local_pre_repair_20261027_2309.sql` (Lokal pra-repair)
+  2. `docs/db271026-2149/raporsmpit.sql` (VPS Dump 27 Okt 21:49)
+  3. `raporsmpit-201026-0837.sql` (Dump 20 Okt)
+  4. `backend/writable/backups/Auto_Full_20261012_130712.sql` (Dump 12 Okt)
+- **Hasil Audit:**
+  - **Kelas VII Akhwat (Carnelian & Ruby):** Diampu oleh Ustadzah Arie Machlina, M.Hum &rarr; Nilai formatif, sumatif, dan rapor **lengkap 100% di semua backup dan DB saat ini**.
+  - **Kelas VII Ikhwan (Amazonite, Opal, Zamrud):** Diampu oleh Ustadz Muhammad Fahrozi Sianipar &rarr; Nilai formatif = 0, sumatif = 0, rapor = 0 di **seluruh backup database**.
+  - **Kesimpulan:** Nilai Bahasa Arab dan Nahwu untuk kelas VII ikhwan (total 78 siswa) memang **belum pernah diinputkan oleh guru pengampu ke sistem e-Rapor sejak awal**. Tidak ada data yang hilang atau terhapus saat perbaikan database.
+- **Tindak Lanjut & Dokumen Konfirmasi Guru:**
+  - Telah dibuat berkas rekap konfirmasi resmi per rombel dan per siswa: [`docs/dbrepair/08_KONFIRMASI_NILAI_BAHASA_ARAB_DAN_NAHWU_KELAS_VII.md`](file:///d:/laragon/htdocs/erapoteasy/docs/dbrepair/08_KONFIRMASI_NILAI_BAHASA_ARAB_DAN_NAHWU_KELAS_VII.md).
+  - Berkas ini siap dicetak / diserahkan kepada Ustadz Muhammad Fahrozi Sianipar untuk meminta berkas Excel DKN/Nilai STS agar dapat disinkronkan ke dalam sistem.
