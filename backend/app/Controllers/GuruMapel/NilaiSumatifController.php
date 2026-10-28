@@ -3,6 +3,8 @@
 namespace App\Controllers\GuruMapel;
 
 use App\Controllers\GuruMapelBaseController;
+use App\Services\NilaiRaporSyncService;
+use App\Services\AuditLogService;
 use App\Models\GuruMapel\NilaiSumatifModel;
 
 class NilaiSumatifController extends GuruMapelBaseController
@@ -128,7 +130,7 @@ class NilaiSumatifController extends GuruMapelBaseController
                 'status' => 'success',
                 'data'   => $builder->get()->getResultArray()
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'DB Error: ' . $e->getMessage()]);
         }
     }
@@ -266,7 +268,7 @@ class NilaiSumatifController extends GuruMapelBaseController
                 ->update(['status' => $json->status]);
 
             return $this->response->setJSON(['status'  => 'success', 'message' => 'Status diupdate!']);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->response->setJSON(['status'  => 'error', 'message' => 'DB Error: ' . $e->getMessage()]);
         }
     }

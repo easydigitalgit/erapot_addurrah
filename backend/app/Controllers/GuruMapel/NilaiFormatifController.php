@@ -3,6 +3,8 @@
 namespace App\Controllers\GuruMapel;
 
 use App\Controllers\GuruMapelBaseController;
+use App\Services\NilaiRaporSyncService;
+use App\Services\AuditLogService;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;

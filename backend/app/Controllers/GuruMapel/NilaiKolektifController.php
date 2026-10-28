@@ -3,6 +3,8 @@
 namespace App\Controllers\GuruMapel;
 
 use App\Controllers\GuruMapelBaseController;
+use App\Services\NilaiRaporSyncService;
+use App\Services\AuditLogService;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -359,7 +361,7 @@ class NilaiKolektifController extends GuruMapelBaseController
                     $val = $sheet->getCell($colLtr . $rowNum)->getCalculatedValue();
                     if (is_string($val)) $val = str_replace(',', '.', $val);
                     return (is_numeric($val) && trim((string)$val) !== '') ? (float)$val : null;
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     return null;
                 }
             };
@@ -465,7 +467,7 @@ class NilaiKolektifController extends GuruMapelBaseController
             }
 
             return $this->response->setJSON(['status' => 'success', 'message' => "Luar biasa! $processedCount baris data siswa berhasil diimpor!"]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'System Error: ' . $e->getMessage()]);
         }
     }
