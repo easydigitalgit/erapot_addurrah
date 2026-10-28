@@ -1,18 +1,23 @@
 <?php
-require 'backend/vendor/autoload.php';
+require __DIR__ . '/../backend/vendor/autoload.php';
+
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-$filePath = 'docs/dbrepair/Data Dapodik 2026-2027 (Update 27 Oktober 2026).xlsx';
-$spreadsheet = IOFactory::load($filePath);
-$sheet = $spreadsheet->getActiveSheet();
+$fileMM = __DIR__ . '/../docs/data_nilai_sts_ganjil_2026/Template_Kolektif_Tengah_Granit (MM).xlsx';
+$filePAIBP = __DIR__ . '/../docs/data_nilai_sts_ganjil_2026/Template_Kolektif_Tengah_Granit (PAIBP).xlsx';
 
-for ($r = 2; $r <= $sheet->getHighestRow(); $r++) {
-    $nama = trim((string)$sheet->getCell('B' . $r)->getFormattedValue());
-    $nis = trim((string)$sheet->getCell('C' . $r)->getFormattedValue());
-    $nisn = trim((string)$sheet->getCell('D' . $r)->getFormattedValue());
+$sheetMM = IOFactory::load($fileMM)->getActiveSheet();
+$sheetPA = IOFactory::load($filePAIBP)->getActiveSheet();
 
-    if (stripos($nama, 'Fahrian') !== false || $nisn === '3122320841') {
-        echo "Dapodik Row $r: $nama | NIS: $nis | NISN: $nisn\n";
-    }
+echo "MM Row 21: NIS = '" . $sheetMM->getCell('B21')->getValue() . "', Nama = '" . $sheetMM->getCell('C21')->getValue() . "'\n";
+echo "PAIBP Row 21: NIS = '" . $sheetPA->getCell('B21')->getValue() . "', Nama = '" . $sheetPA->getCell('C21')->getValue() . "'\n";
+
+$mysqli = new mysqli('localhost', 'root', '', 'raporsmpit');
+$q = $mysqli->query("SELECT s.id, s.nis, s.nama_lengkap, ar.rombel_id, r.nama_rombel 
+                     FROM siswa s 
+                     LEFT JOIN anggota_rombel ar ON ar.siswa_id = s.id 
+                     LEFT JOIN rombel r ON r.id = ar.rombel_id 
+                     WHERE s.nama_lengkap LIKE '%Fahrian%' OR s.nis LIKE '%0045%'");
+while ($r = $q->fetch_assoc()) {
+    print_r($r);
 }
-
