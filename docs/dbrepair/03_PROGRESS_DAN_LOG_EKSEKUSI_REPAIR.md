@@ -454,4 +454,4 @@ Di seluruh database ditemukan 63 grup nilai sumatif ganda di TA 10 (22 di Kelas 
    - `SiswaController::delete`: Diubah menjadi mekanisme Soft Delete (menonaktifkan akun user dan menandai `deleted_at`, bukan menghapus fisik).
    - `SiswaController::restore`: Ditambahkan method pemulihan data siswa terhapus (*Recycle Bin Restore*).
 - **Pengujian Sistem:** Telah diuji melalui CodeIgniter CLI dengan hasil **100% SUCCESS** pada logging audit trail dan kalkulasi `nilai_rapor`.
-- **Pembaruan Berkas Dump Final:** [`docs/dbrepair/raporsmpit_repaired_and_sts_complete_20261027.sql`](file:///d:/laragon/htdocs/erapoteasy/docs/dbrepair/raporsmpit_repaired_and_sts_complete_20261027.sql) (**66,8 MB**).
+- **Pembaruan Berkas Dump Final:** [`docs/dbrepair/raporsmpit_repaired_and_sts_complete_20261027.sql`](file:///d:/laragon/htdocs/erapoteasy/docs/dbrepair/raporsmpit_repaired_and_sts_complete_20261027.sql) (**33,4 MB** - Pure UTF-8 without BOM, lolos uji impor MySQL 100% tanpa error).
